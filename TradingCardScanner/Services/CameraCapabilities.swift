@@ -49,8 +49,13 @@ enum CameraCapabilities {
         var systemInfo = utsname()
         uname(&systemInfo)
 
+        // The capacity is the size of the machine buffer being rebound. It used to
+        // be the size of the pointer itself, which is eight bytes regardless of
+        // how long the model string actually is. Read outside the inout access,
+        // because measuring it inside overlaps with the exclusive borrow.
+        let machineSize = MemoryLayout.size(ofValue: systemInfo.machine)
         let identifier = withUnsafePointer(to: &systemInfo.machine) { pointer in
-            pointer.withMemoryRebound(to: CChar.self, capacity: MemoryLayout.size(ofValue: pointer)) {
+            pointer.withMemoryRebound(to: CChar.self, capacity: machineSize) {
                 String(validatingUTF8: $0)
             }
         }

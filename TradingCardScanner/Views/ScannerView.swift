@@ -1,27 +1,48 @@
+import SwiftData
 import SwiftUI
-import UIKit
 
+/// One continuous session. The camera is the product surface and never goes
+/// away: there is no result screen, no confirm step, and no dismiss animation
+/// between cards. Success is a receipt that appears underneath while the next
+/// card is already being read.
 struct ScannerView: View {
+    @Environment(\.modelContext) private var modelContext
     @StateObject private var model = ScannerViewModel()
 
+    @State private var isShowingSettings = false
+    @State private var reviewing: RecentScan?
+
     var body: some View {
-        ZStack(alignment: .top) {
-            CameraPreview(scanner: model.scanner)
+        ZStack {
+            CameraPreview(scanner: model.scanner, successCount: model.successCount)
                 .ignoresSafeArea()
 
-            ScannerOverlay(
+            ScannerChrome(
+                model: model,
                 scanner: model.scanner,
-                phase: model.phase,
-                lookupMessage: model.lookupMessage
+                openSettings: {
+                    model.pauseForPresentation()
+                    isShowingSettings = true
+                },
+                openReview: { scan in
+                    model.pauseForPresentation()
+                    reviewing = scan
+                }
             )
         }
-        .animation(.easeOut(duration: 0.18), value: model.lookupMessage)
-        .onAppear { model.start() }
+        .onAppear { model.start(context: modelContext) }
         .onDisappear { model.viewDisappeared() }
-        .fullScreenCover(item: $model.resultCard, onDismiss: {
-            model.resetForNextScan()
-        }) { card in
-            CardResultView(card: card, setCode: model.resultSetCode)
+        .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterPresentation) {
+            ScannerSettingsView(
+                scanner: model.scanner,
+                finishLock: model.finishLock(for:),
+                setFinishLock: model.setFinishLock
+            )
+        }
+        .sheet(item: $reviewing, onDismiss: model.resumeAfterPresentation) { scan in
+            ScanReviewSheet(scan: scan) { variant in
+                model.correct(scanID: scan.id, to: variant)
+            }
         }
     }
 }
@@ -34,57 +55,91 @@ struct ScannerView: View {
 /// scanner itself as an observed object. Reading `model.scanner.lens` from
 /// `ScannerView` compiles and returns the right value, but never redraws — the lens
 /// switched while the UI stayed frozen on the old selection.
-private struct ScannerOverlay: View {
+private struct ScannerChrome: View {
+    @ObservedObject var model: ScannerViewModel
     @ObservedObject var scanner: CardScanner
-    let phase: ScannerViewModel.Phase
-    let lookupMessage: String?
-
-    @State private var isShowingSettings = false
+    let openSettings: () -> Void
+    let openReview: (RecentScan) -> Void
 
     var body: some View {
-        ZStack(alignment: .top) {
-            // The scan band sits in the lower half of the preview, so every piece of
-            // chrome lives at the top. Nothing may overlap the band the user is
-            // trying to line a card up inside.
-            VStack(spacing: 10) {
-                HStack {
-                    Spacer()
-                    settingsButton
-                }
+        VStack(spacing: 10) {
+            topBar
 
-                statusPill
-
-                if let lookupMessage {
-                    Text(lookupMessage)
-                        .font(.footnote.weight(.semibold))
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 9)
-                        .background(.red.opacity(0.85), in: Capsule())
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                }
+            if let note = model.note {
+                ScanNoteView(note: note)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 6)
 
+            Spacer(minLength: 0)
+
+            bottomStack
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 6)
+        .padding(.bottom, 8)
+        .overlay {
             if let issue = scanner.cameraIssue {
                 cameraIssueMessage(issue)
             }
         }
-        .sheet(isPresented: $isShowingSettings) {
-            ScannerSettingsView(scanner: scanner)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
+        .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
+        .animation(.easeOut(duration: 0.18), value: model.note)
+    }
+
+    // MARK: - Top
+
+    /// Almost nothing. There is no game picker because the printed identifier
+    /// already says which game the card is, and asking the user to pre-declare it
+    /// was asking for information the card carries.
+    private var topBar: some View {
+        HStack(spacing: 8) {
+            if model.isSlowIdentifying {
+                ProgressView()
+                    .tint(.white)
+                    .controlSize(.small)
+                    .transition(.opacity)
+            }
+
+            Spacer(minLength: 0)
+
+            // Finish Lock is configured in Settings, but a lock silently
+            // resolving finishes is exactly the kind of thing that must never be
+            // invisible. This says one is on and goes straight to where it lives.
+            if !model.activeFinishLocks.isEmpty {
+                finishLockIndicator
+            }
+
+            settingsButton
         }
+        .animation(.easeOut(duration: 0.2), value: model.isSlowIdentifying)
+    }
+
+    private var finishLockIndicator: some View {
+        Button(action: openSettings) {
+            HStack(spacing: 5) {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 11, weight: .semibold))
+                Text(model.activeFinishLocks.map { $0.variant.label }.joined(separator: " · "))
+                    .font(.footnote.weight(.semibold))
+                    .lineLimit(1)
+            }
+            .foregroundStyle(.black)
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
+            .background(Color.yellow, in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Finish lock active: \(model.activeFinishLocks.map { $0.variant.label }.joined(separator: ", ")). Opens settings.")
     }
 
     private var settingsButton: some View {
-        Button {
-            isShowingSettings = true
-        } label: {
+        Button(action: openSettings) {
             Image(systemName: "gearshape.fill")
-                .font(.system(size: 17, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 38, height: 38)
+                .frame(width: 34, height: 34)
                 .background(.black.opacity(0.55), in: Circle())
                 .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
         }
@@ -92,29 +147,55 @@ private struct ScannerOverlay: View {
         .accessibilityLabel("Settings")
     }
 
-    private var statusPill: some View {
-        Group {
-            if phase == .identifying {
-                HStack(spacing: 8) {
-                    ProgressView()
-                        .tint(.white)
-                        .controlSize(.small)
-                    Text("Identifying…")
-                        .font(.subheadline.weight(.semibold))
-                }
-            } else {
-                // The lens hint is the actionable half: knowing to move to ~5cm is
-                // what makes macro work, and it changes with the selected lens.
-                Text("\(scanner.lens.hint) · line the code up in the yellow box")
-                    .font(.footnote.weight(.medium))
-                    .multilineTextAlignment(.center)
+    // MARK: - Bottom
+
+    private var bottomStack: some View {
+        VStack(spacing: 9) {
+            if let choice = model.pendingChoice {
+                VariantChoiceBar(
+                    choice: choice,
+                    onChoose: model.choose,
+                    onDismiss: model.dismissChoice
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let receipt = model.receipt {
+                ScanReceiptCard(
+                    receipt: receipt,
+                    onUndo: model.undoLastAdd,
+                    onOpen: {
+                        guard let scan = model.recent.first(where: { $0.id == receipt.scanID }) else { return }
+                        openReview(scan)
+                    }
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+
+            HStack(alignment: .bottom, spacing: 8) {
+                if !model.recent.isEmpty {
+                    RecentScanRail(scans: model.recent, onSelect: openReview)
+                }
+
+                Spacer(minLength: 0)
+
+                if model.unresolvedCount > 0 {
+                    unresolvedChip
+                }
+            }
+
         }
-        .foregroundStyle(.white)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-        .background(.black.opacity(0.55), in: Capsule())
-        .animation(.easeOut(duration: 0.15), value: phase)
+    }
+
+    private var unresolvedChip: some View {
+        Button(action: model.clearUnresolvedCount) {
+            Text("\(model.unresolvedCount) need\(model.unresolvedCount == 1 ? "s" : "") attention")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 11)
+                .padding(.vertical, 7)
+                .background(.orange.opacity(0.85), in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Clears the count")
     }
 
     private func cameraIssueMessage(_ issue: CameraIssue) -> some View {

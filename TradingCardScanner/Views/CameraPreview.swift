@@ -4,11 +4,16 @@ import UIKit
 
 struct CameraPreview: UIViewRepresentable {
     @ObservedObject var scanner: CardScanner
+    /// Increments once per successful add. The band itself acknowledging the
+    /// card is the cheapest possible way to say "consumed, give me the next
+    /// one" without moving the user anywhere.
+    var successCount: Int
 
     func makeUIView(context: Context) -> PreviewView {
         let view = PreviewView()
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
+        view.syncSuccessCount(successCount)
 #if DEBUG
         view.debugVisionBoxes = scanner.debugVisionBoxes
 #endif
@@ -17,6 +22,7 @@ struct CameraPreview: UIViewRepresentable {
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
         uiView.previewLayer.session = scanner.session
+        uiView.syncSuccessCount(successCount)
 #if DEBUG
         uiView.debugVisionBoxes = scanner.debugVisionBoxes
 #endif
@@ -26,6 +32,7 @@ struct CameraPreview: UIViewRepresentable {
 
 final class PreviewView: UIView {
     private let scanRegionLayer = CALayer()
+    private var lastSuccessCount = 0
 #if DEBUG
     private var debugBoxLayers: [CAShapeLayer] = []
     var debugVisionBoxes: [CGRect] = [] {
@@ -73,13 +80,36 @@ final class PreviewView: UIView {
 #endif
     }
 
+    /// Flashes the band brightly and lets it settle back to green. Explicitly
+    /// animated rather than relying on implicit actions, because `layoutSubviews`
+    /// disables those for the debug overlay.
+    func syncSuccessCount(_ count: Int) {
+        guard count != lastSuccessCount else { return }
+        let isFirstSync = lastSuccessCount == 0 && count == 0
+        lastSuccessCount = count
+        guard !isFirstSync else { return }
+
+        let border = CABasicAnimation(keyPath: "borderColor")
+        border.fromValue = UIColor.white.cgColor
+        border.toValue = UIColor.systemGreen.cgColor
+        border.duration = 0.45
+
+        let fill = CABasicAnimation(keyPath: "backgroundColor")
+        fill.fromValue = UIColor.systemGreen.withAlphaComponent(0.3).cgColor
+        fill.toValue = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        fill.duration = 0.45
+
+        scanRegionLayer.add(border, forKey: "successBorderFlash")
+        scanRegionLayer.add(fill, forKey: "successFillFlash")
+    }
+
     private func configureScanRegionLayer() {
         // The preview is decoration: it must never take a touch, or a UIKit gesture
         // here will compete with the SwiftUI controls layered above it.
         isUserInteractionEnabled = false
 
-        scanRegionLayer.backgroundColor = UIColor.systemYellow.withAlphaComponent(0.14).cgColor
-        scanRegionLayer.borderColor = UIColor.systemYellow.cgColor
+        scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        scanRegionLayer.borderColor = UIColor.systemGreen.cgColor
         scanRegionLayer.borderWidth = 2
         scanRegionLayer.cornerRadius = 8
         previewLayer.addSublayer(scanRegionLayer)

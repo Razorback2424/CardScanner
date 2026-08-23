@@ -17,7 +17,6 @@
 		A0010008 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010008 /* CameraPreview.swift */; };
 		A0010009 /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010009 /* ScannerViewModel.swift */; };
 		A0010010 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010010 /* ScannerView.swift */; };
-		A0010011 /* CardResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010011 /* CardResultView.swift */; };
 		A0010012 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010012 /* CollectionView.swift */; };
 		A0010013 /* CollectionCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010013 /* CollectionCardDetailView.swift */; };
 		A0010014 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010014 /* ContentView.swift */; };
@@ -25,6 +24,26 @@
 		A0010016 /* ScannerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010017 /* ScannerSettingsView.swift */; };
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
 		A0020004 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0020002 /* XCTest.framework */; };
+		A0010020 /* CardVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010020 /* CardVariant.swift */; };
+		A0010021 /* VariantResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010021 /* VariantResolver.swift */; };
+		A0010022 /* CardCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010022 /* CardCatalog.swift */; };
+		A0010023 /* CardLatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010023 /* CardLatch.swift */; };
+		A0010024 /* CollectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010024 /* CollectionStore.swift */; };
+		A0010025 /* ScanFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010025 /* ScanFeedback.swift */; };
+		A0010026 /* ScanSessionOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010026 /* ScanSessionOverlays.swift */; };
+		A0010027 /* ScanReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010027 /* ScanReviewSheet.swift */; };
+		A0020010 /* CardLatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020010 /* CardLatchTests.swift */; };
+		A0020011 /* VariantResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020011 /* VariantResolverTests.swift */; };
+		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
+		A0010030 /* PriceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010030 /* PriceRecord.swift */; };
+		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
+		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
+		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
+		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
+		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
+		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
+		A0020021 /* PricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020021 /* PricingTests.swift */; };
+		A0010040 /* MagicSetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010040 /* MagicSetSnapshot.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +67,6 @@
 		B0010008 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		B0010009 /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
 		B0010010 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
-		B0010011 /* CardResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardResultView.swift; sourceTree = "<group>"; };
 		B0010012 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		B0010013 /* CollectionCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCardDetailView.swift; sourceTree = "<group>"; };
 		B0010014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -59,6 +77,26 @@
 		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
 		B0020002 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		B0020099 /* TradingCardScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingCardScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0010020 /* CardVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardVariant.swift; sourceTree = "<group>"; };
+		B0010021 /* VariantResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolver.swift; sourceTree = "<group>"; };
+		B0010022 /* CardCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCatalog.swift; sourceTree = "<group>"; };
+		B0010023 /* CardLatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatch.swift; sourceTree = "<group>"; };
+		B0010024 /* CollectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStore.swift; sourceTree = "<group>"; };
+		B0010025 /* ScanFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanFeedback.swift; sourceTree = "<group>"; };
+		B0010026 /* ScanSessionOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionOverlays.swift; sourceTree = "<group>"; };
+		B0010027 /* ScanReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewSheet.swift; sourceTree = "<group>"; };
+		B0020010 /* CardLatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatchTests.swift; sourceTree = "<group>"; };
+		B0020011 /* VariantResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolverTests.swift; sourceTree = "<group>"; };
+		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
+		B0010030 /* PriceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRecord.swift; sourceTree = "<group>"; };
+		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
+		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
+		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
+		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
+		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		B0020021 /* PricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingTests.swift; sourceTree = "<group>"; };
+		B0010040 /* MagicSetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicSetSnapshot.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +161,8 @@
 			children = (
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
+				B0010020 /* CardVariant.swift */,
+				B0010030 /* PriceRecord.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -135,6 +175,16 @@
 				B0010006 /* TCGdexService.swift */,
 				B0010007 /* CardScanner.swift */,
 				B0010016 /* CameraCapabilities.swift */,
+				B0010021 /* VariantResolver.swift */,
+				B0010022 /* CardCatalog.swift */,
+				B0010023 /* CardLatch.swift */,
+				B0010024 /* CollectionStore.swift */,
+				B0010025 /* ScanFeedback.swift */,
+				B0010031 /* PriceProvider.swift */,
+				B0010032 /* PriceStore.swift */,
+				B0010033 /* PriceRefreshController.swift */,
+				B0010034 /* CollectionQuery.swift */,
+				B0010040 /* MagicSetSnapshot.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -146,10 +196,12 @@
 				B0010009 /* ScannerViewModel.swift */,
 				B0010010 /* ScannerView.swift */,
 				B0010017 /* ScannerSettingsView.swift */,
-				B0010011 /* CardResultView.swift */,
 				B0010012 /* CollectionView.swift */,
 				B0010013 /* CollectionCardDetailView.swift */,
 				B0010014 /* ContentView.swift */,
+				B0010026 /* ScanSessionOverlays.swift */,
+				B0010027 /* ScanReviewSheet.swift */,
+				B0010035 /* CollectionFilters.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -167,6 +219,11 @@
 			isa = PBXGroup;
 			children = (
 				B0020001 /* ScanParserTests.swift */,
+				B0020010 /* CardLatchTests.swift */,
+				B0020011 /* VariantResolverTests.swift */,
+				B0020012 /* CollectionKeyTests.swift */,
+				B0020020 /* CollectionQueryTests.swift */,
+				B0020021 /* PricingTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -278,12 +335,26 @@
 				A0010008 /* CameraPreview.swift in Sources */,
 				A0010009 /* ScannerViewModel.swift in Sources */,
 				A0010010 /* ScannerView.swift in Sources */,
-				A0010011 /* CardResultView.swift in Sources */,
 				A0010012 /* CollectionView.swift in Sources */,
 				A0010013 /* CollectionCardDetailView.swift in Sources */,
 				A0010014 /* ContentView.swift in Sources */,
 				A0010015 /* CameraCapabilities.swift in Sources */,
 				A0010016 /* ScannerSettingsView.swift in Sources */,
+				A0010020 /* CardVariant.swift in Sources */,
+				A0010021 /* VariantResolver.swift in Sources */,
+				A0010022 /* CardCatalog.swift in Sources */,
+				A0010023 /* CardLatch.swift in Sources */,
+				A0010024 /* CollectionStore.swift in Sources */,
+				A0010025 /* ScanFeedback.swift in Sources */,
+				A0010026 /* ScanSessionOverlays.swift in Sources */,
+				A0010027 /* ScanReviewSheet.swift in Sources */,
+				A0010030 /* PriceRecord.swift in Sources */,
+				A0010031 /* PriceProvider.swift in Sources */,
+				A0010032 /* PriceStore.swift in Sources */,
+				A0010033 /* PriceRefreshController.swift in Sources */,
+				A0010034 /* CollectionQuery.swift in Sources */,
+				A0010040 /* MagicSetSnapshot.swift in Sources */,
+				A0010035 /* CollectionFilters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +363,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0020001 /* ScanParserTests.swift in Sources */,
+				A0020010 /* CardLatchTests.swift in Sources */,
+				A0020011 /* VariantResolverTests.swift in Sources */,
+				A0020012 /* CollectionKeyTests.swift in Sources */,
+				A0020020 /* CollectionQueryTests.swift in Sources */,
+				A0020021 /* PricingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

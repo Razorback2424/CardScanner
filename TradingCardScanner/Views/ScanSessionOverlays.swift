@@ -1,0 +1,230 @@
+import SwiftUI
+
+/// Shared chrome style. Everything floating over the camera is the same dark,
+/// slightly translucent material so the card underneath stays the brightest,
+/// most legible object on screen.
+private struct GlassBackground: ViewModifier {
+    var cornerRadius: CGFloat = 18
+
+    func body(content: Content) -> some View {
+        content
+            .background(.black.opacity(0.62), in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(0.14), lineWidth: 1)
+            )
+    }
+}
+
+extension View {
+    func scannerGlass(cornerRadius: CGFloat = 18) -> some View {
+        modifier(GlassBackground(cornerRadius: cornerRadius))
+    }
+}
+
+/// The one-tap fork.
+///
+/// This appears only when two or more variants are genuinely possible and the
+/// card carries nothing that separates them — the moment the person holding it
+/// knows something the scanner cannot. The tap is the whole transaction: it
+/// means this variant *and* save it. There is no follow-up confirmation,
+/// because the tap already said everything.
+struct VariantChoiceBar: View {
+    let choice: PendingVariantChoice
+    let onChoose: (PhysicalVariant) -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(choice.card.name)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Text(choice.card.identifier)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+
+                Spacer(minLength: 8)
+
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Skip this card")
+            }
+
+            if let missed = choice.lockDidNotApply {
+                Label("No \(missed.label) printing exists — pick one that does", systemImage: "info.circle")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.75))
+            }
+
+            options
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .scannerGlass()
+    }
+
+    @ViewBuilder
+    private var options: some View {
+        // Three or fewer stay on one row, which keeps every button under the
+        // thumb. Beyond that a second row beats shrinking the targets.
+        if choice.options.count <= 3 {
+            HStack(spacing: 10) {
+                ForEach(choice.options) { option in
+                    button(for: option)
+                }
+            }
+        } else {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                ForEach(choice.options) { option in
+                    button(for: option)
+                }
+            }
+        }
+    }
+
+    private func button(for option: PhysicalVariant) -> some View {
+        Button {
+            onChoose(option)
+        } label: {
+            Text(option.label)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+                .background(.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 13, style: .continuous)
+                        .stroke(.white.opacity(0.22), lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .accessibilityLabel("\(option.label), add \(choice.card.name)")
+    }
+}
+
+/// What just happened, shown rather than asked about.
+///
+/// It does not block the next card: recognition never stopped, so card two can
+/// already be resolving while this is still on screen. Undo is insurance, not a
+/// step in the workflow.
+struct ScanReceiptCard: View {
+    let receipt: ScanReceipt
+    let onUndo: () -> Void
+    let onOpen: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Button(action: onOpen) {
+                HStack(spacing: 12) {
+                    CardThumbnail(url: receipt.thumbnailURL, width: 40)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 5) {
+                            Text(receipt.name)
+                                .font(.subheadline.weight(.semibold))
+                                .lineLimit(1)
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.green)
+                        }
+                        Text("\(receipt.identifier) · \(receipt.variantLabel)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.white.opacity(0.72))
+                            .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            Button("Undo", action: onUndo)
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(.white.opacity(0.16), in: Capsule())
+        }
+        .foregroundStyle(.white)
+        .padding(10)
+        .scannerGlass(cornerRadius: 16)
+    }
+}
+
+/// Inspectable history. It asks for nothing; it is simply there to glance at,
+/// and it is the way back into any single record without leaving the session.
+struct RecentScanRail: View {
+    let scans: [RecentScan]
+    let onSelect: (RecentScan) -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(scans) { scan in
+                Button {
+                    onSelect(scan)
+                } label: {
+                    CardThumbnail(url: scan.thumbnailURL, width: 38)
+                        .overlay(alignment: .bottomTrailing) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.green, .black)
+                                .padding(2)
+                        }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(scan.card.name), \(scan.resolved.label). Open to correct.")
+                .transition(.scale(scale: 0.6).combined(with: .opacity))
+            }
+        }
+        .padding(8)
+        .scannerGlass(cornerRadius: 14)
+    }
+}
+
+struct CardThumbnail: View {
+    let url: URL?
+    var width: CGFloat
+
+    var body: some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case let .success(image):
+                image.resizable().scaledToFill()
+            default:
+                Rectangle().fill(.white.opacity(0.12))
+            }
+        }
+        .frame(width: width, height: width / 0.716)
+        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+    }
+}
+
+/// Local recovery. One awkward card gets a line beside the band and nothing
+/// more — no modal, no acknowledgement button, no interruption to the run.
+struct ScanNoteView: View {
+    let note: ScanNote
+
+    var body: some View {
+        Label(note.text, systemImage: note.tone == .problem ? "exclamationmark.triangle.fill" : "info.circle.fill")
+            .font(.footnote.weight(.medium))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 13)
+            .padding(.vertical, 9)
+            .background(
+                (note.tone == .problem ? Color.orange.opacity(0.9) : Color.black.opacity(0.66)),
+                in: Capsule()
+            )
+    }
+}

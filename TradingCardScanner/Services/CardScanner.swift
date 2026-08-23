@@ -11,7 +11,15 @@ import Vision
 /// unrotated landscape frame with a top-left origin, so derive that rectangle
 /// explicitly instead of sharing raw numbers between incompatible spaces.
 enum ScanRegion {
-    static let visionRect = CGRect(x: 0.08, y: 0.17, width: 0.72, height: 0.16)
+    /// Centered in Vision's normalized portrait coordinate space. Deriving the
+    /// origin from the size keeps the band centered if its dimensions change.
+    private static let visionSize = CGSize(width: 0.72, height: 0.16)
+    static let visionRect = CGRect(
+        x: (1 - visionSize.width) / 2,
+        y: (1 - visionSize.height) / 2,
+        width: visionSize.width,
+        height: visionSize.height
+    )
 
     static let fullFrameRect = CGRect(x: 0, y: 0, width: 1, height: 1)
 
@@ -64,7 +72,7 @@ enum ScanRegion {
         //
         // IMPORTANT FIELD-TEST CHECK:
         // Apple's orientation wording is easy to interpret in either rotation direction.
-        // If the on-device yellow band/recognized-text boxes are mirrored to the wrong
+        // If the on-device green band/recognized-text boxes are mirrored to the wrong
         // vertical end of the card, the alternate transform is:
         // CGRect(x: rect.minY, y: rect.minX,
         //        width: rect.height, height: rect.width)
@@ -137,12 +145,6 @@ enum CameraLens: String, CaseIterable, Identifiable {
         }
     }
 
-    var hint: String {
-        switch self {
-        case .standard: return "Hold about 20cm away"
-        case .macro: return "Hold about 5cm away"
-        }
-    }
 }
 
 final class CardScanner: NSObject, ObservableObject {
@@ -157,7 +159,17 @@ final class CardScanner: NSObject, ObservableObject {
     @Published private(set) var debugVisionBoxes: [CGRect] = []
 #endif
 
-    var onConfirmedCandidate: ((ScanCandidate) -> Void)?
+    /// A validated identifier has been read once. Not yet trusted, and never
+    /// allowed to touch the collection — this exists so a catalog request can be
+    /// in flight while Vision is still looking for its second matching pass.
+    var onPlausibleCandidate: ((ScanIdentifier) -> Void)?
+    /// Identity is established: confirmed across OCR passes and admitted by the
+    /// latch as a new physical presentation.
+    var onConfirmedCandidate: ((ScanIdentifier) -> Void)?
+    /// The same printing has been sitting in the band since it was consumed.
+    /// Fires once per latch so the UI can explain the one case the latch cannot
+    /// tell apart: a second identical copy dropped in without a gap.
+    var onLatchHolding: ((ScanIdentifier) -> Void)?
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
@@ -171,6 +183,14 @@ final class CardScanner: NSObject, ObservableObject {
     private var currentLens: CameraLens = .standard
     private var lastVisionTime: CFAbsoluteTime = 0
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    private var latch = CardLatch()
+    private var didAnnounceLatchHold = false
+    private var lastAnnouncedPlausible: ScanIdentifier?
+    private var profile: RecognitionProfile = .pokemonOnly
+
+    /// Consecutive readings of an already-consumed card before the UI mentions it.
+    /// Long enough that simply finishing a movement never triggers it.
+    private static let latchHoldHintMatches = 8
 
     // This is a ceiling of about 4 OCR starts/sec. Actual throughput is whichever
     // is slower: this interval or Vision's synchronous .accurate processing time.
@@ -233,6 +253,44 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    /// Allow the very next confirmation of the card currently in the band.
+    ///
+    /// Only for failures that wrote nothing and say nothing about the card — a
+    /// dropped request should cost a re-read, never a collection entry. A lookup
+    /// that failed because the record genuinely disagrees keeps its latch, so a
+    /// card the app cannot resolve is asked about once instead of retried in a
+    /// loop for as long as it sits there.
+    func allowImmediateRetry() {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.latch.releaseAndForget()
+            self.confirmationWindow.reset()
+            self.didAnnounceLatchHold = false
+            self.lastAnnouncedPlausible = nil
+        }
+    }
+
+    /// Installs the Magic set directory. One atomic update of the parser and the
+    /// OCR vocabulary together, so no frame is ever recognised against a
+    /// vocabulary that does not match the parser about to read it.
+    ///
+    /// Partial observations are cleared only when the vocabulary materially
+    /// changes. The bundled snapshot is replaced by a live directory a moment
+    /// after launch, and throwing away a half-confirmed card for a refresh that
+    /// changed nothing the user is looking at would be a stutter for no reason.
+    func useMagicDefinitions(_ definitions: [MagicSetDefinition]) {
+        // Compiling the vocabulary regex is the expensive half; do it off the
+        // frame queue.
+        let magic = MagicScanProfile(definitions: definitions)
+
+        visionQueue.async { [weak self] in
+            guard let self, self.profile.magic?.definitions != magic.definitions else { return }
+            self.profile = RecognitionProfile(magic: magic)
+            self.request.customWords = self.profile.customWords
+            self.resetObservationState()
+        }
+    }
+
     private func configureTextRequest() {
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["en-US"]
@@ -241,7 +299,7 @@ final class CardScanner: NSObject, ObservableObject {
         // Field testing should decide whether this wins over correction-off for the
         // numeric-heavy identifier strip; keep the custom set vocabulary for MVP.
         request.usesLanguageCorrection = true
-        request.customWords = SetCodeMap.codes
+        request.customWords = profile.customWords
         request.regionOfInterest = ScanRegion.activeVisionROI
     }
 
@@ -284,7 +342,7 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
 
-            self.visionQueue.async { self.confirmationWindow.reset() }
+            self.visionQueue.async { self.resetObservationState() }
         }
     }
 
@@ -403,17 +461,81 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    private func handleRecognizedText(_ lines: [String]) {
-        // Preserve Vision's line grouping first. That helps keep a set code paired
-        // with its own collector number when more than one card/text line is visible.
-        let parsed = ScanParser.parse(lines)
-        guard let confirmed = confirmationWindow.observe(parsed) else { return }
-
-        isPaused = true
-
-        DispatchQueue.main.async { [weak self] in
-            self?.onConfirmedCandidate?(confirmed)
+    /// The whole acceptance pipeline, in order. Everything above this line is
+    /// evidence gathering; nothing below it is allowed to guess.
+    ///
+    ///     OCR observation -> latch -> rolling confirmation -> latch admission -> identity
+    ///
+    /// Recognition is never paused on success. The camera is the product surface,
+    /// so card two is already being read while card one's receipt is still on
+    /// screen — the latch, not a pause, is what stops one card being counted
+    /// twice.
+    private func handleRecognizedText(_ lines: [String], at now: CFAbsoluteTime) {
+        // Vision's line grouping is preserved into the parsers, which is what
+        // keeps a set code paired with its own collector number when more than
+        // one card is visible.
+        //
+        // An ambiguous frame is treated exactly like a frame that read nothing:
+        // it confirms nothing, and it ages the confirmation window so a later
+        // pass gets a clean run at the card.
+        let parsed: ScanIdentifier?
+        switch profile.identify(lines) {
+        case let .identified(identifier):
+            parsed = identifier
+        case .nothing, .ambiguous:
+            parsed = nil
         }
+
+        switch latch.observe(parsed, at: now) {
+        case .holdingLatch:
+            announceLatchHoldIfNeeded()
+
+        case let .forward(observation):
+            announcePlausible(observation)
+
+            guard let confirmed = confirmationWindow.observe(observation) else { return }
+
+            // Confirmed, but the same physical card may simply never have left.
+            guard latch.admits(confirmed) else {
+                confirmationWindow.reset()
+                return
+            }
+
+            latch.engage(on: confirmed, at: now)
+            didAnnounceLatchHold = false
+            DispatchQueue.main.async { [weak self] in
+                self?.onConfirmedCandidate?(confirmed)
+            }
+        }
+    }
+
+    /// Speculation, and only speculation. The catalog de-duplicates, so an
+    /// identifier that flickers in and out costs at most one request.
+    private func announcePlausible(_ observation: ScanIdentifier?) {
+        guard let observation, observation != lastAnnouncedPlausible else { return }
+        lastAnnouncedPlausible = observation
+        DispatchQueue.main.async { [weak self] in
+            self?.onPlausibleCandidate?(observation)
+        }
+    }
+
+    private func announceLatchHoldIfNeeded() {
+        guard !didAnnounceLatchHold,
+              latch.heldMatchCount >= Self.latchHoldHintMatches,
+              let latched = latch.latched else { return }
+
+        didAnnounceLatchHold = true
+        DispatchQueue.main.async { [weak self] in
+            self?.onLatchHolding?(latched)
+        }
+    }
+
+    /// Callers must be on `visionQueue`.
+    private func resetObservationState() {
+        confirmationWindow.reset()
+        latch.releaseAndForget()
+        didAnnounceLatchHold = false
+        lastAnnouncedPlausible = nil
     }
 
     private func setCameraIssue(_ issue: CameraIssue?) {
@@ -421,6 +543,54 @@ final class CardScanner: NSObject, ObservableObject {
             self?.cameraIssue = issue
         }
     }
+}
+
+/// What the scanner recognises, as one value.
+///
+/// There is no game mode. A printed identifier is specific enough to say which
+/// game it came from — `OBF 223/197` cannot be a Magic footer and `ECL • 0218 •
+/// EN` cannot be a Pokémon one — so asking the user to pick first was asking for
+/// information the card already carries.
+struct RecognitionProfile {
+    /// `nil` only before the Magic set directory is installed. Pokémon needs no
+    /// counterpart because its set table is compiled in.
+    let magic: MagicScanProfile?
+
+    static let pokemonOnly = RecognitionProfile(magic: nil)
+
+    /// Vision biases recognition toward these, so it carries both games'
+    /// vocabularies at once. Deduplicated because a three-character code can
+    /// legitimately belong to both directories.
+    var customWords: [String] {
+        ScanText.unique(SetCodeMap.codes + (magic?.customWords ?? []))
+    }
+
+    /// Both parsers, every frame.
+    ///
+    /// Exactly one result is an identification. Two is a frame claiming to be two
+    /// different cards, which is rejected rather than ranked — the same rule that
+    /// already governs two Pokémon identifiers in one frame. A later pass will
+    /// almost always resolve it, and a wrong entry costs far more than a wait.
+    func identify(_ lines: [String]) -> RecognitionOutcome {
+        let pokemon = ScanParser.parsePokemon(lines)
+        let magic = magic?.parse(lines)
+
+        switch (pokemon, magic) {
+        case (nil, nil):
+            return .nothing
+        case let (identifier?, nil), let (nil, identifier?):
+            return .identified(identifier)
+        case (_?, _?):
+            return .ambiguous
+        }
+    }
+}
+
+enum RecognitionOutcome: Equatable {
+    case nothing
+    case identified(ScanIdentifier)
+    /// Both games produced a valid identifier from one frame.
+    case ambiguous
 }
 
 extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -453,16 +623,17 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
 #endif
 
-            handleRecognizedText(lines)
+            handleRecognizedText(lines, at: now)
         } catch {
 #if DEBUG
             DispatchQueue.main.async { [weak self] in
                 self?.debugVisionBoxes = []
             }
 #endif
-            // A bad frame is expected occasionally. Record a miss in the rolling
-            // confirmation window, then allow the next frame to try again.
-            _ = confirmationWindow.observe(nil)
+            // A bad frame is expected occasionally. Run it through the normal
+            // pipeline as a miss so it counts as absence evidence for the latch
+            // as well as the confirmation window, then let the next frame try.
+            handleRecognizedText([], at: now)
         }
     }
 }
