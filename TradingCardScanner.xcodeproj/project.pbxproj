@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A0010001 /* TradingCardScannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010001 /* TradingCardScannerApp.swift */; };
+		A0010002 /* CollectedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002 /* CollectedCard.swift */; };
+		A0010003 /* TCGdexCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010003 /* TCGdexCard.swift */; };
+		A0010004 /* SetCodeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010004 /* SetCodeMap.swift */; };
+		A0010005 /* ScanParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010005 /* ScanParser.swift */; };
+		A0010006 /* TCGdexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010006 /* TCGdexService.swift */; };
+		A0010007 /* CardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010007 /* CardScanner.swift */; };
+		A0010008 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010008 /* CameraPreview.swift */; };
+		A0010009 /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010009 /* ScannerViewModel.swift */; };
+		A0010010 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010010 /* ScannerView.swift */; };
+		A0010011 /* CardResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010011 /* CardResultView.swift */; };
+		A0010012 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010012 /* CollectionView.swift */; };
+		A0010013 /* CollectionCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010013 /* CollectionCardDetailView.swift */; };
+		A0010014 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010014 /* ContentView.swift */; };
+		A0010015 /* CameraCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010016 /* CameraCapabilities.swift */; };
+		A0010016 /* ScannerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010017 /* ScannerSettingsView.swift */; };
+		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
+		A0020004 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0020002 /* XCTest.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		G0020001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E0010000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0010001;
+			remoteInfo = TradingCardScanner;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B0010001 /* TradingCardScannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradingCardScannerApp.swift; sourceTree = "<group>"; };
+		B0010002 /* CollectedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedCard.swift; sourceTree = "<group>"; };
+		B0010003 /* TCGdexCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexCard.swift; sourceTree = "<group>"; };
+		B0010004 /* SetCodeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCodeMap.swift; sourceTree = "<group>"; };
+		B0010005 /* ScanParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParser.swift; sourceTree = "<group>"; };
+		B0010006 /* TCGdexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexService.swift; sourceTree = "<group>"; };
+		B0010007 /* CardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScanner.swift; sourceTree = "<group>"; };
+		B0010008 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		B0010009 /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
+		B0010010 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
+		B0010011 /* CardResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardResultView.swift; sourceTree = "<group>"; };
+		B0010012 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
+		B0010013 /* CollectionCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCardDetailView.swift; sourceTree = "<group>"; };
+		B0010014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B0010016 /* CameraCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCapabilities.swift; sourceTree = "<group>"; };
+		B0010017 /* ScannerSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerSettingsView.swift; sourceTree = "<group>"; };
+		B0010015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0010099 /* TradingCardScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradingCardScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
+		B0020002 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		B0020099 /* TradingCardScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingCardScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C0010002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0020002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0020004 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		004FE150303B8479000E0745 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				B0020002 /* XCTest.framework */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		D0010000 = {
+			isa = PBXGroup;
+			children = (
+				D0010001 /* TradingCardScanner */,
+				D0020001 /* TradingCardScannerTests */,
+				D0010009 /* Products */,
+				004FE150303B8479000E0745 /* Recovered References */,
+			);
+			sourceTree = "<group>";
+		};
+		D0010001 /* TradingCardScanner */ = {
+			isa = PBXGroup;
+			children = (
+				D0010002 /* App */,
+				D0010003 /* Models */,
+				D0010004 /* Services */,
+				D0010005 /* Views */,
+				B0010015 /* Info.plist */,
+			);
+			path = TradingCardScanner;
+			sourceTree = "<group>";
+		};
+		D0010002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B0010001 /* TradingCardScannerApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D0010003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B0010002 /* CollectedCard.swift */,
+				B0010003 /* TCGdexCard.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D0010004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B0010004 /* SetCodeMap.swift */,
+				B0010005 /* ScanParser.swift */,
+				B0010006 /* TCGdexService.swift */,
+				B0010007 /* CardScanner.swift */,
+				B0010016 /* CameraCapabilities.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D0010005 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B0010008 /* CameraPreview.swift */,
+				B0010009 /* ScannerViewModel.swift */,
+				B0010010 /* ScannerView.swift */,
+				B0010017 /* ScannerSettingsView.swift */,
+				B0010011 /* CardResultView.swift */,
+				B0010012 /* CollectionView.swift */,
+				B0010013 /* CollectionCardDetailView.swift */,
+				B0010014 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D0010009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0010099 /* TradingCardScanner.app */,
+				B0020099 /* TradingCardScannerTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D0020001 /* TradingCardScannerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0020001 /* ScanParserTests.swift */,
+			);
+			path = TradingCardScannerTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E0010001 /* TradingCardScanner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0010003 /* Build configuration list for PBXNativeTarget "TradingCardScanner" */;
+			buildPhases = (
+				C0010001 /* Sources */,
+				C0010002 /* Frameworks */,
+				C0010003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TradingCardScanner;
+			productName = TradingCardScanner;
+			productReference = B0010099 /* TradingCardScanner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E0020001 /* TradingCardScannerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0020003 /* Build configuration list for PBXNativeTarget "TradingCardScannerTests" */;
+			buildPhases = (
+				C0020001 /* Sources */,
+				C0020002 /* Frameworks */,
+				C0020003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				H0020001 /* PBXTargetDependency */,
+			);
+			name = TradingCardScannerTests;
+			productName = TradingCardScannerTests;
+			productReference = B0020099 /* TradingCardScannerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E0010000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					E0010001 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					E0020001 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = F0010002 /* Build configuration list for PBXProject "TradingCardScanner" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D0010000;
+			productRefGroup = D0010009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E0010001 /* TradingCardScanner */,
+				E0020001 /* TradingCardScannerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C0010003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0020003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C0010001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0010001 /* TradingCardScannerApp.swift in Sources */,
+				A0010002 /* CollectedCard.swift in Sources */,
+				A0010003 /* TCGdexCard.swift in Sources */,
+				A0010004 /* SetCodeMap.swift in Sources */,
+				A0010005 /* ScanParser.swift in Sources */,
+				A0010006 /* TCGdexService.swift in Sources */,
+				A0010007 /* CardScanner.swift in Sources */,
+				A0010008 /* CameraPreview.swift in Sources */,
+				A0010009 /* ScannerViewModel.swift in Sources */,
+				A0010010 /* ScannerView.swift in Sources */,
+				A0010011 /* CardResultView.swift in Sources */,
+				A0010012 /* CollectionView.swift in Sources */,
+				A0010013 /* CollectionCardDetailView.swift in Sources */,
+				A0010014 /* ContentView.swift in Sources */,
+				A0010015 /* CameraCapabilities.swift in Sources */,
+				A0010016 /* ScannerSettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0020001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0020001 /* ScanParserTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		H0020001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0010001 /* TradingCardScanner */;
+			targetProxy = G0020001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F0010004 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F0010005 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F0010006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = D4X943SP8Z;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F0010007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4X943SP8Z;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		F0020006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
+			};
+			name = Debug;
+		};
+		F0020007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F0010002 /* Build configuration list for PBXProject "TradingCardScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F0010004 /* Debug */,
+				F0010005 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F0010003 /* Build configuration list for PBXNativeTarget "TradingCardScanner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F0010006 /* Debug */,
+				F0010007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F0020003 /* Build configuration list for PBXNativeTarget "TradingCardScannerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F0020006 /* Debug */,
+				F0020007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E0010000 /* Project object */;
+}

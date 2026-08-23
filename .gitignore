@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Xcode user state and local build products
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Local Claude settings
+.claude/settings.local.json
+
+# Swift Package Manager
+.build/
+
+# Signing and provisioning artifacts
+*.p12
+*.mobileprovision
+*.cer
+*.pem
