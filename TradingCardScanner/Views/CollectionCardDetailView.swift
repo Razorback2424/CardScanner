@@ -40,7 +40,7 @@ struct CollectionCardDetailView: View {
                 }
 
                 pricing
-                provenance
+                finish
 
                 Stepper("Quantity: \(card.quantity)", value: $card.quantity, in: 1...999)
                     .padding(.horizontal)
@@ -49,23 +49,30 @@ struct CollectionCardDetailView: View {
                     isConfirmingRemoval = true
                 }
                 .buttonStyle(.bordered)
+                .confirmationDialog(
+                    "Remove \(card.name)?",
+                    isPresented: $isConfirmingRemoval,
+                    titleVisibility: .visible
+                ) {
+                    Button("Remove", role: .destructive) {
+                        removeCard()
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text(removalMessage)
+                }
             }
             .padding(20)
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog(
-            "Remove \(card.name) from your collection?",
-            isPresented: $isConfirmingRemoval,
-            titleVisibility: .visible
-        ) {
-            Button("Remove from Collection", role: .destructive) {
-                removeCard()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This removes all \(card.quantity) \(card.quantity == 1 ? "copy" : "copies") of this finish. You can undo this afterward.")
+    }
+
+    private var removalMessage: String {
+        if card.quantity == 1 {
+            return "This removes the card. You can undo it."
         }
+        return "This removes all \(card.quantity) copies. You can undo it."
     }
 
     private func removeCard() {
@@ -103,17 +110,9 @@ struct CollectionCardDetailView: View {
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    /// Identity and finish are separate facts with separate sources. Showing both
-    /// is what makes the collection inspectable rather than merely populated.
-    private var provenance: some View {
-        VStack(spacing: 8) {
+    private var finish: some View {
+        VStack {
             LabeledContent("Finish", value: card.variant?.label ?? "Unknown")
-            if let variantResolution = card.variantResolution {
-                LabeledContent("Finish from", value: variantResolution.label)
-            }
-            if let identityResolution = card.identityResolution {
-                LabeledContent("Identified by", value: identityResolution.label)
-            }
         }
         .font(.subheadline)
         .padding(14)

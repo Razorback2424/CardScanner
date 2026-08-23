@@ -24,6 +24,7 @@ struct CollectionView: View {
     @State private var hasCheckedForStalePrices = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalUndoTask: Task<Void, Never>?
+    @FocusState private var isSearchFocused: Bool
 
     private enum ActiveSheet: String, Identifiable {
         case set, price, finish
@@ -56,11 +57,10 @@ struct CollectionView: View {
             }
             .navigationTitle("Collection")
             .toolbar {
-                if !cards.isEmpty {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Text("\(snapshot.totalQuantity) cards")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        isSearchFocused = false
                     }
                 }
             }
@@ -117,6 +117,7 @@ struct CollectionView: View {
             }
             .padding(12)
         }
+        .scrollDismissesKeyboard(.interactively)
         .refreshable { await refreshAllPrices() }
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
@@ -285,7 +286,11 @@ struct CollectionView: View {
                 .textFieldStyle(.plain)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
-                .submitLabel(.search)
+                .submitLabel(.done)
+                .focused($isSearchFocused)
+                .onSubmit {
+                    isSearchFocused = false
+                }
 
             if !searchText.isEmpty {
                 Button {
