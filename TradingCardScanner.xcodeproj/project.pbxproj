@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A0020027 /* ProductFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020027 /* ProductFallbackTests.swift */; };
+		A0010058 /* ProductIdentityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010058 /* ProductIdentityStore.swift */; };
+		A0010057 /* ProductPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010057 /* ProductPriceService.swift */; };
+		A0020026 /* ProductCatalogIdentityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020026 /* ProductCatalogIdentityTests.swift */; };
+		A0010056 /* ProductCatalogIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010056 /* ProductCatalogIdentity.swift */; };
+		A0020025 /* ProductIdentityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020025 /* ProductIdentityTests.swift */; };
+		A0010055 /* ProductIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010055 /* ProductIdentity.swift */; };
+		A0010054 /* PriceVendorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010054 /* PriceVendorCredentials.swift */; };
 		A0010001 /* TradingCardScannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010001 /* TradingCardScannerApp.swift */; };
 		A0010002 /* CollectedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002 /* CollectedCard.swift */; };
 		A0010003 /* TCGdexCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010003 /* TCGdexCard.swift */; };
@@ -72,6 +80,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0020027 /* ProductFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFallbackTests.swift; sourceTree = "<group>"; };
+		B0010058 /* ProductIdentityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentityStore.swift; sourceTree = "<group>"; };
+		B0010057 /* ProductPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceService.swift; sourceTree = "<group>"; };
+		B0020026 /* ProductCatalogIdentityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogIdentityTests.swift; sourceTree = "<group>"; };
+		B0010056 /* ProductCatalogIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogIdentity.swift; sourceTree = "<group>"; };
+		B0020025 /* ProductIdentityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentityTests.swift; sourceTree = "<group>"; };
+		B0010055 /* ProductIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentity.swift; sourceTree = "<group>"; };
+		B0010054 /* PriceVendorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceVendorCredentials.swift; sourceTree = "<group>"; };
 		B0010001 /* TradingCardScannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradingCardScannerApp.swift; sourceTree = "<group>"; };
 		B0010002 /* CollectedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedCard.swift; sourceTree = "<group>"; };
 		B0010003 /* TCGdexCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexCard.swift; sourceTree = "<group>"; };
@@ -196,6 +212,7 @@
 				B0010020 /* CardVariant.swift */,
 				B0010030 /* PriceRecord.swift */,
 				B0010041 /* CardCenteringMeasurement.swift */,
+							B0010055 /* ProductIdentity.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -223,6 +240,10 @@
 				B0010046 /* CollectionCSV.swift */,
 				B0010047 /* CollectionCatalogNormalizer.swift */,
 				B0010048 /* CardCenteringExport.swift */,
+							B0010054 /* PriceVendorCredentials.swift */,
+							B0010056 /* ProductCatalogIdentity.swift */,
+							B0010057 /* ProductPriceService.swift */,
+							B0010058 /* ProductIdentityStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -266,6 +287,9 @@
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020021 /* PricingTests.swift */,
+				B0020027 /* ProductFallbackTests.swift */,
+				B0020026 /* ProductCatalogIdentityTests.swift */,
+				B0020025 /* ProductIdentityTests.swift */,
 				B0020022 /* CenteringExportTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
@@ -367,10 +391,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+
+
 		C0010001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0010058 /* ProductIdentityStore.swift in Sources */,
+				A0010057 /* ProductPriceService.swift in Sources */,
+				A0010056 /* ProductCatalogIdentity.swift in Sources */,
+				A0010055 /* ProductIdentity.swift in Sources */,
+				A0010054 /* PriceVendorCredentials.swift in Sources */,
 				A0010001 /* TradingCardScannerApp.swift in Sources */,
 				A0010002 /* CollectedCard.swift in Sources */,
 				A0010003 /* TCGdexCard.swift in Sources */,
@@ -425,6 +456,9 @@
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020021 /* PricingTests.swift in Sources */,
+				A0020027 /* ProductFallbackTests.swift in Sources */,
+				A0020026 /* ProductCatalogIdentityTests.swift in Sources */,
+				A0020025 /* ProductIdentityTests.swift in Sources */,
 				A0020022 /* CenteringExportTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,

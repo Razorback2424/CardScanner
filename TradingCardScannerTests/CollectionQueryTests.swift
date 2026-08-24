@@ -131,6 +131,29 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertFalse(PriceFilter.custom(min: nil, max: 1_000_000).matches(nil))
     }
 
+    /// The one filter that inverts the rule above: it asks which cards are still
+    /// missing a price, so only a missing price satisfies it.
+    func testUnpricedFilterMatchesOnlyRowsWithNoPrice() {
+        XCTAssertTrue(PriceFilter.unpriced.matches(nil))
+        XCTAssertFalse(PriceFilter.unpriced.matches(0.01))
+        XCTAssertFalse(PriceFilter.unpriced.matches(4_000))
+    }
+
+    func testUnpricedFilterNarrowsTheCollectionToWhatIsMissing() {
+        let rows = [
+            row(id: "priced", setCode: "PRE", variant: .reverse, price: 3.75),
+            row(id: "missing", setCode: "PRE", variant: .masterBall, price: nil),
+            row(id: "alsoMissing", setCode: "OBF", variant: .normal, price: nil)
+        ]
+        var filters = CollectionFilters.none
+        filters.price = .unpriced
+
+        XCTAssertEqual(
+            CollectionQuery.filter(rows, with: filters).map(\.id).sorted(),
+            ["alsoMissing", "missing"]
+        )
+    }
+
     // MARK: - Composing filters
 
     func testFiltersComposeIntoOneQuery() {

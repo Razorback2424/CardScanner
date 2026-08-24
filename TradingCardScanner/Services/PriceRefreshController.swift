@@ -70,6 +70,17 @@ struct ImportedPriceIdentity: Hashable, Sendable {
 /// - refreshing is per unique printing-and-variant, not per owned copy.
 @MainActor
 final class PriceRefreshController: ObservableObject {
+    enum FallbackStatus: Equatable {
+        case idle
+        case disabled(pending: Int)
+        case unconfigured(pending: Int)
+        case available(remainingToday: Int)
+        case running(completed: Int, total: Int, remainingToday: Int)
+        case finished(checked: Int, priced: Int, remainingToday: Int)
+        case budgetReached(pending: Int, resetAt: Date)
+        case rateLimited(pending: Int, retryAt: Date)
+    }
+
     struct Summary: Equatable {
         let checkedAt: Date
         let priced: Int
@@ -95,10 +106,22 @@ final class PriceRefreshController: ObservableObject {
     }
 
     @Published private(set) var status: Status = .idle
+    @Published private(set) var fallbackStatus: FallbackStatus = .idle
 
     private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
     private let importedResolver = ImportedCardResolver()
+    private let fallbackService = ProductPriceService()
+
+    /// Opt-in, and off until a key is present. The catalog prices most of the
+    /// collection for free; this is only for what it cannot reach.
+    ///
+    /// Read from `UserDefaults` rather than declared with `@AppStorage`: that
+    /// wrapper is a SwiftUI `DynamicProperty` and only updates inside a `View`.
+    /// The settings screen writes the same key.
+    private var usesPriceFallback: Bool {
+        UserDefaults.standard.bool(forKey: "usesPriceFallback")
+    }
 
     /// Below this age an automatic refresh is skipped. TCGplayer itself only
     /// republishes every few hours at best, so asking more often buys nothing and
@@ -139,6 +162,17 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
+    /// A non-USD catalog observation remains useful when fallback is off, but
+    /// becomes unfinished the moment the user opts into a USD fallback.
+    nonisolated static func hasFinishedPrice(
+        amount: Double?,
+        currencyCode: String?,
+        usesFallback: Bool
+    ) -> Bool {
+        guard amount != nil else { return false }
+        return !usesFallback || currencyCode == "USD"
+    }
+
     /// - Parameter targets: already in display order, so whatever the user is
     ///   looking at becomes fresh first.
     func refresh(_ targets: [PriceTarget], store: PriceStore) async {
@@ -161,6 +195,11 @@ final class PriceRefreshController: ObservableObject {
         var checkedUnstampedProvider = false
         var changedPrices = false
         var wasCancelled = false
+        /// Collected during the catalog pass, resolved after it. Running the
+        /// fallback inline would interleave a paced, rate-limited vendor with
+        /// the unmetered catalog and slow the whole refresh to the vendor's
+        /// speed.
+        var fallbackSubjects: [FallbackCandidate] = []
         status = .refreshing(completed: 0, total: order.count)
 
         var cursor = 0
@@ -200,6 +239,18 @@ final class PriceRefreshController: ObservableObject {
                             variant: target.variantID.map(PhysicalVariant.resolving),
                             at: now
                         )
+                        // The catalog answered, but not in a way that finishes
+                        // the job: either it has no price for this finish, or it
+                        // has one in a currency the collection cannot total.
+                        // Both are handed to the fallback, which quotes USD.
+                        // Whatever is stored below stays put if the fallback
+                        // finds nothing, so Cardmarket remains the last resort
+                        // rather than being dropped.
+                        if Self.needsFallback(lookup) {
+                            fallbackSubjects.append(
+                                FallbackCandidate(target: target, card: card)
+                            )
+                        }
                         if case let .price(price) = lookup {
                             priced += 1
                             if let updated = price.sourceUpdatedAt,
@@ -252,6 +303,15 @@ final class PriceRefreshController: ObservableObject {
                             variantID: target.variantID,
                             at: now
                         )
+                        // A card the catalog could not even identify is the
+                        // strongest fallback candidate there is — it has no
+                        // price and no artwork today. The imported strings are
+                        // all the vendor needs.
+                        if printing.importedIdentity != nil {
+                            fallbackSubjects.append(
+                                FallbackCandidate(target: target, card: nil)
+                            )
+                        }
                     }
 
                 case .cancelled:
@@ -283,6 +343,20 @@ final class PriceRefreshController: ObservableObject {
             return
         }
 
+        // Second stage. Only what the catalog could not finish, and only when
+        // the user has opted in and supplied a key.
+        let fallbackPriced = await runFallback(fallbackSubjects, store: store)
+        if fallbackPriced > 0 {
+            priced += fallbackPriced
+            changedPrices = true
+            store.save()
+        }
+
+        if Task.isCancelled {
+            status = .idle
+            return
+        }
+
         let checkedAt = Date.now
         status = .finished(
             Summary(
@@ -296,6 +370,172 @@ final class PriceRefreshController: ObservableObject {
             )
         )
     }
+
+    // MARK: - Fallback stage
+
+    /// Whether the catalog's answer leaves work for the fallback.
+    ///
+    /// Two cases, and the second is the one that is easy to miss: a Cardmarket
+    /// euro price *is* a price, but not one the collection can total, so it is
+    /// treated as unfinished rather than done.
+    nonisolated static func needsFallback(_ lookup: PriceLookup) -> Bool {
+        switch lookup {
+        case .unavailable:
+            return true
+        case let .price(price):
+            return price.currencyCode != "USD"
+        }
+    }
+
+    /// One card the catalog could not finish, captured with whatever identity
+    /// was available at the moment it fell through.
+    private struct FallbackCandidate {
+        let target: PriceTarget
+        /// Present when the catalog identified the card but could not price it.
+        /// Absent when the catalog could not identify it at all.
+        let card: IdentifiedCard?
+
+        func subject(vendorCardID: String?) -> ProductPriceSubject? {
+            let name = card?.name ?? target.importedIdentity?.name
+            let setName = card?.setName ?? target.importedIdentity?.setName
+            let number = card?.cardNumber ?? target.importedIdentity?.cardNumber
+            guard let name, let setName, let number, !name.isEmpty, !number.isEmpty else {
+                return nil
+            }
+            let catalogID = card?.providerID ?? target.catalogPrintingID
+            return ProductPriceSubject(
+                game: target.game,
+                catalogID: catalogID,
+                name: name,
+                setName: setName,
+                cardNumber: number,
+                japaneseSetID: catalogID.flatMap(PriceRefreshController.japaneseSetID(forCatalogCardID:)),
+                vendorCardID: vendorCardID
+            )
+        }
+    }
+
+    /// The `ja` set id embedded in a Japanese catalog card id — `M2-001` is set
+    /// `M2`. Used to derive the vendor's set slug, which is prefixed with it.
+    private nonisolated static func japaneseSetID(forCatalogCardID id: String) -> String? {
+        guard CatalogIdentityNormalization.locale(forCatalogCardID: id) == .ja,
+              let separator = id.lastIndex(of: "-") else { return nil }
+        return String(id[id.startIndex..<separator])
+    }
+
+    /// Ask the vendor about everything the catalog left unfinished.
+    ///
+    /// Returns how many cards it managed to price. Anything it cannot answer is
+    /// left exactly as the catalog left it — including a Cardmarket euro price,
+    /// which stays as the last resort rather than being cleared.
+    private func runFallback(_ candidates: [FallbackCandidate], store: PriceStore) async -> Int {
+        guard !candidates.isEmpty else {
+            fallbackStatus = .idle
+            return 0
+        }
+        guard usesPriceFallback else {
+            fallbackStatus = .disabled(pending: candidates.count)
+            return 0
+        }
+        guard PriceVendorCredentials.hasKey else {
+            fallbackStatus = .unconfigured(pending: candidates.count)
+            return 0
+        }
+
+        let identities = ProductIdentityStore(context: store.context)
+        var priced = 0
+        var completed = 0
+        var stoppedByAllowance = false
+        await fallbackService.beginRun()
+        var budget = await fallbackService.budgetSnapshot()
+        status = .refreshing(completed: 0, total: candidates.count)
+        fallbackStatus = .running(
+            completed: 0,
+            total: candidates.count,
+            remainingToday: budget.remainingToday
+        )
+
+        for candidate in candidates {
+            if Task.isCancelled { break }
+            defer {
+                completed += 1
+                status = .refreshing(completed: completed, total: candidates.count)
+            }
+            let key = ProductIdentity.key(
+                game: candidate.target.game,
+                printingID: candidate.target.printingID,
+                variantID: candidate.target.variantID
+            )
+            // A card already known to be absent from the vendor is skipped
+            // outright — that is what makes a collection of unmatchable cards
+            // cost nothing on every subsequent refresh.
+            let cached = identities.cachedCardID(forKey: key)
+            if cached == nil, !identities.needsResolution(forKey: key) { continue }
+
+            guard let subject = candidate.subject(vendorCardID: cached) else { continue }
+            let variant = candidate.target.variantID.map(PhysicalVariant.resolving)
+            let outcome = await fallbackService.quote(for: subject, variant: variant)
+            identities.record(outcome, forKey: key)
+
+            switch outcome {
+            case let .price(price, _):
+                store.store(
+                    .price(price),
+                    game: candidate.target.game,
+                    printingID: candidate.target.printingID,
+                    variantID: candidate.target.variantID
+                )
+                priced += 1
+            case let .budgetReached(resetAt):
+                stoppedByAllowance = true
+                fallbackStatus = .budgetReached(
+                    pending: candidates.count - completed,
+                    resetAt: resetAt
+                )
+            case let .rateLimited(retryAt):
+                stoppedByAllowance = true
+                fallbackStatus = .rateLimited(
+                    pending: candidates.count - completed,
+                    retryAt: retryAt
+                )
+            case .noListingForVariant, .noProductMatch, .requestFailed:
+                break
+            }
+
+            if stoppedByAllowance { break }
+
+            budget = await fallbackService.budgetSnapshot()
+            fallbackStatus = .running(
+                completed: completed + 1,
+                total: candidates.count,
+                remainingToday: budget.remainingToday
+            )
+
+            // Checkpoint. A first run over a few hundred cards is paced to the
+            // vendor's rate limit and can take many minutes, so the work is
+            // committed as it goes rather than staked on reaching the end.
+            // Resolved handles are the expensive part and must survive being
+            // interrupted.
+            if completed.isMultiple(of: Self.fallbackCheckpointInterval) {
+                identities.save()
+                store.save()
+            }
+        }
+
+        identities.save()
+        if !stoppedByAllowance, !Task.isCancelled {
+            budget = await fallbackService.budgetSnapshot()
+            fallbackStatus = .finished(
+                checked: completed,
+                priced: priced,
+                remainingToday: budget.remainingToday
+            )
+        }
+        return priced
+    }
+
+    /// How often the fallback commits progress mid-run.
+    private static let fallbackCheckpointInterval = 10
 
     /// A check that returns the same market timestamp is not an update, and
     /// saying "prices updated" when nothing moved is the kind of small lie that
@@ -318,6 +558,35 @@ final class PriceRefreshController: ObservableObject {
     func markRecentlyChecked() {
         guard !isRefreshing else { return }
         status = .recentlyChecked
+    }
+
+    /// Restores persisted budget/backoff state when Collection appears, before
+    /// the user spends a request discovering that today's allowance is gone.
+    func updateFallbackAvailability(pending: Int) async {
+        guard !isRefreshing else { return }
+        guard pending > 0 else {
+            fallbackStatus = .idle
+            return
+        }
+        guard usesPriceFallback else {
+            fallbackStatus = .disabled(pending: pending)
+            return
+        }
+        guard PriceVendorCredentials.hasKey else {
+            fallbackStatus = .unconfigured(pending: pending)
+            return
+        }
+
+        let budget = await fallbackService.budgetSnapshot()
+        if let retryAt = budget.retryAt {
+            fallbackStatus = .rateLimited(pending: pending, retryAt: retryAt)
+        } else if budget.remainingToday == 0 {
+            fallbackStatus = .budgetReached(pending: pending, resetAt: budget.resetAt)
+        } else if case .finished = fallbackStatus {
+            // Preserve the useful result of the most recent run.
+        } else {
+            fallbackStatus = .available(remainingToday: budget.remainingToday)
+        }
     }
 
     private func latestKnownSourceUpdate(in store: PriceStore) -> Date? {

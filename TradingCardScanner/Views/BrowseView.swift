@@ -377,14 +377,21 @@ private struct CatalogSetCardsView: View {
     @State private var isLoading = false
     @State private var error: String?
     @State private var search = ""
+    @State private var sort: CatalogSetSort = .numberLowToHigh
+    @State private var ownership: CatalogOwnershipFilter = .all
+    @State private var prices: [String: Double] = [:]
+    @State private var isLoadingPrices = false
+    @State private var hasLoadedPrices = false
 
     private var visible: [CatalogCardSummary] {
-        let query = CardNameSearch.normalize(search)
-        guard !query.isEmpty else { return cards }
-        return cards.filter {
-            CardNameSearch.normalize($0.name).contains(query)
-                || CardNameSearch.normalize($0.collectorNumber).contains(query)
-        }
+        CatalogSetQuery.apply(
+            cards,
+            search: search,
+            sort: sort.needsPrices && !hasLoadedPrices ? .numberLowToHigh : sort,
+            ownership: ownership,
+            ownedCards: ownedCards,
+            prices: prices
+        )
     }
 
     var body: some View {
@@ -394,15 +401,24 @@ private struct CatalogSetCardsView: View {
                 ContentUnavailableView("Couldn't load this set", systemImage: "wifi.exclamationmark", description: Text(error))
                 Button("Retry") { Task { await load(reset: true) } }.buttonStyle(.borderedProminent)
             } else {
+                if isLoadingPrices {
+                    HStack(spacing: 8) {
+                        ProgressView().controlSize(.small)
+                        Text("Loading prices for this set…")
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 12)
+                }
                 if visible.isEmpty {
                     ContentUnavailableView(
                         "No matching cards",
                         systemImage: "magnifyingglass",
-                        description: Text("Try another name or collector number.")
+                        description: Text("Try another search or ownership filter.")
                     )
                     .padding(.top, 60)
                 } else {
-                    CatalogCardGrid(cards: visible, catalog: catalog, ownedCards: ownedCards)
+                    CatalogCardGrid(cards: visible, catalog: catalog, ownedCards: ownedCards, prices: prices)
                         .padding(12)
                 }
                 if cursor != nil {
@@ -413,7 +429,35 @@ private struct CatalogSetCardsView: View {
         .navigationTitle(set.name)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $search, prompt: "Name or number")
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Menu {
+                    Picker("Sort", selection: $sort) {
+                        ForEach(CatalogSetSort.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                } label: {
+                    Label("Sort", systemImage: "arrow.up.arrow.down")
+                }
+                .accessibilityLabel("Sort cards, \(sort.label)")
+
+                Menu {
+                    Picker("Ownership", selection: $ownership) {
+                        ForEach(CatalogOwnershipFilter.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                } label: {
+                    Label("Filter", systemImage: ownership == .all ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
+                }
+                .accessibilityLabel("Filter cards, \(ownership.label)")
+            }
+        }
         .task { if cards.isEmpty { await load(reset: true) } }
+        .onChange(of: sort) { _, newSort in
+            if newSort.needsPrices { Task { await loadPrices() } }
+        }
     }
 
     private func load(reset: Bool) async {
@@ -424,8 +468,18 @@ private struct CatalogSetCardsView: View {
             let page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
             cards = reset ? page.items : deduplicated(cards + page.items)
             cursor = page.nextCursor
+            if sort.needsPrices { await loadPrices() }
         } catch { self.error = error.localizedDescription }
         isLoading = false
+    }
+
+    private func loadPrices() async {
+        guard !isLoadingPrices, !cards.isEmpty else { return }
+        isLoadingPrices = true
+        hasLoadedPrices = false
+        prices.merge(await catalog.sortPrices(for: cards)) { _, newest in newest }
+        hasLoadedPrices = true
+        isLoadingPrices = false
     }
 
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
@@ -438,7 +492,20 @@ private struct CatalogCardGrid: View {
     let cards: [CatalogCardSummary]
     let catalog: any BrowseCatalogProviding
     let ownedCards: [CollectedCard]
+    let prices: [String: Double]
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+
+    init(
+        cards: [CatalogCardSummary],
+        catalog: any BrowseCatalogProviding,
+        ownedCards: [CollectedCard],
+        prices: [String: Double] = [:]
+    ) {
+        self.cards = cards
+        self.catalog = catalog
+        self.ownedCards = ownedCards
+        self.prices = prices
+    }
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 20) {
@@ -449,6 +516,11 @@ private struct CatalogCardGrid: View {
                     VStack(alignment: .leading, spacing: 7) {
                         CatalogArtworkView(thumbnailURL: card.thumbnailURL, imageURL: card.imageURL)
                         Text(card.name).font(.headline).lineLimit(2)
+                        if let price = prices[card.id] {
+                            Text(price, format: .currency(code: "USD"))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.green)
+                        }
                         HStack {
                             Text("\(card.setCode) \(card.collectorNumber)")
                                 .font(.caption).foregroundStyle(.secondary).lineLimit(1)
@@ -466,12 +538,19 @@ private struct CatalogCardGrid: View {
     }
 
     private func ownedQuantity(_ card: CatalogCardSummary) -> Int {
-        ownedCards.filter { $0.providerID == card.providerID || $0.catalogProviderID == card.providerID }.reduce(0) { $0 + $1.quantity }
+        ownedCards.filter { owned in
+            if owned.providerID == card.providerID || owned.catalogProviderID == card.providerID {
+                return true
+            }
+            return SetCompletionCalculator.owns(card, cards: [owned])
+        }
+        .reduce(0) { $0 + $1.quantity }
     }
 
     private func accessibilityLabel(_ card: CatalogCardSummary) -> String {
         let owned = ownedQuantity(card)
-        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(owned > 0 ? ", owned quantity \(owned)" : "")"
+        let price = prices[card.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
+        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(price)\(owned > 0 ? ", owned quantity \(owned)" : "")"
     }
 }
 

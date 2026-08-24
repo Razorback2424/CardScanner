@@ -141,6 +141,17 @@ struct PriceFilterSheet: View {
                     Text("Price is the current market price of one copy. Ten copies of a $2 card is still a $2 card.")
                 }
 
+                // Its own section because it asks a different question from the
+                // bands above: not how much a card is worth, but which cards the
+                // app still has no price for.
+                Section {
+                    row(title: "Unpriced", isSelected: selection == .unpriced) {
+                        selection = .unpriced
+                    }
+                } footer: {
+                    Text("Cards no price source covers yet.")
+                }
+
                 Section("Custom") {
                     HStack {
                         Text("Min")

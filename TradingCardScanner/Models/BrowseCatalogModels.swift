@@ -77,17 +77,27 @@ enum SetCompletionCalculator {
         return SetCompletion(owned: numbers.count, total: set.cardCount)
     }
 
+    static func owns(_ summary: CatalogCardSummary, cards: [CollectedCard]) -> Bool {
+        guard let targetNumber = canonicalNumber(summary.collectorNumber) else { return false }
+        let targetProviderID = summary.providerID.lowercased()
+        return cards.contains { card in
+            guard card.cardGame == summary.game, card.quantity > 0 else { return false }
+            if card.providerID.lowercased() == targetProviderID
+                || card.catalogProviderID?.lowercased() == targetProviderID {
+                return true
+            }
+            guard canonicalNumber(card.cardNumber) == targetNumber else { return false }
+            let cardCode = normalized(card.setCode)
+            return cardCode == normalized(summary.setCode)
+                || normalized(card.setName) == normalized(summary.setName)
+        }
+    }
+
     private static func belongs(_ card: CollectedCard, to set: CatalogSet) -> Bool {
         guard card.cardGame == set.game else { return false }
 
-        let normalizedCardCode = card.setCode.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: Locale(identifier: "en_US_POSIX")
-        )
-        let normalizedSetCode = set.code.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: Locale(identifier: "en_US_POSIX")
-        )
+        let normalizedCardCode = normalized(card.setCode)
+        let normalizedSetCode = normalized(set.code)
         if normalizedCardCode == normalizedSetCode { return true }
 
         guard set.game == .pokemon else { return false }
@@ -101,6 +111,96 @@ enum SetCompletionCalculator {
         guard !trimmed.isEmpty else { return nil }
         return Int(trimmed).map(String.init) ?? trimmed.lowercased()
     }
+
+    private static func normalized(_ value: String) -> String {
+        value.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: Locale(identifier: "en_US_POSIX")
+        )
+    }
+}
+
+enum CatalogSetSort: String, CaseIterable, Identifiable, Sendable {
+    case priceHighToLow
+    case priceLowToHigh
+    case numberLowToHigh
+    case numberHighToLow
+
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .priceHighToLow: return "Price: High to Low"
+        case .priceLowToHigh: return "Price: Low to High"
+        case .numberLowToHigh: return "Card Number: Low to High"
+        case .numberHighToLow: return "Card Number: High to Low"
+        }
+    }
+    var needsPrices: Bool { self == .priceHighToLow || self == .priceLowToHigh }
+}
+
+enum CatalogOwnershipFilter: String, CaseIterable, Identifiable, Sendable {
+    case all
+    case owned
+    case notOwned
+
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .all: return "All Products"
+        case .owned: return "Products Owned"
+        case .notOwned: return "Products Not Owned"
+        }
+    }
+}
+
+enum CatalogSetQuery {
+    static func apply(
+        _ cards: [CatalogCardSummary],
+        search: String,
+        sort: CatalogSetSort,
+        ownership: CatalogOwnershipFilter,
+        ownedCards: [CollectedCard],
+        prices: [String: Double]
+    ) -> [CatalogCardSummary] {
+        let query = CardNameSearch.normalize(search)
+        let filtered = cards.filter { card in
+            let matchesSearch = query.isEmpty
+                || CardNameSearch.normalize(card.name).contains(query)
+                || CardNameSearch.normalize(card.collectorNumber).contains(query)
+            guard matchesSearch else { return false }
+            let isOwned = SetCompletionCalculator.owns(card, cards: ownedCards)
+            switch ownership {
+            case .all: return true
+            case .owned: return isOwned
+            case .notOwned: return !isOwned
+            }
+        }
+
+        return filtered.sorted { left, right in
+            switch sort {
+            case .numberLowToHigh:
+                return compareNumber(left, right) == .orderedAscending
+            case .numberHighToLow:
+                return compareNumber(left, right) == .orderedDescending
+            case .priceHighToLow, .priceLowToHigh:
+                let leftPrice = prices[left.id]
+                let rightPrice = prices[right.id]
+                switch (leftPrice, rightPrice) {
+                case let (left?, right?) where left != right:
+                    return sort == .priceHighToLow ? left > right : left < right
+                case (_?, nil): return true
+                case (nil, _?): return false
+                default: return compareNumber(left, right) == .orderedAscending
+                }
+            }
+        }
+    }
+
+    private static func compareNumber(_ left: CatalogCardSummary, _ right: CatalogCardSummary) -> ComparisonResult {
+        let result = CollectorNumber.compare(left.collectorNumber, right.collectorNumber)
+        if result != .orderedSame { return result }
+        return left.id.compare(right.id)
+    }
 }
 
 protocol BrowseCatalogProviding: Sendable {
@@ -113,4 +213,5 @@ protocol BrowseCatalogProviding: Sendable {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
+    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double]
 }

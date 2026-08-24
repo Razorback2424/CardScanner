@@ -78,10 +78,15 @@ enum PriceBand: Hashable, Identifiable, CaseIterable {
 enum PriceFilter: Hashable {
     case band(PriceBand)
     case custom(min: Double?, max: Double?)
+    /// Rows the app has no price for. The only filter that asks about the
+    /// *absence* of a price rather than its size, which is why it is the one
+    /// case `matches` answers before looking at any range.
+    case unpriced
 
     var label: String {
         switch self {
         case let .band(band): return band.label
+        case .unpriced: return "Unpriced"
         case let .custom(min, max):
             let formatted: (Double) -> String = { $0.formatted(.currency(code: "USD").precision(.fractionLength(0...2))) }
             switch (min, max) {
@@ -97,12 +102,17 @@ enum PriceFilter: Hashable {
         switch self {
         case let .band(band): return band.bounds
         case let .custom(min, max): return (min, max)
+        // Not a range question. `matches` answers `.unpriced` before it reaches
+        // here, so these bounds are never consulted.
+        case .unpriced: return (nil, nil)
         }
     }
 
     /// An unknown price is not a cheap price. A row with no price can never
-    /// satisfy a price question, in either direction.
+    /// satisfy a question about how much a card costs, in either direction — it
+    /// answers only the question of what is still missing a price.
     func matches(_ price: Double?) -> Bool {
+        if case .unpriced = self { return price == nil }
         guard let price else { return false }
         let (lower, upper) = bounds
         if let lower, price < lower { return false }

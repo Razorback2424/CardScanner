@@ -140,6 +140,37 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(SetCompletionCalculator.progress(for: set, cards: [imported]).owned, 1)
     }
 
+    func testSetQuerySortsByNumberAndPriceWithUnknownPricesLast() {
+        let cards = [
+            summary(id: "set-10", number: "10"),
+            summary(id: "set-2", number: "2"),
+            summary(id: "set-1", number: "1")
+        ]
+        let prices = [cards[0].id: 4.50, cards[1].id: 12.00]
+
+        XCTAssertEqual(query(cards, sort: .numberLowToHigh).map(\.collectorNumber), ["1", "2", "10"])
+        XCTAssertEqual(query(cards, sort: .numberHighToLow).map(\.collectorNumber), ["10", "2", "1"])
+        XCTAssertEqual(query(cards, sort: .priceHighToLow, prices: prices).map(\.collectorNumber), ["2", "10", "1"])
+        XCTAssertEqual(query(cards, sort: .priceLowToHigh, prices: prices).map(\.collectorNumber), ["10", "2", "1"])
+    }
+
+    func testSetQueryFiltersOwnedAndNotOwnedIncludingCatalogAliases() {
+        let ownedSummary = summary(id: "set-1", number: "1")
+        let unownedSummary = summary(id: "set-2", number: "2")
+        let alias = completionCard(number: "1", variant: .normal)
+        alias.providerID = "csv:Set|1"
+        alias.catalogProviderID = ownedSummary.providerID
+
+        XCTAssertEqual(
+            query([ownedSummary, unownedSummary], ownership: .owned, ownedCards: [alias]).map(\.id),
+            [ownedSummary.id]
+        )
+        XCTAssertEqual(
+            query([ownedSummary, unownedSummary], ownership: .notOwned, ownedCards: [alias]).map(\.id),
+            [unownedSummary.id]
+        )
+    }
+
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: CollectedCard.self, PriceRecord.self,
@@ -168,6 +199,37 @@ final class BrowseCollectionTests: XCTestCase {
             variant: variant,
             variantResolution: .userConfirmed,
             quantity: quantity
+        )
+    }
+
+    private func summary(id: String, number: String) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: .pokemon,
+            providerID: id,
+            setID: CatalogSetID(game: .pokemon, providerID: "set"),
+            setName: "Set",
+            setCode: "SET",
+            name: "Card \(number)",
+            collectorNumber: number,
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+    }
+
+    private func query(
+        _ cards: [CatalogCardSummary],
+        sort: CatalogSetSort = .numberLowToHigh,
+        ownership: CatalogOwnershipFilter = .all,
+        ownedCards: [CollectedCard] = [],
+        prices: [String: Double] = [:]
+    ) -> [CatalogCardSummary] {
+        CatalogSetQuery.apply(
+            cards,
+            search: "",
+            sort: sort,
+            ownership: ownership,
+            ownedCards: ownedCards,
+            prices: prices
         )
     }
 

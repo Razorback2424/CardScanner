@@ -12,9 +12,11 @@ struct CollectionView: View {
     private var cards: [CollectedCard]
 
     @Query private var priceRecords: [PriceRecord]
+    @Query private var productIdentities: [ProductIdentity]
 
     @StateObject private var refresh = PriceRefreshController()
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
+    @AppStorage("usesPriceFallback") private var usesPriceFallback = false
 
     @State private var searchText = ""
     /// What the grid is actually filtered by. Trails `searchText` by one short
@@ -38,7 +40,7 @@ struct CollectionView: View {
     @FocusState private var isSearchFocused: Bool
 
     private enum ActiveSheet: String, Identifiable {
-        case set, price, finish
+        case set, price, finish, priceFallback
         var id: String { rawValue }
     }
 
@@ -127,6 +129,12 @@ struct CollectionView: View {
                             isShowingCSVExporter = true
                         }
                         .disabled(!cards.contains { $0.highImageURL == nil })
+
+                        Divider()
+
+                        Button("Price Fallback Settings", systemImage: "dollarsign.arrow.circlepath") {
+                            activeSheet = .priceFallback
+                        }
                     }
                     .labelStyle(.iconOnly)
                     .accessibilityLabel("Collection actions")
@@ -148,10 +156,15 @@ struct CollectionView: View {
                 MultiSelectFilterSheet(title: "Finish", options: finishOptions(snapshot), selection: $filters.variantIDs)
             case .price:
                 PriceFilterSheet(selection: $filters.price)
+            case .priceFallback:
+                CollectionPriceFallbackSettingsView()
             }
         }
         .task(id: cards.count) { await refreshStalePricesIfNeeded() }
         .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
+        .task(id: fallbackAvailabilityTaskID(snapshot)) {
+            await refresh.updateFallbackAvailability(pending: fallbackPendingCount(snapshot))
+        }
         .task(id: searchText) {
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }
@@ -413,6 +426,7 @@ struct CollectionView: View {
             }
 
             catalogNormalizationLabel
+            fallbackStatusLabel(snapshot)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -445,6 +459,68 @@ struct CollectionView: View {
 
         case .idle:
             EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func fallbackStatusLabel(_ snapshot: Snapshot) -> some View {
+        let pending = fallbackPendingCount(snapshot)
+        if pending > 0 {
+            Button {
+                activeSheet = .priceFallback
+            } label: {
+                Label(fallbackStatusText(pending: pending), systemImage: fallbackStatusSymbol)
+                    .font(.caption)
+                    .foregroundStyle(fallbackStatusColor)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("Opens price fallback settings")
+        }
+    }
+
+    private func fallbackStatusText(pending: Int) -> String {
+        guard PriceVendorCredentials.hasKey else {
+            return "Price fallback needs an API key · \(pending) card types waiting"
+        }
+        guard usesPriceFallback else {
+            return "Price fallback is off · \(pending) card types waiting"
+        }
+
+        switch refresh.fallbackStatus {
+        case let .available(remainingToday):
+            return "\(pending) card types waiting · \(remainingToday) requests left today"
+        case let .running(completed, total, remainingToday):
+            return "Price fallback \(completed)/\(total) · \(remainingToday) requests left today"
+        case let .finished(_, _, remainingToday):
+            return "\(pending) card types still waiting · \(remainingToday) requests left today"
+        case let .budgetReached(_, resetAt):
+            return "Daily fallback budget reached · resumes after \(resetAt.formatted(date: .abbreviated, time: .shortened))"
+        case let .rateLimited(_, retryAt):
+            return "Price fallback paused by provider · retry after \(retryAt.formatted(date: .abbreviated, time: .shortened))"
+        case .idle, .disabled, .unconfigured:
+            return "\(pending) card types waiting for price fallback"
+        }
+    }
+
+    private var fallbackStatusSymbol: String {
+        switch refresh.fallbackStatus {
+        case .budgetReached: return "calendar.badge.clock"
+        case .rateLimited: return "pause.circle"
+        case .running: return "arrow.triangle.2.circlepath"
+        case .idle, .disabled, .unconfigured, .available, .finished:
+            return usesPriceFallback && PriceVendorCredentials.hasKey
+                ? "dollarsign.circle"
+                : "exclamationmark.circle"
+        }
+    }
+
+    private var fallbackStatusColor: Color {
+        switch refresh.fallbackStatus {
+        case .budgetReached, .rateLimited: return .orange
+        case .idle, .disabled, .unconfigured, .available, .running, .finished: return .secondary
         }
     }
 
@@ -848,6 +924,15 @@ struct CollectionView: View {
             if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
             let record = snapshot.recordsByKey[card.priceKey]
+            // When fallback is enabled, a fresh euro observation is still
+            // unfinished: it cannot contribute to the USD collection total and
+            // must reach the fallback immediately rather than waiting eight
+            // hours for the ordinary catalog refresh interval.
+            let hasFinishedPrice = PriceRefreshController.hasFinishedPrice(
+                amount: record?.unitMarketPriceUSD,
+                currencyCode: record?.currencyCode,
+                usesFallback: usesPriceFallback
+            )
             result.append(
                 PriceTarget(
                     game: card.cardGame,
@@ -864,12 +949,34 @@ struct CollectionView: View {
                         : nil,
                     catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
                     lastFailureAt: record?.lastFailureAt,
-                    hasPrice: record?.unitMarketPriceUSD != nil,
+                    hasPrice: hasFinishedPrice,
                     lastCheckedAt: record?.lastCheckedAt
                 )
             )
         }
         return result
+    }
+
+    /// Unique printing-and-finish rows that still lack a USD value. Counts card
+    /// types rather than copies so the header matches refresh progress and quota
+    /// cost instead of making a stack of duplicates look like extra work.
+    private func fallbackPendingCount(_ snapshot: Snapshot) -> Int {
+        var seen: Set<String> = []
+        let currentMisses = Set(productIdentities.compactMap { identity in
+            identity.vendorCardID == nil && identity.isCurrent() ? identity.key : nil
+        })
+        return snapshot.cardsByKey.values.reduce(into: 0) { count, card in
+            guard seen.insert(card.priceKey).inserted else { return }
+            guard !currentMisses.contains(card.priceKey) else { return }
+            let record = snapshot.recordsByKey[card.priceKey]
+            if record?.unitMarketPriceUSD == nil || record?.currencyCode != "USD" {
+                count += 1
+            }
+        }
+    }
+
+    private func fallbackAvailabilityTaskID(_ snapshot: Snapshot) -> String {
+        "\(fallbackPendingCount(snapshot)):\(usesPriceFallback):\(PriceVendorCredentials.hasKey)"
     }
 
     @MainActor
@@ -918,6 +1025,25 @@ struct CollectionView: View {
             guard !Task.isCancelled else { return }
             showsManualRefreshStatus = false
             refresh.dismissSummary()
+        }
+    }
+}
+
+private struct CollectionPriceFallbackSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                PriceFallbackSettingsSection()
+            }
+            .navigationTitle("Price Fallback")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }

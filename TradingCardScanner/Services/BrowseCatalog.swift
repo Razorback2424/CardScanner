@@ -43,6 +43,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
+    private var sortPriceCache: [String: Double] = [:]
+    private var resolvedSortPrices: Set<String> = []
 
     func sets(for game: CardGame) async throws -> [CatalogSet] {
         if let cached = setCache[game] { return cached }
@@ -124,6 +126,39 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         detailCache[summary.id] = details
         return details
+    }
+
+    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] {
+        let pending = cards.filter { !resolvedSortPrices.contains($0.id) }
+        var iterator = pending.makeIterator()
+
+        await withTaskGroup(of: (id: String, price: Double?, resolved: Bool).self) { group in
+            for _ in 0..<min(6, pending.count) {
+                guard let card = iterator.next() else { break }
+                group.addTask { await self.sortPrice(for: card) }
+            }
+
+            while let result = await group.next() {
+                if result.resolved { resolvedSortPrices.insert(result.id) }
+                if let price = result.price { sortPriceCache[result.id] = price }
+                if let next = iterator.next() {
+                    group.addTask { await self.sortPrice(for: next) }
+                }
+            }
+        }
+
+        return Dictionary(uniqueKeysWithValues: cards.compactMap { card in
+            sortPriceCache[card.id].map { (card.id, $0) }
+        })
+    }
+
+    private func sortPrice(for summary: CatalogCardSummary) async -> (id: String, price: Double?, resolved: Bool) {
+        do {
+            let details = try await details(for: summary)
+            return (summary.id, CardPricing.highestPublishedUSDPrice(for: details.card), true)
+        } catch {
+            return (summary.id, nil, false)
+        }
     }
 
     private func pokemonSets() async throws -> [CatalogSet] {

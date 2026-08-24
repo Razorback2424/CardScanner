@@ -18,6 +18,7 @@ struct ScannerSettingsView: View {
             Form {
                 finishLockSection
                 cameraSection
+                PriceFallbackSettingsSection()
                 collectionSection
             }
             .navigationTitle("Settings")
@@ -134,4 +135,71 @@ struct ScannerSettingsView: View {
             deletionError = error.localizedDescription
         }
     }
+}
+
+/// Shared between Scan settings and Collection so the fallback can be managed
+/// where its results and remaining work are visible.
+struct PriceFallbackSettingsSection: View {
+    @AppStorage("usesPriceFallback") private var usesPriceFallback = false
+    @State private var vendorKeyEntry = ""
+    @State private var hasVendorKey = PriceVendorCredentials.hasKey
+    @State private var vendorKeyMessage: String?
+    @State private var vendorKeyMessageIsError = false
+
+    var body: some View {
+        Section {
+            Toggle("Use price fallback", isOn: $usesPriceFallback)
+                .disabled(!hasVendorKey)
+
+            SecureField("API key", text: $vendorKeyEntry)
+                .textContentType(.password)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+
+            HStack {
+                Button("Save Key") { saveVendorKey() }
+                    .disabled(vendorKeyEntry.trimmingCharacters(in: .whitespaces).isEmpty)
+                Spacer()
+                if hasVendorKey {
+                    Button("Remove", role: .destructive) { removeVendorKey() }
+                }
+            }
+
+            if let vendorKeyMessage {
+                Text(vendorKeyMessage)
+                    .font(.footnote)
+                    .foregroundStyle(vendorKeyMessageIsError ? .red : .secondary)
+            }
+        } header: {
+            Text("Price Fallback")
+        } footer: {
+            Text(hasVendorKey
+                 ? "A key is saved in your keychain. Free-tier safety limits fallback traffic to 90 vendor requests per UTC day."
+                 : "Optional. Adds prices for cards TCGdex and Scryfall don't cover, such as Japanese sets, promos, tokens and art cards.")
+        }
+    }
+
+    private func saveVendorKey() {
+        do {
+            try PriceVendorCredentials.store(vendorKeyEntry)
+            // Never keep the value in view state after it is stored.
+            vendorKeyEntry = ""
+            hasVendorKey = PriceVendorCredentials.hasKey
+            vendorKeyMessageIsError = false
+            vendorKeyMessage = "Key saved to keychain."
+        } catch {
+            vendorKeyMessageIsError = true
+            vendorKeyMessage = error.localizedDescription
+        }
+    }
+
+    private func removeVendorKey() {
+        PriceVendorCredentials.remove()
+        vendorKeyEntry = ""
+        hasVendorKey = false
+        usesPriceFallback = false
+        vendorKeyMessageIsError = false
+        vendorKeyMessage = "Key removed."
+    }
+
 }

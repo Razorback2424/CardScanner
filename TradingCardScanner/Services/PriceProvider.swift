@@ -133,6 +133,19 @@ enum CardPricing {
         }
     }
 
+    /// A provider-neutral browse sort key. Only USD observations are comparable;
+    /// Cardmarket-only euro values remain unknown instead of being ranked as if
+    /// they were dollars. The highest published finish is used because an
+    /// unowned catalog printing has no user-selected physical variant yet.
+    static func highestPublishedUSDPrice(for card: IdentifiedCard) -> Double? {
+        card.variantEvidence.catalogVariants.compactMap { variant -> Double? in
+            guard case let .price(price) = self.price(for: card, variant: variant),
+                  price.currencyCode == "USD" else { return nil }
+            return price.unitMarketPriceUSD
+        }
+        .max()
+    }
+
     private static func displayLabel(for variant: PhysicalVariant) -> String {
         switch variant.id {
         case PhysicalVariant.holo.id: return "Holofoil"

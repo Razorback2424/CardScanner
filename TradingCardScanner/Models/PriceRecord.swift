@@ -9,6 +9,9 @@ enum PriceSource: String, Codable, Hashable, Sendable {
     /// Used only where TCGdex carries no TCGplayer figure. Quotes euros, and is
     /// stored and shown as euros — see `PriceRecord.currencyCode`.
     case cardmarket
+    /// The product-level fallback, consulted only for cards the catalog cannot
+    /// price. Quotes USD, which is why it is tried ahead of Cardmarket.
+    case justTCG
     case importedCSV
 
     var label: String {
@@ -16,6 +19,7 @@ enum PriceSource: String, Codable, Hashable, Sendable {
         case .tcgplayer: return "TCGplayer"
         case .scryfall: return "Scryfall"
         case .cardmarket: return "Cardmarket"
+        case .justTCG: return "JustTCG"
         case .importedCSV: return "Imported CSV"
         }
     }
@@ -27,6 +31,7 @@ enum PriceSource: String, Codable, Hashable, Sendable {
         case .tcgplayer: return true
         case .scryfall: return false
         case .cardmarket: return true
+        case .justTCG: return true
         case .importedCSV: return true
         }
     }
