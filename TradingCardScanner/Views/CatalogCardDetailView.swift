@@ -14,6 +14,10 @@ struct CatalogCardDetailView: View {
     @State private var showsFinishChoice = false
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
+    @State private var showsGradedPicker = false
+    /// One transport per presentation, so the graded picker shares the app's
+    /// pacing and request ledger rather than keeping its own.
+    private let marketTransport = JustTCGTransport()
 
     var body: some View {
         ScrollView {
@@ -27,6 +31,15 @@ struct CatalogCardDetailView: View {
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
         .task { if details == nil { await load() } }
+        .sheet(isPresented: $showsGradedPicker) {
+            if let details {
+                GradedVariantPickerView(
+                    card: details.card,
+                    setReleaseOrder: details.set.releaseOrder,
+                    transport: marketTransport
+                )
+            }
+        }
         .confirmationDialog("Choose a finish", isPresented: $showsFinishChoice, titleVisibility: .visible) {
             ForEach(finishOptions) { variant in
                 Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
@@ -54,10 +67,19 @@ struct CatalogCardDetailView: View {
             priceSection(details.card)
 
             Button { prepareAdd(details.card) } label: {
-                Label("Add to Collection", systemImage: "plus.circle.fill")
+                Label("Add Raw Copy", systemImage: "plus.circle.fill")
                     .frame(maxWidth: .infinity, minHeight: 50)
             }
             .buttonStyle(.borderedProminent)
+
+            // Separate from the raw path on purpose: a slab is a different
+            // object with its own price, and choosing a grade is a decision the
+            // user makes rather than something inferred from the card.
+            Button { showsGradedPicker = true } label: {
+                Label("Add Graded Copy", systemImage: "seal")
+                    .frame(maxWidth: .infinity, minHeight: 50)
+            }
+            .buttonStyle(.bordered)
         }
         .padding(20)
     }

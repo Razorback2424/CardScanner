@@ -532,10 +532,19 @@ final class PriceRefreshController: ObservableObject {
         )
         for (game, targets) in batchable {
             if Task.isCancelled { break }
+            // A delta is only safe once a complete pass has succeeded for this
+            // game. Before that, a variant missing from an `updated_after`
+            // response is indistinguishable from one never fetched at all.
+            let syncLedger = JustTCGSyncLedger()
+            let useDelta = syncLedger
+                .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)
+                .supportsDeltaSync
+
             let report = await coordinator.refresh(
                 targets,
                 game: game,
                 lane: .background,
+                useDelta: useDelta,
                 apply: { card, variant, owners in
                     guard let amount = variant.price else { return }
                     let normalized = NormalizedPrice(
@@ -554,6 +563,19 @@ final class PriceRefreshController: ObservableObject {
                             printingID: owner.printingID,
                             variantID: owner.variantID
                         )
+                        // The provider's own clock, kept so a later refresh can
+                        // skip a game that has not been repriced rather than
+                        // spending a request to learn the same number.
+                        if let record = store.record(forKey: owner.priceKey) {
+                            record.marketVariantID = variant.variantId
+                            record.canonicalMarketID = card.uuid ?? card.id
+                            record.providerGameUpdatedAt = variant.updatedAt
+                            record.itemKindRaw = owner.itemKind.rawValue
+                            record.periodLow = variant.minPrice7d
+                            record.periodHigh = variant.maxPrice7d
+                            record.coefficientOfVariation = variant.covPrice7d
+                            record.periodChangeCount = variant.priceChangesCount7d
+                        }
                         // Remember the handles so this card never needs a search.
                         identities.recordBatchResolution(
                             forKey: owner.priceKey,

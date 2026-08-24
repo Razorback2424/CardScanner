@@ -81,6 +81,7 @@ enum SetCompletionCalculator {
         guard let targetNumber = canonicalNumber(summary.collectorNumber) else { return false }
         let targetProviderID = summary.providerID.lowercased()
         return cards.contains { card in
+            guard card.itemKind.countsTowardSetCompletion else { return false }
             guard card.cardGame == summary.game, card.quantity > 0 else { return false }
             if card.providerID.lowercased() == targetProviderID
                 || card.catalogProviderID?.lowercased() == targetProviderID {
@@ -94,6 +95,11 @@ enum SetCompletionCalculator {
     }
 
     private static func belongs(_ card: CollectedCard, to set: CatalogSet) -> Bool {
+        // A sealed product is not a card and completes no slot. Graded copies do
+        // count, and because progress is measured over a *set* of collector
+        // numbers, a raw and a graded copy of the same card count once between
+        // them — owning three grades of one card cannot inflate completion.
+        guard card.itemKind.countsTowardSetCompletion else { return false }
         guard card.cardGame == set.game else { return false }
 
         let normalizedCardCode = normalized(card.setCode)

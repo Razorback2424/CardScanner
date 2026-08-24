@@ -641,6 +641,24 @@ struct CollectionView: View {
                     FilterChipLabel(title: filters.game?.label ?? "Game", isActive: filters.game != nil)
                 }
 
+                // A native menu rather than another sheet: there are exactly
+                // four choices and they are mutually exclusive, so a picker is
+                // the whole interaction.
+                Menu {
+                    Picker("Item Type", selection: itemKindSelection) {
+                        Text("All Items").tag(nil as CollectionItemKind?)
+                        ForEach(CollectionItemKind.allCases, id: \.self) { kind in
+                            Label(kind.label, systemImage: kind.symbolName)
+                                .tag(kind as CollectionItemKind?)
+                        }
+                    }
+                } label: {
+                    FilterChipLabel(
+                        title: itemKindChipTitle,
+                        isActive: !filters.itemKinds.isEmpty
+                    )
+                }
+
                 FilterChip(
                     title: setChipTitle(snapshot),
                     isActive: !filters.setCodes.isEmpty
@@ -677,6 +695,23 @@ struct CollectionView: View {
             .padding(.vertical, 2)
         }
         .scrollClipDisabled()
+    }
+
+    /// The filter stores a set because the query supports several kinds at once,
+    /// but the menu offers one at a time — so this bridges the two rather than
+    /// widening the UI to a multi-select nobody asked for.
+    private var itemKindSelection: Binding<CollectionItemKind?> {
+        Binding(
+            get: { filters.itemKinds.count == 1 ? filters.itemKinds.first : nil },
+            set: { filters.itemKinds = $0.map { [$0] } ?? [] }
+        )
+    }
+
+    private var itemKindChipTitle: String {
+        guard let kind = filters.itemKinds.first, filters.itemKinds.count == 1 else {
+            return "Item Type"
+        }
+        return kind.label
     }
 
     private func setChipTitle(_ snapshot: Snapshot) -> String {
@@ -759,7 +794,9 @@ struct CollectionView: View {
                 variantLabel: card.variantLabel,
                 quantity: card.quantity,
                 dateAdded: card.dateAdded,
-                price: recordsByKey[card.priceKey]?.display ?? .unknown
+                price: recordsByKey[card.priceKey]?.display ?? .unknown,
+                itemKind: card.itemKind,
+                itemKindLabel: card.itemKindLabel
             )
         }
 
@@ -1121,8 +1158,18 @@ private struct CollectionCardTile: View {
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if let variant = card.variant {
-                        CollectionFinishBadge(variant: variant)
+                    switch card.itemKind {
+                    case .rawCard:
+                        if let variant = card.variant {
+                            CollectionFinishBadge(variant: variant)
+                        }
+                    case .gradedCard, .sealedProduct:
+                        // A slab or a box has no raw finish, so the badge shows
+                        // what it actually is: `PSA 10`, `Sealed`.
+                        CollectionItemKindBadge(
+                            title: card.itemKindLabel,
+                            kind: card.itemKind
+                        )
                     }
                 }
             }
@@ -1130,7 +1177,7 @@ private struct CollectionCardTile: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(card.name), \(card.setName), \(accessiblePrice), \(card.variant?.label ?? "unknown finish"), quantity \(card.quantity)"
+            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(card.quantity)"
         )
     }
 
@@ -1139,6 +1186,35 @@ private struct CollectionCardTile: View {
             return amount.formatted(.currency(code: price.currencyCode))
         }
         return price.state() == .unavailable ? "price unavailable" : "price not checked"
+    }
+}
+
+/// The badge for a row that is not a raw single.
+///
+/// Deliberately the same shape and weight as the finish badge beside it: a
+/// graded slab and a reverse holo are both "what kind of copy this is", and
+/// making one look like a different class of information would be misleading.
+private struct CollectionItemKindBadge: View {
+    let title: String
+    let kind: CollectionItemKind
+
+    var body: some View {
+        Label(title, systemImage: kind.symbolName)
+            .font(.caption.weight(.semibold))
+            .lineLimit(1)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .foregroundStyle(tint)
+            .background(tint.opacity(0.16), in: Capsule())
+            .fixedSize(horizontal: true, vertical: false)
+    }
+
+    private var tint: Color {
+        switch kind {
+        case .gradedCard: return .indigo
+        case .sealedProduct: return .brown
+        case .rawCard: return .secondary
+        }
     }
 }
 

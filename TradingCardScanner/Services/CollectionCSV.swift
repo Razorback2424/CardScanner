@@ -76,10 +76,16 @@ enum CollectionCSVError: LocalizedError {
 }
 
 enum CollectionCSV {
+    /// Appended, never reordered. A file exported by an older build still
+    /// imports, and a file exported by this one opens in anything that reads the
+    /// original columns.
     private static let exportHeaders = [
         "game", "provider_id", "card_name", "set_name", "set_code",
         "card_number", "finish", "finish_name", "quantity", "rarity",
-        "image_url", "thumbnail_url", "date_added"
+        "image_url", "thumbnail_url", "date_added",
+        "item_kind", "justtcg_card_id", "justtcg_variant_id",
+        "justtcg_api_version", "grading_company", "grade", "grade_label",
+        "grading_qualifier", "certification_number", "market_region"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -103,7 +109,19 @@ enum CollectionCSV {
                 card.rarity ?? "",
                 card.imageURL ?? "",
                 card.thumbnailURL ?? "",
-                formatter.string(from: card.dateAdded)
+                formatter.string(from: card.dateAdded),
+                // Rows written before item kinds existed export as raw cards,
+                // which is what they are.
+                card.itemKind.rawValue,
+                card.justTCGCardID ?? "",
+                card.justTCGVariantID ?? "",
+                card.justTCGAPIVersion ?? "",
+                card.gradingCompanyRaw ?? "",
+                card.gradeRaw ?? "",
+                card.gradeLabel ?? "",
+                card.gradingQualifier ?? "",
+                card.certificationNumber ?? "",
+                card.marketRegionRaw ?? ""
             ]
         }
 
@@ -208,16 +226,48 @@ enum CollectionCSV {
         return record.unitMarketPriceUSD == nil ? "unavailable" : "priced"
     }
 
+    /// Why one row still has no price.
+    ///
+    /// The value of this column is that each answer points somewhere different:
+    /// a matching problem is a code fix, a budget stop is a wait, an unavailable
+    /// price is the honest end of the road. Collapsing them into "unpriced" is
+    /// what hid a starvation bug for as long as it did.
     private static func unpricedReason(_ card: CollectedCard, _ record: PriceRecord?) -> String {
         guard let record, record.lastCheckedAt != nil else { return "not_checked" }
+
         if card.catalogProviderID != nil,
            record.lastFailureAt != nil,
            let metadataCheckedAt = card.catalogMetadataCheckedAt,
            metadataCheckedAt > (record.lastCheckedAt ?? .distantPast) {
             return "identity_resolved_after_failed_check"
         }
-        if record.lastFailureAt != nil { return "provider_request_failed" }
-        return "no_exact_variant_price"
+
+        switch card.itemKind {
+        case .sealedProduct:
+            // A sealed row exists only because it was added from the vendor's
+            // own catalogue, so a missing price is the product being unlisted
+            // rather than unmatched.
+            return card.justTCGVariantID == nil
+                ? "sealed_product_unmatched"
+                : "no_exact_variant_price"
+
+        case .gradedCard:
+            if card.justTCGVariantID == nil { return "graded_variant_unavailable" }
+            // The vendor does not manufacture a number for every grader/grade
+            // permutation; a null price is a real answer.
+            return record.lastFailureAt != nil
+                ? "provider_request_failed"
+                : "graded_market_price_null"
+
+        case .rawCard:
+            if record.lastFailureAt != nil { return "provider_request_failed" }
+            // Identity was never established with the market provider, so the
+            // card has never been asked about by a stable handle.
+            if card.justTCGVariantID == nil, card.justTCGCardID != nil {
+                return "justtcg_variant_unresolved"
+            }
+            return "no_exact_variant_price"
+        }
     }
 
     private static func artworkReason(_ card: CollectedCard, _ record: PriceRecord?) -> String {

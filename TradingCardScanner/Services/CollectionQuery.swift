@@ -18,6 +18,12 @@ struct CollectionRow: Identifiable, Equatable {
     let quantity: Int
     let dateAdded: Date
     let price: PriceDisplay
+    /// Raw card, graded slab or sealed product. Defaulted so every construction
+    /// site that predates the widening keeps compiling and keeps meaning what it
+    /// meant.
+    var itemKind: CollectionItemKind = .rawCard
+    /// What the tile says under the name: `Reverse Holo`, `PSA 10`, `Sealed`.
+    var itemKindLabel: String?
 
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
@@ -33,6 +39,22 @@ struct CollectionRow: Identifiable, Equatable {
     /// the same short printed code, so filter identity must include the game's
     /// namespace even though the UI continues to show the familiar code alone.
     var setFilterID: String { "\(game.rawValue):\(setCode.uppercased())" }
+
+    /// The badge shown on the tile. Falls back to the raw finish label so a row
+    /// written before item kinds existed still reads correctly.
+    var displayKindLabel: String {
+        itemKindLabel ?? variantLabel ?? PhysicalVariant.normal.label
+    }
+
+    /// Which slot this row occupies for set-completion purposes.
+    ///
+    /// A raw copy and a graded copy of the same collector number are the same
+    /// slot and must count once. Sealed products occupy no slot at all — a
+    /// booster box is not a card and cannot complete a set.
+    var setCompletionSlot: String? {
+        guard itemKind.countsTowardSetCompletion else { return nil }
+        return "\(game.rawValue):\(setCode.uppercased()):\(cardNumber)"
+    }
 }
 
 /// A price question asked the way collectors ask it. Deliberately bands rather
@@ -134,9 +156,12 @@ struct CollectionFilters: Equatable {
     var setCodes: Set<String> = []
     var variantIDs: Set<String> = []
     var price: PriceFilter?
+    /// Empty means every kind, which is what "All Items" selects.
+    var itemKinds: Set<CollectionItemKind> = []
 
     var isActive: Bool {
-        game != nil || !setCodes.isEmpty || !variantIDs.isEmpty || price != nil
+        game != nil || !setCodes.isEmpty || !variantIDs.isEmpty
+            || price != nil || !itemKinds.isEmpty
     }
 
     static let none = CollectionFilters()
@@ -227,6 +252,7 @@ enum CollectionQuery {
         if !filters.variantIDs.isEmpty {
             guard let variantID = row.variantID, filters.variantIDs.contains(variantID) else { return false }
         }
+        if !filters.itemKinds.isEmpty, !filters.itemKinds.contains(row.itemKind) { return false }
         if let price = filters.price, !price.matches(row.unitPrice) { return false }
         return true
     }

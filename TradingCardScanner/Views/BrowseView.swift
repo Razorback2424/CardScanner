@@ -135,12 +135,62 @@ struct BrowseView: View {
     @State private var showsSetFilter = false
     @FocusState private var searchFocused: Bool
 
+    enum BrowseScope: Hashable { case cards, sealed }
+    @State private var browseScope: BrowseScope = .cards
+    @StateObject private var sealedModel = SealedBrowseModel(transport: JustTCGTransport())
+
+    /// Sealed browse is per game, using the vendor's own set directory. Each
+    /// game's directory costs one request, and only when opened.
+    @ViewBuilder private var sealedChooser: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(CardGame.allCases) { game in
+                NavigationLink {
+                    SealedSetDirectoryView(game: game, model: sealedModel)
+                } label: {
+                    HStack {
+                        Label(game.label, systemImage: "shippingbox")
+                            .font(.headline)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(14)
+                    .frame(minHeight: 44)
+                    .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(.plain)
+            }
+
+            if !PriceVendorCredentials.hasKey {
+                Text("Add a pricing API key in Settings to browse sealed products.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 18) {
                     searchField
-                    if model.isSearching { searchBody } else { gameChooser }
+                    // An explicit scope rather than mixing cards and sealed
+                    // products in one result list: they are different kinds of
+                    // thing, from different catalogues, and a shared list would
+                    // leave the user guessing which they were looking at.
+                    Picker("Browse scope", selection: $browseScope) {
+                        Text("Cards").tag(BrowseScope.cards)
+                        Text("Sealed").tag(BrowseScope.sealed)
+                    }
+                    .pickerStyle(.segmented)
+
+                    switch browseScope {
+                    case .cards:
+                        if model.isSearching { searchBody } else { gameChooser }
+                    case .sealed:
+                        sealedChooser
+                    }
                 }
                 .padding(16)
             }
