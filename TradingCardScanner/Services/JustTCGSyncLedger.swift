@@ -83,6 +83,30 @@ struct JustTCGRequestLedger: Sendable {
         defaults.set(date, forKey: blockedUntilKey)
     }
 
+    /// Correct the local count against the vendor's own, which every response
+    /// carries.
+    ///
+    /// A local counter can only ever be a guess. It starts at zero on a fresh
+    /// install while the account may already have spent most of the day's
+    /// allowance; it knows nothing about requests made from another device or
+    /// from a script; and it cannot see the vendor's own accounting. The server
+    /// reports the truth on every reply, so the local number exists only to
+    /// avoid making a request that is already known to fail — and it defers to
+    /// this the moment real numbers arrive.
+    ///
+    /// Takes the higher of the two counts, never the lower: if the app believes
+    /// it has spent more than the server has recorded yet, spending down to the
+    /// server's number would overshoot the limit.
+    func syncFromServer(_ metadata: JustTCGQuotaMetadata, now: Date = .now) {
+        rolloverIfNeeded(now: now)
+        if let used = metadata.apiDailyRequestsUsed {
+            defaults.set(max(used, defaults.integer(forKey: usedTodayKey)), forKey: usedTodayKey)
+        }
+        if let used = metadata.apiRequestsUsed {
+            defaults.set(max(used, defaults.integer(forKey: usedMonthKey)), forKey: usedMonthKey)
+        }
+    }
+
     func snapshot(now: Date = .now) -> Snapshot {
         rolloverIfNeeded(now: now)
         let usedToday = defaults.integer(forKey: usedTodayKey)

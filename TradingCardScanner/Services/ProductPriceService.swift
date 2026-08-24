@@ -324,10 +324,19 @@ enum ProductPriceError: Error {
 /// lookup plus a card lookup consume two requests rather than pretending to be
 /// one. The small headroom below the advertised 100/day protects manual checks
 /// and vendor-side accounting differences.
+///
+/// # One allowance, not two
+///
+/// This delegates to `JustTCGRequestLedger` rather than keeping its own count.
+/// The two must agree, because a refresh spends from both: the batched pass goes
+/// through `JustTCGTransport`, and the identity-resolution pass comes through
+/// here. Two independent counters, each allowing 90 a day, would spend up to 180
+/// against a real limit of 100 — and the user would meet that as a wall of 429s
+/// rather than as an honest "budget reached".
 actor ProductFallbackBudget {
     static let shared = ProductFallbackBudget()
-    static let dailyLimit = 90
-    static let perRunLimit = 90
+    static var dailyLimit: Int { JustTCGQuota.dailyHardLimit }
+    static var perRunLimit: Int { JustTCGQuota.dailyHardLimit }
 
     struct Snapshot: Equatable, Sendable {
         let usedToday: Int
@@ -342,75 +351,49 @@ actor ProductFallbackBudget {
         case rateLimited(retryAt: Date)
     }
 
-    private let defaults: UserDefaults
-    private var runRequests = 0
-    private let usedKey = "priceFallbackRequestsUsed"
-    private let dayKey = "priceFallbackBudgetDay"
-    private let blockedUntilKey = "priceFallbackBlockedUntil"
+    private let ledger: JustTCGRequestLedger
 
     init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
+        self.ledger = JustTCGRequestLedger(defaults: defaults)
     }
 
     func beginRun() {
-        runRequests = 0
-        rolloverIfNeeded(now: .now)
+        ledger.beginRun()
     }
 
+    /// Identity resolution is work the user is waiting on — it is the only way a
+    /// card ever becomes batchable — so it spends from the interactive lane.
     func reserveRequest(now: Date = .now) -> Reservation {
-        rolloverIfNeeded(now: now)
-        if let retryAt = defaults.object(forKey: blockedUntilKey) as? Date, retryAt > now {
+        switch ledger.reserve(lane: .interactive, now: now) {
+        case .allowed:
+            return .allowed
+        case let .dailyReached(resetAt), let .monthlyReached(resetAt):
+            return .budgetReached(resetAt: resetAt)
+        case let .rateLimited(retryAt):
             return .rateLimited(retryAt: retryAt)
         }
-        let resetAt = nextResetDate(after: now)
-        let used = defaults.integer(forKey: usedKey)
-        guard used < Self.dailyLimit, runRequests < Self.perRunLimit else {
-            return .budgetReached(resetAt: resetAt)
-        }
-        defaults.set(used + 1, forKey: usedKey)
-        runRequests += 1
-        return .allowed
     }
 
     func recordRateLimit(until date: Date) {
-        defaults.set(date, forKey: blockedUntilKey)
+        ledger.recordRateLimit(until: date)
+    }
+
+    func syncFromServer(_ metadata: JustTCGQuotaMetadata) {
+        ledger.syncFromServer(metadata)
     }
 
     func snapshot(now: Date = .now) -> Snapshot {
-        rolloverIfNeeded(now: now)
-        let used = defaults.integer(forKey: usedKey)
-        let retryAt = (defaults.object(forKey: blockedUntilKey) as? Date).flatMap { $0 > now ? $0 : nil }
+        let snapshot = ledger.snapshot(now: now)
         return Snapshot(
-            usedToday: used,
-            remainingToday: max(Self.dailyLimit - used, 0),
-            resetAt: nextResetDate(after: now),
-            retryAt: retryAt
+            usedToday: snapshot.usedToday,
+            remainingToday: snapshot.remainingToday,
+            resetAt: snapshot.dailyResetAt,
+            retryAt: snapshot.retryAt
         )
     }
 
     func nextResetDate() -> Date {
-        nextResetDate(after: .now)
-    }
-
-    private func rolloverIfNeeded(now: Date) {
-        let today = utcCalendar.startOfDay(for: now)
-        let storedDay = defaults.object(forKey: dayKey) as? Date
-        guard storedDay != today else { return }
-        defaults.set(today, forKey: dayKey)
-        defaults.set(0, forKey: usedKey)
-        defaults.removeObject(forKey: blockedUntilKey)
-        runRequests = 0
-    }
-
-    private func nextResetDate(after date: Date) -> Date {
-        utcCalendar.date(byAdding: .day, value: 1, to: utcCalendar.startOfDay(for: date))
-            ?? date.addingTimeInterval(24 * 60 * 60)
-    }
-
-    private var utcCalendar: Calendar {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        return calendar
+        ledger.snapshot(now: .now).dailyResetAt
     }
 }
 

@@ -159,6 +159,16 @@ actor JustTCGTransport {
         guard (200..<300).contains(http.statusCode) else {
             throw TransportError.badResponse(status: http.statusCode)
         }
+
+        // Every response carries the vendor's own view of the allowance. A
+        // second cheap decode over bytes already in hand — no extra request —
+        // keeps the local ledger honest against an account that may have been
+        // spent from elsewhere.
+        if let envelope = try? JSONDecoder().decode(QuotaEnvelope.self, from: data),
+           let metadata = envelope.metadata {
+            ledger.syncFromServer(metadata)
+        }
+
         return try JSONDecoder().decode(Response.self, from: data)
     }
 
@@ -206,6 +216,16 @@ actor JustTCGTransport {
             }
         }
         lastRequestAt = .now
+    }
+
+    /// Just the quota block, for reading it out of any response regardless of
+    /// what the caller asked to decode.
+    private struct QuotaEnvelope: Decodable {
+        let metadata: JustTCGQuotaMetadata?
+
+        enum CodingKeys: String, CodingKey {
+            case metadata = "_metadata"
+        }
     }
 
     /// `Retry-After` is either delta-seconds or an HTTP date. Both are accepted

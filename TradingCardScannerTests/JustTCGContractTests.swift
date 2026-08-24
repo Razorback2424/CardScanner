@@ -425,6 +425,103 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(ledger.snapshot().usedToday, 0)
     }
 
+    /// One allowance, not two.
+    ///
+    /// A refresh spends from both paths: batched pricing goes through the
+    /// transport, identity resolution through `ProductFallbackBudget`. When
+    /// those kept separate counters they each allowed 90 a day against a real
+    /// limit of 100, and the overspend arrived as 429s rather than as an honest
+    /// "budget reached".
+    func testBothRefreshPathsSpendFromTheSameAllowance() async throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        let identityBudget = ProductFallbackBudget(defaults: defaults)
+        ledger.beginRun()
+
+        // Spend the whole day through the batched path.
+        for _ in 0..<JustTCGQuota.dailyHardLimit {
+            XCTAssertEqual(ledger.reserve(lane: .interactive), .allowed)
+        }
+
+        // The identity path must now find nothing left, not a fresh 90.
+        let reservation = await identityBudget.reserveRequest()
+        guard case .budgetReached = reservation else {
+            return XCTFail("identity resolution must share the batched path's allowance")
+        }
+    }
+
+    /// The app's counter starts at zero on a fresh install while the account may
+    /// already have spent most of the day. The vendor reports the truth on every
+    /// response, so the local number defers to it.
+    func testLocalCountCorrectsItselfAgainstTheServer() throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        ledger.beginRun()
+
+        XCTAssertEqual(ledger.snapshot().usedToday, 0, "a fresh install knows nothing")
+
+        // Shaped exactly like the live `_metadata` block.
+        ledger.syncFromServer(
+            JustTCGQuotaMetadata(
+                apiPlan: "Free Tier",
+                apiDailyLimit: 100,
+                apiDailyRequestsUsed: 70,
+                apiDailyRequestsRemaining: 30,
+                apiRequestLimit: 1_000,
+                apiRequestsUsed: 70,
+                apiRequestsRemaining: 930
+            )
+        )
+
+        XCTAssertEqual(ledger.snapshot().usedToday, 70)
+        XCTAssertEqual(ledger.snapshot().remainingToday, JustTCGQuota.dailyHardLimit - 70)
+    }
+
+    /// Never revise the count *down* to the server's: if the app believes it has
+    /// spent more than the server has recorded yet, trusting the lower number
+    /// would overshoot the real limit.
+    func testServerSyncNeverLowersTheLocalCount() throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        ledger.beginRun()
+        for _ in 0..<50 { _ = ledger.reserve(lane: .interactive) }
+
+        ledger.syncFromServer(
+            JustTCGQuotaMetadata(
+                apiPlan: "Free Tier", apiDailyLimit: 100,
+                apiDailyRequestsUsed: 10, apiDailyRequestsRemaining: 90,
+                apiRequestLimit: 1_000, apiRequestsUsed: 10, apiRequestsRemaining: 990
+            )
+        )
+
+        XCTAssertEqual(ledger.snapshot().usedToday, 50, "must not revise downward")
+    }
+
+    /// When the allowance is gone the user is told when it comes back, and that
+    /// moment must be in the future rather than a stale timestamp.
+    func testBudgetExhaustionReportsAFutureResetTime() throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        ledger.beginRun()
+        for _ in 0..<JustTCGQuota.dailyHardLimit { _ = ledger.reserve(lane: .interactive) }
+
+        guard case let .dailyReached(resetAt) = ledger.reserve(lane: .interactive) else {
+            return XCTFail("expected the daily ceiling to stop this")
+        }
+        XCTAssertGreaterThan(resetAt, .now)
+        XCTAssertLessThanOrEqual(resetAt.timeIntervalSinceNow, 24 * 60 * 60 + 1)
+        XCTAssertEqual(ledger.snapshot().remainingToday, 0)
+    }
+
     func testRetryAfterAcceptsSecondsAndHTTPDate() {
         let now = Date(timeIntervalSince1970: 1_000_000)
 
