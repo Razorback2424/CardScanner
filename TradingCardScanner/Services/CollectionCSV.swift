@@ -56,6 +56,11 @@ struct CollectionCSVEntry: Sendable {
     let importedPriceAsOf: Date?
     var quantity: Int
     let dateAdded: Date
+    /// Raw card, graded slab or sealed product. Defaulted so every existing
+    /// construction site keeps meaning what it meant.
+    var itemKind: CollectionItemKind = .rawCard
+    var gradingCompany: GradingCompany?
+    var grade: CardGrade?
 }
 
 enum CollectionCSVError: LocalizedError {
@@ -379,6 +384,14 @@ enum CollectionCSV {
                     quantity: entry.quantity,
                     dateAdded: entry.dateAdded
                 )
+                // What kind of object this is, and — for a slab — the grade the
+                // export stated. The vendor's variant UUID is not known from a
+                // CSV and is adopted later, when pricing resolves it.
+                card.itemKindRaw = entry.itemKind.rawValue
+                card.gradingCompanyRaw = entry.gradingCompany?.rawValue
+                card.gradeRaw = entry.grade?.value
+                card.gradeLabel = entry.grade?.label
+                card.gradingQualifier = entry.grade?.qualifier
                 context.insert(card)
                 cardsByKey[entry.collectionKey] = card
                 inserted += 1
@@ -479,8 +492,18 @@ enum CollectionCSV {
             return []
         }
 
-        let grade = value(["grade"], in: row)?.lowercased()
-        guard grade == nil || grade == "ungraded" else { return [] }
+        // Graded slabs used to be dropped here. That was correct when the app
+        // had no way to represent one — importing them would have produced raw
+        // rows claiming to be something they are not — but it no longer is.
+        let rawGrade = value(["grade"], in: row)
+        let graded = ImportedGradeParser.isGraded(rawGrade)
+            ? rawGrade.flatMap(ImportedGradeParser.parse)
+            : nil
+        // A grade string that cannot be read is still a graded card, and
+        // importing it as a raw one would silently merge a slab into the raw
+        // copy's quantity. Skipping keeps it visible in the skipped-rows export.
+        if ImportedGradeParser.isGraded(rawGrade), graded == nil { return [] }
+
         guard let rawName = value(["product_name"], in: row),
               let setName = value(["set"], in: row) else {
             return []
@@ -491,7 +514,7 @@ enum CollectionCSV {
             productName: rawName
         ) else { return [] }
         let cardNumber = value(["card_number"], in: row) ?? ""
-        guard !isSealedOrAccessory(rawName, cardNumber: cardNumber) else { return [] }
+        let isSealed = isSealedOrAccessory(rawName, cardNumber: cardNumber)
 
         let name = cleanedPortfolioName(rawName, cardNumber: cardNumber, game: game)
         let variant = portfolioVariant(
@@ -518,11 +541,16 @@ enum CollectionCSV {
             rarity: nil,
             imageURL: nil,
             thumbnailURL: nil,
-            variant: variant,
+            // A slab has no raw finish and a sealed box has no finish at all.
+            // Carrying one would put a "Reverse Holo" badge on a booster box.
+            variant: (graded != nil || isSealed) ? nil : variant,
             importedMarketPriceUSD: importedPrice?.amount,
             importedPriceAsOf: importedPrice?.asOf,
             quantity: quantity,
-            dateAdded: .now
+            dateAdded: .now,
+            itemKind: graded != nil ? .gradedCard : (isSealed ? .sealedProduct : .rawCard),
+            gradingCompany: graded?.company,
+            grade: graded?.grade
         )]
     }
 
@@ -540,10 +568,35 @@ enum CollectionCSV {
         importedMarketPriceUSD: Double? = nil,
         importedPriceAsOf: Date? = nil,
         quantity: Int,
-        dateAdded: Date
+        dateAdded: Date,
+        itemKind: CollectionItemKind = .rawCard,
+        gradingCompany: GradingCompany? = nil,
+        grade: CardGrade? = nil
     ) -> CollectionCSVEntry {
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
-        let key = variant.map { "\(baseKey)#\($0.id)" } ?? baseKey
+        let key: String
+        switch itemKind {
+        case .rawCard:
+            // Unchanged. Every row imported before this existed keeps its key.
+            key = variant.map { "\(baseKey)#\($0.id)" } ?? baseKey
+
+        case .gradedCard:
+            // A CSV has no vendor variant UUID, so the key is built from what
+            // the export actually states: grader, grade, label and qualifier.
+            // Enough to keep a PSA 10 apart from a PSA 10 OC and from the raw
+            // copy — and the UUID is adopted later when pricing resolves it.
+            let fragment = gradingCompany.map { company in
+                "\(company.rawValue)|\(grade?.identityFragment ?? "")"
+            } ?? "unknown"
+            key = "graded:\(baseKey)#\(fragment)"
+
+        case .sealedProduct:
+            // No collector number to work with, so set plus product name is the
+            // identity. The namespace is what stops a booster box from ever
+            // sharing a row with a card of the same name.
+            key = "sealed:\(baseKey)"
+        }
+
         return CollectionCSVEntry(
             collectionKey: key,
             game: game,
@@ -559,7 +612,10 @@ enum CollectionCSV {
             importedMarketPriceUSD: importedMarketPriceUSD,
             importedPriceAsOf: importedPriceAsOf,
             quantity: quantity,
-            dateAdded: dateAdded
+            dateAdded: dateAdded,
+            itemKind: itemKind,
+            gradingCompany: gradingCompany,
+            grade: grade
         )
     }
 
@@ -662,16 +718,18 @@ enum CollectionCSV {
         productName: String
     ) -> Bool {
         let combined = "\(setName) \(productName)".lowercased()
-        if combined.contains("japanese") || combined.contains("japan import") { return true }
-        guard game == .pokemon else { return false }
-        return knownJapanesePokemonSets.contains(canonicalImportText(setName))
+        return combined.contains("japanese") || combined.contains("japan import")
     }
 
-    private static let knownJapanesePokemonSets: Set<String> = [
-        "inferno x", "terastal festival ex", "mega brave", "paradigm trigger",
-        "ruler of the black flame", "mega dream ex", "mega symphonia",
-        "night wanderer", "stellar miracle", "future flash", "wild force"
-    ]
+    // A list of Japanese-exclusive Pokémon sets used to be excluded here —
+    // Inferno X, Terastal Festival ex, Mega Brave and the rest. That was right
+    // while the app could not identify them: importing produced rows it could
+    // never resolve or price.
+    //
+    // It is not right any more. Those are exactly the sets the catalog
+    // normalizer now routes to TCGdex's `ja` edition, where they resolve to real
+    // cards with artwork and numbering and carry Cardmarket prices. Excluding
+    // them here meant the app supported a set it refused to let anyone import.
 
     private static func canonicalImportText(_ value: String) -> String {
         let folded = value.folding(

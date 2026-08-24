@@ -125,6 +125,53 @@ struct CardGrade: Codable, Hashable, Sendable {
     }
 }
 
+/// Reads a grade the way marketplace exports write it.
+///
+/// The strings are the grader, a number, and the grader's own word for that
+/// number, in that order:
+///
+///     PSA 10.0 GEM - MT   -> .psa,  "10",  "GEM - MT"
+///     CGC 9.5 Mint+       -> .cgc,  "9.5", "Mint+"
+///     PSA 9.0 MINT        -> .psa,  "9",   "MINT"
+///
+/// The trailing words are kept rather than discarded. They are how a grader
+/// distinguishes slabs that share a number — a BGS 10 and a BGS 10 Black Label
+/// are different objects — so dropping them would merge holdings.
+enum ImportedGradeParser {
+    /// The value an export uses for "this card is not graded".
+    static let ungraded = "ungraded"
+
+    static func isGraded(_ raw: String?) -> Bool {
+        guard let value = raw?.trimmingCharacters(in: .whitespaces), !value.isEmpty else {
+            return false
+        }
+        return value.lowercased() != ungraded
+    }
+
+    static func parse(_ raw: String) -> (company: GradingCompany, grade: CardGrade)? {
+        let trimmed = raw.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, trimmed.lowercased() != ungraded else { return nil }
+
+        var parts = trimmed.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+        guard !parts.isEmpty, let company = GradingCompany.named(parts.removeFirst()) else {
+            return nil
+        }
+
+        // The number, when there is one. `Authentic` slabs have none, and that
+        // is a real state rather than a parse failure.
+        var value: String?
+        if let first = parts.first, let number = Double(first) {
+            parts.removeFirst()
+            // `10.0` is a 10. `9.5` stays 9.5.
+            value = number == number.rounded() ? String(Int(number)) : String(number)
+        }
+
+        let label = parts.joined(separator: " ").nilIfEmpty
+        guard value != nil || label != nil else { return nil }
+        return (company, CardGrade(value: value, label: label))
+    }
+}
+
 private extension String {
     var nilIfEmpty: String? { isEmpty ? nil : self }
 }
