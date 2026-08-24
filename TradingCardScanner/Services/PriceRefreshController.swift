@@ -14,7 +14,22 @@ private struct PriceFetchOutcome: Sendable {
     enum Result: Sendable {
         case card(IdentifiedCard)
         case failed
+        /// The provider itself could not be reached.
+        case unreachable
         case cancelled
+    }
+
+    /// Errors that mean "the network or the host is the problem", as opposed to
+    /// a provider that answered and had nothing.
+    static func isUnreachable(_ error: URLError) -> Bool {
+        switch error.code {
+        case .timedOut, .cannotConnectToHost, .cannotFindHost,
+             .dnsLookupFailed, .notConnectedToInternet, .networkConnectionLost,
+             .internationalRoamingOff, .dataNotAllowed, .secureConnectionFailed:
+            return true
+        default:
+            return false
+        }
     }
 }
 
@@ -96,6 +111,10 @@ final class PriceRefreshController: ObservableObject {
         /// True when nothing the providers returned was newer than what was
         /// already stored. Saying so is more useful than implying an update.
         let foundNothingNewer: Bool
+        /// The catalog provider could not be reached and the pass stopped early.
+        /// Reported separately from `failed` because it is one fact about the
+        /// network, not a count of cards with something wrong with them.
+        var providerUnreachable = false
     }
 
     enum Status: Equatable {
@@ -134,6 +153,12 @@ final class PriceRefreshController: ObservableObject {
     /// Enough parallelism to make a few hundred cards quick, few enough to stay a
     /// polite client.
     private static let maxConcurrentRequests = 4
+
+    /// One full wave of in-flight requests failing to reach the provider, with
+    /// nothing priced to contradict them, is taken as the provider being down.
+    /// Small on purpose: the cost of being wrong is one retry, and the cost of
+    /// being slow is minutes of timeouts.
+    private static let unreachableThreshold = maxConcurrentRequests
 
     private var isRefreshing: Bool {
         if case .refreshing = status { return true }
@@ -203,6 +228,9 @@ final class PriceRefreshController: ObservableObject {
         /// the unmetered catalog and slow the whole refresh to the vendor's
         /// speed.
         var fallbackSubjects: [FallbackCandidate] = []
+        /// Consecutive responses where the provider could not be reached at all.
+        var consecutiveUnreachable = 0
+        var providerUnreachable = false
         status = .refreshing(completed: 0, total: order.count)
 
         var cursor = 0
@@ -317,9 +345,28 @@ final class PriceRefreshController: ObservableObject {
                         }
                     }
 
+                case .unreachable:
+                    // Every card in the queue is about to fail the same way, one
+                    // eight-second timeout at a time. Four hundred of those at a
+                    // concurrency of four is thirteen minutes of watching a
+                    // progress bar crawl before the fallback even starts.
+                    //
+                    // So the first full wave of unreachable responses, with no
+                    // success to contradict them, ends the catalog pass. Nothing
+                    // is recorded as a price failure: these cards were never
+                    // actually asked about, and stamping them would misreport an
+                    // outage as four hundred missing cards.
+                    consecutiveUnreachable += 1
+                    if priced == 0, consecutiveUnreachable >= Self.unreachableThreshold {
+                        providerUnreachable = true
+                    }
+
                 case .cancelled:
                     wasCancelled = true
                 }
+
+                if case .card = outcome.result { consecutiveUnreachable = 0 }
+                if providerUnreachable { break }
 
                 completed += 1
                 status = .refreshing(completed: completed, total: order.count)
@@ -369,7 +416,8 @@ final class PriceRefreshController: ObservableObject {
                 latestSourceUpdate: latestSourceUpdate ?? previousLatest,
                 checkedUnstampedProvider: checkedUnstampedProvider,
                 changedPrices: changedPrices,
-                foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest)
+                foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
+                providerUnreachable: providerUnreachable
             )
         )
     }
@@ -792,6 +840,12 @@ final class PriceRefreshController: ObservableObject {
             return PriceFetchOutcome(printing: printing, result: .cancelled)
         } catch let error as URLError where error.code == .cancelled {
             return PriceFetchOutcome(printing: printing, result: .cancelled)
+        } catch let error as URLError where PriceFetchOutcome.isUnreachable(error) {
+            // The provider could not be reached at all. Distinct from a card the
+            // provider does not have: one is about the network, the other about
+            // the data, and treating them alike makes an outage look like four
+            // hundred missing cards.
+            return PriceFetchOutcome(printing: printing, result: .unreachable)
         } catch {
             return PriceFetchOutcome(printing: printing, result: .failed)
         }

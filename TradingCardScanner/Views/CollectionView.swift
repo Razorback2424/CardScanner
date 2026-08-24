@@ -536,13 +536,17 @@ struct CollectionView: View {
         case let .finished(result):
             VStack(alignment: .leading, spacing: 1) {
                 Label(
-                    result.failed > 0
-                        ? "Checked just now · \(result.failed) card types couldn't be reached"
-                        : refreshSuccessText(result),
-                    systemImage: result.failed > 0 ? "exclamationmark.triangle" : "checkmark.circle"
+                    refreshOutcomeText(result),
+                    systemImage: result.providerUnreachable
+                        ? "wifi.exclamationmark"
+                        : (result.failed > 0 ? "exclamationmark.triangle" : "checkmark.circle")
                 )
                 .font(.caption)
-                .foregroundStyle(result.failed > 0 ? Color.orange : Color.secondary)
+                .foregroundStyle(
+                    result.providerUnreachable || result.failed > 0
+                        ? Color.orange
+                        : Color.secondary
+                )
 
                 if !result.checkedUnstampedProvider, let asOf = result.latestSourceUpdate {
                     Text("Market data current through \(asOf.formatted(date: .abbreviated, time: .shortened))")
@@ -559,6 +563,22 @@ struct CollectionView: View {
         case .idle:
             EmptyView()
         }
+    }
+
+    /// What a finished refresh actually says.
+    ///
+    /// An outage and a set of unpriceable cards are different problems with
+    /// different remedies, so they get different sentences. "400 card types
+    /// couldn't be reached" reads as four hundred broken cards; the truth was
+    /// that one server was down.
+    private func refreshOutcomeText(_ result: PriceRefreshController.Summary) -> String {
+        if result.providerUnreachable {
+            return "Card catalogue unreachable · check your connection and try again"
+        }
+        if result.failed > 0 {
+            return "Checked just now · \(result.failed) card types couldn't be reached"
+        }
+        return refreshSuccessText(result)
     }
 
     private func refreshSuccessText(_ result: PriceRefreshController.Summary) -> String {
