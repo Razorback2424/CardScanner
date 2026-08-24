@@ -84,12 +84,50 @@ actor CardCatalog {
                 }
                 return .pokemon(card, setCode: setCode)
 
-            case let .magic(setCode, collectorNumber, language):
+            case let .magic(setCode, collectorNumber, language, contentKind):
+                guard contentKind != .regular else {
+                    // Unchanged fast path. An ordinary footer resolves exactly
+                    // as it always has.
+                    return .magic(
+                        try await scryfall.fetchCard(
+                            setCode: setCode,
+                            collectorNumber: collectorNumber,
+                            language: language
+                        )
+                    )
+                }
+
+                // A token or art card prints its *parent's* code, so the printed
+                // identity has to be mapped to the child set before anything is
+                // fetched. `T 0017 MSH` is `TMSH 17`, not `MSH 17`.
+                let children = try await scryfall.fetchChildSets()
+                guard let child = ScryfallService.childSet(
+                    for: contentKind,
+                    parentCode: setCode,
+                    in: children
+                ) else {
+                    // No child set, or more than one with no way to choose.
+                    // Refusing is the point: reinterpreting an explicit marker
+                    // as an ordinary card is the bug this exists to prevent.
+                    throw ScryfallError.identityMismatch
+                }
+
                 let card = try await scryfall.fetchCard(
-                    setCode: setCode,
+                    setCode: child.code,
                     collectorNumber: collectorNumber,
-                    language: language
+                    language: language,
+                    requiresScannableCard: false
                 )
+
+                // Both directions are checked. The returned record must be from
+                // the child set that was asked for, and its layout must match
+                // the kind the marker claimed — otherwise a token could arrive
+                // through an ordinary lookup, which is the same bug reversed.
+                guard card.setCode.caseInsensitiveCompare(child.code) == .orderedSame,
+                      let layout = card.layout,
+                      contentKind.acceptedLayouts.contains(layout) else {
+                    throw ScryfallError.identityMismatch
+                }
                 return .magic(card)
             }
         }

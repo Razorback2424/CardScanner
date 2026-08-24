@@ -179,6 +179,76 @@ struct ScryfallService: Sendable {
         .sorted { $0.code < $1.code }
     }
 
+    /// Every set that holds tokens or art cards, keyed by the parent code the
+    /// cards actually print.
+    ///
+    /// Deliberately derived from the directory rather than from a naming rule.
+    /// `"t" + parent` is right for 188 of 206 token sets, but the 18 exceptions
+    /// are Substitute Cards and regional promo tokens — different products that
+    /// a prefix rule would happily return instead.
+    func fetchChildSets() async throws -> [String: [MagicChildSet]] {
+        guard let url = URL(string: "https://api.scryfall.com/sets") else {
+            throw ScryfallError.invalidURL
+        }
+        let (data, response) = try await URLSession.shared.data(for: request(for: url))
+        guard let http = response as? HTTPURLResponse,
+              (200..<300).contains(http.statusCode) else {
+            throw ScryfallError.badResponse
+        }
+
+        let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
+        var result: [String: [MagicChildSet]] = [:]
+        for set in directory.data {
+            guard !set.digital,
+                  let parent = set.parentSetCode?.uppercased(),
+                  let setType = set.setType else { continue }
+            // Art series sets are `memorabilia`, not `art_series` — that string
+            // is a card *layout* and is not a set type at all. Matching on it
+            // would return nothing, which is exactly what the old exclusion list
+            // has been doing.
+            let kind: MagicContentKind
+            switch setType {
+            case "token": kind = .token
+            case "memorabilia" where set.name.localizedCaseInsensitiveContains("Art Series"):
+                kind = .artCard
+            default: continue
+            }
+            result[parent, default: []].append(
+                MagicChildSet(
+                    code: set.code.uppercased(),
+                    name: set.name,
+                    parentCode: parent,
+                    setType: setType,
+                    contentKind: kind
+                )
+            )
+        }
+        return result
+    }
+
+    /// The child set a printed marker resolves to, or nil when it cannot be
+    /// decided.
+    ///
+    /// Where a parent has several children of one kind, the main set is
+    /// preferred: the alternatives are Substitute Cards (`S*`) and Japanese or
+    /// Southeast Asia promo tokens (`W*`, `PT*`), which are separate products a
+    /// booster-pack scan is not. Preferring the main set serves the common case
+    /// without ever silently returning a promo set in its place.
+    nonisolated static func childSet(
+        for kind: MagicContentKind,
+        parentCode: String,
+        in directory: [String: [MagicChildSet]]
+    ) -> MagicChildSet? {
+        let candidates = (directory[parentCode.uppercased()] ?? [])
+            .filter { $0.contentKind == kind }
+        if candidates.count == 1 { return candidates[0] }
+        guard candidates.count > 1 else { return nil }
+        // The main token set is conventionally the parent code prefixed with T.
+        // Used only to break a tie between known children, never to invent a
+        // set code that the directory has not confirmed exists.
+        return candidates.first { $0.code == "T" + parentCode.uppercased() }
+    }
+
     func fetchSetDirectory() async throws -> [CatalogSetReference] {
         guard let url = URL(string: "https://api.scryfall.com/sets") else {
             throw ScryfallError.invalidURL
@@ -351,11 +421,31 @@ private struct ScryfallSet: Decodable {
     let setType: String?
     let releasedAt: String?
     let printedSize: Int?
+    /// The set whose footer is printed on these cards.
+    ///
+    /// Tokens and art cards never print their own Scryfall code. A Clue token
+    /// from Marvel Super Heroes reads `T 0017 MSH EN` — the *parent's* code —
+    /// while Scryfall files it under `tmsh`. Without this field there is no way
+    /// to get from what is printed to what is stored.
+    let parentSetCode: String?
 
     enum CodingKeys: String, CodingKey {
         case code, name, digital
         case setType = "set_type"
         case releasedAt = "released_at"
         case printedSize = "printed_size"
+        case parentSetCode = "parent_set_code"
     }
+}
+
+/// One Scryfall set that holds tokens or art cards for a parent set.
+///
+/// Built from the same directory response the scanner already fetches, so
+/// supporting tokens costs no extra request.
+struct MagicChildSet: Equatable, Sendable {
+    let code: String
+    let name: String
+    let parentCode: String
+    let setType: String
+    let contentKind: MagicContentKind
 }

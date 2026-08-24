@@ -9,7 +9,16 @@ import Foundation
 /// network entirely.
 enum ScanIdentifier: Equatable, Hashable, Sendable {
     case pokemon(setCode: String, cardNumber: String, printedTotal: Int, setDefinition: PokemonSetDefinition)
-    case magic(setCode: String, collectorNumber: String, language: String)
+    /// - Parameter contentKind: what the printed marker says this is. Part of
+    ///   identity, not decoration: `MSH 17` and `T 0017 MSH` are different cards
+    ///   — Invisible Woman and a Clue token — and they must never confirm each
+    ///   other across frames or share a cache entry.
+    case magic(
+        setCode: String,
+        collectorNumber: String,
+        language: String,
+        contentKind: MagicContentKind = .regular
+    )
 
     var game: CardGame {
         switch self {
@@ -18,13 +27,32 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
         }
     }
 
+    var magicContentKind: MagicContentKind {
+        switch self {
+        case .pokemon: return .regular
+        case let .magic(_, _, _, contentKind): return contentKind
+        }
+    }
+
+    /// What the app read off the card, in the card's own terms.
+    ///
+    /// Shown beside the resolved name so a wrong resolution is visible: seeing
+    /// `Token · T 0017 MSH EN` above "Clue" is how the user knows the scanner
+    /// understood the marker rather than silently ignoring it.
     var displayIdentifier: String {
         switch self {
         case let .pokemon(setCode, cardNumber, printedTotal, _):
             let unpadded = Int(cardNumber).map(String.init) ?? cardNumber
             return "\(setCode) \(unpadded)/\(printedTotal)"
-        case let .magic(setCode, collectorNumber, _):
-            return "\(setCode) \(collectorNumber) EN"
+        case let .magic(setCode, collectorNumber, _, contentKind):
+            switch contentKind {
+            case .regular:
+                return "\(setCode) \(collectorNumber) EN"
+            case .token:
+                return "T \(collectorNumber) \(setCode) EN"
+            case .artCard:
+                return "A \(collectorNumber) \(setCode) EN"
+            }
         }
     }
 }
@@ -232,8 +260,19 @@ struct MagicScanProfile: Sendable {
     )
     /// A line that is *nothing but* a collector number, allowing the rarity
     /// letter Magic prints on either side of it.
+    /// Group 1 is the leading letter, now **captured** rather than skipped.
+    ///
+    /// It used to be `(?:[A-Z]\s+)?` — matched and thrown away — which is what
+    /// made `T 0017` and `0017` indistinguishable, and why scanning a Clue token
+    /// silently added Invisible Woman instead. The letter is either a content
+    /// marker (`T`) or a rarity letter, and only the parser can tell which.
     private static let strictCollectorNumberRegex = try! NSRegularExpression(
-        pattern: #"^\s*(?:[A-Z]\s+)?([0-9OIL]{1,4})(?:\s*/\s*([0-9OIL]{1,4}))?(?:\s+[A-Z])?\s*$"#,
+        pattern: #"^\s*(?:([A-Z])\s+)?([0-9OIL]{1,4})(?:\s*/\s*([0-9OIL]{1,4}))?(?:\s+[A-Z])?\s*$"#,
+        options: []
+    )
+    /// The same marker when it leads a full footer line, e.g. `T 0017 MSH EN`.
+    private static let markerPrefixRegex = try! NSRegularExpression(
+        pattern: #"^\s*([A-Z])\s+(?=[0-9OIL])"#,
         options: []
     )
     private static let englishMarkerRegex = try! NSRegularExpression(
@@ -297,6 +336,12 @@ struct MagicScanProfile: Sendable {
     private struct CollectorNumberReading: Equatable {
         let card: Int
         let denominator: Int?
+        /// The printed content marker, when one led the number.
+        var marker: MagicPrintedMarker?
+
+        /// Marker included: a token and an ordinary card that happen to share a
+        /// number are different readings, and deduplication must not merge them.
+        var contentKind: MagicContentKind { marker?.contentKind ?? .regular }
     }
 
     private func examine(_ line: String) -> ExaminedLine {
@@ -327,7 +372,14 @@ struct MagicScanProfile: Sendable {
 
         return ScanText.unique(numbers)
             .filter { isValid($0, for: definition) }
-            .map { .magic(setCode: codes[0], collectorNumber: String($0.card), language: "en") }
+            .map {
+                .magic(
+                    setCode: codes[0],
+                    collectorNumber: String($0.card),
+                    language: "en",
+                    contentKind: $0.contentKind
+                )
+            }
     }
 
     private func containsEnglishMarker(in text: String) -> Bool {
@@ -337,8 +389,23 @@ struct MagicScanProfile: Sendable {
 
     private func collectorNumbers(in text: String) -> [CollectorNumberReading] {
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        // A marker leads the whole line — `T 0017 MSH EN` — so it is read once
+        // and applied to the first number found. Later numbers on the same line
+        // are not covered by it.
+        let lineMarker = Self.markerPrefixRegex
+            .firstMatch(in: text, options: [], range: range)
+            .flatMap { Range($0.range(at: 1), in: text) }
+            .flatMap { MagicPrintedMarker.marker(for: String(text[$0])) }
+
         return Self.collectorNumberRegex.matches(in: text, options: [], range: range)
-            .compactMap { reading(from: $0, in: text) }
+            .enumerated()
+            .compactMap { index, match in
+                reading(
+                    from: match,
+                    in: text,
+                    fallbackMarker: index == 0 ? lineMarker : nil
+                )
+            }
     }
 
     private func strictCollectorNumber(in text: String) -> CollectorNumberReading? {
@@ -346,15 +413,31 @@ struct MagicScanProfile: Sendable {
         guard let match = Self.strictCollectorNumberRegex.firstMatch(in: text, options: [], range: range) else {
             return nil
         }
-        return reading(from: match, in: text)
+        return reading(from: match, in: text, numberGroup: 2, markerGroup: 1)
     }
 
-    private func reading(from match: NSTextCheckingResult, in text: String) -> CollectorNumberReading? {
-        guard let cardRange = Range(match.range(at: 1), in: text),
+    /// - Parameter numberGroup: which capture group holds the collector number.
+    ///   The strict pattern captures the marker first, so its number is group 2;
+    ///   the inline pattern has no marker group and keeps the number at 1.
+    private func reading(
+        from match: NSTextCheckingResult,
+        in text: String,
+        numberGroup: Int = 1,
+        markerGroup: Int? = nil,
+        fallbackMarker: MagicPrintedMarker? = nil
+    ) -> CollectorNumberReading? {
+        guard let cardRange = Range(match.range(at: numberGroup), in: text),
               let card = ScanText.normalizedInteger(String(text[cardRange])) else { return nil }
-        let denominator = Range(match.range(at: 2), in: text)
+        var marker = fallbackMarker
+        if let markerGroup,
+           let range = Range(match.range(at: markerGroup), in: text) {
+            // A leading letter that is not a known marker is a rarity letter and
+            // is ignored, exactly as before.
+            marker = MagicPrintedMarker.marker(for: String(text[range])) ?? marker
+        }
+        let denominator = Range(match.range(at: numberGroup + 1), in: text)
             .flatMap { ScanText.normalizedInteger(String(text[$0])) }
-        return CollectorNumberReading(card: card, denominator: denominator)
+        return CollectorNumberReading(card: card, denominator: denominator, marker: marker)
     }
 
     private func isValid(_ number: CollectorNumberReading, for definition: MagicSetDefinition) -> Bool {
