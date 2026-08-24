@@ -143,7 +143,7 @@ final class ScannerViewModel: ObservableObject {
 
         scanner.onConfirmedCandidate = { [weak self] identifier in
             guard let self else { return }
-            Task { await self.enqueueIdentification(identifier) }
+            Task { self.enqueueIdentification(identifier) }
         }
 
         scanner.onLatchHolding = { [weak self] _ in

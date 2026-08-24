@@ -186,15 +186,33 @@ final class PricingTests: XCTestCase {
 
     // MARK: - Refresh scheduling
 
+    /// A target that already has a price and was checked minutes ago is left
+    /// alone; one that is overdue, or has never been asked about, is not.
+    private func pricedTarget(
+        _ printingID: String,
+        variantID: String = "reverse",
+        lastCheckedAt: Date?
+    ) -> PriceTarget {
+        PriceTarget(
+            game: .pokemon,
+            printingID: printingID,
+            catalogPrintingID: nil,
+            setCode: "PRE",
+            variantID: variantID,
+            importedIdentity: nil,
+            catalogMetadataCheckedAt: nil,
+            lastFailureAt: nil,
+            hasPrice: true,
+            lastCheckedAt: lastCheckedAt
+        )
+    }
+
     func testAutomaticRefreshSkipsPricesCheckedRecently() {
         let now = Date(timeIntervalSince1970: 1_000_000)
         let targets = [
-            PriceTarget(game: .pokemon, printingID: "a", setCode: "PRE", variantID: "reverse",
-                        lastCheckedAt: now.addingTimeInterval(-60)),
-            PriceTarget(game: .pokemon, printingID: "b", setCode: "PRE", variantID: "reverse",
-                        lastCheckedAt: now.addingTimeInterval(-12 * 60 * 60)),
-            PriceTarget(game: .pokemon, printingID: "c", setCode: "PRE", variantID: "normal",
-                        lastCheckedAt: nil)
+            pricedTarget("a", lastCheckedAt: now.addingTimeInterval(-60)),
+            pricedTarget("b", lastCheckedAt: now.addingTimeInterval(-12 * 60 * 60)),
+            pricedTarget("c", variantID: "normal", lastCheckedAt: nil)
         ]
 
         XCTAssertEqual(
@@ -234,5 +252,163 @@ final class PricingTests: XCTestCase {
 
         XCTAssertNotNil(price.sourceUpdatedAt)
         XCTAssertNotEqual(price.sourceUpdatedAt, price.fetchedAt)
+    }
+
+    // MARK: - Parallel patterns (variants_detailed)
+
+    /// Shaped exactly like TCGdex's live response for a Prismatic Evolutions
+    /// card: three `reverse` entries, told apart only by `foil` and by the
+    /// marketplace product id inside each entry's own pricing block.
+    private func ballPatternCard() throws -> IdentifiedCard {
+        let json = """
+        {
+          "id": "sv08.5-001",
+          "localId": "001",
+          "name": "Exeggcute",
+          "set": { "id": "sv08.5", "name": "Prismatic Evolutions",
+                   "cardCount": { "total": 180, "official": 131 } },
+          "variants": { "firstEdition": false, "holo": false, "normal": true, "reverse": true },
+          "variants_detailed": [
+            { "type": "normal", "size": "standard", "variantId": "endfynwn4n10gzq",
+              "pricing": { "tcgplayer": { "updated": "2026-08-24T08:03:25.798Z",
+                "normal": { "productId": 610356, "marketPrice": 0.02 } } } },
+            { "type": "reverse", "size": "standard", "variantId": "cm4kqul3x1bwlz1f",
+              "pricing": { "tcgplayer": { "updated": "2026-08-24T08:03:25.798Z",
+                "reverse-holofoil": { "productId": 610356, "marketPrice": 0.16 } } } },
+            { "type": "reverse", "size": "standard", "foil": "pokeball",
+              "variantId": "3739bbtj3i910y5ynn9xc6ryf",
+              "pricing": { "tcgplayer": { "updated": "2026-08-24T08:03:25.798Z",
+                "holofoil": { "productId": 610536, "marketPrice": 0.32 } } } },
+            { "type": "reverse", "size": "standard", "foil": "masterball",
+              "variantId": "2asus05yghmpd1ud1sdmlq3as4e",
+              "pricing": { "tcgplayer": { "updated": "2026-08-24T08:03:25.798Z",
+                "holofoil": { "productId": 610637, "marketPrice": 1.04 } } } }
+          ]
+        }
+        """
+        return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "PRE")
+    }
+
+    func testEachBallPatternGetsItsOwnPrice() throws {
+        let card = try ballPatternCard()
+
+        guard case let .price(pokeBall) = CardPricing.price(for: card, variant: .pokeBall),
+              case let .price(masterBall) = CardPricing.price(for: card, variant: .masterBall) else {
+            return XCTFail("Expected a price for each ball pattern")
+        }
+
+        XCTAssertEqual(pokeBall.unitMarketPriceUSD, 0.32)
+        XCTAssertEqual(masterBall.unitMarketPriceUSD, 1.04)
+        XCTAssertEqual(pokeBall.source, .tcgplayer)
+    }
+
+    /// The reason the flat pricing object could not do this job: three distinct
+    /// objects, three distinct prices, none of them borrowed from another.
+    func testBallPatternsDoNotShareThePlainReversePrice() throws {
+        let card = try ballPatternCard()
+
+        let amounts = [PhysicalVariant.reverse, .pokeBall, .masterBall].map { variant -> Double? in
+            guard case let .price(price) = CardPricing.price(for: card, variant: variant) else { return nil }
+            return price.unitMarketPriceUSD
+        }
+
+        XCTAssertEqual(amounts, [0.16, 0.32, 1.04])
+        XCTAssertEqual(Set(amounts.compactMap { $0 }).count, 3)
+    }
+
+    func testParallelPatternsAppearAsCatalogVariants() throws {
+        guard case let .pokemon(card, _) = try ballPatternCard() else { return XCTFail("Expected Pokémon") }
+
+        XCTAssertTrue(card.catalogVariants.contains(.pokeBall))
+        XCTAssertTrue(card.catalogVariants.contains(.masterBall))
+    }
+
+    /// An unrecognised pattern is a real object this build cannot label. It must
+    /// keep its own identity rather than answering to plain reverse, or a reverse
+    /// holo would inherit a scarcer parallel's price.
+    func testUnrecognisedFoilPatternDoesNotCollapseOntoReverse() throws {
+        let json = """
+        {
+          "id": "sv08.5-002", "localId": "002", "name": "Vaporeon",
+          "set": { "id": "sv08.5", "name": "Prismatic Evolutions",
+                   "cardCount": { "total": 180, "official": 131 } },
+          "variants": { "firstEdition": false, "holo": false, "normal": false, "reverse": true },
+          "variants_detailed": [
+            { "type": "reverse", "size": "standard", "variantId": "cm4kqul3x1bwlz1f",
+              "pricing": { "tcgplayer": { "reverse-holofoil": { "marketPrice": 0.20 } } } },
+            { "type": "reverse", "size": "standard", "foil": "confetti",
+              "variantId": "zzz", "pricing": { "tcgplayer": { "holofoil": { "marketPrice": 88.0 } } } }
+          ]
+        }
+        """
+        let card = IdentifiedCard.pokemon(
+            try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
+            setCode: "PRE"
+        )
+
+        guard case let .price(reverse) = CardPricing.price(for: card, variant: .reverse) else {
+            return XCTFail("Expected a reverse price")
+        }
+        XCTAssertEqual(reverse.unitMarketPriceUSD, 0.20)
+
+        guard case let .price(confetti) = CardPricing.price(
+            for: card,
+            variant: PhysicalVariant.pokemonFoilPattern("confetti")
+        ) else {
+            return XCTFail("Expected the unnamed pattern to keep its own price")
+        }
+        XCTAssertEqual(confetti.unitMarketPriceUSD, 88.0)
+    }
+
+    // MARK: - Cardmarket stands in only where TCGplayer is silent
+
+    private func promoCard(tcgplayerJSON: String = "null") throws -> IdentifiedCard {
+        let json = """
+        {
+          "id": "mep-008", "localId": "008", "name": "Golduck",
+          "set": { "id": "mep", "name": "Mega Evolution Promos",
+                   "cardCount": { "total": 60, "official": 60 } },
+          "variants": { "firstEdition": false, "holo": true, "normal": false, "reverse": false },
+          "pricing": {
+            "tcgplayer": \(tcgplayerJSON),
+            "cardmarket": { "updated": "2026-08-24T08:03:06.951Z", "unit": "EUR",
+                            "avg": 0.53, "trend": 0.49, "avg7": 0.47, "avg30": 0.52 }
+          }
+        }
+        """
+        return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "MEP")
+    }
+
+    func testCardmarketFillsInWhereTCGplayerPublishesNothing() throws {
+        guard case let .price(price) = CardPricing.price(for: try promoCard(), variant: .holo) else {
+            return XCTFail("Expected a Cardmarket price")
+        }
+
+        XCTAssertEqual(price.unitMarketPriceUSD, 0.49)
+        XCTAssertEqual(price.source, .cardmarket)
+        XCTAssertNotNil(price.sourceUpdatedAt)
+    }
+
+    /// A euro figure is reported as euros. Labelling it USD would misstate a
+    /// number by whatever the exchange rate happens to be that day.
+    func testCardmarketPriceKeepsItsOwnCurrency() throws {
+        guard case let .price(price) = CardPricing.price(for: try promoCard(), variant: .holo) else {
+            return XCTFail("Expected a Cardmarket price")
+        }
+
+        XCTAssertEqual(price.currencyCode, "EUR")
+        XCTAssertNotEqual(price.currencyCode, "USD")
+    }
+
+    func testTCGplayerStillWinsWhenItHasAPriceForTheVariant() throws {
+        let card = try promoCard(tcgplayerJSON: #"{ "holofoil": { "marketPrice": 3.10 } }"#)
+
+        guard case let .price(price) = CardPricing.price(for: card, variant: .holo) else {
+            return XCTFail("Expected the TCGplayer price")
+        }
+
+        XCTAssertEqual(price.unitMarketPriceUSD, 3.10)
+        XCTAssertEqual(price.source, .tcgplayer)
+        XCTAssertEqual(price.currencyCode, "USD")
     }
 }

@@ -54,6 +54,19 @@ final class CollectedCard {
     /// way sets were released, not alphabetically. Compared only within a game.
     var setReleaseOrder: Int = 0
 
+    /// Imported rows begin without provider artwork. Recording the last catalog
+    /// metadata attempt prevents a failed match from being retried on every tap.
+    var catalogMetadataCheckedAt: Date?
+    /// Lets improved matching rules retry previously unresolved imports once,
+    /// without turning every collection launch into another network pass.
+    var catalogMetadataVersion: Int = 0
+    /// The real remote identity resolved after a fast local CSV import. The
+    /// synthetic provider ID remains the stable ownership/price storage key.
+    var catalogProviderID: String?
+    /// A provider-supplied destination for this exact printing. Never populated
+    /// from a name-based search or a guessed marketplace slug.
+    var tcgplayerURL: String?
+
     init(
         collectionKey: String,
         game: CardGame,
@@ -91,7 +104,42 @@ final class CollectedCard {
         self.dateAdded = dateAdded
     }
 
-    convenience init(card: IdentifiedCard, resolved: ResolvedVariant) {
+    /// Keeps the import identity and collection key stable while filling in
+    /// provider metadata from either background normalization or price refresh.
+    func applyCatalogMetadata(from card: IdentifiedCard, checkedAt: Date) {
+        catalogProviderID = card.providerID
+        setCode = card.setCode
+        rarity = card.rarity
+        setReleaseOrder = card.setReleaseOrder
+        switch card {
+        case let .pokemon(pokemon, _):
+            imageURL = pokemon.image
+            thumbnailURL = pokemon.image.map { $0 + "/low.png" }
+        case let .magic(magic):
+            imageURL = card.displayImageURL?.absoluteString
+            thumbnailURL = card.thumbnailImageURL?.absoluteString
+            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
+        }
+        catalogMetadataCheckedAt = checkedAt
+    }
+
+    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata, checkedAt: Date) {
+        catalogProviderID = metadata.providerID
+        setCode = metadata.setCode
+        rarity = metadata.rarity ?? rarity
+        setReleaseOrder = metadata.setReleaseOrder
+        imageURL = metadata.imageURL
+        thumbnailURL = metadata.thumbnailURL
+        tcgplayerURL = metadata.tcgplayerURL
+        catalogMetadataCheckedAt = checkedAt
+    }
+
+    convenience init(
+        card: IdentifiedCard,
+        resolved: ResolvedVariant,
+        identityResolution: IdentityResolution = .printedIdentifier,
+        setReleaseOrder: Int? = nil
+    ) {
         self.init(
             collectionKey: card.collectionKey(variant: resolved.variant),
             game: card.game,
@@ -110,9 +158,13 @@ final class CollectedCard {
             thumbnailURL: card.thumbnailImageURL?.absoluteString,
             variant: resolved.variant,
             variantResolution: resolved.resolution,
-            setReleaseOrder: card.setReleaseOrder,
+            identityResolution: identityResolution,
+            setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
             quantity: 1
         )
+        if case let .magic(magic) = card {
+            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
+        }
     }
 
     var cardGame: CardGame {

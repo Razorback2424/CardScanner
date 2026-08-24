@@ -36,17 +36,23 @@ struct VariantChoiceBar: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(choice.card.name)
-                        .font(.headline)
-                        .lineLimit(1)
-                    Text(choice.card.identifier)
+                        .font(.title3.bold())
+                        .lineLimit(2)
+
+                    Text("Card \(choice.card.displayCardNumber)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.7))
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Spacer(minLength: 8)
+                Text(choice.card.setName)
+                    .font(.title3.weight(.semibold))
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
 
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")

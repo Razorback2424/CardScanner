@@ -65,10 +65,23 @@ enum CardPricing {
     ) -> PriceLookup {
         switch card {
         case let .pokemon(pokemon, _):
-            guard let tcg = pokemon.pricing?.tcgplayer else { return .unavailable(nil) }
+            // Per-object pricing first. It is the only representation that can
+            // tell a Poké Ball copy from a Master Ball one, so when TCGdex
+            // publishes it, it is strictly better evidence than the flat object.
+            if let variant,
+               let detailed = pokemon.detailedVariant(for: variant),
+               let resolved = price(from: detailed, at: fetchedAt) {
+                return .price(resolved)
+            }
+
+            guard let tcg = pokemon.pricing?.tcgplayer else {
+                return cardmarketPrice(for: pokemon, variant: variant, at: fetchedAt)
+                    ?? .unavailable(pokemon.pricing == nil ? nil : .cardmarket)
+            }
             guard let listing = tcgplayerListing(for: variant),
                   let amount = marketPrice(from: tcg, listing: listing) else {
-                return .unavailable(.tcgplayer)
+                return cardmarketPrice(for: pokemon, variant: variant, at: fetchedAt)
+                    ?? .unavailable(.tcgplayer)
             }
             return .price(
                 NormalizedPrice(
@@ -137,5 +150,96 @@ enum CardPricing {
         case "reverse-holofoil": return pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice
         default: return nil
         }
+    }
+
+    // MARK: - Per-object pricing
+
+    /// Read a price out of one `variants_detailed` entry.
+    ///
+    /// The listing key inside such an entry is *not* reliably the one its `type`
+    /// implies: TCGdex files parallel patterns under `type: "reverse"` but often
+    /// prices them under `holofoil`. That is safe to accommodate here in a way it
+    /// would never be in the flat object, because this entry is already scoped to
+    /// a single physical object with its own marketplace product id — so when it
+    /// carries exactly one priced listing, that listing is unambiguously this
+    /// object's price and cannot be another finish's. Where the entry carries
+    /// several, the one matching `type` still wins.
+    private static func price(
+        from detailed: TCGdexDetailedVariant,
+        at fetchedAt: Date
+    ) -> NormalizedPrice? {
+        if let tcg = detailed.pricing?.tcgplayer {
+            let candidates = pricedListings(in: tcg)
+            var chosen: (listing: String, amount: Double)?
+            if let preferred = detailed.preferredListing,
+               let amount = marketPrice(from: tcg, listing: preferred) {
+                chosen = (preferred, amount)
+            } else if candidates.count == 1 {
+                chosen = candidates[0]
+            }
+            if let chosen {
+                return NormalizedPrice(
+                    unitMarketPriceUSD: chosen.amount,
+                    currencyCode: "USD",
+                    source: .tcgplayer,
+                    sourceVariantID: detailed.variantId.map { "\(chosen.listing)#\($0)" }
+                        ?? chosen.listing,
+                    sourceUpdatedAt: tcg.updatedAt,
+                    fetchedAt: fetchedAt
+                )
+            }
+        }
+        guard let cardmarket = detailed.pricing?.cardmarket,
+              let amount = cardmarket.marketPrice else { return nil }
+        return NormalizedPrice(
+            unitMarketPriceUSD: amount,
+            currencyCode: cardmarket.currencyCode,
+            source: .cardmarket,
+            sourceVariantID: detailed.variantId ?? detailed.type ?? "cardmarket",
+            sourceUpdatedAt: cardmarket.updatedAt,
+            fetchedAt: fetchedAt
+        )
+    }
+
+    /// Every listing in a TCGplayer pricing object that actually carries a
+    /// number, paired with its key.
+    private static func pricedListings(in pricing: TCGPlayerPricing) -> [(listing: String, amount: Double)] {
+        var result: [(listing: String, amount: Double)] = []
+        if let value = pricing.normal?.marketPrice { result.append(("normal", value)) }
+        if let value = pricing.holofoil?.marketPrice ?? pricing.holo?.marketPrice {
+            result.append(("holofoil", value))
+        }
+        if let value = pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice {
+            result.append(("reverse-holofoil", value))
+        }
+        return result
+    }
+
+    /// Cardmarket stands in only where TCGdex carries no TCGplayer figure at all
+    /// — most of the promo catalogue. It is a euro price from a different
+    /// marketplace, so it is returned in its own currency and never silently
+    /// converted; the collection layer decides what to do with a non-USD number.
+    ///
+    /// Only offered for the plain printing. Cardmarket's per-card object is not
+    /// scoped to a parallel pattern, so attributing it to one would be exactly
+    /// the borrowing this type exists to prevent.
+    private static func cardmarketPrice(
+        for card: TCGdexCard,
+        variant: PhysicalVariant?,
+        at fetchedAt: Date
+    ) -> PriceLookup? {
+        guard let variant, tcgplayerListing(for: variant) != nil else { return nil }
+        guard let cardmarket = card.pricing?.cardmarket,
+              let amount = cardmarket.marketPrice else { return nil }
+        return .price(
+            NormalizedPrice(
+                unitMarketPriceUSD: amount,
+                currencyCode: cardmarket.currencyCode,
+                source: .cardmarket,
+                sourceVariantID: "cardmarket",
+                sourceUpdatedAt: cardmarket.updatedAt,
+                fetchedAt: fetchedAt
+            )
+        )
     }
 }

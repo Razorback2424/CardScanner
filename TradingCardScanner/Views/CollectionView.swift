@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// The scanner reduces friction according to certainty. The collection reduces
 /// it according to intent: four chips and one sort menu answer nearly every
@@ -13,17 +14,27 @@ struct CollectionView: View {
     @Query private var priceRecords: [PriceRecord]
 
     @StateObject private var refresh = PriceRefreshController()
+    @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
     @State private var searchText = ""
     /// What the grid is actually filtered by. Trails `searchText` by one short
     /// debounce so a large grid is not rebuilt on every keystroke.
     @State private var searchQuery = ""
     @State private var filters = CollectionFilters.none
-    @State private var sort: CollectionSort = .setAndCardNumber
+    @State private var sort: CollectionSort = .priceHighToLow
     @State private var activeSheet: ActiveSheet?
     @State private var hasCheckedForStalePrices = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalUndoTask: Task<Void, Never>?
+    @State private var showsManualRefreshStatus = false
+    @State private var refreshStatusTask: Task<Void, Never>?
+    @State private var isShowingCSVImporter = false
+    @State private var isShowingCSVExporter = false
+    @State private var csvExportDocument: CollectionCSVDocument?
+    @State private var csvExportFilename = "CardScanner Collection"
+    @State private var lastSkippedCSVText: String?
+    @State private var pendingCSVImport: CollectionCSVImportPlan?
+    @State private var csvMessage: CSVMessage?
     @FocusState private var isSearchFocused: Bool
 
     private enum ActiveSheet: String, Identifiable {
@@ -31,10 +42,22 @@ struct CollectionView: View {
         var id: String { rawValue }
     }
 
+    private struct CSVMessage: Identifiable {
+        let id = UUID()
+        let title: String
+        let message: String
+        let skippedCSVText: String?
+
+        init(title: String, message: String, skippedCSVText: String? = nil) {
+            self.title = title
+            self.message = message
+            self.skippedCSVText = skippedCSVText
+        }
+    }
+
     private let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
+        GridItem(.flexible(), spacing: 16, alignment: .top),
+        GridItem(.flexible(), spacing: 16, alignment: .top)
     ]
 
     var body: some View {
@@ -56,7 +79,59 @@ struct CollectionView: View {
                 }
             }
             .navigationTitle("Collection")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Refresh Prices") {
+                        Task { await refreshAllPrices() }
+                    }
+                    .disabled(isRefreshing)
+                }
+
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu("Collection Actions", systemImage: "ellipsis.circle") {
+                        Button("Import CSV", systemImage: "square.and.arrow.down") {
+                            isShowingCSVImporter = true
+                        }
+
+                        Button("Export CSV", systemImage: "square.and.arrow.up") {
+                            csvExportDocument = CollectionCSV.export(cards)
+                            csvExportFilename = "CardScanner Collection"
+                            isShowingCSVExporter = true
+                        }
+                        .disabled(cards.isEmpty)
+
+                        Button("Export Skipped Rows", systemImage: "exclamationmark.arrow.triangle.2.circlepath") {
+                            exportSkippedRows()
+                        }
+                        .disabled(lastSkippedCSVText == nil)
+
+                        Divider()
+
+                        Button("Export Unpriced Cards", systemImage: "dollarsign.circle") {
+                            csvExportDocument = CollectionCSV.exportUnpriced(
+                                cards,
+                                priceRecords: priceRecords
+                            )
+                            csvExportFilename = "CardScanner Unpriced Cards"
+                            isShowingCSVExporter = true
+                        }
+                        .disabled(snapshot.unpricedCount == 0)
+
+                        Button("Export Missing Artwork", systemImage: "photo") {
+                            csvExportDocument = CollectionCSV.exportMissingArtwork(
+                                cards,
+                                priceRecords: priceRecords
+                            )
+                            csvExportFilename = "CardScanner Missing Artwork"
+                            isShowingCSVExporter = true
+                        }
+                        .disabled(!cards.contains { $0.highImageURL == nil })
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Collection actions")
+                }
+
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") {
@@ -76,15 +151,79 @@ struct CollectionView: View {
             }
         }
         .task(id: cards.count) { await refreshStalePricesIfNeeded() }
+        .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
         .task(id: searchText) {
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }
             searchQuery = searchText
         }
+        .onDisappear {
+            refreshStatusTask?.cancel()
+        }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
                 removalUndoBanner(pendingRemoval)
             }
+        }
+        .fileImporter(
+            isPresented: $isShowingCSVImporter,
+            allowedContentTypes: [.commaSeparatedText, .plainText]
+        ) { result in
+            switch result {
+            case let .success(url):
+                Task { await prepareCSVImport(from: url) }
+            case let .failure(error):
+                csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
+            }
+        }
+        .fileExporter(
+            isPresented: $isShowingCSVExporter,
+            document: csvExportDocument,
+            contentType: .commaSeparatedText,
+            defaultFilename: csvExportFilename
+        ) { result in
+            defer { csvExportDocument = nil }
+            if case let .failure(error) = result {
+                csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription)
+            }
+        }
+        .confirmationDialog(
+            "Import CSV?",
+            isPresented: Binding(
+                get: { pendingCSVImport != nil },
+                set: { if !$0 { pendingCSVImport = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let plan = pendingCSVImport {
+                Button("Import \(plan.totalQuantity) Cards") {
+                    importCSV(plan)
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                pendingCSVImport = nil
+            }
+        } message: {
+            if let plan = pendingCSVImport {
+                Text(importConfirmationMessage(plan))
+            }
+        }
+        .alert(item: $csvMessage) { message in
+            if let skippedCSVText = message.skippedCSVText {
+                return Alert(
+                    title: Text(message.title),
+                    message: Text(message.message),
+                    primaryButton: .default(Text("Export Skipped Rows")) {
+                        exportSkippedRows(skippedCSVText)
+                    },
+                    secondaryButton: .cancel(Text("Done"))
+                )
+            }
+            return Alert(
+                title: Text(message.title),
+                message: Text(message.message),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 
@@ -98,7 +237,7 @@ struct CollectionView: View {
                 if snapshot.entries.isEmpty {
                     noMatches
                 } else {
-                    LazyVGrid(columns: columns, spacing: 14) {
+                    LazyVGrid(columns: columns, spacing: 22) {
                         ForEach(snapshot.entries) { entry in
                             NavigationLink {
                                 CollectionCardDetailView(
@@ -122,6 +261,69 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
+    }
+
+    // MARK: - CSV transfer
+
+    @MainActor
+    private func prepareCSVImport(from url: URL) async {
+        do {
+            let plan = try await Task.detached(priority: .userInitiated) {
+                let hasAccess = url.startAccessingSecurityScopedResource()
+                defer {
+                    if hasAccess { url.stopAccessingSecurityScopedResource() }
+                }
+                let data = try Data(contentsOf: url, options: .mappedIfSafe)
+                return try CollectionCSV.parse(data)
+            }.value
+            pendingCSVImport = plan
+        } catch {
+            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
+        }
+    }
+
+    @MainActor
+    private func importCSV(_ plan: CollectionCSVImportPlan) {
+        pendingCSVImport = nil
+        // A large imported collection should not immediately start hundreds of
+        // network requests. Pricing remains an explicit toolbar action.
+        hasCheckedForStalePrices = true
+
+        do {
+            let result = try CollectionCSV.apply(plan, to: modelContext)
+            lastSkippedCSVText = plan.skippedCSVText
+            Task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
+            var details = "Added \(result.totalQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
+            if result.mergedEntries > 0 {
+                details += " \(result.mergedEntries) matched existing entries."
+            }
+            if result.skippedRows > 0 {
+                details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows."
+            }
+            details += " Artwork loads automatically. Refresh prices when you're ready."
+            csvMessage = CSVMessage(
+                title: "Import Complete",
+                message: details,
+                skippedCSVText: plan.skippedCSVText
+            )
+        } catch {
+            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
+        }
+    }
+
+    private func importConfirmationMessage(_ plan: CollectionCSVImportPlan) -> String {
+        var message = "Adds \(plan.totalQuantity) cards in \(plan.entries.count) entries. Matching entries will be combined."
+        if plan.skippedRows > 0 {
+            message += " \(plan.skippedRows) unsupported, non-English, or non-card rows will be ignored."
+        }
+        return message
+    }
+
+    private func exportSkippedRows(_ text: String? = nil) {
+        guard let text = text ?? lastSkippedCSVText else { return }
+        csvExportDocument = CollectionCSVDocument(text: text)
+        csvExportFilename = "CardScanner Skipped Rows"
+        isShowingCSVExporter = true
     }
 
     // MARK: - Removal undo
@@ -173,10 +375,10 @@ struct CollectionView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
                 Text(snapshot.pricedValue, format: .currency(code: "USD").precision(.fractionLength(2)))
-                    .font(.title2.bold())
-                Text("priced value")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                    .monospacedDigit()
+                    .accessibilityLabel("Collection value")
 
                 Spacer()
 
@@ -189,26 +391,68 @@ struct CollectionView: View {
             }
 
             if snapshot.unpricedCount > 0 {
-                Text("\(snapshot.unpricedCount) card\(snapshot.unpricedCount == 1 ? "" : "s") unpriced")
+                Text("\(snapshot.unpricedCount) cop\(snapshot.unpricedCount == 1 ? "y" : "ies") unpriced")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
-            HStack(spacing: 6) {
-                freshnessLabel(snapshot)
-                Spacer()
-                refreshButton
+            // These have a price; it is simply not in dollars, so it is missing
+            // from the total above. Saying which is the difference between an
+            // honest total and one that looks complete.
+            if snapshot.otherCurrencyCount > 0 {
+                Text(
+                    "\(snapshot.otherCurrencyCount) cop\(snapshot.otherCurrencyCount == 1 ? "y" : "ies") priced in another currency, not included in total"
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            .padding(.top, 2)
+
+            if showsManualRefreshStatus {
+                freshnessLabel
+                    .padding(.top, 2)
+            }
+
+            catalogNormalizationLabel
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
-    private func freshnessLabel(_ snapshot: Snapshot) -> some View {
+    private var catalogNormalizationLabel: some View {
+        switch catalogNormalizer.status {
+        case let .normalizing(total):
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Finding artwork for \(total) cards…")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+        case let .finished(matched, unmatched):
+            Text(
+                unmatched > 0
+                    ? "Found artwork for \(matched) cards · \(unmatched) unmatched"
+                    : "Card artwork updated"
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+        case .failed:
+            Text("Artwork lookup will retry later")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+        case .idle:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var freshnessLabel: some View {
         switch refresh.status {
         case let .refreshing(completed, total):
-            Text("Updating prices… \(completed)/\(total)")
+            Text("Checking prices… \(completed)/\(total) card types")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
@@ -217,7 +461,7 @@ struct CollectionView: View {
             VStack(alignment: .leading, spacing: 1) {
                 Label(
                     result.failed > 0
-                        ? "Checked just now · \(result.failed) couldn't be reached"
+                        ? "Checked just now · \(result.failed) card types couldn't be reached"
                         : refreshSuccessText(result),
                     systemImage: result.failed > 0 ? "exclamationmark.triangle" : "checkmark.circle"
                 )
@@ -231,10 +475,13 @@ struct CollectionView: View {
                 }
             }
 
-        case .idle:
-            Text(idleFreshnessText(snapshot))
+        case .recentlyChecked:
+            Label("Prices were checked recently", systemImage: "checkmark.circle")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+        case .idle:
+            EmptyView()
         }
     }
 
@@ -244,32 +491,6 @@ struct CollectionView: View {
         return result.foundNothingNewer
             ? "Checked just now · no newer market prices"
             : "Prices updated"
-    }
-
-    /// "Current as of" is a claim about the market data. "Checked" is a claim
-    /// about this app. Providers that publish no timestamp only ever earn the
-    /// second one.
-    private func idleFreshnessText(_ snapshot: Snapshot) -> String {
-        guard let asOf = snapshot.pricesAsOf else { return "No prices yet" }
-        let formatted = Calendar.current.isDateInToday(asOf)
-            ? asOf.formatted(date: .omitted, time: .shortened)
-            : asOf.formatted(date: .abbreviated, time: .shortened)
-        return snapshot.isSourceStamped
-            ? "Prices current as of \(formatted)"
-            : "Prices checked \(formatted)"
-    }
-
-    private var refreshButton: some View {
-        Button {
-            Task { await refreshAllPrices() }
-        } label: {
-            Image(systemName: "arrow.clockwise")
-                .font(.system(size: 13, weight: .semibold))
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(Color.accentColor)
-        .disabled(isRefreshing)
-        .accessibilityLabel("Refresh prices")
     }
 
     // MARK: - Search
@@ -431,6 +652,10 @@ struct CollectionView: View {
         /// Only what is actually priced. A total that quietly folds in unknowns
         /// is worse than an honest gap.
         let pricedValue: Double
+        /// Copies whose price is real but quoted in another currency, so they
+        /// are deliberately absent from `pricedValue` rather than converted at
+        /// a rate this app has no live source for. Reported instead of hidden.
+        let otherCurrencyCount: Int
         let unpricedCount: Int
         let pricesAsOf: Date?
         /// Whether `pricesAsOf` is a provider's own "current through" stamp or
@@ -471,14 +696,23 @@ struct CollectionView: View {
 
         var pricedValue: Double = 0
         var unpriced = 0
+        var otherCurrency = 0
         var visibleQuantity = 0
         for row in visible {
             visibleQuantity += row.quantity
-            if let price = row.unitPrice {
-                pricedValue += price * Double(row.quantity)
-            } else {
+            guard let price = row.unitPrice else {
                 unpriced += row.quantity
+                continue
             }
+            // Summing euros into a dollar total would overstate the collection
+            // by whatever the exchange rate happens to be. Without a live rate
+            // the only honest options are to convert or to exclude, and this
+            // app has no rate source — so it excludes, and says so.
+            guard row.price.currencyCode == "USD" else {
+                otherCurrency += row.quantity
+                continue
+            }
+            pricedValue += price * Double(row.quantity)
         }
 
         // Freshness belongs to the collection currently being summarized, not to
@@ -509,6 +743,7 @@ struct CollectionView: View {
             totalQuantity: all.reduce(0) { $0 + $1.quantity },
             visibleQuantity: visibleQuantity,
             pricedValue: pricedValue,
+            otherCurrencyCount: otherCurrency,
             unpricedCount: unpriced,
             pricesAsOf: asOf,
             isSourceStamped: allSourceStamped,
@@ -604,20 +839,33 @@ struct CollectionView: View {
     /// the user is looking at becomes fresh first. Eight owned copies of one
     /// printing are one target, not eight.
     @MainActor
-    private func priceTargets(_ snapshot: Snapshot) -> [PriceTarget] {
+    private func priceTargets(_ snapshot: Snapshot, includeImported: Bool) -> [PriceTarget] {
         var seen = Set<String>()
         var result: [PriceTarget] = []
 
         for row in snapshot.visible + snapshot.all {
             guard let card = snapshot.cardsByKey[row.id] else { continue }
+            if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
+            let record = snapshot.recordsByKey[card.priceKey]
             result.append(
                 PriceTarget(
                     game: card.cardGame,
                     printingID: card.providerID,
+                    catalogPrintingID: card.catalogProviderID,
                     setCode: card.setCode,
                     variantID: card.variantID,
-                    lastCheckedAt: snapshot.recordsByKey[card.priceKey]?.lastCheckedAt
+                    importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
+                        ? ImportedPriceIdentity(
+                            name: card.name,
+                            setName: card.setName,
+                            cardNumber: card.cardNumber
+                        )
+                        : nil,
+                    catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
+                    lastFailureAt: record?.lastFailureAt,
+                    hasPrice: record?.unitMarketPriceUSD != nil,
+                    lastCheckedAt: record?.lastCheckedAt
                 )
             )
         }
@@ -626,7 +874,17 @@ struct CollectionView: View {
 
     @MainActor
     private func refreshAllPrices() async {
-        await runRefresh(priceTargets(makeSnapshot()))
+        refreshStatusTask?.cancel()
+        showsManualRefreshStatus = true
+        let targets = PriceRefreshController.staleTargets(
+            from: priceTargets(makeSnapshot(), includeImported: true)
+        )
+        guard !targets.isEmpty else {
+            refresh.markRecentlyChecked()
+            scheduleRefreshStatusDismissal()
+            return
+        }
+        await runRefresh(targets, showsStatus: true)
     }
 
     /// Quiet background top-up. Existing prices stay visible the whole time —
@@ -636,18 +894,31 @@ struct CollectionView: View {
         guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
         hasCheckedForStalePrices = true
 
-        let stale = PriceRefreshController.staleTargets(from: priceTargets(makeSnapshot()))
+        let stale = PriceRefreshController.staleTargets(
+            from: priceTargets(makeSnapshot(), includeImported: false)
+        )
         guard !stale.isEmpty else { return }
-        await runRefresh(stale)
+        await runRefresh(stale, showsStatus: false)
     }
 
     @MainActor
-    private func runRefresh(_ targets: [PriceTarget]) async {
+    private func runRefresh(_ targets: [PriceTarget], showsStatus: Bool) async {
         await refresh.refresh(targets, store: PriceStore(context: modelContext))
-        // Let the outcome stand long enough to be read, then collapse back to the
-        // compact freshness line.
-        try? await Task.sleep(for: .seconds(4))
-        refresh.dismissSummary()
+        guard showsStatus else {
+            refresh.dismissSummary()
+            return
+        }
+
+        scheduleRefreshStatusDismissal()
+    }
+
+    private func scheduleRefreshStatusDismissal() {
+        refreshStatusTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(10))
+            guard !Task.isCancelled else { return }
+            showsManualRefreshStatus = false
+            refresh.dismissSummary()
+        }
     }
 }
 
@@ -681,14 +952,19 @@ private struct CollectionCardTile: View {
     let price: PriceDisplay
 
     var body: some View {
-        VStack(spacing: 4) {
-            ZStack(alignment: .topTrailing) {
+        VStack(spacing: 8) {
+            ZStack {
+                Color.secondary.opacity(0.08)
+
                 CollectionCardArtwork(
                     thumbnailURL: card.lowImageURL,
                     fullSizeURL: card.highImageURL
                 )
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .aspectRatio(5.0 / 7.0, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(alignment: .topTrailing) {
                 if card.quantity > 1 {
                     Text("×\(card.quantity)")
                         .font(.caption.bold())
@@ -698,42 +974,105 @@ private struct CollectionCardTile: View {
                         .foregroundStyle(.white)
                         .padding(5)
                 }
-
-                // A reverse and a normal copy of one printing are different rows,
-                // so the tile has to say which one it is or the grid looks
-                // duplicated.
-                if let variant = card.variant {
-                    Text(variant.label)
-                        .font(.system(size: 9, weight: .semibold))
-                        .lineLimit(1)
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 3)
-                        .background(.black.opacity(0.72), in: Capsule())
-                        .foregroundStyle(.white)
-                        .padding(4)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                }
             }
 
-            PriceLabel(price: price, style: .compact)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(card.name)
+                        .font(.headline)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    PriceLabel(price: price, style: .compact)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                .frame(maxWidth: .infinity)
+
+                HStack(spacing: 6) {
+                    Text(card.setName)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if let variant = card.variant {
+                        CollectionFinishBadge(variant: variant)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(card.name), \(card.variant?.label ?? "unknown finish"), quantity \(card.quantity)")
+        .accessibilityLabel(
+            "\(card.name), \(card.setName), \(accessiblePrice), \(card.variant?.label ?? "unknown finish"), quantity \(card.quantity)"
+        )
+    }
+
+    private var accessiblePrice: String {
+        if let amount = price.amount {
+            return amount.formatted(.currency(code: price.currencyCode))
+        }
+        return price.state() == .unavailable ? "price unavailable" : "price not checked"
     }
 }
 
-/// Prefer the smaller portfolio image, but never turn a thumbnail-provider
-/// failure into a permanently blank card. The detail screen already proves the
-/// full-size URL is usable, so it is the natural fallback for this surface.
+private struct CollectionFinishBadge: View {
+    let variant: PhysicalVariant
+
+    var body: some View {
+        Label(variant.label, systemImage: symbol)
+            .font(.caption.weight(.semibold))
+            .lineLimit(1)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .foregroundStyle(tint)
+            .background(tint.opacity(0.16), in: Capsule())
+            .fixedSize(horizontal: true, vertical: false)
+    }
+
+    private var tint: Color {
+        switch variant.id {
+        case PhysicalVariant.reverse.id:
+            return .teal
+        case PhysicalVariant.foil.id, PhysicalVariant.holo.id, PhysicalVariant.etched.id:
+            return .purple
+        case PhysicalVariant.pokeBall.id, PhysicalVariant.masterBall.id, PhysicalVariant.firstEdition.id:
+            return .orange
+        case PhysicalVariant.normal.id, PhysicalVariant.nonfoil.id:
+            return .secondary
+        default:
+            return .blue
+        }
+    }
+
+    private var symbol: String {
+        switch variant.id {
+        case PhysicalVariant.reverse.id:
+            return "arrow.triangle.2.circlepath"
+        case PhysicalVariant.foil.id, PhysicalVariant.holo.id, PhysicalVariant.etched.id:
+            return "sparkles"
+        case PhysicalVariant.pokeBall.id, PhysicalVariant.masterBall.id:
+            return "circle.circle"
+        case PhysicalVariant.firstEdition.id:
+            return "1.circle"
+        default:
+            return "circle.fill"
+        }
+    }
+}
+
+/// Use the same URL that powers the detail screen. Some newly returned catalog
+/// records have a working full-size image while their thumbnail endpoint remains
+/// unavailable, which otherwise leaves the grid stuck on a placeholder.
 private struct CollectionCardArtwork: View {
     let thumbnailURL: URL?
     let fullSizeURL: URL?
 
-    private var primaryURL: URL? { thumbnailURL ?? fullSizeURL }
+    private var primaryURL: URL? { fullSizeURL ?? thumbnailURL }
 
     private var fallbackURL: URL? {
-        guard let fullSizeURL, fullSizeURL != primaryURL else { return nil }
-        return fullSizeURL
+        guard let thumbnailURL, thumbnailURL != primaryURL else { return nil }
+        return thumbnailURL
     }
 
     var body: some View {
@@ -809,19 +1148,19 @@ struct PriceLabel: View {
 
         case .unavailable:
             Text(style == .compact ? "—" : "Price unavailable")
-                .font(style == .compact ? .caption.weight(.medium) : .subheadline)
+                .font(style == .compact ? .headline : .subheadline)
                 .foregroundStyle(.secondary)
 
         case .unknown:
             Text(style == .compact ? "—" : "Not checked yet")
-                .font(style == .compact ? .caption.weight(.medium) : .subheadline)
+                .font(style == .compact ? .headline : .subheadline)
                 .foregroundStyle(.tertiary)
         }
     }
 
     private func amount(_ shade: HierarchicalShapeStyle) -> some View {
-        Text(price.amount ?? 0, format: .currency(code: "USD"))
-            .font(style == .compact ? .caption.weight(.semibold) : .headline)
+        Text(price.amount ?? 0, format: .currency(code: price.currencyCode))
+            .font(.headline)
             .monospacedDigit()
             .foregroundStyle(shade)
             .lineLimit(1)

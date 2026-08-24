@@ -41,6 +41,7 @@ struct CollectionCardDetailView: View {
 
                 pricing
                 finish
+                marketplaceLinks
 
                 Stepper("Quantity: \(card.quantity)", value: $card.quantity, in: 1...999)
                     .padding(.horizontal)
@@ -66,6 +67,9 @@ struct CollectionCardDetailView: View {
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: card.catalogProviderID ?? card.providerID) {
+            await loadMarketplaceLinkIfNeeded()
+        }
     }
 
     private var removalMessage: String {
@@ -118,6 +122,71 @@ struct CollectionCardDetailView: View {
         .padding(14)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
+
+    @ViewBuilder
+    private var marketplaceLinks: some View {
+        if let url = exactTCGPlayerPrintingURL,
+           let variant = card.variant {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Marketplace")
+                    .font(.headline)
+                    .padding(.bottom, 6)
+
+                Link(destination: url) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "cart")
+                            .frame(width: 24)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("TCGplayer")
+                                .foregroundStyle(.primary)
+                            Text("Exact printing · select \(variant.label)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+                }
+                .accessibilityLabel("Open this printing on TCGplayer")
+                .accessibilityHint("Select \(variant.label) on TCGplayer")
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        }
+    }
+
+    /// Scryfall's purchase URL identifies the exact Magic printing, but its URL
+    /// does not promise a preselected finish. Say that plainly and never expose
+    /// it for an unsupported or unknown finish.
+    private var exactTCGPlayerPrintingURL: URL? {
+        guard card.cardGame == .magic,
+              let variantID = card.variantID,
+              variantID == PhysicalVariant.nonfoil.id || variantID == PhysicalVariant.foil.id,
+              let value = card.tcgplayerURL else {
+            return nil
+        }
+        return URL(string: value)
+    }
+
+    @MainActor
+    private func loadMarketplaceLinkIfNeeded() async {
+        guard card.cardGame == .magic,
+              card.tcgplayerURL == nil else { return }
+        let providerID = card.catalogProviderID ?? card.providerID
+        guard !providerID.hasPrefix("csv:") else { return }
+
+        guard let resolved = try? await ScryfallService().fetchCard(id: providerID),
+              !Task.isCancelled,
+              let url = resolved.purchaseURIs?.tcgplayer else {
+            return
+        }
+        card.tcgplayerURL = url.absoluteString
+        try? modelContext.save()
+    }
 }
 
 /// Everything needed to restore a removed row without another catalog request.
@@ -127,6 +196,7 @@ struct RemovedCardSnapshot: Identifiable {
     let collectionKey: String
     let game: CardGame
     let providerID: String
+    let catalogProviderID: String?
     let name: String
     let setName: String
     let setCode: String
@@ -134,6 +204,9 @@ struct RemovedCardSnapshot: Identifiable {
     let rarity: String?
     let imageURL: String?
     let thumbnailURL: String?
+    let tcgplayerURL: String?
+    let catalogMetadataCheckedAt: Date?
+    let catalogMetadataVersion: Int
     let quantity: Int
     let dateAdded: Date
     let variant: PhysicalVariant?
@@ -145,6 +218,7 @@ struct RemovedCardSnapshot: Identifiable {
         collectionKey = card.collectionKey
         game = card.cardGame
         providerID = card.providerID
+        catalogProviderID = card.catalogProviderID
         name = card.name
         setName = card.setName
         setCode = card.setCode
@@ -152,6 +226,9 @@ struct RemovedCardSnapshot: Identifiable {
         rarity = card.rarity
         imageURL = card.imageURL
         thumbnailURL = card.thumbnailURL
+        tcgplayerURL = card.tcgplayerURL
+        catalogMetadataCheckedAt = card.catalogMetadataCheckedAt
+        catalogMetadataVersion = card.catalogMetadataVersion
         quantity = card.quantity
         dateAdded = card.dateAdded
         variant = card.variant
@@ -172,26 +249,29 @@ struct RemovedCardSnapshot: Identifiable {
             existing.quantity += quantity
             existing.dateAdded = max(existing.dateAdded, dateAdded)
         } else {
-            context.insert(
-                CollectedCard(
-                    collectionKey: collectionKey,
-                    game: game,
-                    providerID: providerID,
-                    name: name,
-                    setName: setName,
-                    setCode: setCode,
-                    cardNumber: cardNumber,
-                    rarity: rarity,
-                    imageURL: imageURL,
-                    thumbnailURL: thumbnailURL,
-                    variant: variant,
-                    variantResolution: variantResolution,
-                    identityResolution: identityResolution,
-                    setReleaseOrder: setReleaseOrder,
-                    quantity: quantity,
-                    dateAdded: dateAdded
-                )
+            let restored = CollectedCard(
+                collectionKey: collectionKey,
+                game: game,
+                providerID: providerID,
+                name: name,
+                setName: setName,
+                setCode: setCode,
+                cardNumber: cardNumber,
+                rarity: rarity,
+                imageURL: imageURL,
+                thumbnailURL: thumbnailURL,
+                variant: variant,
+                variantResolution: variantResolution,
+                identityResolution: identityResolution,
+                setReleaseOrder: setReleaseOrder,
+                quantity: quantity,
+                dateAdded: dateAdded
             )
+            restored.tcgplayerURL = tcgplayerURL
+            restored.catalogProviderID = catalogProviderID
+            restored.catalogMetadataCheckedAt = catalogMetadataCheckedAt
+            restored.catalogMetadataVersion = catalogMetadataVersion
+            context.insert(restored)
         }
 
         try? context.save()

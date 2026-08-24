@@ -20,6 +20,11 @@ struct PriceStore {
         (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
     }
 
+    func importedCardsByProviderID() -> [String: [CollectedCard]] {
+        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return Dictionary(grouping: cards.filter { $0.providerID.hasPrefix("csv:") }, by: \.providerID)
+    }
+
     /// Records what a provider said about one variant, creating the record if
     /// this is the first time the app has asked.
     func store(
@@ -42,6 +47,23 @@ struct PriceStore {
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
         }
+    }
+
+    func storeImported(
+        amount: Double,
+        sourceUpdatedAt: Date?,
+        game: CardGame,
+        printingID: String,
+        variantID: String?
+    ) {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
+        let record = self.record(forKey: key) ?? {
+            let created = PriceRecord(key: key, game: game, printingID: printingID, variantID: variantID)
+            context.insert(created)
+            return created
+        }()
+        guard record.unitMarketPriceUSD == nil else { return }
+        record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt)
     }
 
     /// A refresh attempt that never reached an answer. The previous price stays

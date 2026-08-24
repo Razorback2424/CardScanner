@@ -22,8 +22,13 @@ private struct PriceFetchOutcome: Sendable {
 struct PriceTarget: Hashable, Identifiable, Sendable {
     let game: CardGame
     let printingID: String
+    let catalogPrintingID: String?
     let setCode: String
     let variantID: String?
+    let importedIdentity: ImportedPriceIdentity?
+    let catalogMetadataCheckedAt: Date?
+    let lastFailureAt: Date?
+    let hasPrice: Bool
     /// When this app last asked about it, successfully or not.
     let lastCheckedAt: Date?
 
@@ -31,13 +36,27 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
 
     /// One catalog response answers every variant of the same printing, so a
     /// collection holding a normal and a reverse copy costs one request.
-    var printing: Printing { Printing(game: game, printingID: printingID, setCode: setCode) }
+    var printing: Printing {
+        Printing(
+            game: game,
+            printingID: catalogPrintingID ?? printingID,
+            setCode: setCode,
+            importedIdentity: importedIdentity
+        )
+    }
 
     struct Printing: Hashable, Sendable {
         let game: CardGame
         let printingID: String
         let setCode: String
+        let importedIdentity: ImportedPriceIdentity?
     }
+}
+
+struct ImportedPriceIdentity: Hashable, Sendable {
+    let name: String
+    let setName: String
+    let cardNumber: String
 }
 
 /// Keeps prices current without ever claiming more than it knows.
@@ -70,6 +89,7 @@ final class PriceRefreshController: ObservableObject {
 
     enum Status: Equatable {
         case idle
+        case recentlyChecked
         case refreshing(completed: Int, total: Int)
         case finished(Summary)
     }
@@ -78,6 +98,7 @@ final class PriceRefreshController: ObservableObject {
 
     private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
+    private let importedResolver = ImportedCardResolver()
 
     /// Below this age an automatic refresh is skipped. TCGplayer itself only
     /// republishes every few hours at best, so asking more often buys nothing and
@@ -93,11 +114,28 @@ final class PriceRefreshController: ObservableObject {
         return false
     }
 
-    /// Targets that an automatic refresh should bother with.
+    /// Targets that a refresh should bother with.
     nonisolated static func staleTargets(from targets: [PriceTarget], now: Date = .now) -> [PriceTarget] {
         targets.filter { target in
-            guard let lastCheckedAt = target.lastCheckedAt else { return true }
-            return now.timeIntervalSince(lastCheckedAt) >= automaticRefreshInterval
+            // A previous "unavailable" result is not permanent. Manual refreshes
+            // must always be able to revisit cards that still have no price.
+            if !target.hasPrice { return true }
+
+            let identityResolvedAfterFailure = target.catalogPrintingID != nil
+                && target.lastFailureAt != nil
+                && target.catalogMetadataCheckedAt.map {
+                    $0 > (target.lastCheckedAt ?? .distantPast)
+                } == true
+            if identityResolvedAfterFailure { return true }
+
+            let priceNeedsRefresh = target.lastCheckedAt.map {
+                now.timeIntervalSince($0) >= automaticRefreshInterval
+            } ?? true
+            guard target.importedIdentity != nil else { return priceNeedsRefresh }
+            let metadataNeedsRefresh = target.catalogMetadataCheckedAt.map {
+                now.timeIntervalSince($0) >= automaticRefreshInterval
+            } ?? true
+            return priceNeedsRefresh || metadataNeedsRefresh
         }
     }
 
@@ -115,6 +153,7 @@ final class PriceRefreshController: ObservableObject {
         }
 
         let previousLatest = latestKnownSourceUpdate(in: store)
+        let importedCardsByProviderID = store.importedCardsByProviderID()
         var completed = 0
         var priced = 0
         var failed = 0
@@ -130,8 +169,13 @@ final class PriceRefreshController: ObservableObject {
             for _ in 0..<initial {
                 let printing = order[cursor]
                 cursor += 1
-                group.addTask { [tcgdex, scryfall] in
-                    await Self.fetch(printing, tcgdex: tcgdex, scryfall: scryfall)
+                group.addTask { [tcgdex, scryfall, importedResolver] in
+                    await Self.fetch(
+                        printing,
+                        tcgdex: tcgdex,
+                        scryfall: scryfall,
+                        importedResolver: importedResolver
+                    )
                 }
             }
 
@@ -140,6 +184,11 @@ final class PriceRefreshController: ObservableObject {
                 let now = Date.now
                 switch outcome.result {
                 case let .card(card):
+                    if printing.importedIdentity != nil {
+                        for importedCard in importedCardsByProviderID[printing.printingID] ?? [] {
+                            importedCard.applyCatalogMetadata(from: card, checkedAt: now)
+                        }
+                    }
                     if card.game == .magic {
                         // Scryfall never supplies a provider-side price timestamp,
                         // including when its price object contains no usable value.
@@ -170,7 +219,7 @@ final class PriceRefreshController: ObservableObject {
                         let newAmount: Double?
                         switch lookup {
                         case let .price(price): newAmount = price.unitMarketPriceUSD
-                        case .unavailable: newAmount = nil
+                        case .unavailable: newAmount = previousAmount
                         }
                         if previousAmount != newAmount { changedPrices = true }
 
@@ -185,6 +234,16 @@ final class PriceRefreshController: ObservableObject {
 
                 case .failed:
                     // Nothing is overwritten. The old price keeps its old age.
+                    //
+                    // `catalogMetadataCheckedAt` is deliberately *not* stamped
+                    // here. It records when the catalog normalizer last tried to
+                    // resolve this card's identity, and the normalizer uses it to
+                    // decide when to try again. Writing it on a price failure
+                    // starved exactly the cards that needed normalizing most: a
+                    // card with no identity cannot be priced, the failed price
+                    // check refreshed the timestamp, the normalizer then skipped
+                    // the card as recently-checked, and the loop repeated forever.
+                    // A price failure is already recorded on the price record.
                     failed += 1
                     for target in byPrinting[printing] ?? [] {
                         store.recordFailure(
@@ -205,8 +264,13 @@ final class PriceRefreshController: ObservableObject {
                 if cursor < order.count, !wasCancelled, !Task.isCancelled {
                     let next = order[cursor]
                     cursor += 1
-                    group.addTask { [tcgdex, scryfall] in
-                        await Self.fetch(next, tcgdex: tcgdex, scryfall: scryfall)
+                    group.addTask { [tcgdex, scryfall, importedResolver] in
+                        await Self.fetch(
+                            next,
+                            tcgdex: tcgdex,
+                            scryfall: scryfall,
+                            importedResolver: importedResolver
+                        )
                     }
                 }
             }
@@ -243,7 +307,17 @@ final class PriceRefreshController: ObservableObject {
     }
 
     func dismissSummary() {
-        if case .finished = status { status = .idle }
+        switch status {
+        case .finished, .recentlyChecked:
+            status = .idle
+        case .idle, .refreshing:
+            break
+        }
+    }
+
+    func markRecentlyChecked() {
+        guard !isRefreshing else { return }
+        status = .recentlyChecked
     }
 
     private func latestKnownSourceUpdate(in store: PriceStore) -> Date? {
@@ -253,12 +327,32 @@ final class PriceRefreshController: ObservableObject {
     private nonisolated static func fetch(
         _ printing: PriceTarget.Printing,
         tcgdex: TCGdexService,
-        scryfall: ScryfallService
+        scryfall: ScryfallService,
+        importedResolver: ImportedCardResolver
     ) async -> PriceFetchOutcome {
         do {
+            if let identity = printing.importedIdentity {
+                let card = try await importedResolver.resolve(
+                    game: printing.game,
+                    identity: identity,
+                    tcgdex: tcgdex,
+                    scryfall: scryfall
+                )
+                return PriceFetchOutcome(printing: printing, result: .card(card))
+            }
+
             switch printing.game {
             case .pokemon:
-                let card = try await tcgdex.fetchCard(id: printing.printingID, ignoringCache: true)
+                let card = try await tcgdex.fetchCard(
+                    id: printing.printingID,
+                    // Japanese-exclusive printings are 404 on the English
+                    // endpoint, and the Japanese one is where both their
+                    // identity and their Cardmarket price live. Fetching the
+                    // wrong edition turns a priceable card into an unreachable
+                    // one.
+                    locale: CatalogIdentityNormalization.locale(forCatalogCardID: printing.printingID),
+                    ignoringCache: true
+                )
                 return PriceFetchOutcome(printing: printing, result: .card(.pokemon(card, setCode: printing.setCode)))
             case .magic:
                 let card = try await scryfall.fetchCard(id: printing.printingID, ignoringCache: true)
@@ -272,4 +366,101 @@ final class PriceRefreshController: ObservableObject {
             return PriceFetchOutcome(printing: printing, result: .failed)
         }
     }
+}
+
+/// Resolves a CSV identity only when the user explicitly refreshes prices.
+/// Directory requests are shared across the whole refresh, while each card is
+/// fetched once and supplies both the verified identity and its current price.
+private actor ImportedCardResolver {
+    private var pokemonDirectoryTask: Task<[CatalogSetReference], Error>?
+    private var magicDirectoryTask: Task<[CatalogSetReference], Error>?
+
+    func resolve(
+        game: CardGame,
+        identity: ImportedPriceIdentity,
+        tcgdex: TCGdexService,
+        scryfall: ScryfallService
+    ) async throws -> IdentifiedCard {
+        let number = CatalogIdentityNormalization.localNumber(identity.cardNumber)
+        guard !number.isEmpty else { throw TCGdexError.identityMismatch }
+
+        switch game {
+        case .pokemon:
+            let sets = try await pokemonSets(using: tcgdex)
+            let candidates = CatalogIdentityNormalization.matchingSets(
+                named: identity.setName,
+                cardName: identity.name,
+                in: sets,
+                game: game
+            )
+            for set in candidates {
+                guard let card = try? await tcgdex.fetchCard(
+                    setID: set.id,
+                    localID: number,
+                    ignoringCache: true
+                ),
+                      CatalogIdentityNormalization.namesMatch(
+                        imported: identity.name,
+                        catalog: card.name
+                      ) else {
+                    continue
+                }
+                let printedCode = SetCodeMap.definitions.values.first {
+                    $0.tcgdexSetID.caseInsensitiveCompare(set.id) == .orderedSame
+                }?.printedCode ?? set.id.uppercased()
+                return .pokemon(card, setCode: printedCode)
+            }
+            throw TCGdexError.identityMismatch
+
+        case .magic:
+            let sets = try await magicSets(using: scryfall)
+            let candidates = CatalogIdentityNormalization.matchingSets(
+                named: identity.setName,
+                cardName: identity.name,
+                in: sets,
+                game: game
+            )
+            for set in candidates {
+                guard let card = try? await scryfall.fetchCard(
+                    setCode: set.id,
+                    collectorNumber: number,
+                    language: "en",
+                    ignoringCache: true,
+                    requiresScannableCard: false
+                ), CatalogIdentityNormalization.namesMatch(
+                    imported: identity.name,
+                    catalog: card.name
+                ) else {
+                    continue
+                }
+                return .magic(card)
+            }
+            throw ScryfallError.identityMismatch
+        }
+    }
+
+    private func pokemonSets(using service: TCGdexService) async throws -> [CatalogSetReference] {
+        if let pokemonDirectoryTask { return try await pokemonDirectoryTask.value }
+        let task = Task { try await service.fetchSetDirectory() }
+        pokemonDirectoryTask = task
+        do {
+            return try await task.value
+        } catch {
+            pokemonDirectoryTask = nil
+            throw error
+        }
+    }
+
+    private func magicSets(using service: ScryfallService) async throws -> [CatalogSetReference] {
+        if let magicDirectoryTask { return try await magicDirectoryTask.value }
+        let task = Task { try await service.fetchSetDirectory() }
+        magicDirectoryTask = task
+        do {
+            return try await task.value
+        } catch {
+            magicDirectoryTask = nil
+            throw error
+        }
+    }
+
 }

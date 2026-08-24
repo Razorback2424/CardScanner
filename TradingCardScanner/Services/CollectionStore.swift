@@ -27,21 +27,49 @@ struct CollectionStore {
     }
 
     @discardableResult
-    func add(_ card: IdentifiedCard, resolved: ResolvedVariant) -> CollectionMutation {
+    func add(
+        _ card: IdentifiedCard,
+        resolved: ResolvedVariant,
+        identityResolution: IdentityResolution = .printedIdentifier,
+        setReleaseOrder: Int? = nil,
+        matchCatalogAliases: Bool = false
+    ) -> CollectionMutation {
         let key = card.collectionKey(variant: resolved.variant)
         let mutation: CollectionMutation
 
-        if let existing = self.card(forKey: key) {
+        let existing = self.card(forKey: key) ?? (matchCatalogAliases
+            ? catalogAliasCard(providerID: card.providerID, variantID: resolved.variant?.id)
+            : nil)
+
+        if let existing {
             existing.quantity += 1
             existing.dateAdded = .now
-            mutation = CollectionMutation(collectionKey: key, didInsert: false)
+            mutation = CollectionMutation(collectionKey: existing.collectionKey, didInsert: false)
         } else {
-            context.insert(CollectedCard(card: card, resolved: resolved))
+            context.insert(
+                CollectedCard(
+                    card: card,
+                    resolved: resolved,
+                    identityResolution: identityResolution,
+                    setReleaseOrder: setReleaseOrder
+                )
+            )
             mutation = CollectionMutation(collectionKey: key, didInsert: true)
         }
 
         try? context.save()
         return mutation
+    }
+
+    /// Imported entries retain a synthetic storage key after catalog
+    /// normalization. The real provider id is still authoritative for deciding
+    /// whether a catalog selection is another copy of that same physical object.
+    private func catalogAliasCard(providerID: String, variantID: String?) -> CollectedCard? {
+        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return rows.first {
+            ($0.providerID == providerID || $0.catalogProviderID == providerID)
+                && $0.variantID == variantID
+        }
     }
 
     func undo(_ mutation: CollectionMutation) {
@@ -54,6 +82,17 @@ struct CollectionStore {
         }
 
         try? context.save()
+    }
+
+    /// Removes every owned card while leaving catalog and price data alone.
+    /// This is intentionally explicit and throwing because the settings screen
+    /// confirms the destructive action and reports a persistence failure.
+    func deleteAll() throws {
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        for card in cards {
+            context.delete(card)
+        }
+        try context.save()
     }
 
     /// Moves one copy from the variant it was recorded as to the one it really

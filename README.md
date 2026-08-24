@@ -21,6 +21,31 @@ does not already have?* If not, it is removed.
 
 ## Scanner
 
+### No game mode
+
+There is no Pokémon/Magic toggle. A printed identifier is specific enough to say
+which game it came from — `OBF 223/197` cannot be a Magic footer and
+`ECL • 0218 • EN` cannot be a Pokémon one — so asking the user to declare it
+first was asking for information the card already carries. That is the same test
+every interaction has to pass.
+
+Both parsers run on every frame against one combined vocabulary
+(`RecognitionProfile`):
+
+- exactly one game produces an identifier → that is the identification
+- neither does → an ordinary miss
+- **both** do → the frame is rejected, not ranked
+
+The last case is the existing two-identifiers-in-one-frame rule extended across
+games. A later pass almost always resolves it, and a wrong entry costs far more
+than a wait.
+
+Magic's OCR vocabulary *is* its set directory, so a compiled-in snapshot
+(`MagicSetSnapshot`) is installed before the first frame. Magic scanning works on
+first launch and offline; `ScryfallService.fetchSupportedSets()` then replaces it
+in the background without pausing recognition, and a failed refresh costs the
+newest sets rather than the feature.
+
 ### The acceptance pipeline
 
 ```
@@ -99,6 +124,13 @@ parallels really is a fact about the cards on the table. It is not an override:
 the catalog stays authoritative about what is physically possible, and a lock
 that does not apply produces the options plus an explanation.
 
+It lives in Settings, with **one lock per game**. The scanner no longer knows
+which game is coming next, so a single shared lock would either be wrong half the
+time or need re-setting whenever the pile changed game. Only the lock for the
+game of the card just identified is consulted. A lock silently resolving finishes
+is exactly the kind of thing that must not be invisible, so the scanner shows a
+compact indicator while any lock is on, and tapping it opens Settings.
+
 **The supplemental rules layer** (`PokemonVariantRules`) carries physical facts
 TCGdex does not model, such as the Poké Ball and Master Ball parallels. Each row
 is a claim about printed product and needs verifying against real cards. Being
@@ -118,6 +150,45 @@ the same moment the finish is a hand-made choice. If a rule is later found to be
 incomplete, every record that leaned on it can be found and reassessed without
 disturbing the ones a person confirmed.
 
+### Reading a Magic footer
+
+The printed footer is one logical thing — collector number, rarity, set code,
+language — but Vision routinely splits it, and differently frame to frame:
+
+```
+"0218/0269 U"  +  "ECL • EN"
+"0218"  +  "ECL"  +  "EN"
+"ECL • 0218 • EN"
+```
+
+So a footer is read as a **bounded group of up to three adjacent observations**
+rather than a single line. Per-line facts are computed once per frame and the
+windows just combine them, so widening the association costs nothing per frame.
+
+The group still has to earn the identification: exactly one known set code, an
+English marker, and a collector number that either sits on a line already
+carrying the code or the marker, or occupies a line entirely by itself. That last
+rule is what keeps a copyright year from becoming a card number, reinforced by
+rejecting a bare number above 999 — a four-digit number in a footer is a year far
+more often than a collector number.
+
+### What Scryfall printings are supported
+
+Two filters used to be stricter than they needed to be:
+
+- The set directory accepted **only three-character codes**. The List prints
+  `PLST` and Mystery Booster playtest cards print `CMB1`/`CMB2`, so those were
+  unscannable for no reason. Codes are now 3–4 characters, with a set-type filter
+  (`token`, `memorabilia`, `minigame`, `art_series`) keeping the wider length
+  from flooding the vocabulary with Scryfall's internal grouping codes.
+- Lookup rejected anything whose `frame` was not `"2015"`, which threw away
+  retro-frame reprints and other modern treatments that carry exactly the footer
+  the scanner had just read correctly. Rejecting a correctly identified card over
+  a cosmetic field is not accuracy. The policy is now explicit: the printing must
+  be from the modern collector-number era and must be a real single card, with
+  unsupported *layouts* (tokens, emblems, art series, schemes…) denied by name so
+  a layout Scryfall adds later is supported by default.
+
 ### The accuracy policy
 
 - Automatic identity requires validated identifier evidence *and* a real catalog
@@ -125,7 +196,8 @@ disturbing the ones a person confirmed.
 - Automatic finish assignment requires deterministic evidence.
 - Appearance alone can never confirm a finish.
 - One continuously visible printing cannot increment quantity more than once.
-- Two simultaneous valid identifiers are ambiguous and are rejected, not ranked.
+- Two simultaneous valid identifiers are ambiguous and are rejected, not ranked —
+  whether they are two cards of one game or one frame claiming to be both games.
 - A network response cannot override contradictory OCR evidence.
 - No amount of confidence may invent a physically impossible variant.
 
@@ -140,6 +212,8 @@ sorting are local computation over data already loaded.
 Collection                              428 cards
 $12,482.17 priced value
 Prices current as of 1:42 PM                    ↻
+
+[ 🔍 Search cards                                ]
 
 [ Game ] [ Set ] [ Price ] [ Finish ]     Sort ↕
 ```
@@ -161,6 +235,28 @@ A card does not cost $42 forever. What is true is that a physical variant's
 latest known market price was $42 as of a moment, from a source. That is a
 mutable observation with its own lifecycle, and it is shared by every copy owned —
 eight copies are one price to refresh, not eight.
+
+### Search
+
+A fifth filter, and the simplest one: it is always about **card name and nothing
+else**. Typing `OBF` finds nothing unless a card is literally named that. Set
+names, codes, collector numbers, rarity, finish and price are the chips' job, and
+keeping the two separate is what makes both predictable.
+
+Matching is case-, accent- and punctuation-insensitive and substring-based:
+`charizard` finds Charizard ex and Charizard VMAX, `one ring` finds The One Ring,
+`urzas saga` finds Urza's Saga, `ho oh` finds Ho-Oh. It is deliberately **not
+fuzzy** — `Charzard` returns nothing rather than quietly deciding what was meant
+and mixing unexpected cards into the results.
+
+Search composes with the chips rather than replacing them, so
+`Pikachu` + Pokémon + Prismatic Evolutions + Master Ball is one query. Owning
+several versions of a named card gives several results: the search identifies
+names, the collection still represents physical objects. Clearing the search
+leaves the chips alone, and `Clear` leaves the search alone.
+
+It is local and debounced by ~120 ms — enough to avoid rebuilding a large grid on
+every keystroke, short enough that it still reads as filtering while you type.
 
 ### Filters
 
@@ -264,9 +360,15 @@ Raising either makes duplicates harder and back-to-back identical copies slower.
 
 ## Adding a set
 
-Add one row to `Services/SetCodeMap.swift` with the printed three-letter code, the
-TCGdex set ID, the official denominator, and its release index. That also adds the
-code to Vision's custom vocabulary.
+**Pokémon:** add one row to `Services/SetCodeMap.swift` with the printed
+three-letter code, the TCGdex set ID, the official denominator, and its release
+index. That also adds the code to Vision's custom vocabulary.
+
+**Magic:** nothing to do. The directory comes from Scryfall at session start.
+`Services/MagicSetSnapshot.swift` is a generated fallback for the first frames
+and for offline use; regenerate it whenever `ScryfallService`'s filter changes, so
+the snapshot and the live refresh agree about what is scannable. A stale snapshot
+only costs the newest sets a few seconds of unrecognisability on a cold launch.
 
 If the set prints parallel patterns TCGdex does not model, add a row to
 `PokemonVariantRules` as well — after checking real cards.
@@ -277,14 +379,16 @@ If the set prints parallel patterns TCGdex does not model, add a row to
 module, so it exercises the same compiled code the app runs.
 
 - `ScanParserTests` — identifiers, merged OCR, `l`/`1` confusion, illustrator-name
-  rejection, two-card ambiguity, denominators, rolling confirmation
+  rejection, two-card ambiguity, denominators, rolling confirmation, split Magic
+  footers, automatic game recognition, and the bundled set snapshot
 - `CardLatchTests` — the duplicate-protection guarantees, written as the physical
   situations they stand for
 - `VariantResolverTests` — the finish hierarchy, Finish Lock as evidence rather
   than override, the supplemental rules layer
 - `CollectionKeyTests` — catalog decoding, variant rows, legacy key preservation
 - `CollectionQueryTests` — natural collector-number order, filter composition,
-  unit-price semantics, unpriced sorting
+  unit-price semantics, unpriced sorting, and name search (name-only, not fuzzy,
+  composes with chips)
 - `PricingTests` — the pricing promise, freshness states, refresh scheduling
 
 ## First device run: confirm the ROI transform

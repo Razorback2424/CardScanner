@@ -28,6 +28,10 @@ extension PhysicalVariant {
     static let firstEdition = PhysicalVariant(id: "firstEdition", label: "1st Edition")
     static let pokeBall = PhysicalVariant(id: "pokeBall", label: "Poké Ball")
     static let masterBall = PhysicalVariant(id: "masterBall", label: "Master Ball")
+    static let duskBall = PhysicalVariant(id: "duskBall", label: "Dusk Ball")
+    static let friendBall = PhysicalVariant(id: "friendBall", label: "Friend Ball")
+    static let quickBall = PhysicalVariant(id: "quickBall", label: "Quick Ball")
+    static let loveBall = PhysicalVariant(id: "loveBall", label: "Love Ball")
 
     // Magic. These ids match Scryfall's `finishes` values exactly, so a printing's
     // possible finishes come straight from the catalog with no translation table
@@ -39,9 +43,30 @@ extension PhysicalVariant {
     /// Every variant this app can name, for the Finish Lock menu and for turning a
     /// persisted id back into a label.
     static let known: [PhysicalVariant] = [
-        .normal, .holo, .reverse, .firstEdition, .pokeBall, .masterBall,
+        .normal, .holo, .reverse, .firstEdition,
+        .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
         .nonfoil, .foil, .etched
     ]
+
+    /// TCGdex's `foil` vocabulary for parallel patterns, mapped onto this app's
+    /// ids. The two differ only in casing, but the map is explicit so a new
+    /// pattern name shows up here as a decision rather than as a silent
+    /// lowercase id that no longer matches what the CSV importer produced.
+    ///
+    /// An unrecognised pattern is carried through under its own name. It is a
+    /// real distinct object that this build simply cannot label yet, and it must
+    /// never collapse onto plain reverse.
+    static func pokemonFoilPattern(_ foil: String) -> PhysicalVariant {
+        switch foil.lowercased().replacingOccurrences(of: "-", with: "") {
+        case "pokeball": return .pokeBall
+        case "masterball": return .masterBall
+        case "duskball": return .duskBall
+        case "friendball": return .friendBall
+        case "quickball": return .quickBall
+        case "loveball": return .loveBall
+        default: return PhysicalVariant(id: foil, label: foil.capitalized)
+        }
+    }
 
     static func named(_ id: String) -> PhysicalVariant? {
         known.first { $0.id == id }
@@ -59,7 +84,12 @@ extension PhysicalVariant {
     /// menu should read.
     static func selectable(for game: CardGame) -> [PhysicalVariant] {
         switch game {
-        case .pokemon: return [.normal, .holo, .reverse, .pokeBall, .masterBall, .firstEdition]
+        case .pokemon:
+            return [
+                .normal, .holo, .reverse,
+                .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
+                .firstEdition
+            ]
         case .magic: return [.nonfoil, .foil, .etched]
         }
     }
@@ -78,8 +108,13 @@ extension PhysicalVariant {
         case PhysicalVariant.pokeBall.id: return 3
         case PhysicalVariant.etched.id: return 3
         case PhysicalVariant.masterBall.id: return 4
-        case PhysicalVariant.firstEdition.id: return 5
-        default: return 6
+        case PhysicalVariant.duskBall.id,
+             PhysicalVariant.friendBall.id,
+             PhysicalVariant.quickBall.id,
+             PhysicalVariant.loveBall.id:
+            return 5
+        case PhysicalVariant.firstEdition.id: return 6
+        default: return 7
         }
     }
 }
@@ -98,6 +133,8 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
     case finishLock
     /// The user tapped it.
     case userConfirmed
+    /// The finish came from an imported collection file.
+    case imported
     /// The catalog exposes no variant information for this printing at all. The
     /// record honestly stores "unknown" rather than inventing a plausible finish.
     case catalogSilent
@@ -108,15 +145,16 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         case .deterministicSetRule: return "Set rule"
         case .finishLock: return "Finish Lock"
         case .userConfirmed: return "You confirmed"
+        case .imported: return "Imported"
         case .catalogSilent: return "Not published"
         }
     }
 
-    /// Whether a human supplied the fact. Used to decide what may be revisited
-    /// automatically if a rule is later corrected.
+    /// Whether the app may revisit the fact automatically if a rule changes.
+    /// User choices and imported records stay as supplied.
     var isAutomatic: Bool {
         switch self {
-        case .userConfirmed, .finishLock: return false
+        case .userConfirmed, .finishLock, .imported: return false
         case .uniqueInCatalog, .deterministicSetRule, .catalogSilent: return true
         }
     }
@@ -128,13 +166,18 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
 /// and must not share one confidence field.
 enum IdentityResolution: String, Codable, Hashable, Sendable {
     /// Printed set code and collector number, confirmed across OCR passes and
-    /// then matched against a real catalog record. The only way this MVP ever
-    /// establishes identity.
+    /// then matched against a real catalog record.
     case printedIdentifier
+    /// The user selected this exact printing from the remote card catalog.
+    case catalogSelected
+    /// The printing identity came from an imported collection file.
+    case imported
 
     var label: String {
         switch self {
         case .printedIdentifier: return "Printed identifier"
+        case .catalogSelected: return "Selected from catalog"
+        case .imported: return "Imported"
         }
     }
 }

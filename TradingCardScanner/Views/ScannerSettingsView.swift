@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// Settings sheet for the scanner. Built as a `Form` from the start so that adding
@@ -8,12 +9,16 @@ struct ScannerSettingsView: View {
     let setFinishLock: (PhysicalVariant?, CardGame) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var isConfirmingCollectionDeletion = false
+    @State private var deletionError: String?
 
     var body: some View {
         NavigationStack {
             Form {
                 finishLockSection
                 cameraSection
+                collectionSection
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -21,6 +26,31 @@ struct ScannerSettingsView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+            .confirmationDialog(
+                "Delete entire collection?",
+                isPresented: $isConfirmingCollectionDeletion,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Collection", role: .destructive) {
+                    deleteCollection()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently deletes every card in your collection.")
+            }
+            .alert("Collection Couldn’t Be Deleted", isPresented: deletionErrorBinding) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(deletionError ?? "Please try again.")
+            }
+        }
+    }
+
+    private var collectionSection: some View {
+        Section("Collection") {
+            Button("Delete Entire Collection", role: .destructive) {
+                isConfirmingCollectionDeletion = true
             }
         }
     }
@@ -88,5 +118,20 @@ struct ScannerSettingsView: View {
             get: { scanner.lens },
             set: { scanner.setLens($0) }
         )
+    }
+
+    private var deletionErrorBinding: Binding<Bool> {
+        Binding(
+            get: { deletionError != nil },
+            set: { if !$0 { deletionError = nil } }
+        )
+    }
+
+    private func deleteCollection() {
+        do {
+            try CollectionStore(context: modelContext).deleteAll()
+        } catch {
+            deletionError = error.localizedDescription
+        }
     }
 }

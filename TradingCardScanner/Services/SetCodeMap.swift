@@ -68,4 +68,23 @@ enum SetCodeMap {
     static func releaseIndex(forPrintedCode code: String) -> Int? {
         definitions[code.uppercased()]?.releaseIndex
     }
+
+    static func printedCode(forTCGdexSetID id: String) -> String? {
+        definitions.values.first { $0.tcgdexSetID.caseInsensitiveCompare(id) == .orderedSame }?.printedCode
+    }
+}
+
+/// The full TCGdex directory supplies a stable all-set release rank that the
+/// scanner's deliberately small OCR table cannot. Browse refreshes this cache;
+/// scans can then use the same scale as manually selected historical cards.
+enum PokemonCatalogReleaseOrder {
+    private static let defaultsKey = "pokemonCatalogReleaseOrder.v1"
+
+    static func install(_ values: [String: Int]) {
+        UserDefaults.standard.set(values, forKey: defaultsKey)
+    }
+
+    static func order(forSetID setID: String) -> Int? {
+        (UserDefaults.standard.dictionary(forKey: defaultsKey) as? [String: Int])?[setID.lowercased()]
+    }
 }

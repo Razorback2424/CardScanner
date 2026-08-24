@@ -6,11 +6,17 @@ import SwiftData
 enum PriceSource: String, Codable, Hashable, Sendable {
     case tcgplayer
     case scryfall
+    /// Used only where TCGdex carries no TCGplayer figure. Quotes euros, and is
+    /// stored and shown as euros — see `PriceRecord.currencyCode`.
+    case cardmarket
+    case importedCSV
 
     var label: String {
         switch self {
         case .tcgplayer: return "TCGplayer"
         case .scryfall: return "Scryfall"
+        case .cardmarket: return "Cardmarket"
+        case .importedCSV: return "Imported CSV"
         }
     }
 
@@ -20,6 +26,8 @@ enum PriceSource: String, Codable, Hashable, Sendable {
         switch self {
         case .tcgplayer: return true
         case .scryfall: return false
+        case .cardmarket: return true
+        case .importedCSV: return true
         }
     }
 }
@@ -89,14 +97,30 @@ final class PriceRecord {
         lastFailureAt = nil
     }
 
+    /// Keeps the exact per-variant market value supplied by an import while
+    /// leaving the record eligible for an immediate live provider check.
+    func applyImported(amount: Double, sourceUpdatedAt: Date?, importedAt: Date = .now) {
+        unitMarketPriceUSD = amount
+        currencyCode = "USD"
+        sourceRaw = PriceSource.importedCSV.rawValue
+        sourceVariantID = variantID
+        self.sourceUpdatedAt = sourceUpdatedAt
+        fetchedAt = importedAt
+        lastCheckedAt = nil
+        lastFailureAt = nil
+    }
+
     /// The provider answered and had nothing for this variant. That is a real,
     /// current answer — "unavailable" — not a failure.
     func applyUnavailable(source: PriceSource?, at date: Date) {
-        unitMarketPriceUSD = nil
-        sourceRaw = source?.rawValue
-        sourceVariantID = nil
-        sourceUpdatedAt = nil
-        fetchedAt = date
+        // A provider lacking this exact variant does not invalidate a known,
+        // dated price imported for that same variant.
+        if unitMarketPriceUSD == nil {
+            sourceRaw = source?.rawValue
+            sourceVariantID = nil
+            sourceUpdatedAt = nil
+            fetchedAt = date
+        }
         lastCheckedAt = date
         lastFailureAt = nil
     }
@@ -110,6 +134,7 @@ final class PriceRecord {
     var display: PriceDisplay {
         PriceDisplay(
             amount: unitMarketPriceUSD,
+            currencyCode: currencyCode,
             source: source,
             sourceUpdatedAt: sourceUpdatedAt,
             fetchedAt: fetchedAt,
@@ -133,6 +158,10 @@ struct PriceDisplay: Equatable, Sendable {
     }
 
     var amount: Double? = nil
+    /// The currency `amount` is quoted in. Not decoration: Cardmarket quotes
+    /// euros, and formatting a euro figure with a dollar sign would misstate a
+    /// number the user makes decisions on.
+    var currencyCode: String = "USD"
     var source: PriceSource? = nil
     var sourceUpdatedAt: Date? = nil
     var fetchedAt: Date? = nil

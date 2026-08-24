@@ -12,9 +12,14 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// it required turned a missing field into a failed identification.
     let variants: TCGdexVariants?
     let pricing: TCGdexPricing?
+    /// Per-object pricing. Preferred over `pricing` whenever present, because it
+    /// is the only representation that can tell two parallels of one printing
+    /// apart. Optional because older responses and many sets omit it.
+    let variantsDetailed: [TCGdexDetailedVariant]?
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image, rarity, set, variants, pricing
+        case variantsDetailed = "variants_detailed"
     }
 
     init(from decoder: Decoder) throws {
@@ -26,6 +31,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         set = try container.decode(TCGdexSetBrief.self, forKey: .set)
         variants = try container.decodeIfPresent(TCGdexVariants.self, forKey: .variants)
         pricing = try container.decodeIfPresent(TCGdexPricing.self, forKey: .pricing)
+        variantsDetailed = try container.decodeIfPresent(
+            [TCGdexDetailedVariant].self,
+            forKey: .variantsDetailed
+        )
 
         if let stringValue = try? container.decode(String.self, forKey: .localId) {
             localId = stringValue
@@ -40,17 +49,36 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         return URL(string: image + "/high.png")
     }
 
-    /// What TCGdex says this printing physically exists as. The supplemental
-    /// rules layer may widen this for sets whose parallel patterns TCGdex does
-    /// not model; it is never widened here.
+    /// What TCGdex says this printing physically exists as, drawn from both
+    /// places it says it: the `variants` booleans and the `variants_detailed`
+    /// entries. Both are the catalog speaking, so both belong here.
+    ///
+    /// The supplemental rules layer may still widen this for sets whose parallel
+    /// patterns TCGdex does not model at all; no *rule* is applied here.
     var catalogVariants: [PhysicalVariant] {
-        guard let variants else { return [] }
         var result: [PhysicalVariant] = []
-        if variants.normal { result.append(.normal) }
-        if variants.holo { result.append(.holo) }
-        if variants.reverse { result.append(.reverse) }
-        if variants.firstEdition { result.append(.firstEdition) }
+        if let variants {
+            if variants.normal { result.append(.normal) }
+            if variants.holo { result.append(.holo) }
+            if variants.reverse { result.append(.reverse) }
+            if variants.firstEdition { result.append(.firstEdition) }
+        }
+        // `variants_detailed` is the only place parallel patterns appear. Each
+        // entry is TCGdex stating that this physical object exists, which is the
+        // same class of fact as the booleans above — so it belongs here, and a
+        // pattern the boolean set cannot express stops being invisible.
+        for detailed in variantsDetailed ?? [] {
+            guard let variant = detailed.physicalVariant,
+                  !result.contains(variant) else { continue }
+            result.append(variant)
+        }
         return result
+    }
+
+    /// The `variants_detailed` entry describing one physical object, if TCGdex
+    /// published one for it.
+    func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
+        variantsDetailed?.first { $0.physicalVariant == variant }
     }
 }
 
@@ -74,6 +102,44 @@ struct TCGdexCardCount: Decodable, Sendable {
     let official: Int
 }
 
+struct TCGdexSetCatalog: Decodable, Sendable {
+    let id: String
+    let name: String
+    let cards: [TCGdexCardBrief]
+    let logo: String?
+    let symbol: String?
+    let releaseDate: String?
+    let tcgOnline: String?
+    let cardCount: TCGdexCardCount?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, cards, logo, symbol, releaseDate, tcgOnline, cardCount
+    }
+}
+
+struct TCGdexCardBrief: Decodable, Sendable {
+    let id: String
+    let localId: String
+    let name: String
+    let image: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, localId, name, image
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        image = try container.decodeIfPresent(String.self, forKey: .image)
+        if let stringValue = try? container.decode(String.self, forKey: .localId) {
+            localId = stringValue
+        } else {
+            localId = String(try container.decode(Int.self, forKey: .localId))
+        }
+    }
+}
+
 struct TCGdexVariants: Decodable, Sendable {
     let firstEdition: Bool
     let holo: Bool
@@ -84,6 +150,92 @@ struct TCGdexVariants: Decodable, Sendable {
 
 struct TCGdexPricing: Decodable, Sendable {
     let tcgplayer: TCGPlayerPricing?
+    /// Cardmarket is the only source TCGdex populates for a good deal of the
+    /// promo catalogue, where the TCGplayer block is present but null. It is a
+    /// different marketplace in a different currency, never a USD substitute.
+    let cardmarket: CardmarketPricing?
+}
+
+/// One entry of TCGdex's `variants_detailed` array: a single physically distinct
+/// printing, with pricing scoped to *that* object rather than to the card.
+///
+/// This is what makes parallel patterns priceable. TCGdex types every parallel
+/// as `reverse` and distinguishes them only by `foil` and by the marketplace
+/// product id carried inside `pricing`, so the flat per-card pricing object
+/// cannot represent them — a Poké Ball and a Master Ball copy collapse onto one
+/// another there.
+struct TCGdexDetailedVariant: Decodable, Sendable {
+    /// `normal`, `holo`, `reverse`, `firstEdition`.
+    let type: String?
+    /// The parallel pattern, when this is one: `pokeball`, `masterball`,
+    /// `duskball`, `energy`, `cosmos`… Absent for the plain printing.
+    let foil: String?
+    let size: String?
+    let variantId: String?
+    let pricing: TCGdexPricing?
+
+    /// The physical object this entry describes.
+    ///
+    /// A named pattern always wins over `type`, because that is precisely the
+    /// distinction `type` throws away. A pattern this build has never heard of
+    /// is carried through under its own name rather than being folded into plain
+    /// reverse — an unrecognised parallel is still a distinct object, and
+    /// letting it answer to `.reverse` would hand a reverse holo the price of a
+    /// scarcer parallel.
+    var physicalVariant: PhysicalVariant? {
+        if let foil, !foil.trimmingCharacters(in: .whitespaces).isEmpty {
+            return PhysicalVariant.pokemonFoilPattern(foil)
+        }
+        switch type {
+        case "normal": return .normal
+        case "holo": return .holo
+        case "reverse": return .reverse
+        case "firstEdition": return .firstEdition
+        default: return nil
+        }
+    }
+
+    /// The marketplace listing key this entry's `type` would normally be read
+    /// from. Used as a preference, not a requirement — see `marketPrice`.
+    var preferredListing: String? {
+        switch type {
+        case "normal": return "normal"
+        case "holo": return "holofoil"
+        case "reverse": return "reverse-holofoil"
+        default: return nil
+        }
+    }
+}
+
+/// Cardmarket's aggregate figures, in euros. Field names are Cardmarket's own.
+struct CardmarketPricing: Decodable, Sendable {
+    let updated: String?
+    let unit: String?
+    /// 30-day average, which is the steadiest of the published figures and the
+    /// one least distorted by a single outlying sale.
+    let avg30: Double?
+    let avg7: Double?
+    let trend: Double?
+    let avg: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case updated, unit, avg30, avg7, trend, avg
+    }
+
+    var updatedAt: Date? {
+        updated.flatMap(FlexibleDate.parse)
+    }
+
+    var currencyCode: String {
+        (unit?.uppercased()).flatMap { $0 == "EUR" || $0 == "\u{20AC}" ? "EUR" : $0 } ?? "EUR"
+    }
+
+    /// Preference order runs steadiest-first. `trend` is Cardmarket's own
+    /// smoothed current figure and is the closest analogue to a market price;
+    /// the averages back it up when it is absent.
+    var marketPrice: Double? {
+        trend ?? avg30 ?? avg7 ?? avg
+    }
 }
 
 struct TCGPlayerPricing: Decodable, Sendable {
@@ -187,6 +339,9 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     let prices: ScryfallPrices?
     let imageURIs: ScryfallImageURIs?
     let cardFaces: [ScryfallCardFace]?
+    /// Scryfall supplies marketplace URLs for this exact printing. These are
+    /// safer than constructing a marketplace search from a card name.
+    let purchaseURIs: ScryfallPurchaseURIs?
 
     enum CodingKeys: String, CodingKey {
         case id, name, digital, frame, layout, rarity, finishes, prices
@@ -197,6 +352,7 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
         case releasedAt = "released_at"
         case imageURIs = "image_uris"
         case cardFaces = "card_faces"
+        case purchaseURIs = "purchase_uris"
     }
 
     var releaseDate: Date? {
@@ -216,6 +372,10 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     var thumbnailImageURL: URL? {
         imageURIs?.small ?? cardFaces?.first?.imageURIs?.small ?? displayImageURL
     }
+}
+
+struct ScryfallPurchaseURIs: Decodable, Sendable {
+    let tcgplayer: URL?
 }
 
 struct ScryfallPrices: Decodable, Sendable {
@@ -318,6 +478,15 @@ enum IdentifiedCard: Identifiable, Sendable {
         }
     }
 
+    var displayCardNumber: String {
+        switch self {
+        case let .pokemon(card, _):
+            return "\(card.localId)/\(card.set.cardCount.official)"
+        case let .magic(card):
+            return card.collectorNumber
+        }
+    }
+
     var identifier: String {
         switch self {
         case let .pokemon(card, setCode):
@@ -360,8 +529,10 @@ enum IdentifiedCard: Identifiable, Sendable {
     /// compared against each other.
     var setReleaseOrder: Int {
         switch self {
-        case let .pokemon(_, setCode):
-            return SetCodeMap.releaseIndex(forPrintedCode: setCode) ?? 0
+        case let .pokemon(card, setCode):
+            return PokemonCatalogReleaseOrder.order(forSetID: card.set.id)
+                ?? SetCodeMap.releaseIndex(forPrintedCode: setCode)
+                ?? 0
         case let .magic(card):
             guard let date = card.releaseDate else { return 0 }
             return Int(date.timeIntervalSince1970 / 86_400)

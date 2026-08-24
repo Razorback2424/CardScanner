@@ -43,7 +43,22 @@
 		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
 		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
 		A0020021 /* PricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020021 /* PricingTests.swift */; };
+		A0020022 /* CenteringExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020022 /* CenteringExportTests.swift */; };
+		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
+		A0020024 /* BrowseFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020024 /* BrowseFeatureTests.swift */; };
 		A0010040 /* MagicSetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010040 /* MagicSetSnapshot.swift */; };
+		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
+		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
+		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
+		A0010044 /* CenteringCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010044 /* CenteringCameraView.swift */; };
+		A0010045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0010045 /* Assets.xcassets */; };
+		A0010046 /* CollectionCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010046 /* CollectionCSV.swift */; };
+		A0010047 /* CollectionCatalogNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010047 /* CollectionCatalogNormalizer.swift */; };
+		A0010048 /* CardCenteringExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010048 /* CardCenteringExport.swift */; };
+		A0010050 /* BrowseCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010050 /* BrowseCatalogModels.swift */; };
+		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
+		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
+		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,7 +111,22 @@
 		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
 		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
 		B0020021 /* PricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingTests.swift; sourceTree = "<group>"; };
+		B0020022 /* CenteringExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringExportTests.swift; sourceTree = "<group>"; };
+		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
+		B0020024 /* BrowseFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFeatureTests.swift; sourceTree = "<group>"; };
 		B0010040 /* MagicSetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicSetSnapshot.swift; sourceTree = "<group>"; };
+		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
+		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
+		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
+		B0010044 /* CenteringCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringCameraView.swift; sourceTree = "<group>"; };
+		B0010045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B0010046 /* CollectionCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCSV.swift; sourceTree = "<group>"; };
+		B0010047 /* CollectionCatalogNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogNormalizer.swift; sourceTree = "<group>"; };
+		B0010048 /* CardCenteringExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringExport.swift; sourceTree = "<group>"; };
+		B0010050 /* BrowseCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalogModels.swift; sourceTree = "<group>"; };
+		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
+		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
+		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +173,7 @@
 				D0010003 /* Models */,
 				D0010004 /* Services */,
 				D0010005 /* Views */,
+				B0010045 /* Assets.xcassets */,
 				B0010015 /* Info.plist */,
 			);
 			path = TradingCardScanner;
@@ -159,10 +190,12 @@
 		D0010003 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B0010050 /* BrowseCatalogModels.swift */,
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
 				B0010030 /* PriceRecord.swift */,
+				B0010041 /* CardCenteringMeasurement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -170,6 +203,7 @@
 		D0010004 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B0010051 /* BrowseCatalog.swift */,
 				B0010004 /* SetCodeMap.swift */,
 				B0010005 /* ScanParser.swift */,
 				B0010006 /* TCGdexService.swift */,
@@ -185,6 +219,10 @@
 				B0010033 /* PriceRefreshController.swift */,
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
+				B0010042 /* CardCenteringAnalyzer.swift */,
+				B0010046 /* CollectionCSV.swift */,
+				B0010047 /* CollectionCatalogNormalizer.swift */,
+				B0010048 /* CardCenteringExport.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -192,6 +230,8 @@
 		D0010005 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B0010052 /* BrowseView.swift */,
+				B0010053 /* CatalogCardDetailView.swift */,
 				B0010008 /* CameraPreview.swift */,
 				B0010009 /* ScannerViewModel.swift */,
 				B0010010 /* ScannerView.swift */,
@@ -202,6 +242,8 @@
 				B0010026 /* ScanSessionOverlays.swift */,
 				B0010027 /* ScanReviewSheet.swift */,
 				B0010035 /* CollectionFilters.swift */,
+				B0010043 /* CardCenteringView.swift */,
+				B0010044 /* CenteringCameraView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -224,6 +266,9 @@
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020021 /* PricingTests.swift */,
+				B0020022 /* CenteringExportTests.swift */,
+				B0020023 /* CatalogNormalizationTests.swift */,
+				B0020024 /* BrowseFeatureTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -308,6 +353,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0010045 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +401,17 @@
 				A0010034 /* CollectionQuery.swift in Sources */,
 				A0010040 /* MagicSetSnapshot.swift in Sources */,
 				A0010035 /* CollectionFilters.swift in Sources */,
+				A0010041 /* CardCenteringMeasurement.swift in Sources */,
+				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
+				A0010043 /* CardCenteringView.swift in Sources */,
+				A0010044 /* CenteringCameraView.swift in Sources */,
+				A0010046 /* CollectionCSV.swift in Sources */,
+				A0010047 /* CollectionCatalogNormalizer.swift in Sources */,
+				A0010048 /* CardCenteringExport.swift in Sources */,
+				A0010050 /* BrowseCatalogModels.swift in Sources */,
+				A0010051 /* BrowseCatalog.swift in Sources */,
+				A0010052 /* BrowseView.swift in Sources */,
+				A0010053 /* CatalogCardDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,6 +425,9 @@
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020021 /* PricingTests.swift in Sources */,
+				A0020022 /* CenteringExportTests.swift in Sources */,
+				A0020023 /* CatalogNormalizationTests.swift in Sources */,
+				A0020024 /* BrowseFeatureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +471,7 @@
 		F0010006 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -435,6 +496,7 @@
 		F0010007 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D4X943SP8Z;

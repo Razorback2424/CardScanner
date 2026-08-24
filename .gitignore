@@ -4,6 +4,7 @@
 # Xcode user state and local build products
 DerivedData/
 .codex_build/
+.codex_build_device/
 *.xcuserstate
 xcuserdata/
 
