@@ -67,6 +67,34 @@ final class PriceRecord {
     var fetchedAt: Date?
     /// When this app last asked, successfully or not.
     var lastCheckedAt: Date?
+    // MARK: - Market metadata
+    //
+    // All optional, so every record written before these existed keeps working
+    // untouched.
+
+    var itemKindRaw: String?
+    /// The vendor's stable card UUID this observation came from.
+    var canonicalMarketID: String?
+    /// The vendor's stable *variant* UUID — the exact object priced.
+    var marketVariantID: String?
+    var marketRegionRaw: String?
+    /// The vendor's own "this game was repriced at" clock, distinct from both
+    /// when the app checked and when this variant's price last moved. Used to
+    /// avoid spending a request on a game that has not been repriced.
+    var providerGameUpdatedAt: Date?
+
+    // Summary statistics, populated only when history is explicitly requested
+    // from an item's detail screen. Routine refreshes never ask for history.
+    var historyObservationCount: Int?
+    var periodChangeCount: Int?
+    var periodLow: Double?
+    var periodHigh: Double?
+    var coefficientOfVariation: Double?
+
+    var itemKind: CollectionItemKind? {
+        itemKindRaw.flatMap(CollectionItemKind.init(rawValue:))
+    }
+
     /// Set when the most recent attempt failed. Cleared on the next success, so a
     /// stale-but-real price is never replaced by nothing.
     var lastFailureAt: Date?

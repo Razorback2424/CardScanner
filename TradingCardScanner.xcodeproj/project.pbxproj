@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A0020028 /* JustTCGContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020028 /* JustTCGContractTests.swift */; };
+		A0010065 /* JustTCGRefreshCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010065 /* JustTCGRefreshCoordinator.swift */; };
+		A0010064 /* JustTCGV2GradedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010064 /* JustTCGV2GradedClient.swift */; };
+		A0010063 /* JustTCGV1Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010063 /* JustTCGV1Client.swift */; };
+		A0010062 /* JustTCGSyncLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010062 /* JustTCGSyncLedger.swift */; };
+		A0010061 /* JustTCGTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010061 /* JustTCGTransport.swift */; };
+		A0010060 /* JustTCGMarketModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010060 /* JustTCGMarketModels.swift */; };
+		A0010059 /* CollectionItemKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010059 /* CollectionItemKind.swift */; };
 		A0020027 /* ProductFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020027 /* ProductFallbackTests.swift */; };
 		A0010058 /* ProductIdentityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010058 /* ProductIdentityStore.swift */; };
 		A0010057 /* ProductPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010057 /* ProductPriceService.swift */; };
@@ -80,6 +88,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0020028 /* JustTCGContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGContractTests.swift; sourceTree = "<group>"; };
+		B0010065 /* JustTCGRefreshCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGRefreshCoordinator.swift; sourceTree = "<group>"; };
+		B0010064 /* JustTCGV2GradedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGV2GradedClient.swift; sourceTree = "<group>"; };
+		B0010063 /* JustTCGV1Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGV1Client.swift; sourceTree = "<group>"; };
+		B0010062 /* JustTCGSyncLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGSyncLedger.swift; sourceTree = "<group>"; };
+		B0010061 /* JustTCGTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGTransport.swift; sourceTree = "<group>"; };
+		B0010060 /* JustTCGMarketModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustTCGMarketModels.swift; sourceTree = "<group>"; };
+		B0010059 /* CollectionItemKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionItemKind.swift; sourceTree = "<group>"; };
 		B0020027 /* ProductFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFallbackTests.swift; sourceTree = "<group>"; };
 		B0010058 /* ProductIdentityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentityStore.swift; sourceTree = "<group>"; };
 		B0010057 /* ProductPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceService.swift; sourceTree = "<group>"; };
@@ -213,6 +229,8 @@
 				B0010030 /* PriceRecord.swift */,
 				B0010041 /* CardCenteringMeasurement.swift */,
 							B0010055 /* ProductIdentity.swift */,
+							B0010059 /* CollectionItemKind.swift */,
+							B0010060 /* JustTCGMarketModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -244,6 +262,11 @@
 							B0010056 /* ProductCatalogIdentity.swift */,
 							B0010057 /* ProductPriceService.swift */,
 							B0010058 /* ProductIdentityStore.swift */,
+							B0010061 /* JustTCGTransport.swift */,
+							B0010062 /* JustTCGSyncLedger.swift */,
+							B0010063 /* JustTCGV1Client.swift */,
+							B0010064 /* JustTCGV2GradedClient.swift */,
+							B0010065 /* JustTCGRefreshCoordinator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -287,6 +310,7 @@
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020021 /* PricingTests.swift */,
+				B0020028 /* JustTCGContractTests.swift */,
 				B0020027 /* ProductFallbackTests.swift */,
 				B0020026 /* ProductCatalogIdentityTests.swift */,
 				B0020025 /* ProductIdentityTests.swift */,
@@ -397,6 +421,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0010065 /* JustTCGRefreshCoordinator.swift in Sources */,
+				A0010064 /* JustTCGV2GradedClient.swift in Sources */,
+				A0010063 /* JustTCGV1Client.swift in Sources */,
+				A0010062 /* JustTCGSyncLedger.swift in Sources */,
+				A0010061 /* JustTCGTransport.swift in Sources */,
+				A0010060 /* JustTCGMarketModels.swift in Sources */,
+				A0010059 /* CollectionItemKind.swift in Sources */,
 				A0010058 /* ProductIdentityStore.swift in Sources */,
 				A0010057 /* ProductPriceService.swift in Sources */,
 				A0010056 /* ProductCatalogIdentity.swift in Sources */,
@@ -456,6 +487,7 @@
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020021 /* PricingTests.swift in Sources */,
+				A0020028 /* JustTCGContractTests.swift in Sources */,
 				A0020027 /* ProductFallbackTests.swift in Sources */,
 				A0020026 /* ProductCatalogIdentityTests.swift in Sources */,
 				A0020025 /* ProductIdentityTests.swift in Sources */,

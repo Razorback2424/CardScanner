@@ -210,10 +210,19 @@ final class ProductFallbackTests: XCTestCase {
 
     func testAMatchRemembersTheHandleSoTheSearchIsNotRepeated() throws {
         let store = ProductIdentityStore(context: try makeContext())
-        store.record(.price(usd(1.23), vendorCardID: "vendor-1"), forKey: "k")
+        store.record(
+            .price(usd(1.23), vendorCardID: "vendor-1", vendorVariantID: "vendor-1_nm_normal"),
+            forKey: "k"
+        )
 
         XCTAssertEqual(store.cachedCardID(forKey: "k"), "vendor-1")
         XCTAssertFalse(store.needsResolution(forKey: "k"))
+        // The variant handle is what batches are built from; without it every
+        // refresh would repeat a search already paid for.
+        XCTAssertEqual(
+            store.identity(forKey: "k")?.vendorVariantID,
+            "vendor-1_nm_normal"
+        )
     }
 
     /// The product exists but is unlisted in this finish. That is a fact about

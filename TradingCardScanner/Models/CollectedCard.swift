@@ -67,6 +67,69 @@ final class CollectedCard {
     /// from a name-based search or a guessed marketplace slug.
     var tcgplayerURL: String?
 
+    // MARK: - Collection item kind
+    //
+    // Everything below is defaulted or optional so that every row written before
+    // these existed migrates as a raw card without a migration pass. The type is
+    // still called `CollectedCard` for the same reason: renaming it would orphan
+    // the existing local store.
+
+    var itemKindRaw: String = CollectionItemKind.rawCard.rawValue
+
+    /// The vendor's stable card UUID, resolved once and then reused forever.
+    /// Holding it is what turns every later refresh into a keyed batch lookup
+    /// instead of a search.
+    var justTCGCardID: String?
+    /// The vendor's stable *variant* UUID — the exact printing and finish. This
+    /// is the identifier batches are built from.
+    var justTCGVariantID: String?
+    /// Which API version resolved the identity. Graded slabs come from v2 and
+    /// raw/sealed from v1, and the two are not interchangeable until the
+    /// contract slice proves otherwise.
+    var justTCGAPIVersion: String?
+
+    var gradingCompanyRaw: String?
+    /// Kept as text: `9.5` is not an integer and `Authentic` is not a number.
+    var gradeRaw: String?
+    var gradeLabel: String?
+    /// `OC`, `ST`, `MK`. A qualifier makes a different object, never a footnote.
+    var gradingQualifier: String?
+    /// When present the row is one specific slab, so its quantity is one.
+    var certificationNumber: String?
+
+    var marketRegionRaw: String?
+
+    var itemKind: CollectionItemKind {
+        CollectionItemKind(rawValue: itemKindRaw) ?? .rawCard
+    }
+
+    var gradingCompany: GradingCompany? {
+        gradingCompanyRaw.flatMap(GradingCompany.init(rawValue:))
+    }
+
+    var cardGrade: CardGrade? {
+        guard itemKind == .gradedCard else { return nil }
+        return CardGrade(value: gradeRaw, label: gradeLabel, qualifier: gradingQualifier)
+    }
+
+    /// What a collection tile calls this row.
+    var itemKindLabel: String {
+        switch itemKind {
+        case .rawCard:
+            return variantLabel ?? PhysicalVariant.normal.label
+        case .gradedCard:
+            guard let gradingCompany, let cardGrade else { return "Graded" }
+            return cardGrade.display(company: gradingCompany)
+        case .sealedProduct:
+            return "Sealed"
+        }
+    }
+
+    /// A slab identified by certificate is a single object and cannot stack.
+    var allowsQuantityAggregation: Bool {
+        certificationNumber == nil
+    }
+
     init(
         collectionKey: String,
         game: CardGame,
@@ -169,6 +232,46 @@ final class CollectedCard {
 
     var cardGame: CardGame {
         CardGame(rawValue: game) ?? .pokemon
+    }
+
+    // MARK: - Namespaced identities
+    //
+    // Raw rows keep the key they have always had — unprefixed — so no existing
+    // ownership or price record moves. Graded and sealed rows get their own
+    // namespace instead, which is what stops a PSA 10 from ever sharing a row,
+    // a quantity or a price with the raw copy of the same printing.
+
+    static func gradedCollectionKey(
+        game: CardGame,
+        underlyingPrintingID: String,
+        variantUUID: String
+    ) -> String {
+        "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+    }
+
+    static func sealedCollectionKey(
+        game: CardGame,
+        productUUID: String,
+        variantUUID: String
+    ) -> String {
+        "sealed:\(game.rawValue):\(productUUID):\(variantUUID)"
+    }
+
+    /// A slab identified by certificate never merges with another slab, even an
+    /// identical grade from the same grader — they are two physical objects.
+    static func gradedCollectionKey(
+        game: CardGame,
+        underlyingPrintingID: String,
+        variantUUID: String,
+        certificationNumber: String?
+    ) -> String {
+        let base = gradedCollectionKey(
+            game: game,
+            underlyingPrintingID: underlyingPrintingID,
+            variantUUID: variantUUID
+        )
+        guard let certificationNumber, !certificationNumber.isEmpty else { return base }
+        return "\(base):cert:\(certificationNumber)"
     }
 
     /// The `PriceRecord` this entry reads its price from. Every owned copy of the

@@ -478,7 +478,7 @@ final class PriceRefreshController: ObservableObject {
             identities.record(outcome, forKey: key)
 
             switch outcome {
-            case let .price(price, _):
+            case let .price(price, _, _):
                 store.store(
                     .price(price),
                     game: candidate.target.game,

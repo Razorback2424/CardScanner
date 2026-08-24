@@ -7,9 +7,14 @@ import Foundation
 /// matching problem, a card it carries but does not list in this finish is
 /// genuinely unpriced, and a failed request is nothing at all.
 enum ProductPriceOutcome: Equatable, Sendable {
-    /// The handle travels with the answer so the caller can cache it without
+    /// Both handles travel with the answer so the caller can cache them without
     /// paying for the search a second time.
-    case price(NormalizedPrice, vendorCardID: String?)
+    ///
+    /// The *variant* id is the one that matters most: it identifies the exact
+    /// printing and finish, which is what a batch request is built from. Holding
+    /// it is what turns every later refresh into twenty-per-request batching
+    /// instead of one search per card.
+    case price(NormalizedPrice, vendorCardID: String?, vendorVariantID: String?)
     /// The product was found; it has no listing for this finish.
     case noListingForVariant(vendorCardID: String?)
     /// Nothing came back that passed identity checking.
@@ -23,9 +28,14 @@ enum ProductPriceOutcome: Equatable, Sendable {
 
     var vendorCardID: String? {
         switch self {
-        case let .price(_, id), let .noListingForVariant(id): return id
+        case let .price(_, id, _), let .noListingForVariant(id): return id
         case .noProductMatch, .budgetReached, .rateLimited, .requestFailed: return nil
         }
+    }
+
+    var vendorVariantID: String? {
+        guard case let .price(_, _, variantID) = self else { return nil }
+        return variantID
     }
 }
 
@@ -195,7 +205,8 @@ actor ProductPriceService {
                 sourceUpdatedAt: match.updatedAt,
                 fetchedAt: fetchedAt
             ),
-            vendorCardID: card.id
+            vendorCardID: card.id,
+            vendorVariantID: match.variantId
         )
     }
 

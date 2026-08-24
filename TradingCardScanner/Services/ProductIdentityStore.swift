@@ -58,7 +58,16 @@ struct ProductIdentityStore {
         identity.attemptVersion = ProductIdentity.currentAttemptVersion
 
         switch outcome {
-        case let .price(_, vendorCardID), let .noListingForVariant(vendorCardID):
+        case let .price(_, vendorCardID, vendorVariantID):
+            // Both handles. The variant id is what later batches are built
+            // from, so failing to persist it would leave every refresh doing a
+            // search it has already paid for once.
+            identity.vendorCardID = vendorCardID
+            identity.vendorVariantID = vendorVariantID
+            identity.resolvedAt = date
+            identity.unmatchedAt = vendorCardID == nil ? date : nil
+
+        case let .noListingForVariant(vendorCardID):
             // The product exists. That it has no listing in this finish is a
             // fact about the listing, not about whether the card was found — so
             // the handle is kept and the search is not repeated.
