@@ -304,6 +304,57 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(unresolved.map(\.priceKey), ["b"])
     }
 
+    // MARK: - Which identifier the vendor can actually resolve
+
+    /// Verified live, one batch, two identifiers:
+    ///
+    ///     scryfallId  -> returned nothing
+    ///     tcgplayerId -> returned the card
+    ///
+    /// The Scryfall id is a documented request parameter, but the vendor does
+    /// not hold the mapping. Sending it produced an empty result, and because an
+    /// absent variant is deliberately left alone rather than cleared, the whole
+    /// failure was silent.
+    func testScryfallIDIsNotAResolvableIdentifierForThisVendor() {
+        // Still encodable — the parameter exists and other catalogues use it —
+        // but nothing in the app may choose it for a batch.
+        let lookup = JustTCGBatchLookup.scryfallID("9b74f022-3e1d-481d-b822-cd86060a9901")
+        XCTAssertEqual(lookup.wireKey, "scryfallId")
+
+        // The marketplace id outranks it, so a card carrying both never sends
+        // the one that cannot be resolved.
+        XCTAssertEqual(
+            JustTCGBatchLookup.best(from: [lookup, .tcgplayerID("696977")]),
+            .tcgplayerID("696977")
+        )
+    }
+
+    /// Scryfall publishes `tcgplayer_id` only for ordinary printings. Art cards
+    /// and tokens — the entire fall-through population — come back null, so they
+    /// have no keyed route and must resolve by search exactly once.
+    func testArtCardsAndTokensCarryNoMarketplaceIdentifier() throws {
+        let ordinary = """
+        { "id": "x", "name": "Cloud, Midgar Mercenary", "set": "fin",
+          "set_name": "Final Fantasy", "collector_number": "10", "lang": "en",
+          "digital": false, "layout": "normal", "tcgplayer_id": 630870 }
+        """
+        let artCard = """
+        { "id": "y", "name": "Forest // Forest", "set": "amsh",
+          "set_name": "MSH Art Series", "collector_number": "17", "lang": "en",
+          "digital": false, "layout": "art_series" }
+        """
+
+        let decoder = JSONDecoder()
+        XCTAssertEqual(
+            try decoder.decode(ScryfallCard.self, from: Data(ordinary.utf8)).tcgplayerID,
+            630870
+        )
+        XCTAssertNil(
+            try decoder.decode(ScryfallCard.self, from: Data(artCard.utf8)).tcgplayerID,
+            "an art card has no marketplace id to batch by"
+        )
+    }
+
     // MARK: - Freshness
 
     func testMissingPriceIsAlwaysEligibleRegardlessOfProviderClock() {

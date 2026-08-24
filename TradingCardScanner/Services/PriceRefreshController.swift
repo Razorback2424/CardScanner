@@ -454,14 +454,28 @@ final class PriceRefreshController: ObservableObject {
         /// a name search. Pokémon fall-throughs have no such key — they fell
         /// through precisely because TCGdex published no TCGplayer block for
         /// them — so those still need identity resolved once.
+        /// Identifiers the vendor can resolve directly, with no search first.
+        ///
+        /// This used to send the Scryfall id for every Magic card, on the
+        /// assumption that Scryfall's id is one of the vendor's supported
+        /// lookup keys. It is a documented *parameter*, but the vendor does not
+        /// hold the mapping: a batch keyed on it comes back empty. Because an
+        /// absent variant is deliberately left alone rather than cleared, that
+        /// failed silently — the card was never priced and never had its
+        /// identity resolved either, because it had gone down the batch path
+        /// instead of the search path.
+        ///
+        /// What is left is the marketplace id, and Scryfall publishes it only
+        /// for ordinary printings. Art cards and tokens — precisely the
+        /// fall-through population — come back `null`. Those have no keyed
+        /// route at all and must resolve by search once, after which the stored
+        /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
-            guard let catalogID = card?.providerID ?? target.catalogPrintingID else { return [] }
-            switch target.game {
-            case .magic:
-                return [.scryfallID(catalogID)]
-            case .pokemon:
+            guard case let .magic(magic)? = card,
+                  let tcgplayerID = magic.tcgplayerID else {
                 return []
             }
+            return [.tcgplayerID(String(tcgplayerID))]
         }
 
         func subject(vendorCardID: String?) -> ProductPriceSubject? {

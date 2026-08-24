@@ -342,6 +342,13 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     /// Scryfall supplies marketplace URLs for this exact printing. These are
     /// safer than constructing a marketplace search from a card name.
     let purchaseURIs: ScryfallPurchaseURIs?
+    /// The marketplace product id, where Scryfall has one.
+    ///
+    /// Absent for exactly the printings that need the price fallback most: art
+    /// cards and tokens both come back `null`. Present for ordinary printings,
+    /// which is why it is worth carrying even though those are usually priced
+    /// from Scryfall directly.
+    let tcgplayerID: Int?
 
     enum CodingKeys: String, CodingKey {
         case id, name, digital, frame, layout, rarity, finishes, prices
@@ -353,6 +360,7 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
         case imageURIs = "image_uris"
         case cardFaces = "card_faces"
         case purchaseURIs = "purchase_uris"
+        case tcgplayerID = "tcgplayer_id"
     }
 
     var releaseDate: Date? {
