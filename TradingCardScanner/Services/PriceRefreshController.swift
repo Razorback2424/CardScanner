@@ -112,6 +112,9 @@ final class PriceRefreshController: ObservableObject {
     private let scryfall = ScryfallService()
     private let importedResolver = ImportedCardResolver()
     private let fallbackService = ProductPriceService()
+    /// One transport for every JustTCG client, so pacing and the request ledger
+    /// are shared rather than each client keeping its own idea of the allowance.
+    private let sharedTransport = JustTCGTransport()
 
     /// Opt-in, and off until a key is present. The catalog prices most of the
     /// collection for free; this is only for what it cannot reach.
@@ -395,6 +398,24 @@ final class PriceRefreshController: ObservableObject {
         /// Absent when the catalog could not identify it at all.
         let card: IdentifiedCard?
 
+        /// Identifiers the vendor accepts directly, with no search first.
+        ///
+        /// This is what lets Magic fall-throughs batch immediately: Scryfall's
+        /// card id *is* one of the vendor's supported lookup keys, so an art
+        /// card or token can be priced twenty-to-a-request without ever running
+        /// a name search. Pokémon fall-throughs have no such key — they fell
+        /// through precisely because TCGdex published no TCGplayer block for
+        /// them — so those still need identity resolved once.
+        var externalLookups: [JustTCGBatchLookup] {
+            guard let catalogID = card?.providerID ?? target.catalogPrintingID else { return [] }
+            switch target.game {
+            case .magic:
+                return [.scryfallID(catalogID)]
+            case .pokemon:
+                return []
+            }
+        }
+
         func subject(vendorCardID: String?) -> ProductPriceSubject? {
             let name = card?.name ?? target.importedIdentity?.name
             let setName = card?.setName ?? target.importedIdentity?.setName
@@ -455,7 +476,125 @@ final class PriceRefreshController: ObservableObject {
             remainingToday: budget.remainingToday
         )
 
+        // Two workloads, and only the second of them batches.
+        //
+        // A card the vendor can already be *asked about* — because a previous
+        // pass resolved its variant handle, or because its Scryfall id is
+        // itself a supported lookup key — goes into a batch, twenty per
+        // request. A card with neither still needs one search to establish
+        // identity, and that search is paid for exactly once: the handle it
+        // returns is persisted, and every later refresh finds it in the first
+        // group.
+        var batchable: [CardGame: [MarketPriceTarget]] = [:]
+        var ownersByPriceKey: [String: FallbackCandidate] = [:]
+        var needsIdentity: [FallbackCandidate] = []
+
         for candidate in candidates {
+            let key = ProductIdentity.key(
+                game: candidate.target.game,
+                printingID: candidate.target.printingID,
+                variantID: candidate.target.variantID
+            )
+            let cachedVariant = identities.cachedVariantID(forKey: key)
+            let cachedCard = identities.cachedCardID(forKey: key)
+            // A card already known to be absent from the vendor costs nothing
+            // on every subsequent refresh.
+            if cachedVariant == nil, cachedCard == nil,
+               !identities.needsResolution(forKey: key) {
+                continue
+            }
+
+            let external = candidate.externalLookups
+            guard cachedVariant != nil || !external.isEmpty else {
+                needsIdentity.append(candidate)
+                continue
+            }
+
+            ownersByPriceKey[key] = candidate
+            batchable[candidate.target.game, default: []].append(
+                MarketPriceTarget(
+                    priceKey: key,
+                    game: candidate.target.game,
+                    printingID: candidate.target.printingID,
+                    variantID: candidate.target.variantID,
+                    itemKind: .rawCard,
+                    marketVariantID: cachedVariant,
+                    lookupCandidates: external,
+                    currentAmount: nil,
+                    lastCheckedAt: candidate.target.lastCheckedAt
+                )
+            )
+        }
+
+        // MARK: Batched pass
+        let coordinator = JustTCGRefreshCoordinator(
+            client: JustTCGV1Client(transport: sharedTransport)
+        )
+        for (game, targets) in batchable {
+            if Task.isCancelled { break }
+            let report = await coordinator.refresh(
+                targets,
+                game: game,
+                lane: .background,
+                apply: { card, variant, owners in
+                    guard let amount = variant.price else { return }
+                    let normalized = NormalizedPrice(
+                        unitMarketPriceUSD: amount,
+                        // Verified against the live API: dollars, not cents.
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: variant.variantId ?? "batch",
+                        sourceUpdatedAt: variant.updatedAt,
+                        fetchedAt: .now
+                    )
+                    for owner in owners {
+                        store.store(
+                            .price(normalized),
+                            game: owner.game,
+                            printingID: owner.printingID,
+                            variantID: owner.variantID
+                        )
+                        // Remember the handles so this card never needs a search.
+                        identities.recordBatchResolution(
+                            forKey: owner.priceKey,
+                            cardID: card.uuid ?? card.id,
+                            variantID: variant.variantId
+                        )
+                    }
+                },
+                checkpoint: {
+                    identities.save()
+                    store.save()
+                }
+            )
+            priced += report.variantsUpdated
+            completed += report.variantsRequested
+            status = .refreshing(completed: completed, total: candidates.count)
+
+            switch report.stoppedReason {
+            case let .dailyBudget(resetAt), let .monthlyBudget(resetAt):
+                stoppedByAllowance = true
+                fallbackStatus = .budgetReached(
+                    pending: max(candidates.count - completed, 0),
+                    resetAt: resetAt
+                )
+            case let .rateLimited(retryAt):
+                stoppedByAllowance = true
+                fallbackStatus = .rateLimited(
+                    pending: max(candidates.count - completed, 0),
+                    retryAt: retryAt
+                )
+            case .cancelled, .transportFailure, .none:
+                break
+            }
+            if stoppedByAllowance { break }
+        }
+
+        // MARK: Identity pass
+        //
+        // Only what could not be batched, and only if the allowance survived
+        // the batched pass.
+        for candidate in (stoppedByAllowance ? [] : needsIdentity) {
             if Task.isCancelled { break }
             defer {
                 completed += 1

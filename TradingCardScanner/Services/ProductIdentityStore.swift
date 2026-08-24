@@ -27,6 +27,35 @@ struct ProductIdentityStore {
         return !identity.isCurrent()
     }
 
+    /// The vendor's variant handle, which is what a batch request is built
+    /// from. Present means this card can be repriced twenty-to-a-request
+    /// instead of one search at a time.
+    func cachedVariantID(forKey key: String) -> String? {
+        guard let identity = identity(forKey: key), identity.isCurrent() else { return nil }
+        return identity.vendorVariantID
+    }
+
+    /// Remember what a batched response resolved, so the next refresh can go
+    /// straight to the keyed lookup.
+    func recordBatchResolution(
+        forKey key: String,
+        cardID: String?,
+        variantID: String?,
+        at date: Date = .now
+    ) {
+        guard cardID != nil || variantID != nil else { return }
+        let identity = self.identity(forKey: key) ?? {
+            let created = ProductIdentity(key: key, vendor: .justTCG)
+            context.insert(created)
+            return created
+        }()
+        identity.attemptVersion = ProductIdentity.currentAttemptVersion
+        if let cardID { identity.vendorCardID = cardID }
+        if let variantID { identity.vendorVariantID = variantID }
+        identity.resolvedAt = date
+        identity.unmatchedAt = nil
+    }
+
     func cachedCardID(forKey key: String) -> String? {
         guard let identity = identity(forKey: key), identity.isCurrent() else { return nil }
         return identity.vendorCardID

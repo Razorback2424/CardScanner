@@ -62,7 +62,12 @@ struct MarketRefreshReport: Equatable, Sendable {
 /// on the free tier instead of 500. Duplicated copies cost nothing — eight
 /// owned copies of one printing are one variant, one lookup, one returned price
 /// applied to every copy.
-struct JustTCGRefreshCoordinator: Sendable {
+/// Main-actor isolated because its callbacks mutate SwiftData, which is
+/// main-actor bound. The network work still happens off it: `JustTCGTransport`
+/// is its own actor, and each `await` here releases the main actor while a
+/// request is in flight.
+@MainActor
+struct JustTCGRefreshCoordinator {
     private let client: JustTCGV1Client
     private let syncLedger: JustTCGSyncLedger
 
@@ -79,7 +84,7 @@ struct JustTCGRefreshCoordinator: Sendable {
     /// - a target with no usable identifier cannot be batched at all and is
     ///   returned separately rather than silently dropped, because "we never
     ///   asked" and "the vendor has nothing" are different diagnoses.
-    static func deduplicate(
+    nonisolated static func deduplicate(
         _ targets: [MarketPriceTarget]
     ) -> (batched: [JustTCGBatchLookup: [MarketPriceTarget]], unresolved: [MarketPriceTarget]) {
         var batched: [JustTCGBatchLookup: [MarketPriceTarget]] = [:]
@@ -106,9 +111,9 @@ struct JustTCGRefreshCoordinator: Sendable {
         game: CardGame,
         lane: JustTCGRequestLane = .background,
         useDelta: Bool = false,
-        onProgress: @Sendable (MarketRefreshReport) -> Void = { _ in },
-        apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Void,
-        checkpoint: @Sendable () -> Void
+        onProgress: (MarketRefreshReport) -> Void = { _ in },
+        apply: (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Void,
+        checkpoint: () -> Void
     ) async -> MarketRefreshReport {
         let (batched, unresolved) = Self.deduplicate(targets)
         var report = MarketRefreshReport()
@@ -186,7 +191,7 @@ struct JustTCGRefreshCoordinator: Sendable {
     ///
     /// Never positional. The vendor is not obliged to preserve request order,
     /// and matching by index would attach one card's price to another.
-    private static func match(
+    private nonisolated static func match(
         lookup: JustTCGBatchLookup,
         in returned: [String: (card: JustTCGCard, variant: JustTCGVariant)],
         response: JustTCGBatchResponse
@@ -213,7 +218,7 @@ struct JustTCGRefreshCoordinator: Sendable {
         }
     }
 
-    private static func stopReason(
+    private nonisolated static func stopReason(
         for error: JustTCGTransport.TransportError
     ) -> MarketRefreshReport.StopReason {
         switch error {
