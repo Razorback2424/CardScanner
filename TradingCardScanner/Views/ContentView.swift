@@ -22,7 +22,13 @@ struct ContentView: View {
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")
         let route = routeIndex.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         debugRoute = route
-        _selectedTab = State(initialValue: route == "Browse" ? .browse : .collection)
+        let initialTab: Tab
+        switch route {
+        case "Browse": initialTab = .browse
+        case "WholeCardScanner": initialTab = .scan
+        default: initialTab = .collection
+        }
+        _selectedTab = State(initialValue: initialTab)
 #else
         _selectedTab = State(initialValue: .collection)
 #endif

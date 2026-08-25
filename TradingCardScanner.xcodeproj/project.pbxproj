@@ -49,7 +49,7 @@
 		A0010015 /* CameraCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010016 /* CameraCapabilities.swift */; };
 		A0010016 /* ScannerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010017 /* ScannerSettingsView.swift */; };
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
-		A00200F5 /* TitleCaptureGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* TitleCaptureGateTests.swift */; };
+		A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* WholeCardHistoricalCaptureTests.swift */; };
 		A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F4 /* HistoricalTitleCaptureTests.swift */; };
 		A00200F3 /* BoundedCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F3 /* BoundedCacheTests.swift */; };
 		A00200F2 /* PortfolioNameCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F2 /* PortfolioNameCleaningTests.swift */; };
@@ -147,7 +147,7 @@
 		B0010015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0010099 /* TradingCardScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradingCardScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
-		B00200F5 /* TitleCaptureGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleCaptureGateTests.swift; sourceTree = "<group>"; };
+		B00200F5 /* WholeCardHistoricalCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeCardHistoricalCaptureTests.swift; sourceTree = "<group>"; };
 		B00200F4 /* HistoricalTitleCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalTitleCaptureTests.swift; sourceTree = "<group>"; };
 		B00200F3 /* BoundedCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundedCacheTests.swift; sourceTree = "<group>"; };
 		B00200F2 /* PortfolioNameCleaningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioNameCleaningTests.swift; sourceTree = "<group>"; };
@@ -341,7 +341,7 @@
 			isa = PBXGroup;
 			children = (
 				B0020001 /* ScanParserTests.swift */,
-				B00200F5 /* TitleCaptureGateTests.swift */,
+				B00200F5 /* WholeCardHistoricalCaptureTests.swift */,
 				B00200F4 /* HistoricalTitleCaptureTests.swift */,
 				B00200F3 /* BoundedCacheTests.swift */,
 				B00200F2 /* PortfolioNameCleaningTests.swift */,
@@ -533,7 +533,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0020001 /* ScanParserTests.swift in Sources */,
-				A00200F5 /* TitleCaptureGateTests.swift in Sources */,
+				A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */,
 				A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */,
 				A00200F3 /* BoundedCacheTests.swift in Sources */,
 				A00200F2 /* PortfolioNameCleaningTests.swift in Sources */,

@@ -107,18 +107,6 @@ struct PendingIdentityChoice: Identifiable, Equatable {
     static func == (lhs: PendingIdentityChoice, rhs: PendingIdentityChoice) -> Bool { lhs.id == rhs.id }
 }
 
-/// The footer is safely captured, but historical identity also needs the title.
-/// This is guidance only: no collection mutation is possible until the second
-/// capture resolves to one catalog card (or an explicit ambiguity choice).
-struct PendingHistoricalTitleScan: Identifiable, Equatable {
-    let id = UUID()
-    let number: PokemonPrintedNumberEvidence
-
-    static func == (lhs: PendingHistoricalTitleScan, rhs: PendingHistoricalTitleScan) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
 /// A failed scan kept for the lifetime of the scanner session. The warning chip
 /// opens these details; it never doubles as a destructive clear action.
 struct UnresolvedScan: Identifiable, Equatable {
@@ -208,7 +196,6 @@ final class ScannerViewModel: ObservableObject {
     @Published private(set) var pendingChoice: PendingVariantChoice?
     @Published private(set) var pendingPrintRunChoice: PendingPrintRunChoice?
     @Published private(set) var pendingIdentityChoice: PendingIdentityChoice?
-    @Published private(set) var pendingHistoricalTitleScan: PendingHistoricalTitleScan?
     @Published private(set) var receipt: ScanReceipt?
     @Published private(set) var recent: [RecentScan] = []
     @Published private(set) var note: ScanNote?
@@ -274,19 +261,6 @@ final class ScannerViewModel: ObservableObject {
         scanner.onConfirmedCandidate = { [weak self] identifier in
             guard let self else { return }
             Task { self.enqueueIdentification(identifier) }
-        }
-
-        scanner.onHistoricalTitleRequested = { [weak self] number in
-            Task { @MainActor in
-                self?.pendingHistoricalTitleScan = PendingHistoricalTitleScan(number: number)
-                self?.feedback.needsChoice()
-            }
-        }
-
-        scanner.onHistoricalTitleCaptureEnded = { [weak self] in
-            Task { @MainActor in
-                self?.pendingHistoricalTitleScan = nil
-            }
         }
 
         scanner.onLatchHolding = { [weak self] _ in
@@ -461,12 +435,6 @@ final class ScannerViewModel: ObservableObject {
             )
             scanner.pauseRecognition()
         }
-    }
-
-    func cancelHistoricalTitleScan() {
-        pendingHistoricalTitleScan = nil
-        scanner.cancelHistoricalTitleCapture()
-        feedback.choiceMade()
     }
 
     func clearUnresolvedScans() {

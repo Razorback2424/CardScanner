@@ -22,42 +22,17 @@ extension View {
     }
 }
 
-/// A deliberate second capture for historical cards. Reusing the proven scan
-/// band keeps OCR fast and makes the physical action unambiguous.
-struct HistoricalTitleScanBar: View {
-    let scan: PendingHistoricalTitleScan
-    let onDismiss: () -> Void
+struct ScanAssistanceView: View {
+    let message: String
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "text.viewfinder")
-                .font(.title2)
-                .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Now scan the card name")
-                    .font(.headline)
-                Text("Footer \(scan.number.displayIdentifier) captured. Move the card so its title is inside the green box.")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.78))
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Cancel title scan")
-        }
-        .foregroundStyle(.white)
-        .padding(14)
-        .scannerGlass()
-        .accessibilityElement(children: .contain)
+        Label(message, systemImage: "viewfinder")
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .scannerGlass(cornerRadius: 14)
+            .accessibilityLabel("Scanner guidance: \(message)")
     }
 }
 

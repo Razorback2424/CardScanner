@@ -31,6 +31,7 @@ struct CameraPreview: UIViewRepresentable {
 }
 
 final class PreviewView: UIView {
+    private let cardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
 #if DEBUG
@@ -72,8 +73,16 @@ final class PreviewView: UIView {
         // AVFoundation's unrotated-landscape/top-left metadata coordinates first.
         // The preview layer then applies orientation and aspect-fill geometry.
         scanRegionLayer.frame = previewLayer.layerRectConverted(
-            fromMetadataOutputRect: ScanRegion.metadataRect
+            fromMetadataOutputRect: CardFramingRegion.metadataRect(fromVisionRect: CardFramingRegion.visionRect)
         )
+        let cardRect = previewLayer.layerRectConverted(
+            fromMetadataOutputRect: CardFramingRegion.metadataRect(fromVisionRect: CardFramingRegion.cardVisionRect)
+        )
+        cardRegionLayer.frame = cardRect
+        cardRegionLayer.path = UIBezierPath(
+            roundedRect: cardRegionLayer.bounds,
+            cornerRadius: 14
+        ).cgPath
 
 #if DEBUG
         layoutDebugVisionBoxes()
@@ -107,6 +116,12 @@ final class PreviewView: UIView {
         // The preview is decoration: it must never take a touch, or a UIKit gesture
         // here will compete with the SwiftUI controls layered above it.
         isUserInteractionEnabled = false
+
+        cardRegionLayer.fillColor = UIColor.clear.cgColor
+        cardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.78).cgColor
+        cardRegionLayer.lineWidth = 2
+        cardRegionLayer.lineDashPattern = [8, 6]
+        previewLayer.addSublayer(cardRegionLayer)
 
         scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
         scanRegionLayer.borderColor = UIColor.systemGreen.cgColor

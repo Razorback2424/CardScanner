@@ -6,10 +6,27 @@ import Foundation
 struct RecognizedLine: Equatable, Sendable {
     let text: String
     let boundingBox: CGRect?
+    /// Vision's normalized confidence for the selected candidate. Parser rules
+    /// deliberately do not use this as identity evidence.
+    let confidence: Float?
+    /// Lower-ranked readings retained for diagnostics and future conservative
+    /// character-confusion handling.
+    let alternatives: [String]
+    /// The observation bounds mapped into the oriented source image in pixels.
+    let sourcePixelRect: CGRect?
 
-    init(text: String, boundingBox: CGRect? = nil) {
+    init(
+        text: String,
+        boundingBox: CGRect? = nil,
+        confidence: Float? = nil,
+        alternatives: [String] = [],
+        sourcePixelRect: CGRect? = nil
+    ) {
         self.text = text
         self.boundingBox = boundingBox
+        self.confidence = confidence
+        self.alternatives = alternatives
+        self.sourcePixelRect = sourcePixelRect
     }
 }
 
@@ -847,28 +864,5 @@ enum MagicParseOutcome: Equatable {
     var identifier: ScanIdentifier? {
         guard case let .identified(identifier) = self else { return nil }
         return identifier
-    }
-}
-
-/// Holds title capture back for as long as it takes a person to read "scan the
-/// card name", move the camera up, and let it focus.
-///
-/// Without it the first frames of title capture are whatever sits next to the
-/// collector number, because that is still what the camera is pointed at. The
-/// footer signature is what makes that *safe*; this is what makes it feel
-/// deliberate rather than like a prompt that was never really waiting.
-struct TitleCaptureGate: Equatable {
-    /// Read the message, reposition, refocus. Long enough to be a pause, short
-    /// enough that a user already moving does not notice it.
-    static let settleInterval: CFAbsoluteTime = 0.9
-
-    private let startedAt: CFAbsoluteTime
-
-    init(startedAt: CFAbsoluteTime) {
-        self.startedAt = startedAt
-    }
-
-    func isOpen(at now: CFAbsoluteTime) -> Bool {
-        now - startedAt >= Self.settleInterval
     }
 }

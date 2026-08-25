@@ -13,6 +13,15 @@ struct ScannerView: View {
     @State private var reviewing: RecentScan?
     @State private var isShowingUnresolved = false
 
+#if DEBUG
+    private var isWholeCardScreenshotRoute: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "WholeCardScanner"
+    }
+#endif
+
     var body: some View {
         ZStack {
             CameraPreview(scanner: model.scanner, successCount: model.successCount)
@@ -35,7 +44,12 @@ struct ScannerView: View {
                 }
             )
         }
-        .onAppear { model.start(context: modelContext) }
+        .onAppear {
+#if DEBUG
+            guard !isWholeCardScreenshotRoute else { return }
+#endif
+            model.start(context: modelContext)
+        }
         .onDisappear { model.viewDisappeared() }
         .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterPresentation) {
             SettingsView()
@@ -78,6 +92,11 @@ private struct ScannerChrome: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
+            if let message = scanner.scanAssistance.message {
+                ScanAssistanceView(message: message)
+                    .transition(.opacity)
+            }
+
             Spacer(minLength: 0)
 
             bottomStack
@@ -94,9 +113,9 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
-        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingHistoricalTitleScan)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.note)
+        .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
     }
 
     // MARK: - Top
@@ -162,13 +181,7 @@ private struct ScannerChrome: View {
 
     private var bottomStack: some View {
         VStack(spacing: 9) {
-            if let titleScan = model.pendingHistoricalTitleScan {
-                HistoricalTitleScanBar(
-                    scan: titleScan,
-                    onDismiss: model.cancelHistoricalTitleScan
-                )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else if let choice = model.pendingIdentityChoice {
+            if let choice = model.pendingIdentityChoice {
                 IdentityChoiceBar(
                     choice: choice,
                     onChoose: model.choose,

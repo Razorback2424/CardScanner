@@ -10,18 +10,44 @@ import Vision
 /// AVFoundation preview conversion expects a metadata-output rect in the native
 /// unrotated landscape frame with a top-left origin, so derive that rectangle
 /// explicitly instead of sharing raw numbers between incompatible spaces.
-enum ScanRegion {
-    /// Centered in Vision's normalized portrait coordinate space. Deriving the
-    /// origin from the size keeps the band centered if its dimensions change.
-    private static let visionSize = CGSize(width: 0.72, height: 0.16)
-    static let visionRect = CGRect(
-        x: (1 - visionSize.width) / 2,
-        y: (1 - visionSize.height) / 2,
-        width: visionSize.width,
-        height: visionSize.height
+enum CardFramingRegion {
+    /// A 2.5:3.5 card fitted inside the portrait-oriented 16:9 camera image.
+    /// Normalized Vision coordinates are not square: one unit of Y spans 16/9
+    /// as many source pixels as one unit of X. Applying the card ratio directly
+    /// to normalized values produces a visibly incorrect ~0.40 aspect ratio.
+    static let sourceImageAspectRatio: CGFloat = 9.0 / 16.0
+    static let physicalCardAspectRatio: CGFloat = 2.5 / 3.5
+    private static let normalizedCardWidth: CGFloat = 0.72
+    private static let normalizedCardHeight = normalizedCardWidth
+        * sourceImageAspectRatio / physicalCardAspectRatio
+
+    static let cardVisionRect = CGRect(
+        x: (1 - normalizedCardWidth) / 2,
+        y: (1 - normalizedCardHeight) / 2,
+        width: normalizedCardWidth,
+        height: normalizedCardHeight
     )
 
+    /// Insets are card-relative so every overlay stays aligned when the guide is
+    /// resized. Vision uses a bottom-left origin: footer is low Y, title high Y.
+    static let visionRect = cardRelativeRect(x: 0.025, y: 0.015, width: 0.95, height: 0.15)
+    static let titleVisionRect = cardRelativeRect(x: 0.035, y: 0.79, width: 0.93, height: 0.16)
+
     static let fullFrameRect = CGRect(x: 0, y: 0, width: 1, height: 1)
+
+    private static func cardRelativeRect(
+        x: CGFloat,
+        y: CGFloat,
+        width: CGFloat,
+        height: CGFloat
+    ) -> CGRect {
+        CGRect(
+            x: cardVisionRect.minX + x * cardVisionRect.width,
+            y: cardVisionRect.minY + y * cardVisionRect.height,
+            width: width * cardVisionRect.width,
+            height: height * cardVisionRect.height
+        )
+    }
 
 #if DEBUG
     /// Calibration switch for the first on-device run.
@@ -85,6 +111,9 @@ enum ScanRegion {
     }
 }
 
+/// Compatibility name for parser/debug code written before the whole-card guide.
+typealias ScanRegion = CardFramingRegion
+
 enum CameraIssue: Equatable {
     case permissionDenied
     case unavailable
@@ -106,6 +135,120 @@ private enum CameraScannerError: Error {
     case cameraUnavailable
     case cannotAddInput
     case cannotAddOutput
+}
+
+struct HistoricalEvidenceRequest: Equatable {
+    let id: UUID
+    let number: PokemonPrintedNumberEvidence
+    let startedAt: CFAbsoluteTime
+    var lastObservedAt: CFAbsoluteTime
+    var retryCount: Int
+    var titleCandidates: Set<String>
+}
+
+enum HistoricalTitleRequestPolicy {
+    static func number(
+        for outcome: RecognitionOutcome,
+        footerLines: [RecognizedLine]
+    ) -> PokemonPrintedNumberEvidence? {
+        guard case .nothing = outcome else { return nil }
+        return PokemonHistoricalScanParser.numberEvidence(in: footerLines.map(\.text))
+    }
+}
+
+struct CaptureAssessment: Equatable {
+    let detailSharpness: Float?
+    let horizontalMotion: Float?
+    let verticalMotion: Float?
+    let textPixelHeight: Float?
+    let localContrast: Float?
+    let clippedHighlightArea: Float?
+    let meanOCRConfidence: Float?
+    let isAdjustingFocus: Bool
+    let isAdjustingExposure: Bool
+    let exposureDuration: Double
+    let iso: Float
+    let lensPosition: Float?
+    let minimumFocusDistance: Int?
+}
+
+enum OpticalIssue: Equatable {
+    case none
+    case cameraSettling
+    case insufficientDetail
+    case likelyTooClose
+    case lowLight
+    case glare
+    case motion
+}
+
+enum PresentationState: Equatable {
+    case unknown
+    case cardEntering
+    case cardStable
+    case cardChanging
+}
+
+struct ScanAssistance: Equatable {
+    let issue: OpticalIssue
+    let presentation: PresentationState
+
+    static let none = ScanAssistance(issue: .none, presentation: .unknown)
+
+    var message: String? {
+        switch issue {
+        case .insufficientDetail: return "Move closer"
+        case .likelyTooClose: return "Back up slightly"
+        case .lowLight: return "Add light"
+        case .glare: return "Tilt card slightly"
+        case .motion: return "Hold steady"
+        case .none, .cameraSettling: return nil
+        }
+    }
+}
+
+/// Conservative evidence counter. Uncalibrated or absent measurements never
+/// become a user-facing diagnosis.
+struct CaptureAssistanceMonitor {
+    private(set) var presentation: PresentationState = .unknown
+    private var stableObservationCount = 0
+    private var candidateIssue: OpticalIssue = .none
+    private var candidateCount = 0
+
+    mutating func observe(_ assessment: CaptureAssessment, hasFooterText: Bool) -> ScanAssistance {
+        if hasFooterText {
+            stableObservationCount += 1
+            presentation = stableObservationCount >= 2 ? .cardStable : .cardEntering
+        } else {
+            stableObservationCount = 0
+            presentation = .unknown
+        }
+
+        let next: OpticalIssue
+        if assessment.isAdjustingFocus || assessment.isAdjustingExposure {
+            next = .cameraSettling
+        } else if presentation == .cardStable,
+                  let height = assessment.textPixelHeight,
+                  height < 7 {
+            next = .insufficientDetail
+        } else if presentation == .cardStable,
+                  assessment.exposureDuration > 1.0 / 20.0,
+                  assessment.iso > 800,
+                  (assessment.meanOCRConfidence ?? 1) < 0.45 {
+            next = .lowLight
+        } else {
+            next = .none
+        }
+
+        if next == candidateIssue {
+            candidateCount += 1
+        } else {
+            candidateIssue = next
+            candidateCount = 1
+        }
+        let emitted = candidateCount >= 3 ? next : .none
+        return ScanAssistance(issue: emitted, presentation: presentation)
+    }
 }
 
 /// Which back camera the session runs on.
@@ -155,6 +298,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// Only the lenses this particular device actually has. An iPhone SE has no
     /// ultra wide, so the toggle must not offer one.
     @Published private(set) var availableLenses: [CameraLens] = []
+    @Published private(set) var scanAssistance: ScanAssistance = .none
 #if DEBUG
     @Published private(set) var debugVisionBoxes: [CGRect] = []
 #endif
@@ -167,10 +311,6 @@ final class CardScanner: NSObject, ObservableObject {
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
     var onConfirmedCandidate: ((ScanIdentifier) -> Void)?
-    /// A historical footer has been seen consistently. The same scan band now
-    /// needs the title, which cannot be in frame when a close macro shot is used.
-    var onHistoricalTitleRequested: ((PokemonPrintedNumberEvidence) -> Void)?
-    var onHistoricalTitleCaptureEnded: (() -> Void)?
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
@@ -179,7 +319,8 @@ final class CardScanner: NSObject, ObservableObject {
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
     private let videoOutput = AVCaptureVideoDataOutput()
-    private let request = VNRecognizeTextRequest()
+    private let footerRequest = VNRecognizeTextRequest()
+    private let titleRequest = VNRecognizeTextRequest()
 
     private var isConfigured = false
     private var isPaused = false
@@ -192,25 +333,10 @@ final class CardScanner: NSObject, ObservableObject {
     private var didAnnounceLatchHold = false
     private var lastAnnouncedPlausible: ScanIdentifier?
     private var profile: RecognitionProfile = .pokemonOnly
-    private var historicalNumberWindow = HistoricalNumberConfirmationWindow(matchesRequired: 2, windowSize: 4)
-    private var captureMode: CaptureMode = .identifier
-    /// Everything the number band just showed us, and when the prompt went up.
-    /// Title capture uses both to avoid reading the footer a second time.
-    private var footerSignature: Set<String> = []
-    private var titleGate: TitleCaptureGate?
-
-    /// Title capture state belongs to one card. Clearing it on the way back to
-    /// the number band keeps one card's footer from filtering the next card's
-    /// name.
-    private func resetHistoricalTitleCapture() {
-        footerSignature = []
-        titleGate = nil
-    }
-
-    private enum CaptureMode: Equatable {
-        case identifier
-        case historicalTitle(PokemonPrintedNumberEvidence)
-    }
+    private var historicalAttempt: HistoricalEvidenceRequest?
+    private var assistanceMonitor = CaptureAssistanceMonitor()
+    private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
+    private static let historicalAttemptLimit = 6
 
 
     /// Consecutive readings of an already-consumed card before the UI mentions it.
@@ -238,6 +364,14 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     func start() {
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_route"),
+           arguments.indices.contains(index + 1),
+           arguments[index + 1] == "WholeCardScanner" {
+            return
+        }
+#endif
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setCameraIssue(nil)
@@ -295,19 +429,6 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    func cancelHistoricalTitleCapture() {
-        visionQueue.async { [weak self] in
-            guard let self, case .historicalTitle = self.captureMode else { return }
-            self.captureMode = .identifier
-            self.resetHistoricalTitleCapture()
-            self.confirmationWindow.reset()
-            self.historicalNumberWindow.reset()
-            DispatchQueue.main.async { [weak self] in
-                self?.onHistoricalTitleCaptureEnded?()
-            }
-        }
-    }
-
     /// Installs the Magic set directory. One atomic update of the parser and the
     /// OCR vocabulary together, so no frame is ever recognised against a
     /// vocabulary that does not match the parser about to read it.
@@ -324,22 +445,26 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self, self.profile.magic?.definitions != magic.definitions else { return }
             self.profile = RecognitionProfile(magic: magic)
-            self.request.customWords = self.profile.customWords
+            self.footerRequest.customWords = self.profile.customWords
             self.resetObservationState()
         }
     }
 
     private func configureTextRequest() {
-        request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["en-US"]
+        footerRequest.recognitionLevel = .accurate
+        footerRequest.recognitionLanguages = ["en-US"]
 
         // Vision only applies customWords while language correction is enabled.
         // Field testing should decide whether this wins over correction-off for the
         // numeric-heavy identifier strip; keep the custom set vocabulary for MVP.
-        request.usesLanguageCorrection = true
-        request.customWords = profile.customWords
-        request.regionOfInterest = ScanRegion.activeVisionROI
+        footerRequest.usesLanguageCorrection = true
+        footerRequest.customWords = profile.customWords
+        footerRequest.regionOfInterest = CardFramingRegion.visionRect
 
+        titleRequest.recognitionLevel = .accurate
+        titleRequest.recognitionLanguages = ["en-US"]
+        titleRequest.usesLanguageCorrection = true
+        titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
     }
 
     private func configureAndStartIfNeeded() {
@@ -509,11 +634,12 @@ final class CardScanner: NSObject, ObservableObject {
     /// so card two is already being read while card one's receipt is still on
     /// screen — the latch, not a pause, is what stops one card being counted
     /// twice.
-    private func handleRecognizedText(
-        _ recognizedLines: [RecognizedLine],
+    private func handleFooterOutcome(
+        _ outcome: RecognitionOutcome,
+        footerLines: [RecognizedLine],
+        historicalIdentifier: ScanIdentifier?,
         at now: CFAbsoluteTime
     ) {
-        let lines = recognizedLines.map(\.text)
         // Vision's line grouping is preserved into the parsers, which is what
         // keeps a set code paired with its own collector number when more than
         // one card is visible.
@@ -527,54 +653,15 @@ final class CardScanner: NSObject, ObservableObject {
         // card — the invariant being that no card is ever unrecognisable
         // because of what happened while looking at a previous one.
         let parsed: ScanIdentifier?
-        switch captureMode {
-        case .identifier:
-            switch profile.identify(recognizedLines) {
-            case let .identified(identifier):
-                historicalNumberWindow.reset()
-                parsed = identifier
-            case .nothing:
-                parsed = nil
-                let number = PokemonHistoricalScanParser.numberEvidence(in: lines)
-                guard let number, PokemonHistoricalIdentityResolver.canAttempt(number) else {
-                    _ = historicalNumberWindow.observe(nil)
-                    break
-                }
-                guard let confirmed = historicalNumberWindow.observe(number) else { break }
-                captureMode = .historicalTitle(confirmed)
-                // Freeze what the footer said, so the same text read again from
-                // the same band cannot be mistaken for the card's name.
-                footerSignature = PokemonHistoricalScanParser.footerSignature(from: lines)
-                titleGate = TitleCaptureGate(startedAt: now)
-                confirmationWindow.reset()
-                latch.releaseAndForget()
-                DispatchQueue.main.async { [weak self] in
-                    self?.onHistoricalTitleRequested?(confirmed)
-                }
-            case .ambiguous:
-                historicalNumberWindow.reset()
-                parsed = nil
-            case .spatiallyRejectedMagicCollector:
-                // The fraction was textually compatible with a known-code + EN
-                // Magic footer but physically detached to its right. Treat this
-                // frame as a miss without reinterpreting that P/T as historical
-                // Pokemon evidence.
-                historicalNumberWindow.reset()
-                parsed = nil
-            }
-
-        case let .historicalTitle(number):
-            // Nothing is read until the user has had time to reach the title.
-            // A frame during the pause counts as a frame that read nothing.
-            if titleGate?.isOpen(at: now) == false {
-                parsed = nil
-            } else {
-                parsed = PokemonHistoricalScanParser.parse(
-                    number: number,
-                    titleLines: lines,
-                    excludingFooter: footerSignature
-                )
-            }
+        switch outcome {
+        case let .identified(identifier):
+            historicalAttempt = nil
+            parsed = identifier
+        case .nothing:
+            parsed = historicalIdentifier
+        case .ambiguous, .spatiallyRejectedMagicCollector:
+            historicalAttempt = nil
+            parsed = nil
         }
 
         switch latch.observe(parsed, at: now) {
@@ -594,18 +681,78 @@ final class CardScanner: NSObject, ObservableObject {
 
             latch.engage(on: confirmed, at: now)
             didAnnounceLatchHold = false
-            if case .historicalTitle = captureMode {
-                captureMode = .identifier
-                resetHistoricalTitleCapture()
-                historicalNumberWindow.reset()
-                DispatchQueue.main.async { [weak self] in
-                    self?.onHistoricalTitleCaptureEnded?()
-                }
-            }
+            historicalAttempt = nil
             DispatchQueue.main.async { [weak self] in
                 self?.onConfirmedCandidate?(confirmed)
             }
         }
+    }
+
+    /// Creates or advances a short-lived historical attempt and reads the title
+    /// from the same pixel buffer. A number must be visible again on every retry,
+    /// which prevents a stale footer from being joined to the next physical card.
+    private func historicalIdentifier(
+        for number: PokemonPrintedNumberEvidence,
+        footerLines: [RecognizedLine],
+        handler: VNImageRequestHandler,
+        sourceSize: CGSize,
+        at now: CFAbsoluteTime
+    ) -> ScanIdentifier? {
+        guard PokemonHistoricalIdentityResolver.canAttempt(number) else {
+            historicalAttempt = nil
+            return nil
+        }
+
+        if let attempt = historicalAttempt,
+           attempt.number != number || now - attempt.startedAt > Self.historicalAttemptTTL {
+            historicalAttempt = nil
+            confirmationWindow.reset()
+        }
+
+        if historicalAttempt == nil {
+            historicalAttempt = HistoricalEvidenceRequest(
+                id: UUID(),
+                number: number,
+                startedAt: now,
+                lastObservedAt: now,
+                retryCount: 0,
+                titleCandidates: []
+            )
+        }
+        guard var attempt = historicalAttempt,
+              attempt.retryCount < Self.historicalAttemptLimit else {
+            historicalAttempt = nil
+            return nil
+        }
+
+        attempt.retryCount += 1
+        attempt.lastObservedAt = now
+        do {
+            try handler.perform([titleRequest])
+            let titleLines = recognizedLines(
+                from: titleRequest,
+                roi: CardFramingRegion.titleVisionRect,
+                sourceSize: sourceSize
+            )
+            if case let .pokemonHistorical(evidence)? = PokemonHistoricalScanParser.parse(
+                number: number,
+                titleLines: titleLines.map(\.text),
+                excludingFooter: PokemonHistoricalScanParser.footerSignature(from: footerLines.map(\.text))
+            ) {
+                attempt.titleCandidates.formUnion(evidence.titleCandidates)
+            }
+        } catch {
+            // A failed secondary request is a miss. Footer recognition remains
+            // authoritative and the next matching frame may retry.
+        }
+        historicalAttempt = attempt
+        guard !attempt.titleCandidates.isEmpty else { return nil }
+        return .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: number,
+                titleCandidates: attempt.titleCandidates.sorted()
+            )
+        )
     }
 
     /// Speculation, and only speculation. The catalog de-duplicates, so an
@@ -631,29 +778,44 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// Callers must be on `visionQueue`.
     private func resetObservationState() {
-        let wasCapturingHistoricalTitle: Bool
-        if case .historicalTitle = captureMode {
-            wasCapturingHistoricalTitle = true
-        } else {
-            wasCapturingHistoricalTitle = false
-        }
         confirmationWindow.reset()
         latch.releaseAndForget()
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
-        historicalNumberWindow.reset()
-        captureMode = .identifier
-        resetHistoricalTitleCapture()
-        if wasCapturingHistoricalTitle {
-            DispatchQueue.main.async { [weak self] in
-                self?.onHistoricalTitleCaptureEnded?()
-            }
-        }
+        historicalAttempt = nil
     }
 
     private func setCameraIssue(_ issue: CameraIssue?) {
         DispatchQueue.main.async { [weak self] in
             self?.cameraIssue = issue
+        }
+    }
+
+    private func updateAssistance(from lines: [RecognizedLine]) {
+        guard let device = videoInput?.device else { return }
+        let heights = lines.compactMap { $0.sourcePixelRect.map { Float($0.height) } }
+        let confidences = lines.compactMap(\.confidence)
+        let assessment = CaptureAssessment(
+            detailSharpness: nil,
+            horizontalMotion: nil,
+            verticalMotion: nil,
+            textPixelHeight: heights.max(),
+            localContrast: nil,
+            clippedHighlightArea: nil,
+            meanOCRConfidence: confidences.isEmpty
+                ? nil
+                : confidences.reduce(0, +) / Float(confidences.count),
+            isAdjustingFocus: device.isAdjustingFocus,
+            isAdjustingExposure: device.isAdjustingExposure,
+            exposureDuration: CMTimeGetSeconds(device.exposureDuration),
+            iso: device.iso,
+            lensPosition: device.isFocusModeSupported(.continuousAutoFocus) ? device.lensPosition : nil,
+            minimumFocusDistance: device.minimumFocusDistance >= 0 ? device.minimumFocusDistance : nil
+        )
+        let assistance = assistanceMonitor.observe(assessment, hasFooterText: !lines.isEmpty)
+        DispatchQueue.main.async { [weak self] in
+            guard self?.scanAssistance != assistance else { return }
+            self?.scanAssistance = assistance
         }
     }
 }
@@ -719,6 +881,33 @@ enum RecognitionOutcome: Equatable {
 }
 
 extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
+    private func recognizedLines(
+        from request: VNRecognizeTextRequest,
+        roi: CGRect,
+        sourceSize: CGSize
+    ) -> [RecognizedLine] {
+        (request.results ?? []).compactMap { observation in
+            let candidates = observation.topCandidates(3)
+            guard let candidate = candidates.first else { return nil }
+            let fullFrame = CardFramingRegion.fullFrameVisionRect(
+                fromObservationBoundingBox: observation.boundingBox,
+                in: roi
+            )
+            return RecognizedLine(
+                text: candidate.string,
+                boundingBox: observation.boundingBox,
+                confidence: candidate.confidence,
+                alternatives: candidates.dropFirst().map(\.string),
+                sourcePixelRect: CGRect(
+                    x: fullFrame.minX * sourceSize.width,
+                    y: fullFrame.minY * sourceSize.height,
+                    width: fullFrame.width * sourceSize.width,
+                    height: fullFrame.height * sourceSize.height
+                )
+            )
+        }
+    }
+
     func captureOutput(
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
@@ -736,27 +925,47 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 orientation: .right,
                 options: [:]
             )
-            try handler.perform([request])
+            try handler.perform([footerRequest])
 
-            let observations = request.results ?? []
-            // Keep text and bounds paired in one compactMap. Building separate
-            // arrays would misalign them whenever an observation had no candidate.
-            let lines = observations.compactMap { observation -> RecognizedLine? in
-                guard let candidate = observation.topCandidates(1).first else { return nil }
-                return RecognizedLine(
-                    text: candidate.string,
-                    boundingBox: observation.boundingBox
+            let dimensions = CMVideoFormatDescriptionGetDimensions(
+                CMSampleBufferGetFormatDescription(sampleBuffer)!
+            )
+            // Vision sees the portrait-oriented image, so source width/height are
+            // swapped from the native landscape camera buffer.
+            let sourceSize = CGSize(width: Int(dimensions.height), height: Int(dimensions.width))
+            let lines = recognizedLines(
+                from: footerRequest,
+                roi: CardFramingRegion.visionRect,
+                sourceSize: sourceSize
+            )
+            updateAssistance(from: lines)
+            let outcome = profile.identify(lines)
+            var historical: ScanIdentifier?
+            if let number = HistoricalTitleRequestPolicy.number(for: outcome, footerLines: lines) {
+                historical = historicalIdentifier(
+                    for: number,
+                    footerLines: lines,
+                    handler: handler,
+                    sourceSize: sourceSize,
+                    at: now
                 )
+            } else if case .nothing = outcome {
+                historicalAttempt = nil
             }
 
 #if DEBUG
-            let boxes = observations.map(\.boundingBox)
+            let boxes = footerRequest.results?.map(\.boundingBox) ?? []
             DispatchQueue.main.async { [weak self] in
                 self?.debugVisionBoxes = boxes
             }
 #endif
 
-            handleRecognizedText(lines, at: now)
+            handleFooterOutcome(
+                outcome,
+                footerLines: lines,
+                historicalIdentifier: historical,
+                at: now
+            )
         } catch {
 #if DEBUG
             DispatchQueue.main.async { [weak self] in
@@ -766,7 +975,13 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             // A bad frame is expected occasionally. Run it through the normal
             // pipeline as a miss so it counts as absence evidence for the latch
             // as well as the confirmation window, then let the next frame try.
-            handleRecognizedText([], at: now)
+            historicalAttempt = nil
+            handleFooterOutcome(
+                .nothing,
+                footerLines: [],
+                historicalIdentifier: nil,
+                at: now
+            )
         }
     }
 }
