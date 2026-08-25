@@ -244,9 +244,6 @@ final class ScannerViewModel: ObservableObject {
     /// asked at the time so undo can re-ask it.
     private var lastAdd: RecentScan?
 
-    /// How many thumbnails the rail keeps. Enough to glance at, few enough to
-    /// stay out of the way.
-    private static let recentLimit = 3
     private static let receiptLifetime: Duration = .milliseconds(1800)
     private static let slowLookupThreshold: Duration = .milliseconds(400)
     private static let noteLifetime: Duration = .milliseconds(2600)
@@ -275,6 +272,7 @@ final class ScannerViewModel: ObservableObject {
     func start(context: ModelContext) {
         store = CollectionStore(context: context)
         prices = PriceStore(context: context)
+        recent.removeAll()
         feedback.prepare()
         scanner.start()
 
@@ -711,9 +709,6 @@ final class ScannerViewModel: ObservableObject {
         )
 
         recent.insert(scan, at: 0)
-        if recent.count > Self.recentLimit {
-            recent.removeLast(recent.count - Self.recentLimit)
-        }
         lastAdd = scan
         if pendingChoice?.identifier == identifier {
             pendingChoice = nil

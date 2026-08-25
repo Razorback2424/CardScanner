@@ -46,10 +46,13 @@ enum PriceSource: String, Codable, Hashable, Sendable {
 /// owns — eight copies of one printing are one price to refresh, not eight.
 @Model
 final class PriceRecord {
-    @Attribute(.unique) var key: String
+    // CloudKit does not support unique constraints, so uniqueness for this key
+    // is enforced in code (PriceStore fetches by `key` before every insert)
+    // rather than by the store.
+    @Attribute var key: String = ""
 
-    var game: String
-    var printingID: String
+    var game: String = ""
+    var printingID: String = ""
     var variantID: String?
 
     /// `nil` means the provider exposes no price we are willing to attribute to

@@ -1,6 +1,5 @@
 import SwiftData
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// The scanner reduces friction according to certainty. The collection reduces
 /// it according to intent: search plus one filter control answer the common
@@ -26,36 +25,17 @@ struct CollectionView: View {
     @State private var sort: CollectionSort = .priceHighToLow
     @State private var activeSheet: ActiveSheet?
     @State private var isShowingSettings = false
+    @State private var isShowingSearch = false
     @State private var hasCheckedForStalePrices = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalUndoTask: Task<Void, Never>?
     @State private var showsManualRefreshStatus = false
     @State private var refreshStatusTask: Task<Void, Never>?
-    @State private var isShowingCSVImporter = false
-    @State private var isShowingCSVExporter = false
-    @State private var csvExportDocument: CollectionCSVDocument?
-    @State private var csvExportFilename = "CardScanner Collection"
-    @State private var lastSkippedCSVText: String?
-    @State private var pendingCSVImport: CollectionCSVImportPlan?
-    @State private var csvMessage: CSVMessage?
     @FocusState private var isSearchFocused: Bool
 
     private enum ActiveSheet: String, Identifiable {
         case filters
         var id: String { rawValue }
-    }
-
-    private struct CSVMessage: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-        let skippedCSVText: String?
-
-        init(title: String, message: String, skippedCSVText: String? = nil) {
-            self.title = title
-            self.message = message
-            self.skippedCSVText = skippedCSVText
-        }
     }
 
     private let columns = [
@@ -84,56 +64,28 @@ struct CollectionView: View {
             .navigationTitle("Collection")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button("Search", systemImage: "magnifyingglass") {
+                        isShowingSearch = true
+                        isSearchFocused = true
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Search collection")
+
+                    Button("Filters", systemImage: filters.isActive
+                           ? "line.3.horizontal.decrease.circle.fill"
+                           : "line.3.horizontal.decrease.circle") {
+                        activeSheet = .filters
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Settings", systemImage: "gearshape") {
                         isShowingSettings = true
                     }
                     .labelStyle(.iconOnly)
-                }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    Menu("Collection Actions", systemImage: "ellipsis.circle") {
-                        Button("Import CSV", systemImage: "square.and.arrow.down") {
-                            isShowingCSVImporter = true
-                        }
-
-                        Button("Export CSV", systemImage: "square.and.arrow.up") {
-                            csvExportDocument = CollectionCSV.export(cards)
-                            csvExportFilename = "CardScanner Collection"
-                            isShowingCSVExporter = true
-                        }
-                        .disabled(cards.isEmpty)
-
-                        Button("Export Skipped Rows", systemImage: "exclamationmark.arrow.triangle.2.circlepath") {
-                            exportSkippedRows()
-                        }
-                        .disabled(lastSkippedCSVText == nil)
-
-                        Divider()
-
-                        Button("Export Unpriced Cards", systemImage: "dollarsign.circle") {
-                            csvExportDocument = CollectionCSV.exportUnpriced(
-                                cards,
-                                priceRecords: priceRecords
-                            )
-                            csvExportFilename = "CardScanner Unpriced Cards"
-                            isShowingCSVExporter = true
-                        }
-                        .disabled(snapshot.unpricedCount == 0)
-
-                        Button("Export Missing Artwork", systemImage: "photo") {
-                            csvExportDocument = CollectionCSV.exportMissingArtwork(
-                                cards,
-                                priceRecords: priceRecords
-                            )
-                            csvExportFilename = "CardScanner Missing Artwork"
-                            isShowingCSVExporter = true
-                        }
-                        .disabled(!cards.contains { $0.highImageURL == nil })
-
-                    }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Collection actions")
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {
@@ -178,73 +130,15 @@ struct CollectionView: View {
                 removalUndoBanner(pendingRemoval)
             }
         }
-        .fileImporter(
-            isPresented: $isShowingCSVImporter,
-            allowedContentTypes: [.commaSeparatedText, .plainText]
-        ) { result in
-            switch result {
-            case let .success(url):
-                Task { await prepareCSVImport(from: url) }
-            case let .failure(error):
-                csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
-            }
-        }
-        .fileExporter(
-            isPresented: $isShowingCSVExporter,
-            document: csvExportDocument,
-            contentType: .commaSeparatedText,
-            defaultFilename: csvExportFilename
-        ) { result in
-            defer { csvExportDocument = nil }
-            if case let .failure(error) = result {
-                csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription)
-            }
-        }
-        .confirmationDialog(
-            "Import CSV?",
-            isPresented: Binding(
-                get: { pendingCSVImport != nil },
-                set: { if !$0 { pendingCSVImport = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
-            if let plan = pendingCSVImport {
-                Button("Import \(plan.totalQuantity) Cards") {
-                    importCSV(plan)
-                }
-            }
-            Button("Cancel", role: .cancel) {
-                pendingCSVImport = nil
-            }
-        } message: {
-            if let plan = pendingCSVImport {
-                Text(importConfirmationMessage(plan))
-            }
-        }
-        .alert(item: $csvMessage) { message in
-            if let skippedCSVText = message.skippedCSVText {
-                return Alert(
-                    title: Text(message.title),
-                    message: Text(message.message),
-                    primaryButton: .default(Text("Export Skipped Rows")) {
-                        exportSkippedRows(skippedCSVText)
-                    },
-                    secondaryButton: .cancel(Text("Done"))
-                )
-            }
-            return Alert(
-                title: Text(message.title),
-                message: Text(message.message),
-                dismissButton: .default(Text("OK"))
-            )
-        }
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 header(snapshot)
-                searchField
+                if isShowingSearch {
+                    searchField
+                }
                 filterBar(snapshot)
 
                 if snapshot.entries.isEmpty {
@@ -281,69 +175,6 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
-    }
-
-    // MARK: - CSV transfer
-
-    @MainActor
-    private func prepareCSVImport(from url: URL) async {
-        do {
-            let plan = try await Task.detached(priority: .userInitiated) {
-                let hasAccess = url.startAccessingSecurityScopedResource()
-                defer {
-                    if hasAccess { url.stopAccessingSecurityScopedResource() }
-                }
-                let data = try Data(contentsOf: url, options: .mappedIfSafe)
-                return try CollectionCSV.parse(data)
-            }.value
-            pendingCSVImport = plan
-        } catch {
-            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
-        }
-    }
-
-    @MainActor
-    private func importCSV(_ plan: CollectionCSVImportPlan) {
-        pendingCSVImport = nil
-        // A large imported collection should not immediately start hundreds of
-        // network requests. Pricing remains an explicit toolbar action.
-        hasCheckedForStalePrices = true
-
-        do {
-            let result = try CollectionCSV.apply(plan, to: modelContext)
-            lastSkippedCSVText = plan.skippedCSVText
-            Task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
-            var details = "Added \(result.totalQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
-            if result.mergedEntries > 0 {
-                details += " \(result.mergedEntries) matched existing entries."
-            }
-            if result.skippedRows > 0 {
-                details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows."
-            }
-            details += " Artwork loads automatically. Refresh prices when you're ready."
-            csvMessage = CSVMessage(
-                title: "Import Complete",
-                message: details,
-                skippedCSVText: plan.skippedCSVText
-            )
-        } catch {
-            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription)
-        }
-    }
-
-    private func importConfirmationMessage(_ plan: CollectionCSVImportPlan) -> String {
-        var message = "Adds \(plan.totalQuantity) cards in \(plan.entries.count) entries. Matching entries will be combined."
-        if plan.skippedRows > 0 {
-            message += " \(plan.skippedRows) unsupported, non-English, or non-card rows will be ignored."
-        }
-        return message
-    }
-
-    private func exportSkippedRows(_ text: String? = nil) {
-        guard let text = text ?? lastSkippedCSVText else { return }
-        csvExportDocument = CollectionCSVDocument(text: text)
-        csvExportFilename = "CardScanner Skipped Rows"
-        isShowingCSVExporter = true
     }
 
     // MARK: - Removal undo
@@ -393,11 +224,12 @@ struct CollectionView: View {
 
     private func header(_ snapshot: Snapshot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline) {
+            ZStack(alignment: .trailing) {
                 Text(snapshot.pricedValue, format: .currency(code: "USD").precision(.fractionLength(2)))
-                    .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                    .font(.system(size: 60, weight: .bold, design: .rounded))
                     .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
                     .monospacedDigit()
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .accessibilityLabel("Collection value")
 
                 Button("Refresh Prices", systemImage: "arrow.clockwise") {
@@ -411,14 +243,13 @@ struct CollectionView: View {
                 .disabled(isRefreshing)
                 .accessibilityLabel("Refresh prices")
 
-                Spacer()
+            }
 
-                if isNarrowed {
-                    Text("\(snapshot.visibleQuantity) of \(snapshot.totalQuantity)")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                }
+            if isNarrowed {
+                Text("\(snapshot.visibleQuantity) of \(snapshot.totalQuantity)")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
             }
 
             if snapshot.unpricedCount > 0 {
@@ -669,24 +500,27 @@ struct CollectionView: View {
 
     private func filterBar(_ snapshot: Snapshot) -> some View {
         HStack {
-            Button {
-                activeSheet = .filters
-            } label: {
-                Label(
-                    filters.isActive ? "Filters (\(activeFilterCount))" : "Filters",
-                    systemImage: filters.isActive
-                        ? "line.3.horizontal.decrease.circle.fill"
-                        : "line.3.horizontal.decrease.circle"
-                )
-            }
-            .buttonStyle(.bordered)
-
             Spacer()
 
-            Text(sort.label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+            Menu {
+                ForEach(CollectionSort.allCases) { option in
+                    Button {
+                        sort = option
+                    } label: {
+                        if sort == option {
+                            Label(option.label, systemImage: "checkmark")
+                        } else {
+                            Text(option.label)
+                        }
+                    }
+                }
+            } label: {
+                Text(sort.label)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+            }
+            .accessibilityLabel("Sort collection: \(sort.label)")
         }
     }
 

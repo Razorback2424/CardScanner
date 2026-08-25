@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	Tracking: this app does not track users across apps/websites owned by other
+	companies, and does not link data to third-party data for advertising.
+	-->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<!--
+	Collected data types: the app stores the collection and price history
+	locally on-device (SwiftData) and sends only card/set identifiers already
+	printed on the cards to catalog/pricing APIs (TCGdex, Scryfall, JustTCG,
+	pokemontcg.io) to look up card data. No account, name, email, location,
+	or other user/device identifier is collected or transmitted.
+	-->
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<!--
+	Required-reason API usage: UserDefaults.standard is used in several places
+	(CameraCapabilities, JustTCGSyncLedger, SetCodeMap, PriceRefreshController,
+	ProductPriceService) purely to persist this app's own settings/cache state.
+	No App Group is used, so CA92.1 (app-only access) is the correct reason.
+	-->
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

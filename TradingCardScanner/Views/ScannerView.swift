@@ -214,12 +214,11 @@ private struct ScannerChrome: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
-            HStack(alignment: .bottom, spacing: 8) {
+            VStack(alignment: .trailing, spacing: 8) {
                 if !model.recent.isEmpty {
                     RecentScanRail(scans: model.recent, onSelect: openReview)
+                        .frame(maxWidth: .infinity)
                 }
-
-                Spacer(minLength: 0)
 
                 if model.unresolvedCount > 0 {
                     unresolvedChip

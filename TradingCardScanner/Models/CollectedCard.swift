@@ -20,13 +20,16 @@ final class CollectedCard {
     /// variant this is `providerID#variantID`; when no variant is known it stays
     /// the bare provider id, which is also the key Pokémon-only collections were
     /// built with, so existing rows keep incrementing rather than forking.
-    @Attribute(.unique, originalName: "tcgdexID") var collectionKey: String
+    // CloudKit does not support unique constraints, so uniqueness for this key
+    // is enforced in code (CollectionStore fetches by `collectionKey` before
+    // every insert) rather than by the store. See `CollectionStore.card(forKey:)`.
+    @Attribute(originalName: "tcgdexID") var collectionKey: String = ""
     var game: String = "pokemon"
     var providerID: String = ""
-    var name: String
-    var setName: String
-    var setCode: String
-    var cardNumber: String
+    var name: String = ""
+    var setName: String = ""
+    var setCode: String = ""
+    var cardNumber: String = ""
     var rarity: String?
     /// Pokémon stores its TCGdex image base URL; Magic stores its direct
     /// Scryfall normal-image URL. game selects the appropriate representation.
@@ -35,8 +38,8 @@ final class CollectedCard {
     /// Optional user-supplied artwork, stored in Application Support. It is a
     /// visual override only and never changes catalog or marketplace identity.
     var userArtworkFilename: String?
-    var quantity: Int
-    var dateAdded: Date
+    var quantity: Int = 1
+    var dateAdded: Date = Date.now
 
     /// Which physical variant this row holds. `nil` means the catalog published
     /// none — recorded as unknown rather than filled in with something plausible.

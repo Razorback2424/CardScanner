@@ -37,20 +37,23 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
 /// always shows what the collection currently believes was added.
 @Model
 final class CollectionActivity {
-    @Attribute(.unique) var id: UUID
-    var occurredAt: Date
-    var sourceRaw: String
-    var collectionKey: String
-    var gameRaw: String
-    var itemKindRaw: String
-    var name: String
-    var setName: String
-    var setCode: String
-    var cardNumber: String
+    // CloudKit does not support unique constraints. `id` never needs a code-level
+    // lookup the way the other stores' keys do — a UUID collision is not a
+    // realistic concern — so nothing else has to change to compensate.
+    @Attribute var id: UUID = UUID()
+    var occurredAt: Date = Date.now
+    var sourceRaw: String = ""
+    var collectionKey: String = ""
+    var gameRaw: String = ""
+    var itemKindRaw: String = ""
+    var name: String = ""
+    var setName: String = ""
+    var setCode: String = ""
+    var cardNumber: String = ""
     var variantID: String?
     var variantLabel: String?
     var pokemonPrintRunRaw: String?
-    var quantity: Int
+    var quantity: Int = 1
     var correctedAt: Date?
 
     init(

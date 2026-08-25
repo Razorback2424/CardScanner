@@ -121,3 +121,45 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertEqual(CardCenteringExport.filename(for: flat), "Card Centering.png")
     }
 }
+
+final class CardCenteringAnalyzerTests: XCTestCase {
+    /// Reproduces the scanner-bed failure mode: the physical side edges are
+    /// soft, the printed frame is strong, and an unrelated line sits near the
+    /// right edge of the scan. The detector must choose one coherent card box.
+    func testVerticalOuterEdgesUsePhysicalSilhouetteInsteadOfPlausibleFalsePair() throws {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let image = UIGraphicsImageRenderer(
+            size: CGSize(width: 420, height: 600),
+            format: format
+        ).image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 420, height: 600))
+
+            // A low-contrast physical border, typical of a white scanner bed.
+            UIColor(white: 0.90, alpha: 1).setFill()
+            context.fill(CGRect(x: 35, y: 45, width: 350, height: 490))
+
+            // Strong print/frame transitions inside the physical card.
+            UIColor(white: 0.18, alpha: 1).setFill()
+            // This left print edge plus the scanner seam make an almost exact
+            // 5:7 box, which is why aspect-ratio fitting made the bug worse.
+            context.fill(CGRect(x: 68, y: 45, width: 297, height: 490))
+
+            // A scanner-bed seam that edge-candidate scoring can mistake for
+            // the card's right edge.
+            UIColor.black.setFill()
+            context.fill(CGRect(x: 418, y: 100, width: 1, height: 400))
+        }
+
+        let result = try CardCenteringAnalyzer.analyze(XCTUnwrap(image.pngData()))
+
+        XCTAssertEqual(result.measurement.outer.left, 35, accuracy: 2)
+        XCTAssertEqual(result.measurement.outer.right, 384, accuracy: 2)
+        XCTAssertEqual(result.measurement.outer.top, 44, accuracy: 2)
+        XCTAssertEqual(result.measurement.outer.bottom, 534, accuracy: 2)
+        XCTAssertEqual(result.measurement.inner.left, 67, accuracy: 2)
+        XCTAssertEqual(result.measurement.inner.right, 364, accuracy: 2)
+    }
+}
