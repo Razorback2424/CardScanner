@@ -333,26 +333,31 @@ struct RecentScanRail: View {
     let onSelect: (RecentScan) -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
-            ForEach(scans) { scan in
-                Button {
-                    onSelect(scan)
-                } label: {
-                    CardThumbnail(url: scan.thumbnailURL, width: 38)
-                        .overlay(alignment: .bottomTrailing) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 11))
-                                .foregroundStyle(.green, .black)
-                                .padding(2)
-                        }
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(scans) { scan in
+                    Button {
+                        onSelect(scan)
+                    } label: {
+                        CardThumbnail(url: scan.thumbnailURL, width: 38)
+                            .overlay(alignment: .bottomTrailing) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.green, .black)
+                                    .padding(2)
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(scan.card.name), \(scan.resolved.label). Open to correct.")
+                    .transition(.scale(scale: 0.6).combined(with: .opacity))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(scan.card.name), \(scan.resolved.label). Open to correct.")
-                .transition(.scale(scale: 0.6).combined(with: .opacity))
             }
+            .padding(.horizontal, 8)
         }
-        .padding(8)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
         .scannerGlass(cornerRadius: 14)
+        .accessibilityLabel("Recently scanned cards")
     }
 }
 

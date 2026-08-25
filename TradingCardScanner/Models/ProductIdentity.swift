@@ -17,11 +17,14 @@ final class ProductIdentity {
     /// a vendor handle belongs to a printing *and* a finish, exactly as a price
     /// does. One handle per card would reintroduce the finish-collapsing bug the
     /// pricing layer exists to prevent.
-    @Attribute(.unique) var key: String
+    // CloudKit does not support unique constraints, so uniqueness for this key
+    // is enforced in code (ProductIdentityStore fetches by `key` before every
+    // insert) rather than by the store.
+    @Attribute var key: String = ""
 
     /// Which vendor this handle belongs to. Stored so a second vendor can be
     /// added later without the two silently sharing a row.
-    var vendorRaw: String
+    var vendorRaw: String = ""
 
     var vendorCardID: String?
     /// The finish-specific handle, when the vendor exposes one. This is what a
@@ -36,7 +39,7 @@ final class ProductIdentity {
     /// Bumped in code when the matching rules improve, so previously unmatched
     /// cards are retried on the next pass instead of waiting out a retry
     /// interval on a verdict the current build would reach differently.
-    var attemptVersion: Int
+    var attemptVersion: Int = ProductIdentity.currentAttemptVersion
 
     /// # Ownership
     ///

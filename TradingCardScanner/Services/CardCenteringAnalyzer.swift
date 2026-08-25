@@ -19,8 +19,9 @@ struct CardCenteringAnalysis {
 }
 
 /// Native port of the tuned Python centering detector. It scores long color
-/// transitions instead of isolated details, then uses the top border as the
-/// reference when choosing plausible left, right, and bottom frame edges.
+/// transitions instead of isolated details, separates the physical card from
+/// a scanner background, then uses the top border as the reference when
+/// choosing plausible left, right, and bottom frame edges.
 enum CardCenteringAnalyzer {
     private struct Pixel {
         let l: Float
@@ -62,23 +63,50 @@ enum CardCenteringAnalyzer {
             }
         }
 
-        let yRange = roundedRange(0.10, 0.90, length: height)
         let xRange = roundedRange(0.18, 0.82, length: width)
         let outerX = max(20, Int((Double(width) * 0.22).rounded()))
         let outerY = max(20, Int((Double(height) * 0.22).rounded()))
 
-        let leftOuterSet = candidates(verticalScores(gx, width: width, height: height, xRange: 0..<outerX, yRange: yRange), offset: 0)
-        let rightStart = max(0, width - outerX - 1)
-        let rightOuterSet = candidates(verticalScores(gx, width: width, height: height, xRange: rightStart..<(width - 1), yRange: yRange), offset: rightStart)
         let topOuterSet = candidates(horizontalScores(gy, width: width, height: height, yRange: 0..<outerY, xRange: xRange), offset: 0)
         let bottomStart = max(0, height - outerY - 1)
         let bottomOuterSet = candidates(horizontalScores(gy, width: width, height: height, yRange: bottomStart..<(height - 1), xRange: xRange), offset: bottomStart)
+        let outerTop = topOuterSet.candidates.first!.position
+        let outerBottom = bottomOuterSet.candidates.last!.position
+
+        // Measure the vertical edges only along the straight body of the card.
+        // This avoids rounded corners and prevents scanner-bed marks above or
+        // below the card from looking like full-height card edges.
+        let detectedHeight = max(1, outerBottom - outerTop)
+        let verticalInset = max(2, Int((Double(detectedHeight) * 0.08).rounded()))
+        let yStart = clamped(outerTop + verticalInset, 0, height - 1)
+        let yEnd = clamped(outerBottom - verticalInset, yStart + 1, height)
+        let yRange = yStart..<yEnd
+
+        // On a scanner, the physical card is one continuous foreground region.
+        // Detect that silhouette before looking at print transitions; artwork
+        // and the edge of the scan can otherwise form a convincing false pair.
+        let leftOuterSet = candidates(
+            verticalScores(gx, width: width, height: height, xRange: 0..<outerX, yRange: yRange),
+            offset: 0
+        )
+        let rightStart = max(0, width - outerX - 1)
+        let rightOuterSet = candidates(
+            verticalScores(gx, width: width, height: height, xRange: rightStart..<(width - 1), yRange: yRange),
+            offset: rightStart
+        )
+        let silhouette = verticalSilhouetteEdges(
+            lab: lab,
+            width: width,
+            height: height,
+            yRange: yRange,
+            cardHeight: detectedHeight
+        )
 
         let outer = CardCenteringEdges(
-            left: leftOuterSet.candidates.first!.position,
-            top: topOuterSet.candidates.first!.position,
-            right: rightOuterSet.candidates.last!.position,
-            bottom: bottomOuterSet.candidates.last!.position
+            left: silhouette?.left ?? leftOuterSet.candidates.first!.position,
+            top: outerTop,
+            right: silhouette?.right ?? rightOuterSet.candidates.last!.position,
+            bottom: outerBottom
         )
 
         let cardWidth = max(1, outer.right - outer.left)
@@ -261,6 +289,78 @@ enum CardCenteringAnalyzer {
         return CandidateSet(
             candidates: found.map { Candidate(position: $0.key, strength: $0.value) }.sorted { $0.position < $1.position },
             baseline: baseline
+        )
+    }
+
+    /// Separates a card from the scanner bed by comparing every row with robust
+    /// background samples at the far left and right. A real card occupies a
+    /// wide, continuous run of columns; dust and scanner seams do not.
+    private static func verticalSilhouetteEdges(
+        lab: [Pixel],
+        width: Int,
+        height: Int,
+        yRange: Range<Int>,
+        cardHeight: Int
+    ) -> (left: Int, right: Int)? {
+        guard width > 20, height > 20, !yRange.isEmpty else { return nil }
+        let sampleWidth = clamped(Int((Double(width) * 0.02).rounded()), 6, min(24, width / 4))
+        var foregroundCounts = [Int](repeating: 0, count: width)
+
+        for y in yRange {
+            let row = y * width
+            let leftSamples = (0..<sampleWidth).map { lab[row + $0] }
+            let rightSamples = ((width - sampleWidth)..<width).map { lab[row + $0] }
+            let leftBackground = medianPixel(leftSamples)
+            let rightBackground = medianPixel(rightSamples)
+
+            for x in 0..<width {
+                let progress = Float(x) / Float(max(width - 1, 1))
+                let background = Pixel(
+                    l: leftBackground.l + progress * (rightBackground.l - leftBackground.l),
+                    a: leftBackground.a + progress * (rightBackground.a - leftBackground.a),
+                    b: leftBackground.b + progress * (rightBackground.b - leftBackground.b)
+                )
+                if distance(lab[row + x], background) >= 8 {
+                    foregroundCounts[x] += 1
+                }
+            }
+        }
+
+        let occupancy = foregroundCounts.map { Float($0) / Float(yRange.count) }
+        let smoothed = occupancy.indices.map { index -> Float in
+            let range = max(0, index - 4)...min(width - 1, index + 4)
+            return range.reduce(0) { $0 + occupancy[$1] } / Float(range.count)
+        }
+
+        var runs: [(lower: Int, upper: Int)] = []
+        var runStart: Int?
+        for x in smoothed.indices {
+            if smoothed[x] >= 0.60, runStart == nil {
+                runStart = x
+            }
+            if let start = runStart, smoothed[x] < 0.60 || x == width - 1 {
+                let end = smoothed[x] < 0.60 ? x - 1 : x
+                if end > start { runs.append((start, end)) }
+                runStart = nil
+            }
+        }
+
+        let plausible = runs.filter {
+            let aspect = Double($0.upper - $0.lower) / Double(max(cardHeight, 1))
+            return (0.62...0.82).contains(aspect)
+        }
+        guard let card = plausible.max(by: {
+            ($0.upper - $0.lower) < ($1.upper - $1.lower)
+        }) else { return nil }
+
+        return (max(0, card.lower - 1), min(width - 1, card.upper))
+    }
+
+    private static func medianPixel(_ pixels: [Pixel]) -> Pixel {
+        Pixel(
+            l: median(pixels.map(\.l)),
+            a: median(pixels.map(\.a)),
+            b: median(pixels.map(\.b))
         )
     }
 
