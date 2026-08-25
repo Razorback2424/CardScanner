@@ -12,6 +12,27 @@ struct VariantEvidence: Equatable, Sendable {
     /// What the catalog itself publishes. Empty means the catalog is silent —
     /// which is a fact, not a licence to guess.
     let catalogVariants: [PhysicalVariant]
+
+    /// The same evidence with 1st Edition removed from the finish list.
+    ///
+    /// TCGdex publishes 1st Edition as a `variants` boolean beside normal, holo
+    /// and reverse, so it arrives here looking like a finish. It is not one: it
+    /// is the print run, and every surface that has already established the run
+    /// — the virtual Browse set, or the scanner's print run question — would
+    /// otherwise ask the identical question a second time under a different
+    /// name. Removing it also keeps a 1st Edition Holo representable as both
+    /// rather than collapsing the finish onto the edition.
+    ///
+    /// Only call this once the run is known; without it, 1st Edition is the
+    /// only signal the catalog gives that the card had two runs at all.
+    func excludingFirstEditionPseudoFinish() -> VariantEvidence {
+        VariantEvidence(
+            game: game,
+            setID: setID,
+            cardNumber: cardNumber,
+            catalogVariants: catalogVariants.filter { $0.id != PhysicalVariant.firstEdition.id }
+        )
+    }
 }
 
 enum VariantOutcome: Equatable {
@@ -33,7 +54,8 @@ enum VariantOutcome: Equatable {
 enum VariantResolver {
     static func resolve(_ evidence: VariantEvidence, finishLock: PhysicalVariant? = nil) -> VariantOutcome {
         let ruled = PokemonVariantRules.apply(to: evidence)
-        let possible = ruled.variants
+        let stamped = stampedVariants(for: evidence)
+        let possible = ScanText.unique(ruled.variants + stamped)
 
         // The catalog knows nothing. Record "unknown" honestly rather than
         // offering a menu of finishes we have no reason to believe exist.
@@ -54,7 +76,10 @@ enum VariantResolver {
         // Master Ball parallels really is a fact about the cards on the table.
         // It is not an override: it applies only where the catalog agrees the
         // variant is physically possible.
-        if let finishLock {
+        // A finish lock describes Normal/Holo/Reverse, not whether the pumpkin
+        // stamp is present. It must not silently answer the stamped question.
+        let includesCatalogStampChoice = possible.contains(where: PokemonCatalogStampVariant.isStamped)
+        if let finishLock, stamped.isEmpty, !includesCatalogStampChoice {
             if possible.contains(finishLock) {
                 return .resolved(ResolvedVariant(variant: finishLock, resolution: .finishLock))
             }
@@ -67,7 +92,15 @@ enum VariantResolver {
     /// Options for correcting an already-recorded card, which is the same
     /// question asked after the fact.
     static func options(for evidence: VariantEvidence) -> [PhysicalVariant] {
-        ordered(PokemonVariantRules.apply(to: evidence).variants)
+        ordered(ScanText.unique(
+            PokemonVariantRules.apply(to: evidence).variants + stampedVariants(for: evidence)
+        ))
+    }
+
+    private static func stampedVariants(for evidence: VariantEvidence) -> [PhysicalVariant] {
+        guard evidence.game == .pokemon else { return [] }
+        let providerID = "\(evidence.setID)-\(evidence.cardNumber)"
+        return PokemonStampedReleaseCatalog.entries(providerID: providerID).map(\.variant)
     }
 
     private static func ordered(_ variants: [PhysicalVariant]) -> [PhysicalVariant] {

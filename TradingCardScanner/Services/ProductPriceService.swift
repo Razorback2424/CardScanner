@@ -661,6 +661,10 @@ enum ProductFinish {
     }
 
     static func printing(for variant: PhysicalVariant?) -> String? {
+        if let id = variant?.id,
+           let stamped = PokemonStampedReleaseCatalog.entry(variantID: id) {
+            return stamped.printing
+        }
         switch variant?.id {
         case PhysicalVariant.normal.id: return "Normal"
         case PhysicalVariant.holo.id: return "Holofoil"

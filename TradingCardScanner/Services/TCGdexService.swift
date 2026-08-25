@@ -303,7 +303,7 @@ struct ScryfallService: Sendable {
         let directory = try JSONDecoder().decode(ScryfallSetDirectory.self, from: data)
         return directory.data.compactMap { set in
             guard !set.digital else { return nil }
-            return CatalogSetReference(id: set.code, name: set.name)
+            return CatalogSetReference(id: set.code, name: set.name, cardCount: nil)
         }
     }
 
@@ -405,6 +405,125 @@ struct ScryfallService: Sendable {
 struct CatalogSetReference: Decodable, Sendable {
     let id: String
     let name: String
+    /// Present in TCGdex's set directory and absent in Scryfall's. Existing
+    /// name-based consumers deliberately ignore it; historical scan candidacy
+    /// uses `official` because that is the denominator printed on the card.
+    let cardCount: TCGdexCardCount?
+}
+
+struct PokemonCatalogCardIdentity: Equatable, Hashable, Sendable {
+    let providerID: String
+    let setID: String
+    let setName: String
+    let localID: String
+    let name: String
+}
+
+enum PokemonHistoricalIdentityResolution: Equatable, Sendable {
+    case unique(PokemonCatalogCardIdentity)
+    case ambiguous([PokemonCatalogCardIdentity])
+    case unsupported
+}
+
+/// Pure, strict historical matching policy. Network and caching live outside
+/// this type so every collision can be tested with deterministic fixtures.
+enum PokemonHistoricalIdentityResolver {
+    /// Subset denominators describe a gallery or holo sequence rather than the
+    /// containing set. They therefore cannot be derived from `cardCount` and
+    /// remain an explicit numbering-scheme mapping.
+    private static let subsetCandidateSets: [String: [Int: [String]]] = [
+        "H": [32: ["ecard2", "ecard3"]],
+        "TG": [30: ["swsh9tg", "swsh10tg", "swsh11tg", "swsh12tg"]],
+        "GG": [70: ["swsh12.5gg"]],
+        "RC": [25: ["bw11"], 32: ["g1"]]
+    ]
+
+    /// Whether the printed numbering shape is one this resolver understands.
+    /// Ordinary denominators remain open-ended; the live directory decides
+    /// whether any sets actually publish that official count.
+    static func canAttempt(_ number: PokemonPrintedNumberEvidence) -> Bool {
+        switch number.scheme {
+        case .officialSet:
+            return true
+        case let .subset(prefix):
+            return subsetCandidateSets[prefix]?[number.denominator] != nil
+        }
+    }
+
+    static func candidateSetIDs(
+        for evidence: PokemonHistoricalScanEvidence,
+        in directory: [CatalogSetReference]
+    ) -> [String] {
+        candidateSetIDs(for: evidence.number, in: directory)
+    }
+
+    static func candidateSetIDs(
+        for number: PokemonPrintedNumberEvidence,
+        in directory: [CatalogSetReference]
+    ) -> [String] {
+        let ids: [String]
+        switch number.scheme {
+        case .officialSet:
+            ids = directory.compactMap { set in
+                set.cardCount?.official == number.denominator ? set.id : nil
+            }
+        case let .subset(prefix):
+            ids = subsetCandidateSets[prefix]?[number.denominator] ?? []
+        }
+        return Array(Set(ids.map { $0.lowercased() })).sorted()
+    }
+
+    static func resolve(
+        _ evidence: PokemonHistoricalScanEvidence,
+        candidateSetIDs: [String],
+        in cards: [PokemonCatalogCardIdentity]
+    ) -> PokemonHistoricalIdentityResolution {
+        let setIDs = Set(candidateSetIDs.map { $0.lowercased() })
+        guard !setIDs.isEmpty else { return .unsupported }
+
+        let localID = canonicalLocalID(evidence.number.localID)
+        let titles = Set(evidence.titleCandidates)
+        let matches = cards.filter { card in
+            setIDs.contains(card.setID.lowercased())
+                && canonicalLocalID(card.localID) == localID
+                && titles.contains(CatalogIdentityNormalization.canonicalText(card.name))
+        }
+        let unique = Dictionary(
+            matches.map { ($0.providerID, $0) },
+            uniquingKeysWith: { first, _ in first }
+        ).values.sorted {
+            if $0.setID != $1.setID { return $0.setID < $1.setID }
+            return $0.providerID < $1.providerID
+        }
+
+        switch unique.count {
+        case 1: return .unique(unique[0])
+        case 2...: return .ambiguous(unique)
+        default: return .unsupported
+        }
+    }
+
+    static func identities(in catalogs: [TCGdexSetCatalog]) -> [PokemonCatalogCardIdentity] {
+        catalogs.flatMap { set in
+            set.cards.map { card in
+                PokemonCatalogCardIdentity(
+                    providerID: card.id,
+                    setID: set.id,
+                    setName: set.name,
+                    localID: card.localId,
+                    name: card.name
+                )
+            }
+        }
+    }
+
+    static func canonicalLocalID(_ raw: String) -> String {
+        let compact = raw.uppercased().filter { !$0.isWhitespace }
+        let prefix = compact.prefix { $0.isLetter }
+        let suffix = compact.dropFirst(prefix.count)
+        guard let number = Int(suffix) else { return compact }
+        return "\(prefix)\(number)"
+    }
 }
 
 /// One entry in a Scryfall `/cards/collection` request.

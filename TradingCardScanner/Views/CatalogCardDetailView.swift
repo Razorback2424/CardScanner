@@ -139,18 +139,11 @@ struct CatalogCardDetailView: View {
             commit(ResolvedVariant(variant: required, resolution: .userConfirmed))
             return
         }
+        // Edition is carried by the virtual Browse set, so the finish question
+        // must not ask about it again.
         var evidence = card.variantEvidence
-        // Edition is carried by the virtual Browse set. Remove the legacy
-        // pseudo-finish so a 1st Edition Holo remains representable as both.
         if summary.pokemonPrintRun != nil {
-            evidence = VariantEvidence(
-                game: evidence.game,
-                setID: evidence.setID,
-                cardNumber: evidence.cardNumber,
-                catalogVariants: evidence.catalogVariants.filter {
-                    $0.id != PhysicalVariant.firstEdition.id
-                }
-            )
+            evidence = evidence.excludingFirstEditionPseudoFinish()
         }
         switch VariantResolver.resolve(evidence) {
         case let .resolved(resolved): commit(resolved)

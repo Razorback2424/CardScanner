@@ -22,6 +22,45 @@ extension View {
     }
 }
 
+/// A deliberate second capture for historical cards. Reusing the proven scan
+/// band keeps OCR fast and makes the physical action unambiguous.
+struct HistoricalTitleScanBar: View {
+    let scan: PendingHistoricalTitleScan
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "text.viewfinder")
+                .font(.title2)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Now scan the card name")
+                    .font(.headline)
+                Text("Footer \(scan.number.displayIdentifier) captured. Move the card so its title is inside the green box.")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.78))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Cancel title scan")
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .scannerGlass()
+        .accessibilityElement(children: .contain)
+    }
+}
+
 /// The one-tap fork.
 ///
 /// This appears only when two or more variants are genuinely possible and the
@@ -42,7 +81,7 @@ struct VariantChoiceBar: View {
                         .font(.title3.bold())
                         .lineLimit(2)
 
-                    Text("Card \(choice.card.displayCardNumber)")
+                    Text(variantChoiceIdentifier)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.7))
                 }
@@ -76,6 +115,13 @@ struct VariantChoiceBar: View {
         .foregroundStyle(.white)
         .padding(14)
         .scannerGlass()
+    }
+
+    private var variantChoiceIdentifier: String {
+        if case .pokemonHistorical = choice.identifier {
+            return choice.identifier.displayIdentifier
+        }
+        return "Card \(choice.card.displayCardNumber)"
     }
 
     @ViewBuilder
@@ -116,6 +162,142 @@ struct VariantChoiceBar: View {
         .buttonStyle(.plain)
         .foregroundStyle(.white)
         .accessibilityLabel("\(option.label), add \(choice.card.name)")
+    }
+}
+
+/// One factual question for early Pokémon sets whose provider identity is
+/// shared by physically distinct print runs with materially different prices.
+struct PrintRunChoiceBar: View {
+    let choice: PendingPrintRunChoice
+    let onChoose: (PokemonPrintRun) -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(choice.card.name)
+                        .font(.title3.bold())
+                        .lineLimit(2)
+                    Text(choice.identifier.scannerDisplayIdentifier(for: choice.card))
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text(choice.card.setName)
+                    .font(.title3.weight(.semibold))
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Skip this card")
+            }
+
+            Text("Which print run is this card?")
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.75))
+
+            HStack(spacing: 10) {
+                ForEach(choice.options, id: \.self) { option in
+                    Button {
+                        onChoose(option)
+                    } label: {
+                        Text(option.label)
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(
+                                .white.opacity(0.16),
+                                in: RoundedRectangle(cornerRadius: 13, style: .continuous)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                    .stroke(.white.opacity(0.22), lineWidth: 1)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.white)
+                    .accessibilityLabel("\(option.label), add \(choice.card.name)")
+                }
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .scannerGlass()
+    }
+}
+
+/// The resolver proved that more than one catalog printing carries the same
+/// visible title and number. This tap supplies the one fact the card evidence
+/// could not; ordering is never used as identity.
+struct IdentityChoiceBar: View {
+    let choice: PendingIdentityChoice
+    let onChoose: (PokemonCatalogCardIdentity) -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(choice.candidates.first?.name ?? "Pokémon card")
+                        .font(.title3.bold())
+                        .lineLimit(2)
+                    Text(choice.identifier.displayIdentifier)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                Spacer(minLength: 0)
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Skip this card")
+            }
+
+            Text("The printed details exist in more than one set. Which symbol is on the card?")
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.75))
+
+            ForEach(choice.candidates, id: \.providerID) { candidate in
+                Button {
+                    onChoose(candidate)
+                } label: {
+                    Text(candidate.setName)
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .background(
+                            .white.opacity(0.16),
+                            in: RoundedRectangle(cornerRadius: 13, style: .continuous)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 13, style: .continuous)
+                                .stroke(.white.opacity(0.22), lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+                .accessibilityLabel("\(candidate.setName), add \(candidate.name)")
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .scannerGlass()
     }
 }
 

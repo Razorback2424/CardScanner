@@ -67,7 +67,7 @@ struct ContentView: View {
     private func seedSealedArtworkQA() {
         let store = CollectionStore(context: modelContext)
         let artworkURL = URL(
-            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
         _ = store.addSealed(
             SealedProductSummary(

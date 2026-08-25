@@ -8,6 +8,20 @@ import XCTest
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testMarketplaceArtworkUsesTheCanonicalProductCDN() {
+        XCTAssertEqual(
+            JustTCGV1Client.productImageURL(tcgplayerID: "515661")?.absoluteString,
+            "https://tcgplayer-cdn.tcgplayer.com/product/515661_400w.jpg"
+        )
+        XCTAssertNil(JustTCGV1Client.productImageURL(tcgplayerID: "  "))
+        XCTAssertEqual(
+            JustTCGV1Client.migratedProductImageURL(
+                from: "https://product-images.tcgplayer.com/fit-in/1000x1000/515661.jpg"
+            )?.absoluteString,
+            "https://tcgplayer-cdn.tcgplayer.com/product/515661_400w.jpg"
+        )
+    }
+
 
     // MARK: - Batch request encoding
 

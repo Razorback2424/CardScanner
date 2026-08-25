@@ -49,6 +49,11 @@
 		A0010015 /* CameraCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010016 /* CameraCapabilities.swift */; };
 		A0010016 /* ScannerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010017 /* ScannerSettingsView.swift */; };
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
+		A00200F5 /* TitleCaptureGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* TitleCaptureGateTests.swift */; };
+		A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F4 /* HistoricalTitleCaptureTests.swift */; };
+		A00200F3 /* BoundedCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F3 /* BoundedCacheTests.swift */; };
+		A00200F2 /* PortfolioNameCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F2 /* PortfolioNameCleaningTests.swift */; };
+		A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F1 /* HistoricalCatalogRequestTests.swift */; };
 		A0020004 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0020002 /* XCTest.framework */; };
 		A0010020 /* CardVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010020 /* CardVariant.swift */; };
 		A0010021 /* VariantResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010021 /* VariantResolver.swift */; };
@@ -142,6 +147,11 @@
 		B0010015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0010099 /* TradingCardScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradingCardScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
+		B00200F5 /* TitleCaptureGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleCaptureGateTests.swift; sourceTree = "<group>"; };
+		B00200F4 /* HistoricalTitleCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalTitleCaptureTests.swift; sourceTree = "<group>"; };
+		B00200F3 /* BoundedCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundedCacheTests.swift; sourceTree = "<group>"; };
+		B00200F2 /* PortfolioNameCleaningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioNameCleaningTests.swift; sourceTree = "<group>"; };
+		B00200F1 /* HistoricalCatalogRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalCatalogRequestTests.swift; sourceTree = "<group>"; };
 		B0020002 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		B0020099 /* TradingCardScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingCardScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0010020 /* CardVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardVariant.swift; sourceTree = "<group>"; };
@@ -331,6 +341,11 @@
 			isa = PBXGroup;
 			children = (
 				B0020001 /* ScanParserTests.swift */,
+				B00200F5 /* TitleCaptureGateTests.swift */,
+				B00200F4 /* HistoricalTitleCaptureTests.swift */,
+				B00200F3 /* BoundedCacheTests.swift */,
+				B00200F2 /* PortfolioNameCleaningTests.swift */,
+				B00200F1 /* HistoricalCatalogRequestTests.swift */,
 				B0020010 /* CardLatchTests.swift */,
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
@@ -518,6 +533,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0020001 /* ScanParserTests.swift in Sources */,
+				A00200F5 /* TitleCaptureGateTests.swift in Sources */,
+				A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */,
+				A00200F3 /* BoundedCacheTests.swift in Sources */,
+				A00200F2 /* PortfolioNameCleaningTests.swift in Sources */,
+				A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */,
 				A0020010 /* CardLatchTests.swift in Sources */,
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,

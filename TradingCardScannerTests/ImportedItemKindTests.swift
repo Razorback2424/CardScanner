@@ -181,7 +181,7 @@ final class ImportedItemKindTests: XCTestCase {
         let sealed = [
             "pokemon", "sealed:pokemon:old", "Booster Box", "Base Set", "", "", "", "", "1",
             "sealedProduct", "product-v1-uuid", "sealed-v1-uuid", "v1", "", "", "", "", "", "US",
-            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         ].joined(separator: ",")
 
         let entries = try CollectionCSV.parse(Data("\(header)\n\(graded)\n\(sealed)\n".utf8)).entries
@@ -200,7 +200,7 @@ final class ImportedItemKindTests: XCTestCase {
         XCTAssertEqual(box.justTCGVariantID, "sealed-v1-uuid")
         XCTAssertEqual(
             box.imageURL,
-            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
         XCTAssertEqual(
             box.collectionKey,

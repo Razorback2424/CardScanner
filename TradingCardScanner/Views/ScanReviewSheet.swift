@@ -26,7 +26,7 @@ struct ScanReviewSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 18) {
-                    AsyncImage(url: scan.card.displayImageURL) { phase in
+                    AsyncImage(url: scan.displayImageURL) { phase in
                         switch phase {
                         case let .success(image):
                             image.resizable().scaledToFit()
@@ -65,11 +65,16 @@ struct ScanReviewSheet: View {
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
 
-            Text(scan.card.setName)
+            Text(scan.displaySetName)
                 .foregroundStyle(.secondary)
 
-            Text(scan.card.identifier)
+            Text(scan.identifier.scannerDisplayIdentifier(for: scan.card))
                 .font(.headline.monospacedDigit())
+
+            if let printRun = scan.pokemonPrintRun {
+                Text(printRun.label)
+                    .font(.subheadline.weight(.semibold))
+            }
 
             if let rarity = scan.card.rarity {
                 Text(rarity)

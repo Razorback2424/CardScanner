@@ -25,6 +25,39 @@ struct PokemonSetDefinition: Equatable, Hashable, Sendable {
     let releaseIndex: Int
 }
 
+/// A Black Star Promo series whose printed prefix is itself enough to select
+/// the TCGdex set. Older series include the prefix in `localId` (BW01), while
+/// current series print the prefix beside a numeric local id (SVP 001).
+struct PokemonPromoSetDefinition: Equatable, Hashable, Sendable {
+    let printedPrefix: String
+    let tcgdexSetID: String
+    let catalogLocalIDPrefix: String
+
+    func catalogLocalID(number: Int) -> String {
+        let digits = printedPrefix == "BW" || printedPrefix == "XY" || printedPrefix == "SM"
+            ? String(format: "%02d", number)
+            : String(format: "%03d", number)
+        return catalogLocalIDPrefix + digits
+    }
+}
+
+enum PokemonPromoCodeMap {
+    /// Verified against the printed footers of the corresponding English promo
+    /// series. This table is intentionally separate from `SetCodeMap`: promo
+    /// cards do not print an expansion denominator and must never enter the
+    /// modern expansion parser's `code + number/total` contract.
+    static let definitions: [String: PokemonPromoSetDefinition] = [
+        "BW": .init(printedPrefix: "BW", tcgdexSetID: "bwp", catalogLocalIDPrefix: "BW"),
+        "XY": .init(printedPrefix: "XY", tcgdexSetID: "xyp", catalogLocalIDPrefix: "XY"),
+        "SM": .init(printedPrefix: "SM", tcgdexSetID: "smp", catalogLocalIDPrefix: "SM"),
+        "SWSH": .init(printedPrefix: "SWSH", tcgdexSetID: "swshp", catalogLocalIDPrefix: "SWSH"),
+        "SVP": .init(printedPrefix: "SVP", tcgdexSetID: "svp", catalogLocalIDPrefix: ""),
+        "MEP": .init(printedPrefix: "MEP", tcgdexSetID: "mep", catalogLocalIDPrefix: "")
+    ]
+
+    static var codes: [String] { definitions.keys.sorted() }
+}
+
 /// A deliberately small, OCR-oriented subset of Scryfall's set directory. The
 /// three-character printed code and (when present) printed size are the only
 /// set facts the scanner needs; card metadata remains Scryfall's job.

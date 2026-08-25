@@ -360,6 +360,83 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(confetti.unitMarketPriceUSD, 88.0)
     }
 
+    func testMultipleTCGdexStampsRemainOneExactPhysicalVariant() throws {
+        let json = """
+        {
+          "id": "svp-999", "localId": "999", "name": "Test Promo",
+          "set": { "id": "svp", "name": "Scarlet & Violet Promos",
+                   "cardCount": { "total": 999, "official": 0 } },
+          "variants": { "firstEdition": false, "holo": true, "normal": false, "reverse": false },
+          "variants_detailed": [
+            { "type": "holo", "size": "standard", "languages": ["en"],
+              "pricing": { "tcgplayer": { "holofoil": { "marketPrice": 1.0 } } } },
+            { "type": "holo", "size": "standard", "stamp": ["set-logo"],
+              "languages": ["en"], "thirdParty": { "tcgplayer": 100 },
+              "pricing": { "tcgplayer": { "holofoil": { "marketPrice": 2.0 } } } },
+            { "type": "holo", "size": "standard", "stamp": ["staff", "set-logo"],
+              "languages": ["en"], "thirdParty": { "tcgplayer": 101 },
+              "pricing": { "tcgplayer": { "holofoil": { "marketPrice": 20.0 } } } }
+          ]
+        }
+        """
+        let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+        let options = pokemon.catalogVariants
+        XCTAssertEqual(options.count, 3)
+        XCTAssertTrue(options.contains(.holo))
+        XCTAssertTrue(options.contains { $0.label == "Holo · Set Logo" })
+        let staff = try XCTUnwrap(options.first { $0.label == "Holo · Set Logo + Staff" })
+        XCTAssertEqual(PokemonCatalogStampVariant.decode(staff.id)?.stamps, ["set-logo", "staff"])
+        XCTAssertEqual(pokemon.variantsDetailed?[2].thirdParty?.tcgplayer, 101)
+
+        let card = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
+        guard case .needsChoice = VariantResolver.resolve(
+            card.variantEvidence,
+            finishLock: .holo
+        ) else {
+            return XCTFail("A finish lock must not silently answer the stamp question")
+        }
+        guard case let .price(price) = CardPricing.price(for: card, variant: staff) else {
+            return XCTFail("Expected the Staff object's exact price")
+        }
+        XCTAssertEqual(price.unitMarketPriceUSD, 20.0)
+        XCTAssertEqual(PhysicalVariant.named(staff.id), staff)
+    }
+
+    func testLoneStampedCatalogRecordDoesNotInventAChoice() throws {
+        let json = """
+        {
+          "id": "mep-083", "localId": "083", "name": "Slowbro",
+          "set": { "id": "mep", "name": "Mega Evolution Promos",
+                   "cardCount": { "total": 89, "official": 0 } },
+          "variants": { "firstEdition": false, "holo": true, "normal": false, "reverse": false },
+          "variants_detailed": [
+            { "type": "holo", "size": "standard", "stamp": ["set-logo"] }
+          ]
+        }
+        """
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+        XCTAssertEqual(card.catalogVariants, [.holo])
+    }
+
+    func testFirstEditionStampStaysInExistingPrintRunArchitecture() throws {
+        let json = """
+        {
+          "id": "base1-4", "localId": "4", "name": "Charizard",
+          "set": { "id": "base1", "name": "Base Set",
+                   "cardCount": { "total": 102, "official": 102 } },
+          "variants": { "firstEdition": true, "holo": true, "normal": false, "reverse": false },
+          "variants_detailed": [
+            { "type": "holo", "subtype": "unlimited", "size": "standard" },
+            { "type": "holo", "subtype": "shadowless", "size": "standard",
+              "stamp": ["1st-edition"] }
+          ]
+        }
+        """
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+        XCTAssertEqual(card.catalogVariants, [.holo, .firstEdition])
+        XCTAssertFalse(card.catalogVariants.contains { $0.id.hasPrefix("pokemonStamp|") })
+    }
+
     // MARK: - Cardmarket stands in only where TCGplayer is silent
 
     private func promoCard(tcgplayerJSON: String = "null") throws -> IdentifiedCard {

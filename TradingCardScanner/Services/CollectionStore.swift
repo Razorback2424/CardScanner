@@ -253,10 +253,29 @@ struct CollectionStore {
                 identityResolution: identityResolution,
                 setReleaseOrder: setReleaseOrder
             )
+            // `CollectedCard` can derive the finish-qualified base key, but the
+            // independent Pokémon print run is known only at this layer.
+            inserted.collectionKey = key
             inserted.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
             context.insert(inserted)
             mutation = CollectionMutation(collectionKey: key, activityID: nil, didInsert: true)
             stored = inserted
+        }
+
+        if let stamped = PokemonStampedReleaseCatalog.entry(
+            providerID: card.providerID,
+            variantID: resolved.variant?.id
+        ) {
+            // The catalog identity still points at the source artwork/number,
+            // while the owned object belongs to the separate stamped release.
+            // Display and artwork must describe what is physically held.
+            stored.setName = "Trick or Trade \(stamped.year)"
+            stored.setCode = "TOT\(String(stamped.year).suffix(2))"
+            let artwork = JustTCGV1Client.productImageURL(
+                tcgplayerID: stamped.tcgplayerProductID
+            )?.absoluteString
+            stored.imageURL = artwork
+            stored.thumbnailURL = artwork
         }
 
         let activity = record(stored, source: source)
@@ -336,11 +355,16 @@ struct CollectionStore {
     func recordVariantCorrection(
         for card: IdentifiedCard,
         from current: PhysicalVariant?,
-        to corrected: ResolvedVariant
+        to corrected: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        previousCollectionKey: String? = nil
     ) -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
 
-        let previousKey = card.collectionKey(variant: current)
+        let previousBaseKey = card.collectionKey(variant: current)
+        let previousKey = previousCollectionKey
+            ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
+            ?? previousBaseKey
         let activityDescriptor = FetchDescriptor<CollectionActivity>(
             predicate: #Predicate { $0.collectionKey == previousKey }
         )
@@ -356,7 +380,12 @@ struct CollectionStore {
             }
         }
 
-        let mutation = add(card, resolved: corrected, source: .correction)
+        let mutation = add(
+            card,
+            resolved: corrected,
+            source: .correction,
+            pokemonPrintRun: pokemonPrintRun
+        )
         guard let activityToRetarget,
               let correctedCard = self.card(forKey: mutation.collectionKey) else {
             return mutation

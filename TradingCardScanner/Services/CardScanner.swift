@@ -159,13 +159,18 @@ final class CardScanner: NSObject, ObservableObject {
     @Published private(set) var debugVisionBoxes: [CGRect] = []
 #endif
 
-    /// A validated identifier has been read once. Not yet trusted, and never
+    /// A plausible identifier or historical evidence key has been read once.
+    /// Not yet trusted, and never
     /// allowed to touch the collection — this exists so a catalog request can be
     /// in flight while Vision is still looking for its second matching pass.
     var onPlausibleCandidate: ((ScanIdentifier) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
     var onConfirmedCandidate: ((ScanIdentifier) -> Void)?
+    /// A historical footer has been seen consistently. The same scan band now
+    /// needs the title, which cannot be in frame when a close macro shot is used.
+    var onHistoricalTitleRequested: ((PokemonPrintedNumberEvidence) -> Void)?
+    var onHistoricalTitleCaptureEnded: (() -> Void)?
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
@@ -187,6 +192,26 @@ final class CardScanner: NSObject, ObservableObject {
     private var didAnnounceLatchHold = false
     private var lastAnnouncedPlausible: ScanIdentifier?
     private var profile: RecognitionProfile = .pokemonOnly
+    private var historicalNumberWindow = HistoricalNumberConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    private var captureMode: CaptureMode = .identifier
+    /// Everything the number band just showed us, and when the prompt went up.
+    /// Title capture uses both to avoid reading the footer a second time.
+    private var footerSignature: Set<String> = []
+    private var titleGate: TitleCaptureGate?
+
+    /// Title capture state belongs to one card. Clearing it on the way back to
+    /// the number band keeps one card's footer from filtering the next card's
+    /// name.
+    private func resetHistoricalTitleCapture() {
+        footerSignature = []
+        titleGate = nil
+    }
+
+    private enum CaptureMode: Equatable {
+        case identifier
+        case historicalTitle(PokemonPrintedNumberEvidence)
+    }
+
 
     /// Consecutive readings of an already-consumed card before the UI mentions it.
     /// Long enough that simply finishing a movement never triggers it.
@@ -270,6 +295,19 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    func cancelHistoricalTitleCapture() {
+        visionQueue.async { [weak self] in
+            guard let self, case .historicalTitle = self.captureMode else { return }
+            self.captureMode = .identifier
+            self.resetHistoricalTitleCapture()
+            self.confirmationWindow.reset()
+            self.historicalNumberWindow.reset()
+            DispatchQueue.main.async { [weak self] in
+                self?.onHistoricalTitleCaptureEnded?()
+            }
+        }
+    }
+
     /// Installs the Magic set directory. One atomic update of the parser and the
     /// OCR vocabulary together, so no frame is ever recognised against a
     /// vocabulary that does not match the parser about to read it.
@@ -301,6 +339,7 @@ final class CardScanner: NSObject, ObservableObject {
         request.usesLanguageCorrection = true
         request.customWords = profile.customWords
         request.regionOfInterest = ScanRegion.activeVisionROI
+
     }
 
     private func configureAndStartIfNeeded() {
@@ -470,7 +509,11 @@ final class CardScanner: NSObject, ObservableObject {
     /// so card two is already being read while card one's receipt is still on
     /// screen — the latch, not a pause, is what stops one card being counted
     /// twice.
-    private func handleRecognizedText(_ lines: [String], at now: CFAbsoluteTime) {
+    private func handleRecognizedText(
+        _ recognizedLines: [RecognizedLine],
+        at now: CFAbsoluteTime
+    ) {
+        let lines = recognizedLines.map(\.text)
         // Vision's line grouping is preserved into the parsers, which is what
         // keeps a set code paired with its own collector number when more than
         // one card is visible.
@@ -478,12 +521,60 @@ final class CardScanner: NSObject, ObservableObject {
         // An ambiguous frame is treated exactly like a frame that read nothing:
         // it confirms nothing, and it ages the confirmation window so a later
         // pass gets a clean run at the card.
+        // Ordinary identification runs on every frame, whatever else is
+        // pending. Historical title capture is additional evidence gathering,
+        // never a replacement for the scanner's normal ability to recognise a
+        // card — the invariant being that no card is ever unrecognisable
+        // because of what happened while looking at a previous one.
         let parsed: ScanIdentifier?
-        switch profile.identify(lines) {
-        case let .identified(identifier):
-            parsed = identifier
-        case .nothing, .ambiguous:
-            parsed = nil
+        switch captureMode {
+        case .identifier:
+            switch profile.identify(recognizedLines) {
+            case let .identified(identifier):
+                historicalNumberWindow.reset()
+                parsed = identifier
+            case .nothing:
+                parsed = nil
+                let number = PokemonHistoricalScanParser.numberEvidence(in: lines)
+                guard let number, PokemonHistoricalIdentityResolver.canAttempt(number) else {
+                    _ = historicalNumberWindow.observe(nil)
+                    break
+                }
+                guard let confirmed = historicalNumberWindow.observe(number) else { break }
+                captureMode = .historicalTitle(confirmed)
+                // Freeze what the footer said, so the same text read again from
+                // the same band cannot be mistaken for the card's name.
+                footerSignature = PokemonHistoricalScanParser.footerSignature(from: lines)
+                titleGate = TitleCaptureGate(startedAt: now)
+                confirmationWindow.reset()
+                latch.releaseAndForget()
+                DispatchQueue.main.async { [weak self] in
+                    self?.onHistoricalTitleRequested?(confirmed)
+                }
+            case .ambiguous:
+                historicalNumberWindow.reset()
+                parsed = nil
+            case .spatiallyRejectedMagicCollector:
+                // The fraction was textually compatible with a known-code + EN
+                // Magic footer but physically detached to its right. Treat this
+                // frame as a miss without reinterpreting that P/T as historical
+                // Pokemon evidence.
+                historicalNumberWindow.reset()
+                parsed = nil
+            }
+
+        case let .historicalTitle(number):
+            // Nothing is read until the user has had time to reach the title.
+            // A frame during the pause counts as a frame that read nothing.
+            if titleGate?.isOpen(at: now) == false {
+                parsed = nil
+            } else {
+                parsed = PokemonHistoricalScanParser.parse(
+                    number: number,
+                    titleLines: lines,
+                    excludingFooter: footerSignature
+                )
+            }
         }
 
         switch latch.observe(parsed, at: now) {
@@ -503,6 +594,14 @@ final class CardScanner: NSObject, ObservableObject {
 
             latch.engage(on: confirmed, at: now)
             didAnnounceLatchHold = false
+            if case .historicalTitle = captureMode {
+                captureMode = .identifier
+                resetHistoricalTitleCapture()
+                historicalNumberWindow.reset()
+                DispatchQueue.main.async { [weak self] in
+                    self?.onHistoricalTitleCaptureEnded?()
+                }
+            }
             DispatchQueue.main.async { [weak self] in
                 self?.onConfirmedCandidate?(confirmed)
             }
@@ -532,10 +631,24 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// Callers must be on `visionQueue`.
     private func resetObservationState() {
+        let wasCapturingHistoricalTitle: Bool
+        if case .historicalTitle = captureMode {
+            wasCapturingHistoricalTitle = true
+        } else {
+            wasCapturingHistoricalTitle = false
+        }
         confirmationWindow.reset()
         latch.releaseAndForget()
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
+        historicalNumberWindow.reset()
+        captureMode = .identifier
+        resetHistoricalTitleCapture()
+        if wasCapturingHistoricalTitle {
+            DispatchQueue.main.async { [weak self] in
+                self?.onHistoricalTitleCaptureEnded?()
+            }
+        }
     }
 
     private func setCameraIssue(_ issue: CameraIssue?) {
@@ -562,7 +675,7 @@ struct RecognitionProfile {
     /// vocabularies at once. Deduplicated because a three-character code can
     /// legitimately belong to both directories.
     var customWords: [String] {
-        ScanText.unique(SetCodeMap.codes + (magic?.customWords ?? []))
+        ScanText.unique(SetCodeMap.codes + PokemonPromoCodeMap.codes + (magic?.customWords ?? []))
     }
 
     /// Both parsers, every frame.
@@ -572,16 +685,27 @@ struct RecognitionProfile {
     /// already governs two Pokémon identifiers in one frame. A later pass will
     /// almost always resolve it, and a wrong entry costs far more than a wait.
     func identify(_ lines: [String]) -> RecognitionOutcome {
-        let pokemon = ScanParser.parsePokemon(lines)
-        let magic = magic?.parse(lines)
+        identify(lines.map { RecognizedLine(text: $0) })
+    }
 
-        switch (pokemon, magic) {
-        case (nil, nil):
+    func identify(_ lines: [RecognizedLine]) -> RecognitionOutcome {
+        let text = lines.map(\.text)
+        let pokemon = ScanParser.parsePokemon(text)
+        let magicOutcome = magic?.parseOutcome(lines) ?? .nothing
+
+        switch (pokemon, magicOutcome) {
+        case (nil, .nothing):
             return .nothing
-        case let (identifier?, nil), let (nil, identifier?):
+        case let (identifier?, .nothing), let (nil, .identified(identifier)):
             return .identified(identifier)
-        case (_?, _?):
+        case (_?, .identified(_)):
             return .ambiguous
+        case (nil, .spatiallyRejectedCollector):
+            return .spatiallyRejectedMagicCollector
+        case let (identifier?, .spatiallyRejectedCollector):
+            // Preserve modern Pokemon recognition if it independently earned an
+            // identity; the rejected Magic-shaped reading is then irrelevant.
+            return .identified(identifier)
         }
     }
 }
@@ -589,6 +713,7 @@ struct RecognitionProfile {
 enum RecognitionOutcome: Equatable {
     case nothing
     case identified(ScanIdentifier)
+    case spatiallyRejectedMagicCollector
     /// Both games produced a valid identifier from one frame.
     case ambiguous
 }
@@ -614,7 +739,15 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             try handler.perform([request])
 
             let observations = request.results ?? []
-            let lines = observations.compactMap { $0.topCandidates(1).first?.string }
+            // Keep text and bounds paired in one compactMap. Building separate
+            // arrays would misalign them whenever an observation had no candidate.
+            let lines = observations.compactMap { observation -> RecognizedLine? in
+                guard let candidate = observation.topCandidates(1).first else { return nil }
+                return RecognizedLine(
+                    text: candidate.string,
+                    boundingBox: observation.boundingBox
+                )
+            }
 
 #if DEBUG
             let boxes = observations.map(\.boundingBox)

@@ -63,14 +63,22 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
             if variants.reverse { result.append(.reverse) }
             if variants.firstEdition { result.append(.firstEdition) }
         }
+        let stampChoices = discriminatingStampVariants
+        let replacedBaseIDs = Set(stampChoices.map(\.baseID))
+        result.removeAll { replacedBaseIDs.contains($0.id) }
+
         // `variants_detailed` is the only place parallel patterns appear. Each
         // entry is TCGdex stating that this physical object exists, which is the
         // same class of fact as the booleans above — so it belongs here, and a
         // pattern the boolean set cannot express stops being invisible.
         for detailed in variantsDetailed ?? [] {
             guard let variant = detailed.physicalVariant,
+                  !replacedBaseIDs.contains(variant.id),
                   !result.contains(variant) else { continue }
             result.append(variant)
+        }
+        for choice in stampChoices where !result.contains(choice.variant) {
+            result.append(choice.variant)
         }
         return result
     }
@@ -78,7 +86,35 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The `variants_detailed` entry describing one physical object, if TCGdex
     /// published one for it.
     func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
-        variantsDetailed?.first { $0.physicalVariant == variant }
+        if PokemonCatalogStampVariant.decode(variant.id) != nil {
+            return variantsDetailed?.first { $0.stampedPhysicalVariant?.id == variant.id }
+        }
+        return variantsDetailed?.first {
+            $0.physicalVariant == variant && $0.genericStamps.isEmpty
+        } ?? variantsDetailed?.first { $0.physicalVariant == variant }
+    }
+
+    /// Exact stamp choices are exposed only when TCGdex publishes more than one
+    /// standard English physical object for the same base finish and a stamp is
+    /// one of the discriminators. A lone stamped record (common in the current
+    /// data) is not evidence that an unstamped counterpart exists.
+    private var discriminatingStampVariants: [(baseID: String, variant: PhysicalVariant)] {
+        let eligible = (variantsDetailed ?? []).filter { $0.isStandardEnglish }
+        let groups = Dictionary(grouping: eligible) { $0.physicalVariant?.id ?? "" }
+        return groups.values.flatMap { group -> [(baseID: String, variant: PhysicalVariant)] in
+            guard group.count > 1,
+                  group.contains(where: { !$0.genericStamps.isEmpty }) else { return [] }
+            let descriptors = Set(group.map { $0.stampDescriptor })
+            guard descriptors.count > 1 else { return [] }
+            return group.compactMap { detailed in
+                guard let base = detailed.physicalVariant else { return nil }
+                if detailed.genericStamps.isEmpty {
+                    return (baseID: base.id, variant: base)
+                }
+                guard let stamped = detailed.stampedPhysicalVariant else { return nil }
+                return (baseID: base.id, variant: stamped)
+            }
+        }
     }
 }
 
@@ -209,12 +245,18 @@ struct TCGdexPricing: Decodable, Sendable {
 struct TCGdexDetailedVariant: Decodable, Sendable {
     /// `normal`, `holo`, `reverse`, `firstEdition`.
     let type: String?
+    let subtype: String?
+    /// TCGdex intentionally models this as an array: a prerelease Staff card can
+    /// carry both the set-logo and Staff marks.
+    let stamp: [String]?
     /// The parallel pattern, when this is one: `pokeball`, `masterball`,
     /// `duskball`, `energy`, `cosmos`… Absent for the plain printing.
     let foil: String?
     let size: String?
     let variantId: String?
     let pricing: TCGdexPricing?
+    let languages: [String]?
+    let thirdParty: TCGdexVariantThirdParty?
 
     /// The physical object this entry describes.
     ///
@@ -237,6 +279,34 @@ struct TCGdexDetailedVariant: Decodable, Sendable {
         }
     }
 
+    /// 1st Edition remains in the app's established print-run flow. Feeding it
+    /// into the generic stamp picker would ask twice and could change existing
+    /// Base Set pricing, so only other stamps participate here.
+    var genericStamps: [String] {
+        (stamp ?? []).filter { $0.caseInsensitiveCompare("1st-edition") != .orderedSame }
+    }
+
+    var stampedPhysicalVariant: PhysicalVariant? {
+        guard let base = physicalVariant else { return nil }
+        return PokemonCatalogStampVariant.make(
+            base: base,
+            stamps: genericStamps,
+            subtype: subtype
+        )
+    }
+
+    var stampDescriptor: String {
+        let stamps = genericStamps.map { $0.lowercased() }.sorted().joined(separator: ",")
+        return "\(stamps)|\(subtype?.lowercased() ?? "")"
+    }
+
+    var isStandardEnglish: Bool {
+        size?.caseInsensitiveCompare("jumbo") != .orderedSame
+            && (languages == nil || languages?.contains(where: {
+                $0.caseInsensitiveCompare("en") == .orderedSame
+            }) == true)
+    }
+
     /// The marketplace listing key this entry's `type` would normally be read
     /// from. Used as a preference, not a requirement — see `marketPrice`.
     var preferredListing: String? {
@@ -247,6 +317,12 @@ struct TCGdexDetailedVariant: Decodable, Sendable {
         default: return nil
         }
     }
+}
+
+struct TCGdexVariantThirdParty: Decodable, Sendable {
+    let tcgplayer: Int?
+    let cardmarket: Int?
+    let cardtrader: Int?
 }
 
 /// Cardmarket's aggregate figures, in euros. Field names are Cardmarket's own.

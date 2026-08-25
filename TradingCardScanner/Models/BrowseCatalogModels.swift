@@ -126,6 +126,9 @@ enum SetCompletionCalculator {
         let targetProviderID = summary.providerID.lowercased()
         return cards.contains { card in
             guard card.itemKind.countsTowardSetCompletion else { return false }
+            guard !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) else {
+                return false
+            }
             guard card.cardGame == summary.game, card.quantity > 0 else { return false }
             guard pokemonPrintRunMatches(card, required: summary.pokemonPrintRun) else {
                 return false
@@ -164,6 +167,9 @@ enum SetCompletionCalculator {
         // numbers, a raw and a graded copy of the same card count once between
         // them — owning three grades of one card cannot inflate completion.
         guard card.itemKind.countsTowardSetCompletion else { return false }
+        guard !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) else {
+            return false
+        }
         guard card.cardGame == set.game else { return false }
         guard pokemonPrintRunMatches(card, required: set.pokemonPrintRun) else { return false }
 

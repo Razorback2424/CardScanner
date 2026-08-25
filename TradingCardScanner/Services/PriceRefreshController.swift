@@ -537,6 +537,12 @@ final class PriceRefreshController: ObservableObject {
         /// route at all and must resolve by search once, after which the stored
         /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
+            if let catalogID = card?.providerID ?? target.catalogPrintingID,
+               let variantID = target.variantID,
+               let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
+                .first(where: { $0.variant.id == variantID }) {
+                return [.tcgplayerID(stamped.tcgplayerProductID)]
+            }
             guard case let .magic(magic)? = card,
                   let tcgplayerID = magic.tcgplayerID else {
                 return []

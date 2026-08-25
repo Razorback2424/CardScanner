@@ -174,7 +174,7 @@ final class CollectionItemKindTests: XCTestCase {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let artwork = try XCTUnwrap(URL(
-            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         ))
         let product = SealedProductSummary(
             id: "p-uuid", name: "Legendary Treasures Booster Box",
@@ -210,7 +210,7 @@ final class CollectionItemKindTests: XCTestCase {
         )
         let first = store.addSealed(withoutArtwork, game: .pokemon)
         let artwork = try XCTUnwrap(URL(
-            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         ))
         let withArtwork = SealedProductSummary(
             id: withoutArtwork.id, name: withoutArtwork.name,
@@ -251,7 +251,7 @@ final class CollectionItemKindTests: XCTestCase {
 
         XCTAssertEqual(
             row.imageURL,
-            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+            "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
         XCTAssertEqual(row.catalogMetadataVersion, CollectionCatalogNormalizer.metadataVersion)
         XCTAssertNil(ArtworkDiagnostics.reason(for: row))
@@ -311,6 +311,29 @@ final class CollectionItemKindTests: XCTestCase {
 
         XCTAssertTrue(ArtworkDiagnostics.shouldRetrySealedArtwork(for: row))
         XCTAssertEqual(ArtworkDiagnostics.reason(for: row), .lookupPending)
+    }
+
+    func testLegacySealedGatewayArtworkIsRepairedLocally() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let legacyURL = try XCTUnwrap(URL(
+            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        ))
+        let mutation = store.addSealed(
+            SealedProductSummary(
+                id: "p-uuid", name: "Legacy Box", setName: "Set",
+                variantID: "v-uuid", marketPriceUSD: 25,
+                updatedAt: nil, imageURL: legacyURL
+            ),
+            game: .pokemon
+        )
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+
+        XCTAssertTrue(CollectionCatalogNormalizer.repairLegacySealedArtworkURLs(in: [row]))
+        XCTAssertEqual(
+            row.imageURL,
+            "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
+        )
     }
 
     // MARK: - Set completion

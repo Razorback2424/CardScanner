@@ -76,7 +76,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
     ///
     /// 6: exact English Pokémon artwork fallback and Magic child-set routing.
     /// 7: distinguish definitive sealed misses from transient provider failures.
-    nonisolated static let metadataVersion = 7
+    /// 8: retry missing sealed artwork against TCGplayer's direct product CDN,
+    /// and locally rewrite legacy gateway URLs without spending a request.
+    nonisolated static let metadataVersion = 8
     private var requestsAnotherPass = false
 
     func normalizeImportedCards(in context: ModelContext) async {
@@ -87,6 +89,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
         let now = Date.now
         let allCards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        if Self.repairLegacySealedArtworkURLs(in: allCards) {
+            try? context.save()
+        }
         let candidates = allCards.filter { Self.needsNormalization($0, now: now) }
 
         let requests = Dictionary(
@@ -197,6 +202,26 @@ final class CollectionCatalogNormalizer: ObservableObject {
             && card.justTCGVariantID == nil
             && card.catalogMetadataCheckedAt != nil
             && card.catalogMetadataVersion == -Self.metadataVersion
+    }
+
+    /// Repairs sealed products saved by older in-app catalogue builds. These
+    /// rows already carry the marketplace product id in their URL, and unlike
+    /// imported CSV rows they are intentionally not candidates for identity
+    /// normalization.
+    @discardableResult
+    static func repairLegacySealedArtworkURLs(in cards: [CollectedCard]) -> Bool {
+        var changed = false
+        for card in cards where card.itemKind == .sealedProduct {
+            guard let migrated = JustTCGV1Client.migratedProductImageURL(
+                from: card.imageURL
+            )?.absoluteString else { continue }
+            card.imageURL = migrated
+            if card.thumbnailURL != nil {
+                card.thumbnailURL = migrated
+            }
+            changed = true
+        }
+        return changed
     }
 
 }

@@ -11,6 +11,7 @@ struct ScannerView: View {
 
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
+    @State private var isShowingUnresolved = false
 
     var body: some View {
         ZStack {
@@ -27,6 +28,10 @@ struct ScannerView: View {
                 openReview: { scan in
                     model.pauseForPresentation()
                     reviewing = scan
+                },
+                openUnresolved: {
+                    model.pauseForPresentation()
+                    isShowingUnresolved = true
                 }
             )
         }
@@ -39,6 +44,12 @@ struct ScannerView: View {
             ScanReviewSheet(scan: scan) { variant in
                 model.correct(scanID: scan.id, to: variant)
             }
+        }
+        .sheet(isPresented: $isShowingUnresolved, onDismiss: model.resumeAfterPresentation) {
+            UnresolvedScansSheet(
+                scans: model.unresolvedScans,
+                onClear: model.clearUnresolvedScans
+            )
         }
     }
 }
@@ -56,6 +67,7 @@ private struct ScannerChrome: View {
     @ObservedObject var scanner: CardScanner
     let openSettings: () -> Void
     let openReview: (RecentScan) -> Void
+    let openUnresolved: () -> Void
 
     var body: some View {
         VStack(spacing: 10) {
@@ -80,6 +92,9 @@ private struct ScannerChrome: View {
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingHistoricalTitleScan)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.note)
     }
@@ -147,7 +162,27 @@ private struct ScannerChrome: View {
 
     private var bottomStack: some View {
         VStack(spacing: 9) {
-            if let choice = model.pendingChoice {
+            if let titleScan = model.pendingHistoricalTitleScan {
+                HistoricalTitleScanBar(
+                    scan: titleScan,
+                    onDismiss: model.cancelHistoricalTitleScan
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let choice = model.pendingIdentityChoice {
+                IdentityChoiceBar(
+                    choice: choice,
+                    onChoose: model.choose,
+                    onDismiss: model.dismissIdentityChoice
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let choice = model.pendingPrintRunChoice {
+                PrintRunChoiceBar(
+                    choice: choice,
+                    onChoose: model.choose,
+                    onDismiss: model.dismissPrintRunChoice
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let choice = model.pendingChoice {
                 VariantChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
@@ -182,7 +217,7 @@ private struct ScannerChrome: View {
     }
 
     private var unresolvedChip: some View {
-        Button(action: model.clearUnresolvedCount) {
+        Button(action: openUnresolved) {
             Text("\(model.unresolvedCount) need\(model.unresolvedCount == 1 ? "s" : "") attention")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)
@@ -191,7 +226,7 @@ private struct ScannerChrome: View {
                 .background(.orange.opacity(0.85), in: Capsule())
         }
         .buttonStyle(.plain)
-        .accessibilityHint("Clears the count")
+        .accessibilityHint("Shows what was read and why it was not added")
     }
 
     private func cameraIssueMessage(_ issue: CameraIssue) -> some View {
@@ -204,5 +239,53 @@ private struct ScannerChrome: View {
         .padding(24)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
         .padding(30)
+    }
+}
+
+private struct UnresolvedScansSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let scans: [UnresolvedScan]
+    let onClear: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Text("Nothing in this list was added to your collection. Use the details below to reposition and scan again.")
+                        .foregroundStyle(.secondary)
+                }
+
+                Section("Needs attention") {
+                    ForEach(scans) { scan in
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(scan.identifier.displayIdentifier)
+                                .font(.headline.monospacedDigit())
+                            if !scan.titleCandidates.isEmpty {
+                                Text("Title read: \(scan.titleCandidates.joined(separator: ", "))")
+                                    .font(.subheadline)
+                            }
+                            Text("No unique catalog match was confirmed")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .accessibilityElement(children: .combine)
+                    }
+                }
+            }
+            .navigationTitle("Unresolved Scans")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
+                }
+                if !scans.isEmpty {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Clear", role: .destructive) {
+                            onClear()
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
     }
 }

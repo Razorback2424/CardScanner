@@ -468,7 +468,7 @@ enum PokemonMasterSetDefinition {
     /// This is a closed historical fact, not a heuristic to keep current: the
     /// 1st Edition stamp ran from Base Set to Neo Destiny and was never used
     /// again, so nothing will ever join this list. Verified against TCGdex's own
-    /// `cardCount.firstEd`, which is non-zero for exactly these eleven sets and
+    /// `cardCount.firstEd`, which is non-zero for these ten sets and
     /// zero for Base Set 2, Legendary Collection and the whole e-card era.
     ///
     /// The e-card sets used to be listed here, which invented a "Skyridge — 1st
@@ -490,13 +490,8 @@ enum PokemonMasterSetDefinition {
         cardCount: TCGdexCardCount? = nil
     ) -> [CatalogSet] {
         guard set.game == .pokemon else { return [set] }
-        let id = set.providerID.lowercased()
-        let runs: [PokemonPrintRun]
-        if id == shadowlessSetID {
-            runs = [.firstEdition, .shadowless, .unlimited]
-        } else if firstEditionSetIDs.contains(id) {
-            runs = [.firstEdition, .unlimited]
-        } else {
+        let runs = printRuns(forSetProviderID: set.providerID)
+        guard !runs.isEmpty else {
             // One run, so no qualifier: the set stands as itself rather than
             // being relabelled "— Unlimited" against nothing.
             return [set]
@@ -528,8 +523,20 @@ enum PokemonMasterSetDefinition {
     /// Public so the collection can repair rows tagged with a run their set
     /// never had, from when the e-card sets were split.
     static func hasSeparatePrintRuns(setProviderID: String) -> Bool {
+        !printRuns(forSetProviderID: setProviderID).isEmpty
+    }
+
+    /// The single source of truth for every UI that must ask which physical run
+    /// a card belongs to. An empty result means there is no question to ask.
+    static func printRuns(forSetProviderID setProviderID: String) -> [PokemonPrintRun] {
         let id = setProviderID.lowercased()
-        return id == shadowlessSetID || firstEditionSetIDs.contains(id)
+        if id == shadowlessSetID {
+            return [.firstEdition, .shadowless, .unlimited]
+        }
+        if firstEditionSetIDs.contains(id) {
+            return [.firstEdition, .unlimited]
+        }
+        return []
     }
 
     static func includesInSetDirectory(_ set: TCGdexBrowseSet) -> Bool {

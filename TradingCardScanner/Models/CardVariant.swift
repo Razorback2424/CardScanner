@@ -20,6 +20,208 @@ struct PhysicalVariant: Identifiable, Hashable, Sendable {
     }
 }
 
+/// Stable representation of a TCGdex physical object distinguished by one or
+/// more stamps. The source card remains the card identity; this value is the
+/// variant layer persisted beside its finish. Stamps are sorted so API ordering
+/// cannot create duplicate collection keys.
+enum PokemonCatalogStampVariant {
+    private static let prefix = "pokemonStamp|"
+
+    static func make(
+        base: PhysicalVariant,
+        stamps: [String],
+        subtype: String? = nil
+    ) -> PhysicalVariant? {
+        let normalized = Array(Set(stamps.map { $0.lowercased() })).sorted()
+        guard !normalized.isEmpty else { return nil }
+        let normalizedSubtype = subtype?.lowercased() ?? ""
+        return PhysicalVariant(
+            id: prefix + [base.id, normalized.joined(separator: ","), normalizedSubtype]
+                .joined(separator: "|"),
+            label: label(base: base, stamps: normalized, subtype: normalizedSubtype)
+        )
+    }
+
+    static func decode(_ id: String) -> (base: PhysicalVariant, stamps: [String], subtype: String?)? {
+        guard id.hasPrefix(prefix) else { return nil }
+        let fields = String(id.dropFirst(prefix.count))
+            .split(separator: "|", omittingEmptySubsequences: false)
+        guard fields.count == 3 else { return nil }
+        let base = PhysicalVariant.resolving(String(fields[0]))
+        let stamps = fields[1].split(separator: ",").map(String.init)
+        guard !stamps.isEmpty else { return nil }
+        let subtype = fields[2].isEmpty ? nil : String(fields[2])
+        return (base, stamps, subtype)
+    }
+
+    static func resolving(_ id: String) -> PhysicalVariant? {
+        guard let decoded = decode(id) else { return nil }
+        return make(base: decoded.base, stamps: decoded.stamps, subtype: decoded.subtype)
+    }
+
+    static func isStamped(_ variant: PhysicalVariant) -> Bool {
+        decode(variant.id) != nil
+    }
+
+    private static func label(base: PhysicalVariant, stamps: [String], subtype: String) -> String {
+        let stampLabel = stamps.map(displayName).joined(separator: " + ")
+        let subtypeLabel = subtype.isEmpty ? nil : displayName(subtype)
+        return ([base.label, stampLabel] + [subtypeLabel].compactMap { $0 })
+            .joined(separator: " · ")
+    }
+
+    private static func displayName(_ value: String) -> String {
+        switch value {
+        case "1st-edition": return "1st Edition"
+        case "pre-release": return "Prerelease"
+        case "pokemon-center": return "Pokémon Center"
+        case "set-logo": return "Set Logo"
+        case "w-promo": return "W Promo"
+        case "trick-or-trade": return "Trick or Trade"
+        case "player-rewards-program": return "Prize Pack"
+        case "gamestop": return "GameStop"
+        case "eb-games": return "EB Games"
+        default:
+            return value.split(separator: "-")
+                .map { $0.prefix(1).uppercased() + $0.dropFirst() }
+                .joined(separator: " ")
+        }
+    }
+}
+
+/// Verified stamped reprints whose mark is not encoded by the printed footer.
+///
+/// These are exact underlying TCGdex identities, not name/number guesses. The
+/// marketplace product and its printing come from the corresponding TCGplayer
+/// Trick or Trade groups. Keeping all four values together prevents a stamped
+/// card from borrowing the price of its original expansion printing.
+enum PokemonStampedReleaseCatalog {
+    struct Entry: Equatable, Hashable, Sendable {
+        let providerID: String
+        let year: Int
+        let tcgplayerProductID: String
+        let printing: String
+
+        var variant: PhysicalVariant {
+            PhysicalVariant(
+                id: "trickOrTrade\(year)\(printing.replacingOccurrences(of: " ", with: ""))",
+                label: "Stamped (\(year))"
+            )
+        }
+    }
+
+    static let entries: [Entry] = [
+        Entry(providerID: "swsh6-57", year: 2022, tcgplayerProductID: "283766", printing: "Holofoil"),
+        Entry(providerID: "swsh9-056", year: 2022, tcgplayerProductID: "283785", printing: "Holofoil"),
+        Entry(providerID: "swsh10-059", year: 2022, tcgplayerProductID: "283786", printing: "Holofoil"),
+        Entry(providerID: "swsh9-062", year: 2022, tcgplayerProductID: "283787", printing: "Holofoil"),
+        Entry(providerID: "swsh3-105", year: 2022, tcgplayerProductID: "283788", printing: "Holofoil"),
+        Entry(providerID: "swsh2-33", year: 2022, tcgplayerProductID: "283790", printing: "Holofoil"),
+        Entry(providerID: "swsh2-15", year: 2022, tcgplayerProductID: "283793", printing: "Holofoil"),
+        Entry(providerID: "swsh7-77", year: 2022, tcgplayerProductID: "283795", printing: "Holofoil"),
+        Entry(providerID: "swsh3-81", year: 2022, tcgplayerProductID: "283798", printing: "Holofoil"),
+        Entry(providerID: "swsh6-73", year: 2022, tcgplayerProductID: "283801", printing: "Holofoil"),
+        Entry(providerID: "swsh7-49", year: 2022, tcgplayerProductID: "283805", printing: "Normal"),
+        Entry(providerID: "swsh5-69", year: 2022, tcgplayerProductID: "283807", printing: "Normal"),
+        Entry(providerID: "swsh5-89", year: 2022, tcgplayerProductID: "283810", printing: "Normal"),
+        Entry(providerID: "swsh6-55", year: 2022, tcgplayerProductID: "283811", printing: "Normal"),
+        Entry(providerID: "swsh6-56", year: 2022, tcgplayerProductID: "283812", printing: "Normal"),
+        Entry(providerID: "swsh3-102", year: 2022, tcgplayerProductID: "283815", printing: "Normal"),
+        Entry(providerID: "swsh3-103", year: 2022, tcgplayerProductID: "283818", printing: "Normal"),
+        Entry(providerID: "swsh5-93", year: 2022, tcgplayerProductID: "283819", printing: "Normal"),
+        Entry(providerID: "swsh10-058", year: 2022, tcgplayerProductID: "283820", printing: "Normal"),
+        Entry(providerID: "swsh9-060", year: 2022, tcgplayerProductID: "283821", printing: "Normal"),
+        Entry(providerID: "swsh9-061", year: 2022, tcgplayerProductID: "283822", printing: "Normal"),
+        Entry(providerID: "swsh2-31", year: 2022, tcgplayerProductID: "283824", printing: "Normal"),
+        Entry(providerID: "swsh2-32", year: 2022, tcgplayerProductID: "283825", printing: "Normal"),
+        Entry(providerID: "swsh8-16", year: 2022, tcgplayerProductID: "283826", printing: "Normal"),
+        Entry(providerID: "swsh7-76", year: 2022, tcgplayerProductID: "283828", printing: "Normal"),
+        Entry(providerID: "swsh10-103", year: 2022, tcgplayerProductID: "283831", printing: "Normal"),
+        Entry(providerID: "swsh3.5-18", year: 2022, tcgplayerProductID: "283833", printing: "Normal"),
+        Entry(providerID: "swsh6-72", year: 2022, tcgplayerProductID: "283836", printing: "Normal"),
+        Entry(providerID: "swsh3-82", year: 2022, tcgplayerProductID: "283838", printing: "Normal"),
+        Entry(providerID: "swsh3-83", year: 2022, tcgplayerProductID: "283839", printing: "Normal"),
+        Entry(providerID: "swsh11-016", year: 2023, tcgplayerProductID: "515647", printing: "Normal"),
+        Entry(providerID: "swsh11-017", year: 2023, tcgplayerProductID: "515648", printing: "Holofoil"),
+        Entry(providerID: "swsh4-19", year: 2023, tcgplayerProductID: "515649", printing: "Normal"),
+        Entry(providerID: "sv01-034", year: 2023, tcgplayerProductID: "515650", printing: "Holofoil"),
+        Entry(providerID: "swsh11-024", year: 2023, tcgplayerProductID: "515651", printing: "Normal"),
+        Entry(providerID: "swsh11-025", year: 2023, tcgplayerProductID: "515652", printing: "Normal"),
+        Entry(providerID: "swsh11-026", year: 2023, tcgplayerProductID: "515653", printing: "Holofoil"),
+        Entry(providerID: "sv02-062", year: 2023, tcgplayerProductID: "515654", printing: "Holofoil"),
+        Entry(providerID: "swsh4-95", year: 2023, tcgplayerProductID: "515655", printing: "Normal"),
+        Entry(providerID: "swsh2-102", year: 2023, tcgplayerProductID: "515656", printing: "Normal"),
+        Entry(providerID: "swsh11-064", year: 2023, tcgplayerProductID: "515659", printing: "Normal"),
+        Entry(providerID: "swsh11-065", year: 2023, tcgplayerProductID: "515660", printing: "Normal"),
+        Entry(providerID: "swsh11-066", year: 2023, tcgplayerProductID: "515661", printing: "Holofoil"),
+        Entry(providerID: "swsh4-69", year: 2023, tcgplayerProductID: "515662", printing: "Normal"),
+        Entry(providerID: "swsh4-70", year: 2023, tcgplayerProductID: "515663", printing: "Normal"),
+        Entry(providerID: "swsh4-71", year: 2023, tcgplayerProductID: "515664", printing: "Holofoil"),
+        Entry(providerID: "sv01-087", year: 2023, tcgplayerProductID: "515665", printing: "Normal"),
+        Entry(providerID: "swsh11-073", year: 2023, tcgplayerProductID: "515666", printing: "Normal"),
+        Entry(providerID: "sv02-088", year: 2023, tcgplayerProductID: "515668", printing: "Normal"),
+        Entry(providerID: "sv01-089", year: 2023, tcgplayerProductID: "515670", printing: "Normal"),
+        Entry(providerID: "sv01-090", year: 2023, tcgplayerProductID: "515671", printing: "Normal"),
+        Entry(providerID: "sv02-097", year: 2023, tcgplayerProductID: "515672", printing: "Holofoil"),
+        Entry(providerID: "swsh7-80", year: 2023, tcgplayerProductID: "515673", printing: "Holofoil"),
+        Entry(providerID: "swsh11-081", year: 2023, tcgplayerProductID: "515674", printing: "Holofoil"),
+        Entry(providerID: "swsh1-89", year: 2023, tcgplayerProductID: "515675", printing: "Normal"),
+        Entry(providerID: "swsh1-90", year: 2023, tcgplayerProductID: "515676", printing: "Normal"),
+        Entry(providerID: "sv01-104", year: 2023, tcgplayerProductID: "515677", printing: "Normal"),
+        Entry(providerID: "sv01-106", year: 2023, tcgplayerProductID: "515678", printing: "Holofoil"),
+        Entry(providerID: "swsh12-103", year: 2023, tcgplayerProductID: "515679", printing: "Normal"),
+        Entry(providerID: "sv02-131", year: 2023, tcgplayerProductID: "515680", printing: "Normal"),
+        Entry(providerID: "sv02-012", year: 2024, tcgplayerProductID: "568512", printing: "Normal"),
+        Entry(providerID: "sv02-050", year: 2024, tcgplayerProductID: "568513", printing: "Normal"),
+        Entry(providerID: "sv03-130", year: 2024, tcgplayerProductID: "568704", printing: "Normal"),
+        Entry(providerID: "sv03-131", year: 2024, tcgplayerProductID: "568705", printing: "Normal"),
+        Entry(providerID: "sv03-133", year: 2024, tcgplayerProductID: "568748", printing: "Normal"),
+        Entry(providerID: "sv03-136", year: 2024, tcgplayerProductID: "568826", printing: "Holofoil"),
+        Entry(providerID: "sv04-023", year: 2024, tcgplayerProductID: "568941", printing: "Normal"),
+        Entry(providerID: "sv04-077", year: 2024, tcgplayerProductID: "568968", printing: "Normal"),
+        Entry(providerID: "sv04-078", year: 2024, tcgplayerProductID: "569041", printing: "Normal"),
+        Entry(providerID: "sv04.5-018", year: 2024, tcgplayerProductID: "569132", printing: "Holofoil"),
+        Entry(providerID: "sv04.5-037", year: 2024, tcgplayerProductID: "569227", printing: "Holofoil"),
+        Entry(providerID: "sv04.5-042", year: 2024, tcgplayerProductID: "569228", printing: "Normal"),
+        Entry(providerID: "sv04.5-043", year: 2024, tcgplayerProductID: "569323", printing: "Normal"),
+        Entry(providerID: "sv04.5-057", year: 2024, tcgplayerProductID: "570271", printing: "Holofoil"),
+        Entry(providerID: "sv05-077", year: 2024, tcgplayerProductID: "570272", printing: "Normal"),
+        Entry(providerID: "sv05-078", year: 2024, tcgplayerProductID: "570273", printing: "Holofoil"),
+        Entry(providerID: "sv05-102", year: 2024, tcgplayerProductID: "570320", printing: "Normal"),
+        Entry(providerID: "sv05-103", year: 2024, tcgplayerProductID: "570361", printing: "Normal"),
+        Entry(providerID: "sv05-139", year: 2024, tcgplayerProductID: "570362", printing: "Normal"),
+        Entry(providerID: "sv06-012", year: 2024, tcgplayerProductID: "570363", printing: "Normal"),
+        Entry(providerID: "sv06-013", year: 2024, tcgplayerProductID: "570364", printing: "Normal"),
+        Entry(providerID: "sv06-021", year: 2024, tcgplayerProductID: "570365", printing: "Normal"),
+        Entry(providerID: "sv06-022", year: 2024, tcgplayerProductID: "570462", printing: "Holofoil"),
+        Entry(providerID: "sv06-024", year: 2024, tcgplayerProductID: "570463", printing: "Holofoil"),
+        Entry(providerID: "sv06-036", year: 2024, tcgplayerProductID: "570563", printing: "Normal"),
+        Entry(providerID: "sv06-037", year: 2024, tcgplayerProductID: "570564", printing: "Normal"),
+        Entry(providerID: "sv06-038", year: 2024, tcgplayerProductID: "570565", printing: "Normal"),
+        Entry(providerID: "sv06-095", year: 2024, tcgplayerProductID: "570567", printing: "Holofoil"),
+        Entry(providerID: "sv06-096", year: 2024, tcgplayerProductID: "570568", printing: "Holofoil"),
+        Entry(providerID: "sv06-111", year: 2024, tcgplayerProductID: "570569", printing: "Holofoil")
+    ]
+
+    static func entries(providerID: String) -> [Entry] {
+        entries.filter { $0.providerID == providerID }
+    }
+
+    static func entry(variantID: String) -> Entry? {
+        entries.first { $0.variant.id == variantID }
+    }
+
+    static func entry(providerID: String, variantID: String?) -> Entry? {
+        guard let variantID else { return nil }
+        return entries(providerID: providerID).first { $0.variant.id == variantID }
+    }
+
+    static func isStamped(variantID: String?) -> Bool {
+        guard let variantID else { return false }
+        return entry(variantID: variantID) != nil
+    }
+}
+
 extension PhysicalVariant {
     // Pokémon.
     static let normal = PhysicalVariant(id: "normal", label: "Normal")
@@ -70,6 +272,8 @@ extension PhysicalVariant {
 
     static func named(_ id: String) -> PhysicalVariant? {
         known.first { $0.id == id }
+            ?? PokemonStampedReleaseCatalog.entry(variantID: id)?.variant
+            ?? PokemonCatalogStampVariant.resolving(id)
     }
 
     /// A catalog may name a finish this build has never heard of. Carry it through

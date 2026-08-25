@@ -734,7 +734,44 @@ enum CollectionCSV {
             " (Friend Ball)", " (Quick Ball)", " (Love Ball)"
         ]
             .reduce(value) { name, suffix in name.replacingOccurrences(of: suffix, with: "") }
-        return name.replacingOccurrences(of: " - \(cardNumber)", with: "")
+        return strippingTrailingCardNumber(from: name, cardNumber: cardNumber)
+    }
+
+    /// The export repeats the collector number on the end of the product name,
+    /// and the separator it uses is not fixed: `Pikachu - 25`, `Pikachu – 025`,
+    /// `Pikachu #25`, `Pikachu 25`. Removing it by exact string match handled
+    /// exactly one of those spellings and silently left the rest embedded in the
+    /// name — and the name is what the synthetic identity, catalog matching and
+    /// artwork lookup all key on, so a stray separator turned into a row that
+    /// could never resolve and a search query for "Basic Lightning Energy4".
+    ///
+    /// Only a trailing token that *is* this row's collector number is removed.
+    /// A name that genuinely ends in a number, like `Battle Academy 2024`, is
+    /// left exactly as the source supplied it.
+    private static let trailingCardNumberRegex = try! NSRegularExpression(
+        pattern: #"\s*[-–—#]?\s*([A-Za-z]{0,2}[0-9]{1,4}[A-Za-z]?)\s*$"#,
+        options: []
+    )
+
+    private static func strippingTrailingCardNumber(
+        from name: String,
+        cardNumber: String
+    ) -> String {
+        let target = CatalogIdentityNormalization.localNumber(cardNumber).lowercased()
+        guard !target.isEmpty else {
+            return name.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        let range = NSRange(name.startIndex..<name.endIndex, in: name)
+        guard let match = trailingCardNumberRegex.firstMatch(in: name, options: [], range: range),
+              let tokenRange = Range(match.range(at: 1), in: name),
+              let matchRange = Range(match.range, in: name),
+              CatalogIdentityNormalization
+                .localNumber(String(name[tokenRange]))
+                .lowercased() == target,
+              matchRange.lowerBound != name.startIndex else {
+            return name.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return String(name[name.startIndex..<matchRange.lowerBound])
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 

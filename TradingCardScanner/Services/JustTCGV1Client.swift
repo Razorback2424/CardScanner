@@ -163,7 +163,24 @@ struct JustTCGV1Client: Sendable {
         guard let id = tcgplayerID?.trimmingCharacters(in: .whitespacesAndNewlines),
               !id.isEmpty,
               id.allSatisfy({ $0.isNumber }) else { return nil }
-        return URL(string: "https://product-images.tcgplayer.com/fit-in/1000x1000/\(id).jpg")
+        // TCGplayer's canonical product CDN. The 400-point asset is large enough
+        // for the collection/detail surfaces without making a scrolling grid
+        // decode many 1000px gateway responses at once.
+        return URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(id)_400w.jpg")
+    }
+
+    /// Rewrites the gateway URL used by older app builds to the direct CDN.
+    /// This is intentionally local: an existing sealed collection should not
+    /// spend a metered API request merely to repair a URL whose product id it
+    /// already contains.
+    static func migratedProductImageURL(from storedURL: String?) -> URL? {
+        guard let storedURL,
+              let legacy = URL(string: storedURL),
+              legacy.host?.lowercased() == "product-images.tcgplayer.com" else {
+            return nil
+        }
+        let filename = legacy.deletingPathExtension().lastPathComponent
+        return productImageURL(tcgplayerID: filename)
     }
 
     // MARK: - Games

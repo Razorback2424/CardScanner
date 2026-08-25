@@ -97,6 +97,56 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .masterBall, resolution: .finishLock)))
     }
 
+    // MARK: - Stamped releases
+
+    func testLostOriginGengarOffersItsExactStampedRelease() throws {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "swsh11", variants: [.holo, .reverse], number: "066")
+        )
+        guard case let .needsChoice(options, _) = outcome else {
+            return XCTFail("Stamped eligibility must remain a user choice")
+        }
+
+        let stamped = try XCTUnwrap(options.first { $0.id == "trickOrTrade2023Holofoil" })
+        XCTAssertEqual(stamped.label, "Stamped (2023)")
+        XCTAssertEqual(
+            PokemonStampedReleaseCatalog.entries(providerID: "swsh11-066").first?.tcgplayerProductID,
+            "515661"
+        )
+        XCTAssertEqual(ProductFinish.printing(for: stamped), "Holofoil")
+    }
+
+    func testStampedPickerIsNotOfferedToSameNumberInAnotherSet() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "different", variants: [.holo], number: "066")
+        )
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)))
+    }
+
+    func testFinishLockCannotSilentlyDismissAStampedRelease() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "swsh11", variants: [.holo, .reverse], number: "066"),
+            finishLock: .holo
+        )
+        guard case let .needsChoice(options, _) = outcome else {
+            return XCTFail("A finish lock is not evidence that the stamp is absent")
+        }
+        XCTAssertTrue(options.contains { $0.id == "trickOrTrade2023Holofoil" })
+    }
+
+    func testStampedCatalogHasOneExactMarketplaceProductPerDocumentedCard() {
+        XCTAssertEqual(PokemonStampedReleaseCatalog.entries.count, 90)
+        XCTAssertEqual(
+            Set(PokemonStampedReleaseCatalog.entries.map(\.tcgplayerProductID)).count,
+            PokemonStampedReleaseCatalog.entries.count
+        )
+        XCTAssertTrue(PokemonStampedReleaseCatalog.entries.allSatisfy {
+            !$0.providerID.isEmpty
+                && Int($0.tcgplayerProductID) != nil
+                && ["Normal", "Holofoil"].contains($0.printing)
+        })
+    }
+
     // MARK: - Magic
 
     func testMagicFinishesComeStraightFromTheCatalog() {
