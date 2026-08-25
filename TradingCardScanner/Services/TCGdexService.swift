@@ -110,6 +110,48 @@ struct TCGdexService: Sendable {
     }
 }
 
+/// English artwork fallback for catalog records whose TCGdex identity is valid
+/// but whose scan is absent. Exact matching happens again after decoding; the
+/// server query narrows results but is never trusted as identity proof.
+struct PokemonTCGAPIService: Sendable {
+    func fetchArtwork(
+        name: String,
+        setName: String,
+        cardNumber: String
+    ) async throws -> PokemonTCGAPICard? {
+        guard var components = URLComponents(string: "https://api.pokemontcg.io/v2/cards") else {
+            throw TCGdexError.invalidURL
+        }
+        let escapedName = name.replacingOccurrences(of: "\"", with: "\\\"")
+        let escapedSet = setName.replacingOccurrences(of: "\"", with: "\\\"")
+        let number = CatalogIdentityNormalization.localNumber(cardNumber)
+        components.queryItems = [
+            URLQueryItem(
+                name: "q",
+                value: "name:\"\(escapedName)\" set.name:\"\(escapedSet)\" number:\"\(number)\""
+            ),
+            URLQueryItem(name: "pageSize", value: "20"),
+            URLQueryItem(name: "select", value: "id,name,number,set,images")
+        ]
+        guard let url = components.url else { throw TCGdexError.invalidURL }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 10
+        request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse,
+              (200..<300).contains(http.statusCode) else { throw TCGdexError.badResponse }
+        let cards = try JSONDecoder().decode(PokemonTCGAPIResponse.self, from: data).data
+        let matches = cards.filter {
+            CatalogIdentityNormalization.localNumber($0.number) == number
+                && CatalogIdentityNormalization.namesMatch(imported: name, catalog: $0.name)
+                && CatalogIdentityNormalization.canonicalSetName($0.set.name, game: .pokemon)
+                    == CatalogIdentityNormalization.canonicalSetName(setName, game: .pokemon)
+        }
+        return matches.count == 1 ? matches[0] : nil
+    }
+}
+
 enum ScryfallError: LocalizedError {
     case invalidURL
     case cardNotFound

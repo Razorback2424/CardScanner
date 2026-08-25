@@ -61,6 +61,12 @@ struct CollectionCSVEntry: Sendable {
     var itemKind: CollectionItemKind = .rawCard
     var gradingCompany: GradingCompany?
     var grade: CardGrade?
+    var pokemonPrintRun: PokemonPrintRun?
+    var justTCGCardID: String?
+    var justTCGVariantID: String?
+    var justTCGAPIVersion: String?
+    var certificationNumber: String?
+    var marketRegionRaw: String?
 }
 
 enum CollectionCSVError: LocalizedError {
@@ -90,7 +96,8 @@ enum CollectionCSV {
         "image_url", "thumbnail_url", "date_added",
         "item_kind", "justtcg_card_id", "justtcg_variant_id",
         "justtcg_api_version", "grading_company", "grade", "grade_label",
-        "grading_qualifier", "certification_number", "market_region"
+        "grading_qualifier", "certification_number", "market_region",
+        "pokemon_print_run"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -126,7 +133,8 @@ enum CollectionCSV {
                 card.gradeLabel ?? "",
                 card.gradingQualifier ?? "",
                 card.certificationNumber ?? "",
-                card.marketRegionRaw ?? ""
+                card.marketRegionRaw ?? "",
+                card.pokemonPrintRun?.rawValue ?? ""
             ]
         }
 
@@ -149,10 +157,12 @@ enum CollectionCSV {
         )
         return diagnosticExport(
             cards.filter { card in
-                recordsByKey[card.priceKey]?.unitMarketPriceUSD == nil
+                PriceStore.record(for: card, in: recordsByKey)?.unitMarketPriceUSD == nil
             },
             priceRecords: priceRecords,
-            diagnostic: unpricedReason
+            diagnostic: { card, record in
+                PricingDiagnostics.unpricedReason(for: card, record: record).rawValue
+            }
         )
     }
 
@@ -165,7 +175,9 @@ enum CollectionCSV {
         diagnosticExport(
             cards.filter { $0.highImageURL == nil },
             priceRecords: priceRecords,
-            diagnostic: artworkReason
+            diagnostic: { card, _ in
+                ArtworkDiagnostics.reason(for: card)?.rawValue ?? "artwork_available"
+            }
         )
     }
 
@@ -187,7 +199,7 @@ enum CollectionCSV {
             "image_url", "thumbnail_url", "catalog_metadata_checked_at"
         ]
         let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
-            let record = recordsByKey[card.priceKey]
+            let record = PriceStore.record(for: card, in: recordsByKey)
             return [
                 card.game,
                 card.providerID,
@@ -229,56 +241,6 @@ enum CollectionCSV {
         guard let record, record.lastCheckedAt != nil else { return "never_checked" }
         if record.lastFailureAt != nil { return "refresh_failed" }
         return record.unitMarketPriceUSD == nil ? "unavailable" : "priced"
-    }
-
-    /// Why one row still has no price.
-    ///
-    /// The value of this column is that each answer points somewhere different:
-    /// a matching problem is a code fix, a budget stop is a wait, an unavailable
-    /// price is the honest end of the road. Collapsing them into "unpriced" is
-    /// what hid a starvation bug for as long as it did.
-    private static func unpricedReason(_ card: CollectedCard, _ record: PriceRecord?) -> String {
-        guard let record, record.lastCheckedAt != nil else { return "not_checked" }
-
-        if card.catalogProviderID != nil,
-           record.lastFailureAt != nil,
-           let metadataCheckedAt = card.catalogMetadataCheckedAt,
-           metadataCheckedAt > (record.lastCheckedAt ?? .distantPast) {
-            return "identity_resolved_after_failed_check"
-        }
-
-        switch card.itemKind {
-        case .sealedProduct:
-            // A sealed row exists only because it was added from the vendor's
-            // own catalogue, so a missing price is the product being unlisted
-            // rather than unmatched.
-            return card.justTCGVariantID == nil
-                ? "sealed_product_unmatched"
-                : "no_exact_variant_price"
-
-        case .gradedCard:
-            if card.justTCGVariantID == nil { return "graded_variant_unavailable" }
-            // The vendor does not manufacture a number for every grader/grade
-            // permutation; a null price is a real answer.
-            return record.lastFailureAt != nil
-                ? "provider_request_failed"
-                : "graded_market_price_null"
-
-        case .rawCard:
-            if record.lastFailureAt != nil { return "provider_request_failed" }
-            // Identity was never established with the market provider, so the
-            // card has never been asked about by a stable handle.
-            if card.justTCGVariantID == nil, card.justTCGCardID != nil {
-                return "justtcg_variant_unresolved"
-            }
-            return "no_exact_variant_price"
-        }
-    }
-
-    private static func artworkReason(_ card: CollectedCard, _ record: PriceRecord?) -> String {
-        if card.catalogMetadataCheckedAt == nil { return "not_checked" }
-        if card.catalogProviderID == nil { return "catalog_identity_not_resolved" }
-        return "provider_has_no_artwork"
     }
 
     static func parse(_ data: Data) throws -> CollectionCSVImportPlan {
@@ -360,11 +322,16 @@ enum CollectionCSV {
         var merged = 0
 
         for entry in plan.entries {
+            let storedCard: CollectedCard
             if let existing = cardsByKey[entry.collectionKey] {
                 existing.quantity += entry.quantity
                 existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
                 if existing.imageURL == nil { existing.imageURL = entry.imageURL }
                 if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
+                if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
+                if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
+                if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
+                storedCard = existing
                 merged += 1
             } else {
                 let card = CollectedCard(
@@ -392,18 +359,34 @@ enum CollectionCSV {
                 card.gradeRaw = entry.grade?.value
                 card.gradeLabel = entry.grade?.label
                 card.gradingQualifier = entry.grade?.qualifier
+                card.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
+                card.justTCGCardID = entry.justTCGCardID
+                card.justTCGVariantID = entry.justTCGVariantID
+                card.justTCGAPIVersion = entry.justTCGAPIVersion
+                card.certificationNumber = entry.certificationNumber
+                card.marketRegionRaw = entry.marketRegionRaw
                 context.insert(card)
                 cardsByKey[entry.collectionKey] = card
+                storedCard = card
                 inserted += 1
             }
+
+            context.insert(
+                CollectionActivity(
+                    card: storedCard,
+                    source: .csvImport,
+                    quantity: entry.quantity,
+                    occurredAt: .now
+                )
+            )
 
             if let amount = entry.importedMarketPriceUSD {
                 priceStore.storeImported(
                     amount: amount,
                     sourceUpdatedAt: entry.importedPriceAsOf,
                     game: entry.game,
-                    printingID: entry.providerID,
-                    variantID: entry.variant?.id
+                    printingID: storedCard.priceStorageID,
+                    variantID: storedCard.variantID
                 )
             }
         }
@@ -470,11 +453,37 @@ enum CollectionCSV {
             id: value(["finish", "variant_id"], in: row),
             label: value(["finish_name", "variant", "finish_label"], in: row)
         )
+        let printRun = importedPrintRun(value(["pokemon_print_run", "edition"], in: row))
+        let marketCardID = value(["justtcg_card_id"], in: row)
+        let marketVariantID = value(["justtcg_variant_id"], in: row)
+        let marketAPIVersion = value(["justtcg_api_version"], in: row)
+        let certificationNumber = value(["certification_number"], in: row)
+        let marketRegion = value(["market_region"], in: row)
+        let itemKind = CollectionItemKind(
+            rawValue: value(["item_kind"], in: row) ?? ""
+        ) ?? .rawCard
+        let gradingCompany = value(["grading_company"], in: row).flatMap(GradingCompany.named)
+        let grade = gradingCompany.map { _ in
+            CardGrade(
+                value: value(["grade"], in: row),
+                label: value(["grade_label"], in: row),
+                qualifier: value(["grading_qualifier"], in: row)
+            )
+        }
         return [makeEntry(
             game: game, providerID: providerID, name: name, setName: setName,
             setCode: setCode, cardNumber: cardNumber, rarity: rarity,
             imageURL: imageURL, thumbnailURL: thumbnailURL,
-            variant: variant, quantity: quantity, dateAdded: importedDate
+            variant: variant, quantity: quantity, dateAdded: importedDate,
+            itemKind: itemKind,
+            gradingCompany: gradingCompany,
+            grade: grade,
+            pokemonPrintRun: printRun,
+            justTCGCardID: marketCardID,
+            justTCGVariantID: marketVariantID,
+            justTCGAPIVersion: marketAPIVersion,
+            certificationNumber: certificationNumber,
+            marketRegionRaw: marketRegion
         )]
     }
 
@@ -571,30 +580,57 @@ enum CollectionCSV {
         dateAdded: Date,
         itemKind: CollectionItemKind = .rawCard,
         gradingCompany: GradingCompany? = nil,
-        grade: CardGrade? = nil
+        grade: CardGrade? = nil,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        justTCGCardID: String? = nil,
+        justTCGVariantID: String? = nil,
+        justTCGAPIVersion: String? = nil,
+        certificationNumber: String? = nil,
+        marketRegionRaw: String? = nil
     ) -> CollectionCSVEntry {
+        let resolvedPrintRun = pokemonPrintRun
+            ?? (variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
+        let resolvedVariant = variant?.id == PhysicalVariant.firstEdition.id ? nil : variant
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
         let key: String
         switch itemKind {
         case .rawCard:
             // Unchanged. Every row imported before this existed keeps its key.
-            key = variant.map { "\(baseKey)#\($0.id)" } ?? baseKey
+            let finishKey = resolvedVariant.map { "\(baseKey)#\($0.id)" } ?? baseKey
+            key = resolvedPrintRun.map { "\(finishKey)@\($0.rawValue)" } ?? finishKey
 
         case .gradedCard:
             // A CSV has no vendor variant UUID, so the key is built from what
             // the export actually states: grader, grade, label and qualifier.
             // Enough to keep a PSA 10 apart from a PSA 10 OC and from the raw
             // copy — and the UUID is adopted later when pricing resolves it.
-            let fragment = gradingCompany.map { company in
-                "\(company.rawValue)|\(grade?.identityFragment ?? "")"
-            } ?? "unknown"
-            key = "graded:\(baseKey)#\(fragment)"
+            if let justTCGVariantID {
+                key = CollectedCard.gradedCollectionKey(
+                    game: game,
+                    underlyingPrintingID: providerID,
+                    variantUUID: justTCGVariantID,
+                    certificationNumber: certificationNumber
+                )
+            } else {
+                let fragment = gradingCompany.map { company in
+                    "\(company.rawValue)|\(grade?.identityFragment ?? "")"
+                } ?? "unknown"
+                key = "graded:\(baseKey)#\(fragment)"
+            }
 
         case .sealedProduct:
             // No collector number to work with, so set plus product name is the
             // identity. The namespace is what stops a booster box from ever
             // sharing a row with a card of the same name.
-            key = "sealed:\(baseKey)"
+            if let justTCGCardID {
+                key = CollectedCard.sealedCollectionKey(
+                    game: game,
+                    productUUID: justTCGCardID,
+                    variantUUID: justTCGVariantID ?? justTCGCardID
+                )
+            } else {
+                key = "sealed:\(baseKey)"
+            }
         }
 
         return CollectionCSVEntry(
@@ -608,14 +644,20 @@ enum CollectionCSV {
             rarity: rarity,
             imageURL: imageURL,
             thumbnailURL: thumbnailURL,
-            variant: variant,
+            variant: resolvedVariant,
             importedMarketPriceUSD: importedMarketPriceUSD,
             importedPriceAsOf: importedPriceAsOf,
             quantity: quantity,
             dateAdded: dateAdded,
             itemKind: itemKind,
             gradingCompany: gradingCompany,
-            grade: grade
+            grade: grade,
+            pokemonPrintRun: resolvedPrintRun,
+            justTCGCardID: justTCGCardID,
+            justTCGVariantID: justTCGVariantID,
+            justTCGAPIVersion: justTCGAPIVersion,
+            certificationNumber: certificationNumber,
+            marketRegionRaw: marketRegionRaw
         )
     }
 
@@ -635,6 +677,16 @@ enum CollectionCSV {
         case "masterball": return .masterBall
         default:
             return PhysicalVariant(id: raw, label: nonempty(label) ?? raw.capitalized)
+        }
+    }
+
+    private static func importedPrintRun(_ value: String?) -> PokemonPrintRun? {
+        guard let value else { return nil }
+        switch CatalogIdentityNormalization.canonicalText(value) {
+        case "first edition", "1st edition": return .firstEdition
+        case "shadowless": return .shadowless
+        case "unlimited": return .unlimited
+        default: return PokemonPrintRun(rawValue: value)
         }
     }
 

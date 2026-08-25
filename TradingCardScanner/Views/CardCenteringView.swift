@@ -151,6 +151,7 @@ struct CardCenteringView: View {
     @State private var panOffset: CGSize = .zero
     @State private var lastPanOffset: CGSize = .zero
     @State private var isShowingCamera = false
+    @State private var isShowingSettings = false
     @State private var isShowingFileImporter = false
     @State private var exportFile: CenteringExportFile?
 
@@ -195,6 +196,13 @@ struct CardCenteringView: View {
             }
             .navigationTitle("Centering")
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Settings", systemImage: "gearshape") {
+                        isShowingSettings = true
+                    }
+                    .labelStyle(.iconOnly)
+                }
+
                 if model.image != nil {
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         Button("Export Image", systemImage: "square.and.arrow.up") {
@@ -237,6 +245,9 @@ struct CardCenteringView: View {
             }
             .sheet(item: $exportFile) { file in
                 CenteringShareSheet(url: file.url)
+            }
+            .sheet(isPresented: $isShowingSettings) {
+                SettingsView()
             }
             .fullScreenCover(isPresented: $isShowingCamera) {
                 CenteringCameraView { data in

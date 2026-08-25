@@ -164,4 +164,51 @@ final class ImportedItemKindTests: XCTestCase {
 
         XCTAssertEqual(entry.importedMarketPriceUSD, 400.00)
     }
+
+    func testAppExportIdentifiersRoundTripForGradedAndSealedRows() throws {
+        let header = [
+            "game", "provider_id", "card_name", "set_name", "set_code",
+            "card_number", "finish", "finish_name", "quantity", "item_kind",
+            "justtcg_card_id", "justtcg_variant_id", "justtcg_api_version",
+            "grading_company", "grade", "grade_label", "grading_qualifier",
+            "certification_number", "market_region", "image_url"
+        ].joined(separator: ",")
+        let graded = [
+            "pokemon", "base1-4", "Charizard", "Base Set", "BS", "4/102", "", "", "1",
+            "gradedCard", "card-v2-uuid", "graded-v2-uuid", "v2", "psa", "10", "Gem Mint",
+            "", "12345678", "US", ""
+        ].joined(separator: ",")
+        let sealed = [
+            "pokemon", "sealed:pokemon:old", "Booster Box", "Base Set", "", "", "", "", "1",
+            "sealedProduct", "product-v1-uuid", "sealed-v1-uuid", "v1", "", "", "", "", "", "US",
+            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        ].joined(separator: ",")
+
+        let entries = try CollectionCSV.parse(Data("\(header)\n\(graded)\n\(sealed)\n".utf8)).entries
+        let slab = try XCTUnwrap(entries.first { $0.itemKind == .gradedCard })
+        let box = try XCTUnwrap(entries.first { $0.itemKind == .sealedProduct })
+
+        XCTAssertEqual(slab.justTCGCardID, "card-v2-uuid")
+        XCTAssertEqual(slab.justTCGVariantID, "graded-v2-uuid")
+        XCTAssertEqual(slab.certificationNumber, "12345678")
+        XCTAssertEqual(slab.gradingCompany, .psa)
+        XCTAssertEqual(slab.grade?.value, "10")
+        XCTAssertTrue(slab.collectionKey.contains("graded-v2-uuid"))
+        XCTAssertTrue(slab.collectionKey.contains("12345678"))
+
+        XCTAssertEqual(box.justTCGCardID, "product-v1-uuid")
+        XCTAssertEqual(box.justTCGVariantID, "sealed-v1-uuid")
+        XCTAssertEqual(
+            box.imageURL,
+            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        )
+        XCTAssertEqual(
+            box.collectionKey,
+            CollectedCard.sealedCollectionKey(
+                game: .pokemon,
+                productUUID: "product-v1-uuid",
+                variantUUID: "sealed-v1-uuid"
+            )
+        )
+    }
 }

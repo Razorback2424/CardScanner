@@ -61,10 +61,24 @@ enum CardPricing {
     static func price(
         for card: IdentifiedCard,
         variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         at fetchedAt: Date = .now
     ) -> PriceLookup {
         switch card {
         case let .pokemon(pokemon, _):
+            if pokemonPrintRun == .firstEdition {
+                guard let detailed = pokemon.detailedVariant(for: .firstEdition),
+                      let resolved = price(from: detailed, at: fetchedAt) else {
+                    return .unavailable(.tcgplayer)
+                }
+                return .price(resolved)
+            }
+            if pokemonPrintRun == .shadowless {
+                // TCGdex's flat normal/holo listings represent Unlimited. It
+                // exposes no verified Shadowless listing key, so borrowing that
+                // number would erase the very split Browse now preserves.
+                return .unavailable(.tcgplayer)
+            }
             // Per-object pricing first. It is the only representation that can
             // tell a Poké Ball copy from a Master Ball one, so when TCGdex
             // publishes it, it is strictly better evidence than the flat object.

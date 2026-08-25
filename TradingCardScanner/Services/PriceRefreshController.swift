@@ -40,12 +40,50 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     let catalogPrintingID: String?
     let setCode: String
     let variantID: String?
+    var pokemonPrintRun: PokemonPrintRun? = nil
     let importedIdentity: ImportedPriceIdentity?
     let catalogMetadataCheckedAt: Date?
     let lastFailureAt: Date?
     let hasPrice: Bool
     /// When this app last asked about it, successfully or not.
     let lastCheckedAt: Date?
+    /// Raw card, graded slab or sealed product.
+    var itemKind: CollectionItemKind = .rawCard
+    /// The vendor's variant handle already stored on the row, from the sealed or
+    /// graded catalogue it was added out of.
+    var marketVariantID: String? = nil
+    /// This row has no picture and the vendor's response carries one.
+    ///
+    /// Artwork rides along with the price, but a row can need one without
+    /// needing the other: a sealed product priced yesterday is not stale, so it
+    /// never entered a refresh, so the backfill never saw it and the placeholder
+    /// box stayed forever. Missing artwork is its own reason to ask.
+    var needsArtwork: Bool = false
+    /// Enough of the underlying card to find it again in the graded catalogue.
+    var gradedIdentity: GradedCardIdentity? = nil
+    /// The slab's grader and grade, so a graded request asks only about what is
+    /// owned rather than every permutation the vendor publishes.
+    var gradingCompany: GradingCompany? = nil
+    var grade: String? = nil
+
+    /// Whether this row exists only in the market vendor's catalogue.
+    ///
+    /// A booster box has no TCGdex or Scryfall identity by construction, so
+    /// asking those providers about one spends a request to learn nothing and
+    /// then stamps a price failure that reads as though something went wrong.
+    /// These go straight to the vendor, keyed by the handle the row carries.
+    ///
+    /// Sealed products only. A graded slab looks similar — its price also comes
+    /// from the vendor — but it *does* have an underlying catalog identity, and
+    /// an imported one still needs the catalog pass to resolve that identity and
+    /// fetch its artwork. It reaches the vendor the ordinary way instead: the
+    /// catalog answers `.unavailable` for a row with no raw finish, which is
+    /// already a fallback candidate. The same holds for a raw card that has a
+    /// vendor handle from an earlier pass — skipping the catalog for it would
+    /// permanently forfeit a free price the catalog may publish later.
+    var isVendorNative: Bool {
+        itemKind == .sealedProduct
+    }
 
     var id: String { PriceRecord.key(game: game, printingID: printingID, variantID: variantID) }
 
@@ -171,6 +209,7 @@ final class PriceRefreshController: ObservableObject {
             // A previous "unavailable" result is not permanent. Manual refreshes
             // must always be able to revisit cards that still have no price.
             if !target.hasPrice { return true }
+            if target.needsArtwork { return true }
 
             let identityResolvedAfterFailure = target.catalogPrintingID != nil
                 && target.lastFailureAt != nil
@@ -201,15 +240,31 @@ final class PriceRefreshController: ObservableObject {
         return !usesFallback || currencyCode == "USD"
     }
 
+    /// Sealed artwork is part of the owned product, not an optional price
+    /// enhancement. An exact sealed variant may therefore use the configured
+    /// vendor connection for one missing-artwork backfill even when general
+    /// catalog fallback pricing is disabled.
+    nonisolated static func permitsVendorWork(
+        for target: PriceTarget,
+        usesFallback: Bool
+    ) -> Bool {
+        usesFallback || (target.itemKind == .sealedProduct && target.needsArtwork)
+    }
+
     /// - Parameter targets: already in display order, so whatever the user is
     ///   looking at becomes fresh first.
     func refresh(_ targets: [PriceTarget], store: PriceStore) async {
         guard !isRefreshing, !targets.isEmpty else { return }
 
+        // A sealed box or a graded slab has no catalog identity to look up, so
+        // it never enters the catalog pass. It carries the vendor's own variant
+        // handle instead and goes straight to the batched stage below.
+        let vendorNative = targets.filter(\.isVendorNative)
+
         // Group by printing: every variant of one card shares a single response.
         var order: [PriceTarget.Printing] = []
         var byPrinting: [PriceTarget.Printing: [PriceTarget]] = [:]
-        for target in targets {
+        for target in targets where !target.isVendorNative {
             if byPrinting[target.printing] == nil { order.append(target.printing) }
             byPrinting[target.printing, default: []].append(target)
         }
@@ -227,7 +282,9 @@ final class PriceRefreshController: ObservableObject {
         /// fallback inline would interleave a paced, rate-limited vendor with
         /// the unmetered catalog and slow the whole refresh to the vendor's
         /// speed.
-        var fallbackSubjects: [FallbackCandidate] = []
+        var fallbackSubjects: [FallbackCandidate] = vendorNative.map {
+            FallbackCandidate(target: $0, card: nil)
+        }
         /// Consecutive responses where the provider could not be reached at all.
         var consecutiveUnreachable = 0
         var providerUnreachable = false
@@ -268,6 +325,7 @@ final class PriceRefreshController: ObservableObject {
                         let lookup = CardPricing.price(
                             for: card,
                             variant: target.variantID.map(PhysicalVariant.resolving),
+                            pokemonPrintRun: target.pokemonPrintRun,
                             at: now
                         )
                         // The catalog answered, but not in a way that finishes
@@ -402,6 +460,14 @@ final class PriceRefreshController: ObservableObject {
             store.save()
         }
 
+        // Graded slabs, which neither the catalog nor the v1 batch can price.
+        let gradedPriced = await refreshGraded(targets, store: store)
+        if gradedPriced > 0 {
+            priced += gradedPriced
+            changedPrices = true
+            store.save()
+        }
+
         if Task.isCancelled {
             status = .idle
             return
@@ -493,6 +559,7 @@ final class PriceRefreshController: ObservableObject {
                 setName: setName,
                 cardNumber: number,
                 japaneseSetID: catalogID.flatMap(PriceRefreshController.japaneseSetID(forCatalogCardID:)),
+                pokemonPrintRun: target.pokemonPrintRun,
                 vendorCardID: vendorCardID
             )
         }
@@ -512,16 +579,25 @@ final class PriceRefreshController: ObservableObject {
     /// left exactly as the catalog left it — including a Cardmarket euro price,
     /// which stays as the last resort rather than being cleared.
     private func runFallback(_ candidates: [FallbackCandidate], store: PriceStore) async -> Int {
+        // WotC editions used to be excluded outright, because the vendor names
+        // them in its own vocabulary and an unverified mapping would have
+        // attached an Unlimited price to a 1st Edition card. That vocabulary is
+        // now mapped from live responses — see `ProductEdition` — so these are
+        // priced like anything else, and an edition the vendor does not
+        // distinguish simply finds no matching printing and stays unpriced.
         guard !candidates.isEmpty else {
             fallbackStatus = .idle
             return 0
         }
-        guard usesPriceFallback else {
+        let eligibleCandidates = candidates.filter {
+            Self.permitsVendorWork(for: $0.target, usesFallback: usesPriceFallback)
+        }
+        guard !eligibleCandidates.isEmpty else {
             fallbackStatus = .disabled(pending: candidates.count)
             return 0
         }
         guard PriceVendorCredentials.hasKey else {
-            fallbackStatus = .unconfigured(pending: candidates.count)
+            fallbackStatus = .unconfigured(pending: eligibleCandidates.count)
             return 0
         }
 
@@ -531,10 +607,10 @@ final class PriceRefreshController: ObservableObject {
         var stoppedByAllowance = false
         await fallbackService.beginRun()
         var budget = await fallbackService.budgetSnapshot()
-        status = .refreshing(completed: 0, total: candidates.count)
+        status = .refreshing(completed: 0, total: eligibleCandidates.count)
         fallbackStatus = .running(
             completed: 0,
-            total: candidates.count,
+            total: eligibleCandidates.count,
             remainingToday: budget.remainingToday
         )
 
@@ -551,13 +627,18 @@ final class PriceRefreshController: ObservableObject {
         var ownersByPriceKey: [String: FallbackCandidate] = [:]
         var needsIdentity: [FallbackCandidate] = []
 
-        for candidate in candidates {
+        for candidate in eligibleCandidates {
             let key = ProductIdentity.key(
                 game: candidate.target.game,
                 printingID: candidate.target.printingID,
                 variantID: candidate.target.variantID
             )
-            let cachedVariant = identities.cachedVariantID(forKey: key)
+            // The handle stored on the row wins. It was written when the item
+            // was added out of the vendor's own catalogue, and for a sealed box
+            // or a graded slab it is the only identity that exists — there is no
+            // search that could rediscover it and nothing to resolve.
+            let cachedVariant = candidate.target.marketVariantID
+                ?? identities.cachedVariantID(forKey: key)
             let cachedCard = identities.cachedCardID(forKey: key)
             // A card already known to be absent from the vendor costs nothing
             // on every subsequent refresh.
@@ -572,6 +653,14 @@ final class PriceRefreshController: ObservableObject {
                 continue
             }
 
+            // A graded slab's handle comes from the v2 beta, and v2 ids are a
+            // different namespace: posting one to `POST /v1/cards` as
+            // `variantId` returns `data: []`. Batching them here would spend
+            // batch slots to resolve nothing, silently, forever. Graded pricing
+            // needs the v2 path — see `JustTCGV2GradedClient` — and until it
+            // has one these are left alone rather than pretended over.
+            guard candidate.target.itemKind != .gradedCard else { continue }
+
             ownersByPriceKey[key] = candidate
             batchable[candidate.target.game, default: []].append(
                 MarketPriceTarget(
@@ -579,7 +668,7 @@ final class PriceRefreshController: ObservableObject {
                     game: candidate.target.game,
                     printingID: candidate.target.printingID,
                     variantID: candidate.target.variantID,
-                    itemKind: .rawCard,
+                    itemKind: candidate.target.itemKind,
                     marketVariantID: cachedVariant,
                     lookupCandidates: external,
                     currentAmount: nil,
@@ -587,6 +676,12 @@ final class PriceRefreshController: ObservableObject {
                 )
             )
         }
+
+        // Rows that still have no artwork, indexed by the price key the batch
+        // writes back to. A sealed product's picture and its price come from the
+        // same response, so the refresh that pays for one may as well store the
+        // other rather than leaving a placeholder box on screen forever.
+        let artworkPending = Self.rowsMissingArtwork(in: store.context)
 
         // MARK: Batched pass
         let coordinator = JustTCGRefreshCoordinator(
@@ -608,43 +703,14 @@ final class PriceRefreshController: ObservableObject {
                 lane: .background,
                 useDelta: useDelta,
                 apply: { card, variant, owners in
-                    guard let amount = variant.price else { return }
-                    let normalized = NormalizedPrice(
-                        unitMarketPriceUSD: amount,
-                        // Verified against the live API: dollars, not cents.
-                        currencyCode: "USD",
-                        source: .justTCG,
-                        sourceVariantID: variant.variantId ?? "batch",
-                        sourceUpdatedAt: variant.updatedAt,
-                        fetchedAt: .now
+                    Self.applyVendorBatchHit(
+                        card: card,
+                        variant: variant,
+                        owners: owners,
+                        store: store,
+                        identities: identities,
+                        rowsByPriceKey: artworkPending
                     )
-                    for owner in owners {
-                        store.store(
-                            .price(normalized),
-                            game: owner.game,
-                            printingID: owner.printingID,
-                            variantID: owner.variantID
-                        )
-                        // The provider's own clock, kept so a later refresh can
-                        // skip a game that has not been repriced rather than
-                        // spending a request to learn the same number.
-                        if let record = store.record(forKey: owner.priceKey) {
-                            record.marketVariantID = variant.variantId
-                            record.canonicalMarketID = card.uuid ?? card.id
-                            record.providerGameUpdatedAt = variant.updatedAt
-                            record.itemKindRaw = owner.itemKind.rawValue
-                            record.periodLow = variant.minPrice7d
-                            record.periodHigh = variant.maxPrice7d
-                            record.coefficientOfVariation = variant.covPrice7d
-                            record.periodChangeCount = variant.priceChangesCount7d
-                        }
-                        // Remember the handles so this card never needs a search.
-                        identities.recordBatchResolution(
-                            forKey: owner.priceKey,
-                            cardID: card.uuid ?? card.id,
-                            variantID: variant.variantId
-                        )
-                    }
                 },
                 checkpoint: {
                     identities.save()
@@ -653,19 +719,19 @@ final class PriceRefreshController: ObservableObject {
             )
             priced += report.variantsUpdated
             completed += report.variantsRequested
-            status = .refreshing(completed: completed, total: candidates.count)
+            status = .refreshing(completed: completed, total: eligibleCandidates.count)
 
             switch report.stoppedReason {
             case let .dailyBudget(resetAt), let .monthlyBudget(resetAt):
                 stoppedByAllowance = true
                 fallbackStatus = .budgetReached(
-                    pending: max(candidates.count - completed, 0),
+                    pending: max(eligibleCandidates.count - completed, 0),
                     resetAt: resetAt
                 )
             case let .rateLimited(retryAt):
                 stoppedByAllowance = true
                 fallbackStatus = .rateLimited(
-                    pending: max(candidates.count - completed, 0),
+                    pending: max(eligibleCandidates.count - completed, 0),
                     retryAt: retryAt
                 )
             case .cancelled, .transportFailure, .none:
@@ -682,7 +748,7 @@ final class PriceRefreshController: ObservableObject {
             if Task.isCancelled { break }
             defer {
                 completed += 1
-                status = .refreshing(completed: completed, total: candidates.count)
+                status = .refreshing(completed: completed, total: eligibleCandidates.count)
             }
             let key = ProductIdentity.key(
                 game: candidate.target.game,
@@ -712,13 +778,13 @@ final class PriceRefreshController: ObservableObject {
             case let .budgetReached(resetAt):
                 stoppedByAllowance = true
                 fallbackStatus = .budgetReached(
-                    pending: candidates.count - completed,
+                    pending: eligibleCandidates.count - completed,
                     resetAt: resetAt
                 )
             case let .rateLimited(retryAt):
                 stoppedByAllowance = true
                 fallbackStatus = .rateLimited(
-                    pending: candidates.count - completed,
+                    pending: eligibleCandidates.count - completed,
                     retryAt: retryAt
                 )
             case .noListingForVariant, .noProductMatch, .requestFailed:
@@ -730,7 +796,7 @@ final class PriceRefreshController: ObservableObject {
             budget = await fallbackService.budgetSnapshot()
             fallbackStatus = .running(
                 completed: completed + 1,
-                total: candidates.count,
+                total: eligibleCandidates.count,
                 remainingToday: budget.remainingToday
             )
 
@@ -755,6 +821,172 @@ final class PriceRefreshController: ObservableObject {
             )
         }
         return priced
+    }
+
+    /// Graded slabs, repriced through the v2 beta.
+    ///
+    /// Graded variants exist only in v2 and cannot be batched: posting a v2
+    /// variant id to `POST /v1/cards` returns an empty result, because raw and
+    /// graded variants are separate objects. So this is one request per
+    /// *underlying card* — every owned grade of one card comes back together —
+    /// narrowed to the graders and grades actually owned, which keeps a card
+    /// with a hundred grader/grade permutations to a single small response.
+    private func refreshGraded(_ targets: [PriceTarget], store: PriceStore) async -> Int {
+        let slabs = targets.filter { $0.itemKind == .gradedCard && $0.marketVariantID != nil }
+        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else { return 0 }
+
+        // One request serves every grade of one card, so group before asking.
+        var byCard: [String: [PriceTarget]] = [:]
+        for slab in slabs {
+            guard let identity = slab.gradedIdentity else { continue }
+            byCard[identity.groupingKey(game: slab.game), default: []].append(slab)
+        }
+
+        let client = JustTCGV2GradedClient(transport: sharedTransport)
+        var priced = 0
+
+        for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
+            if Task.isCancelled { break }
+            guard let identity = group.first?.gradedIdentity, let game = group.first?.game else {
+                continue
+            }
+            let variants: [GradedVariant]
+            do {
+                variants = try await client.gradedVariants(
+                    identity: identity,
+                    game: game,
+                    companies: Set(group.compactMap(\.gradingCompany)),
+                    grades: Set(group.compactMap(\.grade)),
+                    lane: .background
+                )
+            } catch {
+                // Budget, rate limit or transport. Nothing is recorded: none of
+                // those is evidence about the slab.
+                break
+            }
+
+            let byVariantID = Dictionary(
+                variants.map { ($0.id, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            for target in group {
+                guard let handle = target.marketVariantID,
+                      let variant = byVariantID[handle],
+                      let amount = variant.marketPriceUSD else { continue }
+                store.store(
+                    .price(
+                        NormalizedPrice(
+                            unitMarketPriceUSD: amount,
+                            currencyCode: "USD",
+                            source: .justTCG,
+                            sourceVariantID: variant.id,
+                            sourceUpdatedAt: variant.updatedAt,
+                            fetchedAt: .now
+                        )
+                    ),
+                    game: target.game,
+                    printingID: target.printingID,
+                    variantID: target.variantID
+                )
+                if let record = store.record(forKey: target.id) {
+                    record.marketVariantID = variant.id
+                    record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                }
+                priced += 1
+            }
+            store.save()
+        }
+        return priced
+    }
+
+    /// Collection rows with no picture yet, keyed by the price key a batched
+    /// response writes back to.
+    private static func rowsMissingArtwork(
+        in context: ModelContext
+    ) -> [String: [CollectedCard]] {
+        let rows = (try? context.fetch(
+            FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.imageURL == nil })
+        )) ?? []
+        return Dictionary(grouping: rows, by: \.priceKey)
+    }
+
+    /// Applies product artwork independently of whether the returned variant
+    /// has a market price. A completed response without a usable marketplace
+    /// image is stamped at the current resolver version so an already-priced
+    /// row does not spend one request per refresh learning the same fact.
+    static func recordSealedArtwork(
+        from marketCard: JustTCGCard,
+        for owners: [MarketPriceTarget],
+        rowsByPriceKey: [String: [CollectedCard]],
+        checkedAt: Date = .now
+    ) {
+        let artwork = JustTCGV1Client.productImageURL(tcgplayerID: marketCard.tcgplayerId)
+        for owner in owners where owner.itemKind == .sealedProduct {
+            for row in rowsByPriceKey[owner.priceKey] ?? []
+            where row.itemKind == .sealedProduct && row.imageURL == nil {
+                if let artwork {
+                    row.imageURL = artwork.absoluteString
+                }
+                row.catalogMetadataCheckedAt = checkedAt
+                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+            }
+        }
+    }
+
+    /// One matched vendor response, applied in dependency order. Identity and
+    /// artwork deliberately happen before the optional price so a null market
+    /// amount cannot discard valid product metadata.
+    static func applyVendorBatchHit(
+        card: JustTCGCard,
+        variant: JustTCGVariant,
+        owners: [MarketPriceTarget],
+        store: PriceStore,
+        identities: ProductIdentityStore,
+        rowsByPriceKey: [String: [CollectedCard]],
+        fetchedAt: Date = .now
+    ) {
+        recordSealedArtwork(
+            from: card,
+            for: owners,
+            rowsByPriceKey: rowsByPriceKey,
+            checkedAt: fetchedAt
+        )
+        for owner in owners {
+            identities.recordBatchResolution(
+                forKey: owner.priceKey,
+                cardID: card.uuid ?? card.id,
+                variantID: variant.variantId,
+                at: fetchedAt
+            )
+        }
+
+        guard let amount = variant.marketPriceUSD else { return }
+        let normalized = NormalizedPrice(
+            unitMarketPriceUSD: amount,
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: variant.variantId ?? "batch",
+            sourceUpdatedAt: variant.updatedAt,
+            fetchedAt: fetchedAt
+        )
+        for owner in owners {
+            store.store(
+                .price(normalized),
+                game: owner.game,
+                printingID: owner.printingID,
+                variantID: owner.variantID
+            )
+            if let record = store.record(forKey: owner.priceKey) {
+                record.marketVariantID = variant.variantId
+                record.canonicalMarketID = card.uuid ?? card.id
+                record.providerGameUpdatedAt = variant.updatedAt
+                record.itemKindRaw = owner.itemKind.rawValue
+                record.periodLow = variant.minPrice7d
+                record.periodHigh = variant.maxPrice7d
+                record.coefficientOfVariation = variant.covPrice7d
+                record.periodChangeCount = variant.priceChangesCount7d
+            }
+        }
     }
 
     /// How often the fallback commits progress mid-run.

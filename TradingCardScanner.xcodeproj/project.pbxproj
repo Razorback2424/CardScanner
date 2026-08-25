@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
+		A0010071 /* CollectionActivityLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010071 /* CollectionActivityLogView.swift */; };
 		A0020032 /* ImportedItemKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020032 /* ImportedItemKindTests.swift */; };
 		A0020031 /* MagicPhysicalObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020031 /* MagicPhysicalObjectTests.swift */; };
 		A0010069 /* MagicPhysicalObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010069 /* MagicPhysicalObjects.swift */; };
@@ -96,6 +98,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B0010070 /* CollectionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivity.swift; sourceTree = "<group>"; };
+		B0010071 /* CollectionActivityLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityLogView.swift; sourceTree = "<group>"; };
 		B0020032 /* ImportedItemKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedItemKindTests.swift; sourceTree = "<group>"; };
 		B0020031 /* MagicPhysicalObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjectTests.swift; sourceTree = "<group>"; };
 		B0010069 /* MagicPhysicalObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjects.swift; sourceTree = "<group>"; };
@@ -238,6 +242,7 @@
 		D0010003 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B0010070 /* CollectionActivity.swift */,
 				B0010050 /* BrowseCatalogModels.swift */,
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
@@ -292,6 +297,7 @@
 		D0010005 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B0010071 /* CollectionActivityLogView.swift */,
 				B0010052 /* BrowseView.swift */,
 				B0010053 /* CatalogCardDetailView.swift */,
 				B0010008 /* CameraPreview.swift */,
@@ -445,6 +451,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0010070 /* CollectionActivity.swift in Sources */,
+				A0010071 /* CollectionActivityLogView.swift in Sources */,
 				A0010069 /* MagicPhysicalObjects.swift in Sources */,
 				A0010068 /* MagicContentKind.swift in Sources */,
 				A0010067 /* GradedVariantPickerView.swift in Sources */,

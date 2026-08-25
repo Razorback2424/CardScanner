@@ -16,6 +16,7 @@ final class CollectionItemKindTests: XCTestCase {
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: CollectedCard.self, PriceRecord.self, ProductIdentity.self,
+            CollectionActivity.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         self.container = container
@@ -138,6 +139,15 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertTrue(first.didInsert)
         XCTAssertTrue(second.didInsert, "a second certificate is a second slab")
         XCTAssertNotEqual(first.collectionKey, second.collectionKey)
+
+        let firstRow = try XCTUnwrap(store.card(forKey: first.collectionKey))
+        let secondRow = try XCTUnwrap(store.card(forKey: second.collectionKey))
+        XCTAssertEqual(firstRow.priceKey, secondRow.priceKey, "certificates do not split market identity")
+        XCTAssertEqual(firstRow.priceStorageID, "justtcg:v2:g-uuid")
+        let prices = try context.fetch(FetchDescriptor<PriceRecord>())
+        XCTAssertEqual(prices.count, 1)
+        XCTAssertEqual(prices.first?.unitMarketPriceUSD, 500)
+        XCTAssertEqual(prices.first?.sourceVariantID, "g-uuid")
     }
 
     /// Without a certificate the app cannot tell two identical slabs apart, so
@@ -163,10 +173,13 @@ final class CollectionItemKindTests: XCTestCase {
     func testSealedProductsAggregate() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
+        let artwork = try XCTUnwrap(URL(
+            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        ))
         let product = SealedProductSummary(
             id: "p-uuid", name: "Legendary Treasures Booster Box",
             setName: "Legendary Treasures", variantID: "v-uuid",
-            marketPriceUSD: 18_750, updatedAt: nil, imageURL: nil
+            marketPriceUSD: 18_750, updatedAt: nil, imageURL: artwork
         )
 
         let first = store.addSealed(product, game: .pokemon)
@@ -178,6 +191,126 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertEqual(row?.quantity, 2)
         XCTAssertEqual(row?.itemKind, .sealedProduct)
         XCTAssertEqual(row?.itemKindLabel, "Sealed")
+        XCTAssertEqual(row?.priceStorageID, "justtcg:v1:v-uuid")
+        XCTAssertEqual(row?.imageURL, artwork.absoluteString)
+        let price = try XCTUnwrap(
+            PriceStore(context: context).record(forKey: try XCTUnwrap(row?.priceKey))
+        )
+        XCTAssertEqual(price.unitMarketPriceUSD, 18_750)
+        XCTAssertEqual(price.sourceVariantID, "v-uuid")
+    }
+
+    func testReaddingSealedProductHealsLegacyMissingArtwork() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let withoutArtwork = SealedProductSummary(
+            id: "p-uuid", name: "Legendary Treasures Booster Box",
+            setName: "Legendary Treasures", variantID: "v-uuid",
+            marketPriceUSD: 18_750, updatedAt: nil, imageURL: nil
+        )
+        let first = store.addSealed(withoutArtwork, game: .pokemon)
+        let artwork = try XCTUnwrap(URL(
+            string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        ))
+        let withArtwork = SealedProductSummary(
+            id: withoutArtwork.id, name: withoutArtwork.name,
+            setName: withoutArtwork.setName, variantID: withoutArtwork.variantID,
+            marketPriceUSD: withoutArtwork.marketPriceUSD,
+            updatedAt: withoutArtwork.updatedAt, imageURL: artwork
+        )
+
+        _ = store.addSealed(withArtwork, game: .pokemon)
+
+        XCTAssertEqual(store.card(forKey: first.collectionKey)?.imageURL, artwork.absoluteString)
+    }
+
+    func testNullPriceBatchStillBackfillsSealedArtworkAndIdentity() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = store.addSealed(
+            SealedProductSummary(
+                id: "p-uuid", name: "Legendary Treasures Booster Box",
+                setName: "Legendary Treasures", variantID: "v-uuid",
+                marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+            ),
+            game: .pokemon
+        )
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        let hit = try sealedBatchHit(tcgplayerID: "98580", price: nil)
+        let owner = marketOwner(for: row)
+
+        PriceRefreshController.applyVendorBatchHit(
+            card: hit.card,
+            variant: hit.variant,
+            owners: [owner],
+            store: PriceStore(context: context),
+            identities: ProductIdentityStore(context: context),
+            rowsByPriceKey: [row.priceKey: [row]],
+            fetchedAt: Date(timeIntervalSince1970: 1_000)
+        )
+
+        XCTAssertEqual(
+            row.imageURL,
+            "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
+        )
+        XCTAssertEqual(row.catalogMetadataVersion, CollectionCatalogNormalizer.metadataVersion)
+        XCTAssertNil(ArtworkDiagnostics.reason(for: row))
+        XCTAssertEqual(
+            ProductIdentityStore(context: context).cachedVariantID(forKey: row.priceKey),
+            "v-uuid"
+        )
+        XCTAssertNil(
+            PriceStore(context: context).record(forKey: row.priceKey),
+            "a null market price stays null while artwork and identity are retained"
+        )
+    }
+
+    func testProviderWithoutArtworkBecomesTerminalInsteadOfRetryingForever() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = store.addSealed(
+            SealedProductSummary(
+                id: "p-uuid", name: "Artworkless Box", setName: "Set",
+                variantID: "v-uuid", marketPriceUSD: 25,
+                updatedAt: nil, imageURL: nil
+            ),
+            game: .pokemon
+        )
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        let hit = try sealedBatchHit(tcgplayerID: nil, price: 25)
+
+        PriceRefreshController.applyVendorBatchHit(
+            card: hit.card,
+            variant: hit.variant,
+            owners: [marketOwner(for: row)],
+            store: PriceStore(context: context),
+            identities: ProductIdentityStore(context: context),
+            rowsByPriceKey: [row.priceKey: [row]],
+            fetchedAt: Date(timeIntervalSince1970: 1_000)
+        )
+
+        XCTAssertNil(row.imageURL)
+        XCTAssertFalse(ArtworkDiagnostics.shouldRetrySealedArtwork(for: row))
+        XCTAssertEqual(ArtworkDiagnostics.reason(for: row), .providerHasNoArtwork)
+    }
+
+    func testExistingSealedRowFromOlderArtworkRulesGetsOneBackfill() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = store.addSealed(
+            SealedProductSummary(
+                id: "p-uuid", name: "Legacy Box", setName: "Set",
+                variantID: "v-uuid", marketPriceUSD: 25,
+                updatedAt: nil, imageURL: nil
+            ),
+            game: .pokemon
+        )
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        row.catalogMetadataCheckedAt = .now
+        row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion - 1
+
+        XCTAssertTrue(ArtworkDiagnostics.shouldRetrySealedArtwork(for: row))
+        XCTAssertEqual(ArtworkDiagnostics.reason(for: row), .lookupPending)
     }
 
     // MARK: - Set completion
@@ -256,6 +389,44 @@ final class CollectionItemKindTests: XCTestCase {
         return .pokemon(
             try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
             setCode: "PRE"
+        )
+    }
+
+    private func sealedBatchHit(
+        tcgplayerID: String?,
+        price: Double?
+    ) throws -> (card: JustTCGCard, variant: JustTCGVariant) {
+        let marketplace = tcgplayerID.map { "\"tcgplayerId\": \"\($0)\"," } ?? ""
+        let amount = price.map { String($0) } ?? "null"
+        let json = """
+        {
+          "data": [ {
+            "id": "box", "uuid": "p-uuid", \(marketplace)
+            "variants": [ {
+              "uuid": "v-uuid", "condition": "Sealed", "price": \(amount)
+            } ]
+          } ]
+        }
+        """
+        let response = try JSONDecoder().decode(
+            JustTCGBatchResponse.self,
+            from: Data(json.utf8)
+        )
+        let card = try XCTUnwrap(response.data.first)
+        return (card, try XCTUnwrap(card.variants?.first))
+    }
+
+    private func marketOwner(for row: CollectedCard) -> MarketPriceTarget {
+        MarketPriceTarget(
+            priceKey: row.priceKey,
+            game: row.cardGame,
+            printingID: row.priceStorageID,
+            variantID: row.variantID,
+            itemKind: .sealedProduct,
+            marketVariantID: row.justTCGVariantID,
+            lookupCandidates: [],
+            currentAmount: nil,
+            lastCheckedAt: nil
         )
     }
 }

@@ -205,16 +205,9 @@ private struct SealedProductTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // The provider returns no imagery for sealed products, so this is a
-            // deliberate placeholder rather than a failed image load.
-            ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.quaternary)
-                Image(systemName: "shippingbox.fill")
-                    .font(.system(size: 34))
-                    .foregroundStyle(.secondary)
-            }
-            .frame(height: 120)
+            SealedProductArtwork(imageURL: product.imageURL)
+                .frame(height: 120)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             Text(product.name)
                 .font(.subheadline.weight(.medium))
@@ -255,6 +248,12 @@ struct SealedProductDetailView: View {
 
     var body: some View {
         List {
+            Section {
+                SealedProductArtwork(imageURL: product.imageURL)
+                    .frame(maxWidth: .infinity, minHeight: 220)
+                    .listRowInsets(EdgeInsets())
+            }
+
             Section {
                 LabeledContent("Product", value: product.name)
                 if let setName = product.setName {
@@ -333,5 +332,33 @@ struct SealedProductDetailView: View {
         CollectionStore(context: modelContext).undo(pendingMutation)
         self.pendingMutation = nil
         undoTask?.cancel()
+    }
+}
+
+private struct SealedProductArtwork: View {
+    let imageURL: URL?
+
+    var body: some View {
+        AsyncImage(url: imageURL) { phase in
+            switch phase {
+            case let .success(image):
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .padding(8)
+            case .empty, .failure:
+                placeholder
+            @unknown default:
+                placeholder
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.secondary.opacity(0.08))
+    }
+
+    private var placeholder: some View {
+        Image(systemName: "shippingbox.fill")
+            .font(.system(size: 34))
+            .foregroundStyle(.secondary)
     }
 }

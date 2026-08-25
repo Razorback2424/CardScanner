@@ -23,14 +23,22 @@ enum JustTCGRequestLane: Sendable {
 /// The tier's published allowances, held below the documented limits so that a
 /// vendor-side accounting difference cannot turn into a hard failure.
 enum JustTCGQuota {
-    /// Documented free tier is 100/day; 90 keeps 10% headroom.
-    static let dailyHardLimit = 90
+    /// Documented free tier is 100/day; keep five requests of headroom for
+    /// provider-side accounting differences and out-of-app usage.
+    static let dailyHardLimit = 95
     /// Documented free tier is 1,000/month; 900 keeps the same headroom.
     static let monthlyHardLimit = 900
-    /// Background work stops here, leaving 15 for interactive use.
+    /// Background work stops here, leaving 20 for interactive work such as
+    /// resolving sealed products and opening marketplace catalog screens.
     static let backgroundDailyCeiling = 75
     /// Free tier batch size. One request carries this many variants.
     static let batchSize = 20
+    /// The largest `limit` a list request may ask for. The free plan rejects
+    /// anything above this outright — `{"error": "Limit must be between 1 and
+    /// 20 for your plan."}` — which failed the whole request rather than
+    /// returning a short page, so sealed discovery came back empty and its
+    /// products were left with neither a price nor a picture.
+    static let maximumPageSize = 20
 
     /// One POST of `batchSize` items costs exactly one request. This is the
     /// whole reason batching matters: 2,000 variants is 100 requests, not 2,000.

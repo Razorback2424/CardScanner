@@ -172,12 +172,15 @@ enum IdentityResolution: String, Codable, Hashable, Sendable {
     case catalogSelected
     /// The printing identity came from an imported collection file.
     case imported
+    /// The user corrected identity metadata after reviewing collection history.
+    case userCorrected
 
     var label: String {
         switch self {
         case .printedIdentifier: return "Printed identifier"
         case .catalogSelected: return "Selected from catalog"
         case .imported: return "Imported"
+        case .userCorrected: return "You corrected"
         }
     }
 }

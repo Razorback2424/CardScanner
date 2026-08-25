@@ -51,7 +51,7 @@ struct JustTCGRequestLedger: Sendable {
 
     /// Take one request from the allowance, or explain why it cannot.
     ///
-    /// The lane decides the ceiling: background work stops at 75 so the last 15
+    /// The lane decides the ceiling: background work stops at 75 so the last 20
     /// stay available for whatever the user asks for directly.
     func reserve(lane: JustTCGRequestLane, now: Date = .now) -> Reservation {
         rolloverIfNeeded(now: now)

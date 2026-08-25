@@ -32,6 +32,9 @@ final class CollectedCard {
     /// Scryfall normal-image URL. game selects the appropriate representation.
     @Attribute(originalName: "imageBaseURL") var imageURL: String?
     var thumbnailURL: String?
+    /// Optional user-supplied artwork, stored in Application Support. It is a
+    /// visual override only and never changes catalog or marketplace identity.
+    var userArtworkFilename: String?
     var quantity: Int
     var dateAdded: Date
 
@@ -39,6 +42,10 @@ final class CollectedCard {
     /// none — recorded as unknown rather than filled in with something plausible.
     var variantID: String?
     var variantLabel: String?
+    /// WotC print run is independent of finish: a card can be both 1st Edition
+    /// and Holo. Kept separate so pricing and master-set routing never have to
+    /// overload one mutually exclusive variant field with two physical facts.
+    var pokemonPrintRunRaw: String?
 
     /// Provenance, stored as raw strings so a future build can add resolutions
     /// without a schema migration.
@@ -194,6 +201,9 @@ final class CollectedCard {
         imageURL = metadata.imageURL
         thumbnailURL = metadata.thumbnailURL
         tcgplayerURL = metadata.tcgplayerURL
+        justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
+        justTCGVariantID = metadata.justTCGVariantID ?? justTCGVariantID
+        justTCGAPIVersion = metadata.justTCGAPIVersion ?? justTCGAPIVersion
         catalogMetadataCheckedAt = checkedAt
     }
 
@@ -276,13 +286,59 @@ final class CollectedCard {
 
     /// The `PriceRecord` this entry reads its price from. Every owned copy of the
     /// same printing and variant shares one.
-    var priceKey: String {
-        PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID)
+    var priceStorageID: String {
+        // Vendor-native products are already identified at the exact priceable
+        // object level. In particular, a certificate distinguishes two owned
+        // slabs but does not distinguish their market price, so it must never be
+        // part of the price key or cause a second refresh request.
+        if itemKind != .rawCard, let marketVariantID = justTCGVariantID {
+            let version = justTCGAPIVersion ?? (itemKind == .gradedCard ? "v2" : "v1")
+            return "justtcg:\(version):\(marketVariantID)"
+        }
+        return pokemonPrintRun.map { "\(providerID)@\($0.rawValue)" } ?? providerID
     }
+
+    var priceKey: String {
+        PriceRecord.key(game: cardGame, printingID: priceStorageID, variantID: variantID)
+    }
+
+    /// Keys used by builds before print run and vendor-native price identities
+    /// were separated from collection-row identity. Reading through these keeps
+    /// already-working stored prices visible until a fresh observation is saved
+    /// under the canonical key.
+    var legacyPriceKeys: [String] {
+        var keys: [String] = []
+        if itemKind != .rawCard, justTCGVariantID != nil {
+            keys.append(PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID))
+        }
+        if itemKind == .rawCard,
+           pokemonPrintRunRaw == nil,
+           variantID == PhysicalVariant.firstEdition.id {
+            keys.append(
+                PriceRecord.key(
+                    game: cardGame,
+                    printingID: providerID,
+                    variantID: PhysicalVariant.firstEdition.id
+                )
+            )
+        }
+        return keys.filter { $0 != priceKey }
+    }
+
+    var priceLookupKeys: [String] { [priceKey] + legacyPriceKeys }
 
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
+    }
+
+    var pokemonPrintRun: PokemonPrintRun? {
+        if let pokemonPrintRunRaw, let run = PokemonPrintRun(rawValue: pokemonPrintRunRaw) {
+            return run
+        }
+        // Existing stores represented this as a finish. Read it as provenance
+        // during migration, while all new writes use the independent field.
+        return variantID == PhysicalVariant.firstEdition.id ? .firstEdition : nil
     }
 
     var variantResolution: VariantResolution? {
@@ -295,7 +351,7 @@ final class CollectedCard {
 
     var highImageURL: URL? {
         guard let imageURL else { return nil }
-        if game == CardGame.pokemon.rawValue {
+        if game == CardGame.pokemon.rawValue, !imageURLIsDirect {
             return URL(string: imageURL + "/high.png")
         }
         return URL(string: imageURL)
@@ -306,9 +362,16 @@ final class CollectedCard {
             return URL(string: thumbnailURL)
         }
         guard let imageURL else { return nil }
-        if game == CardGame.pokemon.rawValue {
+        if game == CardGame.pokemon.rawValue, !imageURLIsDirect {
             return URL(string: imageURL + "/low.png")
         }
         return URL(string: imageURL)
+    }
+
+    private var imageURLIsDirect: Bool {
+        guard let imageURL else { return false }
+        let path = URL(string: imageURL)?.path.lowercased() ?? ""
+        return path.hasSuffix(".jpg") || path.hasSuffix(".jpeg")
+            || path.hasSuffix(".png") || path.hasSuffix(".webp")
     }
 }

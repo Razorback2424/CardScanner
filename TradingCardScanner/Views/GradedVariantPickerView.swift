@@ -36,12 +36,12 @@ final class GradedVariantModel: ObservableObject {
         }
     }
 
-    func load(cardID: String, game: CardGame) async {
+    func load(identity: GradedCardIdentity, game: CardGame) async {
         guard isConfigured, !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
         do {
-            variants = try await client.gradedVariants(cardID: cardID, game: game)
+            variants = try await client.gradedVariants(identity: identity, game: game)
             errorMessage = variants.isEmpty
                 ? "No graded prices are published for this card yet."
                 : nil
@@ -116,7 +116,7 @@ struct GradedVariantPickerView: View {
                 }
             }
             .task {
-                await model.load(cardID: card.providerID, game: card.game)
+                await model.load(identity: GradedCardIdentity(card), game: card.game)
             }
         }
     }

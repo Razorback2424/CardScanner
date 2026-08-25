@@ -629,4 +629,182 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertTrue(CollectionItemKind.rawCard.countsTowardSetCompletion)
         XCTAssertTrue(CollectionItemKind.gradedCard.countsTowardSetCompletion)
     }
+
+    // MARK: - Identifier spellings
+
+    /// The regression that made every fallback refresh re-pay for a search.
+    ///
+    /// `ProductVariant` is what the identity-resolution pass decodes, and it was
+    /// asking for `variantId` — the request parameter's name, which the response
+    /// does not use. It therefore never captured a variant handle, nothing was
+    /// ever persisted as batchable, and the "search once, batch forever after"
+    /// design never engaged.
+    func testProductVariantReadsTheVariantHandleFromUUID() throws {
+        let json = """
+        { "uuid": "variant-uuid", "id": "variant-slug", "condition": "Near Mint",
+          "printing": "Holofoil", "price": 12.5, "lastUpdated": 1700000000 }
+        """
+        let variant = try JSONDecoder().decode(ProductVariant.self, from: Data(json.utf8))
+
+        XCTAssertEqual(variant.variantId, "variant-uuid", "the uuid is the handle batches send")
+        XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_700_000_000))
+    }
+
+    /// The slug still identifies the variant when no uuid is published, which is
+    /// better than storing nothing and searching again next time.
+    func testProductVariantFallsBackToTheSlug() throws {
+        let json = """
+        { "id": "variant-slug", "condition": "Near Mint", "price": 1 }
+        """
+        let variant = try JSONDecoder().decode(ProductVariant.self, from: Data(json.utf8))
+
+        XCTAssertEqual(variant.variantId, "variant-slug")
+    }
+
+    /// `cardId=<slug>` is verified against the live API to return the card, so
+    /// the slug remains the handle. The uuid is decoded alongside it.
+    func testProductCardHandlePrefersTheVerifiedSlug() throws {
+        let json = """
+        { "id": "card-slug", "uuid": "card-uuid", "name": "Trevenant",
+          "set": "trick-or-trade-2023", "number": "017/196", "variants": [] }
+        """
+        let card = try JSONDecoder().decode(ProductCard.self, from: Data(json.utf8))
+
+        XCTAssertEqual(card.vendorID, "card-slug")
+        XCTAssertEqual(card.uuid, "card-uuid")
+    }
+
+    /// The card object mixes conventions — `set_name` is snake_case while the
+    /// nested variant's `tcgplayerSkuId` is camelCase, both pinned from live
+    /// responses. Nothing pins the marketplace ids, and a wrong guess is silent:
+    /// sealed products simply show a placeholder instead of artwork.
+    func testMarketplaceIdentifiersDecodeUnderEitherSpelling() throws {
+        let camel = """
+        { "data": [ { "id": "box", "uuid": "box-uuid", "tcgplayerId": "610553",
+            "set_name": "Legendary Treasures", "variants": [] } ] }
+        """
+        let snake = """
+        { "data": [ { "id": "box", "uuid": "box-uuid", "tcgplayer_id": 610553,
+            "setName": "Legendary Treasures", "variants": [] } ] }
+        """
+
+        for payload in [camel, snake] {
+            let card = try XCTUnwrap(
+                JSONDecoder().decode(JustTCGBatchResponse.self, from: Data(payload.utf8)).data.first
+            )
+            XCTAssertEqual(card.tcgplayerId, "610553")
+            XCTAssertEqual(card.setName, "Legendary Treasures")
+        }
+    }
+
+    // MARK: - v2 graded beta
+
+    /// Pinned from a live v2 response. v2 is a different schema from v1, not a
+    /// newer version of it: the price moves into `markets`, and the grade label
+    /// is `grade_label`. Decoding v2 with v1's field names left every graded
+    /// variant with no price at all.
+    func testV2GradedVariantPriceComesFromTheMarketsBlock() throws {
+        let json = """
+        { "id": "v2-variant", "type": "graded", "condition": null,
+          "printing": "Holofoil", "language": "English",
+          "grading": { "company": "PSA", "grade": 10, "grade_label": "GEM MT",
+                       "qualifier": null, "canonical": "PSA 10" },
+          "markets": [ { "region": "US", "currency": "USD", "price": 3999.99,
+                         "updated_at": 1784585831 } ] }
+        """
+        let variant = try JSONDecoder().decode(JustTCGVariant.self, from: Data(json.utf8))
+
+        XCTAssertNil(variant.price, "v2 publishes no flat price")
+        XCTAssertEqual(variant.marketPriceUSD, 3999.99)
+        XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_784_585_831))
+        XCTAssertEqual(variant.variantId, "v2-variant")
+        XCTAssertEqual(variant.grading?.label, "GEM MT")
+        XCTAssertEqual(variant.grading?.gradeText, "10")
+    }
+
+    /// v1's flat price keeps working; the two schemas share one type.
+    func testV1FlatPriceStillReads() throws {
+        let json = """
+        { "uuid": "v1-variant", "condition": "Near Mint", "printing": "Holofoil",
+          "price": 106.39, "lastUpdated": 1700000000 }
+        """
+        let variant = try JSONDecoder().decode(JustTCGVariant.self, from: Data(json.utf8))
+
+        XCTAssertEqual(variant.marketPriceUSD, 106.39)
+        XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_700_000_000))
+    }
+
+    /// v2 does not reject an identifier it does not recognise — it silently
+    /// browses instead, returning arbitrary graded cards for the game. The app
+    /// sends a catalog id, which v2 has never heard of, so the picker was
+    /// offering slabs of unrelated cards.
+    func testGradedIdentityRejectsACardTheBrowseHandedBack() throws {
+        let json = """
+        { "id": "other", "name": "Charizard Star (Delta Species)",
+          "number": "100/101", "set_name": "EX Dragon Frontiers", "variants": [] }
+        """
+        let returned = try JSONDecoder().decode(JustTCGCard.self, from: Data(json.utf8))
+        let asked = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
+        )
+
+        XCTAssertFalse(asked.matches(returned))
+    }
+
+    func testGradedIdentityAcceptsTheCardItAskedFor() throws {
+        let json = """
+        { "id": "right", "name": "Charizard", "number": "4/102",
+          "set_name": "Base Set", "variants": [] }
+        """
+        let returned = try JSONDecoder().decode(JustTCGCard.self, from: Data(json.utf8))
+        let asked = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "004/102"
+        )
+
+        XCTAssertTrue(asked.matches(returned))
+    }
+
+    /// One request must serve every owned grade of one card, or a shelf of PSA
+    /// 8/9/10 copies costs three requests where it should cost one.
+    func testEveryGradeOfOneCardSharesARequest() {
+        let psa9 = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "004/102"
+        )
+        let psa10 = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "004/102"
+        )
+        let other = GradedCardIdentity(
+            name: "Blastoise", setName: "Base Set", collectorNumber: "002/102"
+        )
+
+        XCTAssertEqual(psa9.groupingKey(game: .pokemon), psa10.groupingKey(game: .pokemon))
+        XCTAssertNotEqual(psa9.groupingKey(game: .pokemon), other.groupingKey(game: .pokemon))
+    }
+
+    /// Pinned from the live v2 response for Base Set Charizard, which is the
+    /// shape a graded refresh has to read: variant id under `id`, price nested
+    /// in `markets`, grade under `grading.canonical`.
+    func testGradedCardResponseYieldsPricedVariants() throws {
+        let json = """
+        { "data": [ { "id": "004d6ac4-92db-51b7-9cd6-8c2d46479bdc", "name": "Charizard",
+            "number": "004/102", "set_name": "Base Set", "variants": [
+              { "id": "b9174ffe-9b95-5aea-b916-2b3bcd6d5731", "type": "graded",
+                "printing": "Holofoil",
+                "grading": { "company": "PSA", "grade": 8, "canonical": "PSA 8" },
+                "markets": [ { "region": "US", "currency": "USD", "price": 1479.99,
+                               "updated_at": 1784585831 } ] } ] } ] }
+        """
+        let response = try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data(json.utf8))
+        let card = try XCTUnwrap(response.data.first)
+        let variant = try XCTUnwrap(card.variants?.first)
+        let asked = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
+        )
+
+        XCTAssertTrue(asked.matches(card))
+        XCTAssertEqual(variant.variantId, "b9174ffe-9b95-5aea-b916-2b3bcd6d5731")
+        XCTAssertEqual(variant.marketPriceUSD, 1479.99)
+        XCTAssertEqual(variant.grading?.gradingCompany, .psa)
+        XCTAssertEqual(variant.grading?.gradeText, "8")
+    }
 }

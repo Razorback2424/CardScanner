@@ -59,6 +59,19 @@ struct CatalogCardDetailView: View {
             VStack(spacing: 6) {
                 Text(details.card.name).font(.title2.bold()).multilineTextAlignment(.center)
                 Text(details.card.setName).foregroundStyle(.secondary)
+                if let printRun = summary.pokemonPrintRun {
+                    Text(printRun.label)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+                if let variant = summary.masterSetVariant {
+                    Label(variant.label, systemImage: "square.stack.3d.up.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(Color.accentColor.opacity(0.12), in: Capsule())
+                }
                 Text(details.card.identifier).font(.headline.monospacedDigit())
                 if let rarity = details.card.rarity { Text(rarity.capitalized).font(.subheadline).foregroundStyle(.secondary) }
             }
@@ -67,7 +80,10 @@ struct CatalogCardDetailView: View {
             priceSection(details.card)
 
             Button { prepareAdd(details.card) } label: {
-                Label("Add Raw Copy", systemImage: "plus.circle.fill")
+                Label(
+                    summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add Raw Copy",
+                    systemImage: "plus.circle.fill"
+                )
                     .frame(maxWidth: .infinity, minHeight: 50)
             }
             .buttonStyle(.borderedProminent)
@@ -100,7 +116,12 @@ struct CatalogCardDetailView: View {
     }
 
     @ViewBuilder private func priceSection(_ card: IdentifiedCard) -> some View {
-        if !card.marketPrices.isEmpty {
+        if let printRun = summary.pokemonPrintRun {
+            Text("Only a provider price explicitly tied to \(printRun.label) will be used after this card is added.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        } else if !card.marketPrices.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
                 ForEach(card.marketPrices) { price in
@@ -114,7 +135,24 @@ struct CatalogCardDetailView: View {
     }
 
     private func prepareAdd(_ card: IdentifiedCard) {
-        switch VariantResolver.resolve(card.variantEvidence) {
+        if let required = summary.masterSetVariant {
+            commit(ResolvedVariant(variant: required, resolution: .userConfirmed))
+            return
+        }
+        var evidence = card.variantEvidence
+        // Edition is carried by the virtual Browse set. Remove the legacy
+        // pseudo-finish so a 1st Edition Holo remains representable as both.
+        if summary.pokemonPrintRun != nil {
+            evidence = VariantEvidence(
+                game: evidence.game,
+                setID: evidence.setID,
+                cardNumber: evidence.cardNumber,
+                catalogVariants: evidence.catalogVariants.filter {
+                    $0.id != PhysicalVariant.firstEdition.id
+                }
+            )
+        }
+        switch VariantResolver.resolve(evidence) {
         case let .resolved(resolved): commit(resolved)
         case let .needsChoice(options, _):
             finishOptions = options
@@ -128,14 +166,20 @@ struct CatalogCardDetailView: View {
         let mutation = store.add(
             details.card,
             resolved: resolved,
+            pokemonPrintRun: summary.pokemonPrintRun,
             identityResolution: .catalogSelected,
             setReleaseOrder: details.set.releaseOrder,
             matchCatalogAliases: true
         )
-        let storageID = store.card(forKey: mutation.collectionKey)?.providerID ?? details.card.providerID
+        let stored = store.card(forKey: mutation.collectionKey)
+        let storageID = stored?.priceStorageID ?? details.card.providerID
         let prices = PriceStore(context: modelContext)
         prices.store(
-            CardPricing.price(for: details.card, variant: resolved.variant),
+            CardPricing.price(
+                for: details.card,
+                variant: resolved.variant,
+                pokemonPrintRun: summary.pokemonPrintRun
+            ),
             game: details.card.game,
             printingID: storageID,
             variantID: resolved.variant?.id
@@ -150,7 +194,12 @@ struct CatalogCardDetailView: View {
     }
 
     private func ownedRows(_ card: IdentifiedCard) -> [CollectedCard] {
-        ownedCards.filter { $0.providerID == card.providerID || $0.catalogProviderID == card.providerID }
+        ownedCards.filter {
+            ($0.providerID == card.providerID || $0.catalogProviderID == card.providerID)
+                && (summary.pokemonPrintRun == .unlimited
+                    ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
+                    : $0.pokemonPrintRun == summary.pokemonPrintRun)
+        }
             .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
     }
 

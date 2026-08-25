@@ -4,6 +4,7 @@ import SwiftData
 /// A single recorded change, kept only so it can be taken back.
 struct CollectionMutation: Equatable, Sendable {
     let collectionKey: String
+    let activityID: UUID?
     /// Whether the change created the row or incremented an existing one, which
     /// is the difference between deleting it and counting back down.
     let didInsert: Bool
@@ -55,8 +56,16 @@ struct CollectionStore {
         if certificationNumber == nil, let existing = self.card(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
+            storeMarketPrice(
+                variant.marketPriceUSD,
+                updatedAt: variant.updatedAt,
+                marketVariantID: variant.id,
+                for: existing
+            )
             try? context.save()
-            return CollectionMutation(collectionKey: key, didInsert: false)
+            let activity = record(existing, source: .gradedCatalog)
+            try? context.save()
+            return CollectionMutation(collectionKey: key, activityID: activity.id, didInsert: false)
         }
 
         let row = CollectedCard(
@@ -79,6 +88,10 @@ struct CollectionStore {
         )
         row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         row.justTCGVariantID = variant.id
+        // Both handles. Without the card handle a refresh has no way back to
+        // this slab: graded variants live only in v2, and v2 finds a card by
+        // set and name rather than by the catalog id the row already had.
+        row.justTCGCardID = variant.cardID
         row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
         row.gradingCompanyRaw = variant.company.rawValue
         row.gradeRaw = variant.grade.value
@@ -87,8 +100,15 @@ struct CollectionStore {
         row.certificationNumber = certificationNumber
         row.catalogProviderID = card.providerID
         context.insert(row)
+        storeMarketPrice(
+            variant.marketPriceUSD,
+            updatedAt: variant.updatedAt,
+            marketVariantID: variant.id,
+            for: row
+        )
+        let activity = record(row, source: .gradedCatalog)
         try? context.save()
-        return CollectionMutation(collectionKey: key, didInsert: true)
+        return CollectionMutation(collectionKey: key, activityID: activity.id, didInsert: true)
     }
 
     /// Add one sealed product. These aggregate normally — three identical
@@ -108,8 +128,19 @@ struct CollectionStore {
         if let existing = self.card(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
+            // Re-adding also heals rows saved before sealed artwork support.
+            if existing.imageURL == nil {
+                existing.imageURL = product.imageURL?.absoluteString
+            }
+            storeMarketPrice(
+                product.marketPriceUSD,
+                updatedAt: product.updatedAt,
+                marketVariantID: product.variantID,
+                for: existing
+            )
+            let activity = record(existing, source: .sealedCatalog)
             try? context.save()
-            return CollectionMutation(collectionKey: key, didInsert: false)
+            return CollectionMutation(collectionKey: key, activityID: activity.id, didInsert: false)
         }
 
         let row = CollectedCard(
@@ -135,8 +166,15 @@ struct CollectionStore {
         row.justTCGVariantID = product.variantID
         row.justTCGAPIVersion = JustTCGV1Client.apiVersion
         context.insert(row)
+        storeMarketPrice(
+            product.marketPriceUSD,
+            updatedAt: product.updatedAt,
+            marketVariantID: product.variantID,
+            for: row
+        )
+        let activity = record(row, source: .sealedCatalog)
         try? context.save()
-        return CollectionMutation(collectionKey: key, didInsert: true)
+        return CollectionMutation(collectionKey: key, activityID: activity.id, didInsert: true)
     }
 
     private func imageURL(for card: IdentifiedCard) -> String? {
@@ -146,49 +184,105 @@ struct CollectionStore {
         }
     }
 
+    /// Sealed and graded browse responses already contain the exact variant's
+    /// current market observation. Persist it at add time under the exact vendor
+    /// variant identity; adding an item must not make the price that was just
+    /// shown disappear until a later refresh.
+    private func storeMarketPrice(
+        _ amount: Double?,
+        updatedAt: Date?,
+        marketVariantID: String?,
+        for card: CollectedCard
+    ) {
+        guard let amount else { return }
+        PriceStore(context: context).store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: amount,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: marketVariantID
+                        ?? card.justTCGCardID
+                        ?? card.priceStorageID,
+                    sourceUpdatedAt: updatedAt,
+                    fetchedAt: .now
+                )
+            ),
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+    }
+
     @discardableResult
     func add(
         _ card: IdentifiedCard,
         resolved: ResolvedVariant,
+        source: CollectionActivitySource = .catalog,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         identityResolution: IdentityResolution = .printedIdentifier,
         setReleaseOrder: Int? = nil,
         matchCatalogAliases: Bool = false
     ) -> CollectionMutation {
-        let key = card.collectionKey(variant: resolved.variant)
+        let baseKey = card.collectionKey(variant: resolved.variant)
+        let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
         let mutation: CollectionMutation
+        let stored: CollectedCard
 
         let existing = self.card(forKey: key) ?? (matchCatalogAliases
-            ? catalogAliasCard(providerID: card.providerID, variantID: resolved.variant?.id)
+            ? catalogAliasCard(
+                providerID: card.providerID,
+                variantID: resolved.variant?.id,
+                pokemonPrintRun: pokemonPrintRun
+            )
             : nil)
 
         if let existing {
             existing.quantity += 1
             existing.dateAdded = .now
-            mutation = CollectionMutation(collectionKey: existing.collectionKey, didInsert: false)
-        } else {
-            context.insert(
-                CollectedCard(
-                    card: card,
-                    resolved: resolved,
-                    identityResolution: identityResolution,
-                    setReleaseOrder: setReleaseOrder
-                )
+            mutation = CollectionMutation(
+                collectionKey: existing.collectionKey,
+                activityID: nil,
+                didInsert: false
             )
-            mutation = CollectionMutation(collectionKey: key, didInsert: true)
+            stored = existing
+        } else {
+            let inserted = CollectedCard(
+                card: card,
+                resolved: resolved,
+                identityResolution: identityResolution,
+                setReleaseOrder: setReleaseOrder
+            )
+            inserted.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+            context.insert(inserted)
+            mutation = CollectionMutation(collectionKey: key, activityID: nil, didInsert: true)
+            stored = inserted
         }
 
+        let activity = record(stored, source: source)
         try? context.save()
-        return mutation
+        return CollectionMutation(
+            collectionKey: mutation.collectionKey,
+            activityID: activity.id,
+            didInsert: mutation.didInsert
+        )
     }
 
     /// Imported entries retain a synthetic storage key after catalog
     /// normalization. The real provider id is still authoritative for deciding
     /// whether a catalog selection is another copy of that same physical object.
-    private func catalogAliasCard(providerID: String, variantID: String?) -> CollectedCard? {
+    private func catalogAliasCard(
+        providerID: String,
+        variantID: String?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) -> CollectedCard? {
         let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
         return rows.first {
             ($0.providerID == providerID || $0.catalogProviderID == providerID)
                 && $0.variantID == variantID
+                && (pokemonPrintRun == .unlimited
+                    ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
+                    : $0.pokemonPrintRun == pokemonPrintRun)
         }
     }
 
@@ -199,6 +293,15 @@ struct CollectionStore {
             context.delete(row)
         } else {
             row.quantity -= 1
+        }
+
+        if let activityID = mutation.activityID {
+            let descriptor = FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.id == activityID }
+            )
+            if let activity = try? context.fetch(descriptor).first {
+                context.delete(activity)
+            }
         }
 
         try? context.save()
@@ -215,6 +318,17 @@ struct CollectionStore {
         try context.save()
     }
 
+    @discardableResult
+    private func record(
+        _ card: CollectedCard,
+        source: CollectionActivitySource,
+        quantity: Int = 1
+    ) -> CollectionActivity {
+        let activity = CollectionActivity(card: card, source: source, quantity: quantity)
+        context.insert(activity)
+        return activity
+    }
+
     /// Moves one copy from the variant it was recorded as to the one it really
     /// is. A different variant is a different physical object, so this is a move
     /// between rows rather than an edit in place.
@@ -227,6 +341,13 @@ struct CollectionStore {
         guard current != corrected.variant else { return nil }
 
         let previousKey = card.collectionKey(variant: current)
+        let activityDescriptor = FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate { $0.collectionKey == previousKey }
+        )
+        // The scan being corrected is the newest acquisition for this row. Its
+        // event moves with the copy; a correction is not a second acquisition.
+        let activityToRetarget = try? context.fetch(activityDescriptor)
+            .max(by: { $0.occurredAt < $1.occurredAt })
         if let previous = self.card(forKey: previousKey) {
             if previous.quantity <= 1 {
                 context.delete(previous)
@@ -235,6 +356,38 @@ struct CollectionStore {
             }
         }
 
-        return add(card, resolved: corrected)
+        let mutation = add(card, resolved: corrected, source: .correction)
+        guard let activityToRetarget,
+              let correctedCard = self.card(forKey: mutation.collectionKey) else {
+            return mutation
+        }
+
+        // Remove the provisional correction event created by `add`, then move
+        // the original acquisition event to the corrected row so history has
+        // neither an orphan nor an extra card addition.
+        if let provisionalID = mutation.activityID {
+            let descriptor = FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.id == provisionalID }
+            )
+            if let provisional = try? context.fetch(descriptor).first {
+                context.delete(provisional)
+            }
+        }
+        activityToRetarget.collectionKey = correctedCard.collectionKey
+        activityToRetarget.name = correctedCard.name
+        activityToRetarget.setName = correctedCard.setName
+        activityToRetarget.setCode = correctedCard.setCode
+        activityToRetarget.cardNumber = correctedCard.cardNumber
+        activityToRetarget.variantID = correctedCard.variantID
+        activityToRetarget.variantLabel = correctedCard.variantLabel
+        activityToRetarget.pokemonPrintRunRaw = correctedCard.pokemonPrintRunRaw
+        activityToRetarget.correctedAt = .now
+        try? context.save()
+
+        return CollectionMutation(
+            collectionKey: mutation.collectionKey,
+            activityID: activityToRetarget.id,
+            didInsert: mutation.didInsert
+        )
     }
 }

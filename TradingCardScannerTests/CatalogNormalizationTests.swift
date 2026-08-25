@@ -166,4 +166,92 @@ final class CatalogNormalizationTests: XCTestCase {
         XCTAssertEqual(card.catalogProviderID, "M2-002")
         XCTAssertGreaterThan(card.catalogMetadataVersion, 3)
     }
+
+    // MARK: - Definitive sealed misses
+
+    func testDefinitiveSealedMissDoesNotRetryAfterEightHours() {
+        let card = importedSealedProduct()
+        card.catalogMetadataCheckedAt = Date(timeIntervalSince1970: 1)
+        card.catalogMetadataVersion = -CollectionCatalogNormalizer.metadataVersion
+
+        XCTAssertTrue(CollectionCatalogNormalizer.isDefinitiveSealedMiss(card))
+        XCTAssertFalse(
+            CollectionCatalogNormalizer.needsNormalization(
+                card,
+                now: Date(timeIntervalSince1970: 10 * 24 * 60 * 60)
+            ),
+            "a completed catalog miss must not consume one metered request every eight hours"
+        )
+        XCTAssertEqual(
+            PricingDiagnostics.unpricedReason(for: card, record: nil),
+            .sealedProductUnmatched
+        )
+    }
+
+    func testTransientSealedResolutionFailureRemainsRetryable() {
+        let card = importedSealedProduct()
+
+        XCTAssertTrue(CollectionCatalogNormalizer.needsNormalization(card))
+        XCTAssertEqual(
+            PricingDiagnostics.unpricedReason(for: card, record: nil),
+            .sealedProductPendingMatch
+        )
+    }
+
+    func testTransientSealedFailureKeepsEightHourThrottle() {
+        let card = importedSealedProduct()
+        let checkedAt = Date(timeIntervalSince1970: 1_000)
+        card.catalogMetadataCheckedAt = checkedAt
+        card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+
+        XCTAssertFalse(
+            CollectionCatalogNormalizer.needsNormalization(
+                card,
+                now: checkedAt.addingTimeInterval(7 * 60 * 60)
+            )
+        )
+        XCTAssertTrue(
+            CollectionCatalogNormalizer.needsNormalization(
+                card,
+                now: checkedAt.addingTimeInterval(8 * 60 * 60)
+            )
+        )
+    }
+
+    func testResolverVersionUpgradeReopensDefinitiveSealedMiss() {
+        let card = importedSealedProduct()
+        card.catalogMetadataCheckedAt = .now
+        card.catalogMetadataVersion = -(CollectionCatalogNormalizer.metadataVersion - 1)
+
+        XCTAssertTrue(CollectionCatalogNormalizer.needsNormalization(card))
+    }
+
+    func testKnownSealedProductWithoutExactVariantReportsVariantPriceGap() {
+        let card = importedSealedProduct()
+        card.justTCGCardID = "product-uuid"
+
+        XCTAssertEqual(
+            PricingDiagnostics.unpricedReason(for: card, record: nil),
+            .noExactVariantPrice
+        )
+    }
+
+    private func importedSealedProduct() -> CollectedCard {
+        let card = CollectedCard(
+            collectionKey: "sealed:csv:Base Set|Booster Box",
+            game: .pokemon,
+            providerID: "csv:Base Set|Booster Box",
+            name: "Booster Box",
+            setName: "Base Set",
+            setCode: "",
+            cardNumber: "",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .imported
+        )
+        card.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+        return card
+    }
 }

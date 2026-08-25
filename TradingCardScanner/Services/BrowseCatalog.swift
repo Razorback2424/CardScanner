@@ -43,6 +43,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
+    /// Expanding one Pokémon set costs a card request per numbered card, and the
+    /// same expansion is asked for again every time the set is reopened, by each
+    /// virtual print run of a WotC set, and by an in-set search. Keyed by the
+    /// full catalog ID because print run changes which cards are excluded.
+    private var pokemonSetSummaries: [String: [CatalogCardSummary]] = [:]
     private var sortPriceCache: [String: Double] = [:]
     private var resolvedSortPrices: Set<String> = []
 
@@ -60,8 +65,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         switch set.game {
         case .pokemon:
+            if let cached = pokemonSetSummaries[set.id] {
+                return CatalogPage(items: cached, nextCursor: nil)
+            }
             let catalog = try await pokemonSet(id: set.providerID)
-            return CatalogPage(items: catalog.cards.map { pokemonSummary($0, set: enriched(set, catalog: catalog)) }, nextCursor: nil)
+            let resolvedSet = enriched(set, catalog: catalog)
+            let cards = catalog.cards.filter {
+                !PokemonMasterSetDefinition.excludes(
+                    card: $0,
+                    setProviderID: set.providerID,
+                    printRun: set.pokemonPrintRun
+                )
+            }
+            let summaries = try await pokemonMasterSetSummaries(cards, set: resolvedSet)
+            pokemonSetSummaries[set.id] = summaries
+            return CatalogPage(items: summaries, nextCursor: nil)
         case .magic:
             return try await magicCards(query: "e:\(set.providerID) lang:en game:paper", cursor: cursor)
         }
@@ -153,8 +171,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func sortPrice(for summary: CatalogCardSummary) async -> (id: String, price: Double?, resolved: Bool) {
+        guard summary.pokemonPrintRun == nil else {
+            // The aggregate card price is not edition-specific. Do not use it
+            // to sort virtual WotC runs as though it were.
+            return (summary.id, nil, true)
+        }
         do {
             let details = try await details(for: summary)
+            if let variant = summary.masterSetVariant {
+                let lookup = CardPricing.price(
+                    for: details.card,
+                    variant: variant,
+                    pokemonPrintRun: summary.pokemonPrintRun
+                )
+                if case let .price(price) = lookup {
+                    return (summary.id, price.unitMarketPriceUSD, true)
+                }
+                return (summary.id, nil, true)
+            }
             return (summary.id, CardPricing.highestPublishedUSDPrice(for: details.card), true)
         } catch {
             return (summary.id, nil, false)
@@ -169,10 +203,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
         try validate(response)
         let rows = try JSONDecoder().decode([TCGdexBrowseSet].self, from: data)
         let pocketIDs = (try? await pokemonPocketSetIDs()) ?? []
-        let sets = rows.enumerated().compactMap { pair -> CatalogSet? in
+        let baseSets = rows.enumerated().compactMap { pair -> CatalogSet? in
             let index = pair.offset
             let row = pair.element
-            guard !pocketIDs.contains(row.id.lowercased()) else { return nil }
+            guard !pocketIDs.contains(row.id.lowercased()),
+                  PokemonMasterSetDefinition.includesInSetDirectory(row) else { return nil }
             return CatalogSet(
                 catalogID: CatalogSetID(game: .pokemon, providerID: row.id),
                 name: row.name,
@@ -181,13 +216,30 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     ?? row.id.uppercased(),
                 logoURL: assetURL(row.logo, suffix: ".png"),
                 symbolURL: assetURL(row.symbol, suffix: ".png"),
-                cardCount: row.cardCount?.total,
+                cardCount: row.cardCount.map {
+                    PokemonMasterSetDefinition.masterCount(
+                        cardCount: $0,
+                        setName: row.name,
+                        printRun: nil
+                    )
+                },
                 releaseDate: nil,
                 sortRank: rows.count - index
             )
         }
+        let countsByID = Dictionary(uniqueKeysWithValues: rows.compactMap { row in
+            row.cardCount.map { (row.id.lowercased(), $0) }
+        })
+        let sets = baseSets.flatMap { set in
+            PokemonMasterSetDefinition.virtualSets(
+                set,
+                cardCount: countsByID[set.providerID.lowercased()]
+            )
+        }
         PokemonCatalogReleaseOrder.install(
-            Dictionary(uniqueKeysWithValues: sets.map { ($0.providerID.lowercased(), $0.sortRank) })
+            Dictionary(uniqueKeysWithValues: baseSets.map {
+                ($0.providerID.lowercased(), $0.sortRank)
+            })
         )
         return sets
     }
@@ -232,11 +284,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
         try validate(response)
         let cards = try JSONDecoder().decode([TCGdexCardBrief].self, from: data)
         let directory = try await sets(for: .pokemon)
-        let summaries = cards.compactMap { card -> CatalogCardSummary? in
-            guard let set = directory
-                .filter({ card.id.hasPrefix($0.providerID + "-") })
-                .max(by: { $0.providerID.count < $1.providerID.count }) else { return nil }
-            return pokemonSummary(card, set: set)
+        let summaries = cards.flatMap { card -> [CatalogCardSummary] in
+            let matching = directory.filter { card.id.hasPrefix($0.providerID + "-") }
+            guard let longestID = matching.map(\.providerID).max(by: { $0.count < $1.count }) else {
+                return []
+            }
+            return matching
+                .filter { $0.providerID == longestID }
+                .map { pokemonSummary(card, set: $0) }
         }
         return CatalogPage(items: summaries, nextCursor: cards.count == 60 ? String(page + 1) : nil)
     }
@@ -291,11 +346,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func enriched(_ set: CatalogSet, catalog: TCGdexSetCatalog) -> CatalogSet {
         CatalogSet(
             catalogID: set.catalogID,
-            name: catalog.name,
+            name: set.name,
             code: catalog.tcgOnline?.uppercased() ?? set.code,
             logoURL: assetURL(catalog.logo, suffix: ".png") ?? set.logoURL,
             symbolURL: assetURL(catalog.symbol, suffix: ".png") ?? set.symbolURL,
-            cardCount: catalog.cardCount?.total ?? set.cardCount,
+            cardCount: catalog.cardCount.map {
+                PokemonMasterSetDefinition.masterCount(
+                    cardCount: $0,
+                    setName: catalog.name,
+                    printRun: set.pokemonPrintRun
+                )
+            } ?? set.cardCount,
             releaseDate: catalog.releaseDate.flatMap(FlexibleDate.parse),
             sortRank: set.sortRank
         )
@@ -314,6 +375,56 @@ actor BrowseCatalog: BrowseCatalogProviding {
             thumbnailURL: base.flatMap { URL(string: $0.absoluteString + "/low.png") },
             imageURL: base.flatMap { URL(string: $0.absoluteString + "/high.png") }
         )
+    }
+
+    /// Set responses intentionally contain only card briefs. Master-set slots
+    /// need the per-card variant flags from the card endpoint, so details are
+    /// loaded with a small bounded concurrency window and cached for the detail
+    /// screen. One failed card fails the page rather than silently publishing an
+    /// incomplete checklist as authoritative.
+    private func pokemonMasterSetSummaries(
+        _ cards: [TCGdexCardBrief],
+        set: CatalogSet
+    ) async throws -> [CatalogCardSummary] {
+        let service = tcgdex
+        var iterator = Array(cards.enumerated()).makeIterator()
+        var loaded: [(Int, TCGdexCardBrief, TCGdexCard)] = []
+        loaded.reserveCapacity(cards.count)
+
+        try await withThrowingTaskGroup(
+            of: (Int, TCGdexCardBrief, TCGdexCard).self
+        ) { group in
+            for _ in 0..<min(8, cards.count) {
+                guard let (index, brief) = iterator.next() else { break }
+                group.addTask {
+                    (index, brief, try await service.fetchCard(id: brief.id))
+                }
+            }
+
+            while let result = try await group.next() {
+                loaded.append(result)
+                if let (index, brief) = iterator.next() {
+                    group.addTask {
+                        (index, brief, try await service.fetchCard(id: brief.id))
+                    }
+                }
+            }
+        }
+
+        return loaded.sorted { $0.0 < $1.0 }.flatMap { _, brief, card in
+            let base = pokemonSummary(brief, set: set)
+            let details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set)
+            return PokemonMasterSetDefinition.requiredVariants(
+                for: card
+            ).map { requirement in
+                var summary = base
+                summary.masterSetVariant = requirement.variant
+                summary.isExpandedMasterSetVariant = requirement.isExpanded
+                summary.isSoleSlotForCard = requirement.isSole
+                detailCache[summary.id] = details
+                return summary
+            }
+        }
     }
 
     private func request(_ url: URL, scryfall: Bool = false) -> URLRequest {
@@ -347,7 +458,173 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 }
 
-private struct TCGdexBrowseSet: Decodable {
+enum PokemonMasterSetDefinition {
+    /// The English sets that were actually printed in two runs, by TCGdex set id.
+    ///
+    /// Keyed by id rather than by name because names vary between TCGdex and the
+    /// printed product — "Expedition" and "Expedition Base Set" needed two
+    /// entries in the name-matched version — while ids do not.
+    ///
+    /// This is a closed historical fact, not a heuristic to keep current: the
+    /// 1st Edition stamp ran from Base Set to Neo Destiny and was never used
+    /// again, so nothing will ever join this list. Verified against TCGdex's own
+    /// `cardCount.firstEd`, which is non-zero for exactly these eleven sets and
+    /// zero for Base Set 2, Legendary Collection and the whole e-card era.
+    ///
+    /// The e-card sets used to be listed here, which invented a "Skyridge — 1st
+    /// Edition" master set that never existed, split the real set's completion
+    /// across two impossible halves, and then asked the price vendor for a
+    /// printing no marketplace carries.
+    private static let firstEditionSetIDs: Set<String> = [
+        "base1", "base2", "base3", "base5",
+        "gym1", "gym2",
+        "neo1", "neo2", "neo3", "neo4"
+    ]
+
+    /// Base Set alone had a third run: the shadowless print that sits between
+    /// 1st Edition and the shadowed Unlimited cards.
+    private static let shadowlessSetID = "base1"
+
+    static func virtualSets(
+        _ set: CatalogSet,
+        cardCount: TCGdexCardCount? = nil
+    ) -> [CatalogSet] {
+        guard set.game == .pokemon else { return [set] }
+        let id = set.providerID.lowercased()
+        let runs: [PokemonPrintRun]
+        if id == shadowlessSetID {
+            runs = [.firstEdition, .shadowless, .unlimited]
+        } else if firstEditionSetIDs.contains(id) {
+            runs = [.firstEdition, .unlimited]
+        } else {
+            // One run, so no qualifier: the set stands as itself rather than
+            // being relabelled "— Unlimited" against nothing.
+            return [set]
+        }
+        return runs.map { run in
+            CatalogSet(
+                catalogID: CatalogSetID(
+                    game: .pokemon,
+                    providerID: set.providerID,
+                    pokemonPrintRun: run
+                ),
+                name: "\(set.name) — \(run.label)",
+                code: set.code,
+                logoURL: set.logoURL,
+                symbolURL: set.symbolURL,
+                cardCount: cardCount.map {
+                    masterCount(cardCount: $0, setName: set.name, printRun: run)
+                } ?? set.cardCount.map {
+                    adjustedCount($0, setName: set.name, printRun: run)
+                },
+                releaseDate: set.releaseDate,
+                sortRank: set.sortRank
+            )
+        }
+    }
+
+    /// Whether this set was printed in more than one run.
+    ///
+    /// Public so the collection can repair rows tagged with a run their set
+    /// never had, from when the e-card sets were split.
+    static func hasSeparatePrintRuns(setProviderID: String) -> Bool {
+        let id = setProviderID.lowercased()
+        return id == shadowlessSetID || firstEditionSetIDs.contains(id)
+    }
+
+    static func includesInSetDirectory(_ set: TCGdexBrowseSet) -> Bool {
+        let name = CatalogIdentityNormalization.canonicalText(set.name)
+        let id = set.id.lowercased()
+        if ["basep", "swshp", "svp"].contains(id) { return false }
+        let excludedPhrases = [
+            "black star promo", "promos", "promo cards", "pop series",
+            "jumbo", "miscellaneous cards", "battle academy", "deck exclusives",
+            "trainer kit", "mcdonald s", "southern islands", "box topper"
+        ]
+        return !excludedPhrases.contains { name.contains($0) }
+    }
+
+    /// TCGdex publishes variation counts directly. Normal plus holo is the
+    /// pack-pulled base run (including secrets); reverse is the additional full
+    /// parallel. `total` is the fallback when an older set response omits the
+    /// variation breakdown.
+    static func masterCount(
+        cardCount: TCGdexCardCount,
+        setName: String,
+        printRun: PokemonPrintRun?
+    ) -> Int {
+        let publishedBase: Int
+        if cardCount.normal != nil || cardCount.holo != nil {
+            publishedBase = (cardCount.normal ?? 0) + (cardCount.holo ?? 0)
+        } else {
+            publishedBase = cardCount.total
+        }
+        let base = printRun == .firstEdition
+            ? (cardCount.firstEd ?? publishedBase)
+            : publishedBase
+        return adjustedCount(
+            base + (cardCount.reverse ?? 0),
+            setName: setName,
+            printRun: printRun
+        )
+    }
+
+    static func excludes(
+        card: TCGdexCardBrief,
+        setProviderID: String,
+        printRun: PokemonPrintRun?
+    ) -> Bool {
+        // Every English Base Set Machamp is stamped. There is no distinct
+        // Unlimited printing, so it cannot complete the Unlimited run.
+        setProviderID.caseInsensitiveCompare("base1") == .orderedSame
+            && printRun == .unlimited
+            && CatalogIdentityNormalization.localNumber(card.localId) == "8"
+    }
+
+    /// The required physical slots for one numbered card. Edition is carried
+    /// separately by the virtual set, so the legacy first-edition pseudo-finish
+    /// never becomes a second slot. Named parallel patterns are marked as the
+    /// expanded tier; the standard tier remains normal, holo and reverse.
+    static func requiredVariants(
+        for card: TCGdexCard
+    ) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
+        var variants = card.catalogVariants.filter {
+            $0.id != PhysicalVariant.firstEdition.id
+        }
+
+        // Some early cards publish only the edition flag. They still represent
+        // one pack-pulled base slot within that edition.
+        if variants.isEmpty {
+            variants = [.normal]
+        }
+
+        var seen = Set<String>()
+        let slots = variants.filter { seen.insert($0.id).inserted }
+        return slots.map { variant in
+            let isStandard = [
+                PhysicalVariant.normal.id,
+                PhysicalVariant.holo.id,
+                PhysicalVariant.reverse.id
+            ].contains(variant.id)
+            return (variant, !isStandard, slots.count == 1)
+        }
+    }
+
+    private static func adjustedCount(
+        _ count: Int,
+        setName: String,
+        printRun: PokemonPrintRun?
+    ) -> Int {
+        // Base Set Unlimited is one card short: every English Machamp is
+        // stamped, so there is no Unlimited printing of it to collect.
+        CatalogIdentityNormalization.canonicalText(setName) == "base set"
+            && printRun == .unlimited
+            ? max(count - 1, 0)
+            : count
+    }
+}
+
+struct TCGdexBrowseSet: Decodable {
     let id: String
     let name: String
     let logo: String?

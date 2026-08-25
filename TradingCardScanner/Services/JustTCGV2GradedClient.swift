@@ -17,6 +17,54 @@ import Foundation
 ///
 /// The interface deliberately hides which of those it is doing, so moving graded
 /// work onto batching later changes this file and nothing else.
+/// Enough of a card to recognise it in a v2 response.
+///
+/// Collector number carries the check: a set can hold two cards with the same
+/// name, but not at the same number.
+struct GradedCardIdentity: Hashable, Sendable {
+    let name: String
+    let setName: String
+    let collectorNumber: String
+
+    init(name: String, setName: String, collectorNumber: String) {
+        self.name = name
+        self.setName = setName
+        self.collectorNumber = collectorNumber
+    }
+
+    init(_ card: IdentifiedCard) {
+        self.init(
+            name: card.name,
+            setName: card.setName,
+            collectorNumber: card.cardNumber
+        )
+    }
+
+    /// Identifies the underlying card, so every owned grade of it shares one
+    /// request.
+    func groupingKey(game: CardGame) -> String {
+        [game.rawValue, setName, collectorNumber, name]
+            .map { $0.lowercased() }
+            .joined(separator: "|")
+    }
+
+    func matches(_ card: JustTCGCard) -> Bool {
+        guard let candidateName = card.name else { return false }
+        guard CatalogIdentityNormalization.namesMatch(
+            imported: name,
+            catalog: candidateName
+        ) else { return false }
+        // A number is only compared when both sides publish one; sealed rows and
+        // some promos carry none.
+        if let candidateNumber = card.printedNumber, !collectorNumber.isEmpty {
+            return CatalogIdentityNormalization.localNumber(candidateNumber)
+                == CatalogIdentityNormalization.localNumber(collectorNumber)
+        }
+        return CatalogIdentityNormalization.canonicalSetName(setName, game: .pokemon)
+            == CatalogIdentityNormalization.canonicalSetName(card.setName ?? "", game: .pokemon)
+    }
+}
+
 struct JustTCGV2GradedClient: Sendable {
     static let apiVersion = "v2"
 
@@ -32,28 +80,47 @@ struct JustTCGV2GradedClient: Sendable {
     /// surcharge and returns data the raw path already has. Filtering to the
     /// owned graders and grades keeps the response small — a card can have well
     /// over a hundred grader/grade permutations, almost none of them owned.
+    /// The graded variants of one card, found by set and name.
+    ///
+    /// Not by `cardId`. v2 **ignores** that parameter and answers with a browse:
+    /// asking for `cardId=base1-4` returns twenty arbitrary graded cards from
+    /// across the game — Charizard Star, Shining Celebi, Rayquaza VMAX — and
+    /// nothing in the response says it was not a hit. The existing note that a
+    /// `cardId` "is not enough to stop it being treated as a browse" was
+    /// describing exactly this, and the `game` parameter added to satisfy the
+    /// browse only made the browse legal.
+    ///
+    /// Set plus name narrows it to one card, verified against `identity` before
+    /// anything is returned, so a browse can never be mistaken for a match.
     func gradedVariants(
-        cardID: String,
+        identity: GradedCardIdentity,
         game: CardGame,
         companies: Set<GradingCompany> = [],
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
     ) async throws -> [GradedVariant] {
+        let gameSlug = JustTCGV1Client.gameSlug(for: game)
         var query: [(String, String)] = [
-            // Verified against the live API: without this, v2 rejects the call
-            // with "A browse request requires a game or set filter." A `cardId`
-            // alone is not enough to stop it being treated as a browse.
-            ("game", JustTCGV1Client.gameSlug(for: game)),
-            ("cardId", cardID),
+            ("game", gameSlug),
+            ("set", "\(ProductCatalogIdentity.slugify(identity.setName))-\(gameSlug)"),
+            ("q", identity.name),
             ("graded", "only"),
             // Routine pricing never asks for history.
             ("include_price_history", "false")
         ]
-        if !companies.isEmpty {
-            query.append(("company", companies.map(\.rawValue).sorted().joined(separator: ",")))
-        }
-        if !grades.isEmpty {
-            query.append(("grade", grades.sorted().joined(separator: ",")))
+        // The parameter is `grading_company`, not `company`: sending the latter
+        // is accepted right up until a `grade` accompanies it, at which point v2
+        // answers 400 — "grade requires grading_company". And only a single
+        // value of each is sent, because comma-separated lists are not verified
+        // here and a filter the vendor reads differently than intended would
+        // silently drop owned slabs from the response rather than erroring.
+        // Omitting both returns every graded variant, which is the same one
+        // request; the caller matches on its stored handle regardless.
+        if companies.count == 1, let company = companies.first {
+            query.append(("grading_company", company.rawValue))
+            if grades.count == 1, let grade = grades.first {
+                query.append(("grade", grade))
+            }
         }
 
         let response: GradedResponse = try await transport.get(
@@ -62,7 +129,8 @@ struct JustTCGV2GradedClient: Sendable {
             lane: lane
         )
 
-        return response.data.flatMap { card in
+        // Only cards that are demonstrably the one asked for.
+        return response.data.filter(identity.matches).flatMap { card in
             (card.variants ?? []).compactMap { variant -> GradedVariant? in
                 guard let id = variant.variantId,
                       let grading = variant.grading,
@@ -71,13 +139,16 @@ struct JustTCGV2GradedClient: Sendable {
                 }
                 return GradedVariant(
                     id: id,
+                    // Kept so a later refresh can find this slab again without
+                    // paying to resolve the card a second time.
+                    cardID: card.uuid ?? card.id,
                     company: company,
                     grade: grading.cardGrade,
                     // `null` is a real answer: the vendor does not manufacture a
                     // number for every grader/grade permutation, and an absent
                     // price must read as "no reliable market price" rather than
                     // as zero.
-                    marketPriceUSD: variant.price,
+                    marketPriceUSD: variant.marketPriceUSD,
                     updatedAt: variant.updatedAt
                 )
             }

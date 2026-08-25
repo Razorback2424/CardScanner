@@ -154,7 +154,12 @@ struct JustTCGRefreshCoordinator {
                 let returned = response.variantsByID
                 for lookup in chunk {
                     guard let owners = batched[lookup] else { continue }
-                    guard let hit = Self.match(lookup: lookup, in: returned, response: response) else {
+                    guard let hit = Self.match(
+                        lookup: lookup,
+                        owners: owners,
+                        in: returned,
+                        response: response
+                    ) else {
                         // Absent from a delta response means "unchanged", and a
                         // cached price must never be cleared because of it. In a
                         // full response absence is ambiguous — unresolved or
@@ -193,29 +198,71 @@ struct JustTCGRefreshCoordinator {
     /// and matching by index would attach one card's price to another.
     private nonisolated static func match(
         lookup: JustTCGBatchLookup,
+        owners: [MarketPriceTarget],
         in returned: [String: (card: JustTCGCard, variant: JustTCGVariant)],
         response: JustTCGBatchResponse
     ) -> (card: JustTCGCard, variant: JustTCGVariant)? {
         switch lookup {
         case let .variantID(id):
+            // Already the exact printing and finish. Nothing to choose.
             return returned[id]
         case let .cardID(id):
-            guard let card = response.data.first(where: { $0.id == id }),
-                  let variant = card.variants?.first else { return nil }
-            return (card, variant)
+            guard let card = response.data.first(where: { $0.uuid == id || $0.id == id }) else {
+                return nil
+            }
+            return listing(on: card, for: owners)
         case let .tcgplayerID(id):
-            guard let card = response.data.first(where: { $0.tcgplayerId == id }),
-                  let variant = card.variants?.first else { return nil }
-            return (card, variant)
+            guard let card = response.data.first(where: { $0.tcgplayerId == id }) else { return nil }
+            return listing(on: card, for: owners)
         case .tcgplayerSKUID, .mtgjsonID, .scryfallID:
             // These resolve to exactly one card per request item, so a single
             // returned card is unambiguous. More than one means the assumption
             // is wrong, and guessing which is the failure mode to avoid.
-            guard response.data.count == 1,
-                  let card = response.data.first,
-                  let variant = card.variants?.first else { return nil }
-            return (card, variant)
+            guard response.data.count == 1, let card = response.data.first else { return nil }
+            return listing(on: card, for: owners)
         }
+    }
+
+    /// The listing on a card-level hit that belongs to the finish being priced.
+    ///
+    /// A card-keyed lookup returns every condition and every printing the vendor
+    /// carries, and that array is neither ordered nor monotonic in condition —
+    /// a live response had Heavily Played above Near Mint on the same card.
+    /// Taking the first entry published whatever happened to be at index zero as
+    /// the market price, which could be a Damaged copy or another finish
+    /// entirely. Condition is pinned the same way the search path pins it, and
+    /// the finish must be the one the owner actually holds.
+    private nonisolated static func listing(
+        on card: JustTCGCard,
+        for owners: [MarketPriceTarget]
+    ) -> (card: JustTCGCard, variant: JustTCGVariant)? {
+        let variants = card.variants ?? []
+        let wanted = owners.compactMap {
+            ProductFinish.printing(for: $0.variantID.map(PhysicalVariant.resolving))
+        }
+
+        if let match = variants.first(where: { variant in
+            variant.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+                && wanted.contains { variant.printing?.caseInsensitiveCompare($0) == .orderedSame }
+        }) {
+            return (card, match)
+        }
+
+        // A sealed product has no condition grade and exactly one listing.
+        if owners.allSatisfy({ $0.itemKind == .sealedProduct }),
+           let sealed = variants.first(where: \.isSealed) {
+            return (card, sealed)
+        }
+
+        // No finish was requested — an imported row whose finish was never
+        // recorded. One Near Mint listing is unambiguous; several are not, and
+        // guessing between them is how a foil's price lands on a plain copy.
+        guard wanted.isEmpty else { return nil }
+        let nearMint = variants.filter {
+            $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+        }
+        guard nearMint.count == 1 else { return nil }
+        return (card, nearMint[0])
     }
 
     private nonisolated static func stopReason(

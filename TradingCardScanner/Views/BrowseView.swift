@@ -133,6 +133,7 @@ struct BrowseView: View {
     @Query private var ownedCards: [CollectedCard]
     @StateObject private var model = BrowseViewModel()
     @State private var showsSetFilter = false
+    @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
 
     enum BrowseScope: Hashable { case cards, sealed }
@@ -198,11 +199,21 @@ struct BrowseView: View {
             .navigationTitle("Browse")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Settings", systemImage: "gearshape") {
+                        isShowingSettings = true
+                    }
+                    .labelStyle(.iconOnly)
+                }
+
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done") { searchFocused = false }
                 }
             }
+        }
+        .sheet(isPresented: $isShowingSettings) {
+            SettingsView()
         }
         .task {
             await model.loadSets()
@@ -224,10 +235,25 @@ struct BrowseView: View {
             let providerID = card.catalogProviderID ?? card.providerID
             guard let set = sets
                 .filter({ providerID.hasPrefix($0.providerID + "-") })
-                .max(by: { $0.providerID.count < $1.providerID.count }),
-                  card.setReleaseOrder != set.sortRank else { continue }
-            card.setReleaseOrder = set.sortRank
-            changed = true
+                .max(by: { $0.providerID.count < $1.providerID.count }) else { continue }
+
+            // Repair rows tagged with a print run their set never had. The
+            // e-card sets were split into 1st Edition and Unlimited runs that
+            // were never printed, and a row still carrying one would stop
+            // counting toward its set and keep pricing under a storage id that
+            // names an edition the vendor has no listing for.
+            if card.pokemonPrintRunRaw != nil,
+               !PokemonMasterSetDefinition.hasSeparatePrintRuns(
+                    setProviderID: set.providerID
+               ) {
+                card.pokemonPrintRunRaw = nil
+                changed = true
+            }
+
+            if card.setReleaseOrder != set.sortRank {
+                card.setReleaseOrder = set.sortRank
+                changed = true
+            }
         }
         if changed { try? modelContext.save() }
     }
@@ -290,7 +316,7 @@ struct BrowseView: View {
         ForEach(CardGame.allCases) { game in
             if let sets = model.sets[game] {
                 NavigationLink {
-                    CatalogSetListView(game: game, sets: sets, catalog: model.catalog, ownedCards: ownedCards)
+                    CatalogSetListView(game: game, sets: sets, catalog: model.catalog)
                 } label: {
                     HStack(spacing: 16) {
                         Image(systemName: game == .pokemon ? "bolt.fill" : "wand.and.stars")
@@ -347,7 +373,11 @@ struct BrowseView: View {
             } else if lane.cards.isEmpty {
                 Text("No \(game.label) printings found").foregroundStyle(.secondary)
             } else {
-                CatalogCardGrid(cards: lane.cards, catalog: model.catalog, ownedCards: ownedCards)
+                CatalogCardGrid(
+                    cards: lane.cards,
+                    catalog: model.catalog,
+                    owned: CatalogOwnershipIndex(ownedCards)
+                )
                 if lane.cursor != nil {
                     HStack { Spacer(); ProgressView(); Spacer() }
                         .padding()
@@ -364,8 +394,12 @@ private struct CatalogSetListView: View {
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
-    let ownedCards: [CollectedCard]
+    // Queried here rather than passed down: a pushed screen handed an array
+    // keeps the collection as it was when the link was tapped, so adding a card
+    // from the detail screen would leave stale progress behind it.
+    @Query private var ownedCards: [CollectedCard]
     @State private var search = ""
+    @State private var showsMasterSetRules = false
 
     private var visible: [CatalogSet] {
         let query = CardNameSearch.normalize(search)
@@ -377,40 +411,53 @@ private struct CatalogSetListView: View {
     }
 
     var body: some View {
-        List(visible) { set in
-            let completion = SetCompletionCalculator.progress(for: set, cards: ownedCards)
-            NavigationLink {
-                CatalogSetCardsView(set: set, catalog: catalog, ownedCards: ownedCards)
-            } label: {
-                HStack(spacing: 12) {
-                    AsyncImage(url: set.symbolURL ?? set.logoURL) { phase in
-                        if case let .success(image) = phase { image.resizable().scaledToFit() }
-                        else { Image(systemName: "square.stack.3d.up").foregroundStyle(.secondary) }
-                    }
-                    .frame(width: 42, height: 42)
-                    .accessibilityHidden(true)
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(set.name).font(.headline)
-                        HStack(spacing: 8) {
-                            Text(completion.label)
-                                .foregroundStyle(completion.owned > 0 ? Color.green : Color.secondary)
-                            Text(set.code)
-                                .foregroundStyle(.secondary)
-                        }
-                        .font(.subheadline)
-
-                        if let fraction = completion.fraction {
-                            ProgressView(value: fraction)
-                                .tint(completion.owned > 0 ? Color.green : Color.secondary)
-                                .accessibilityHidden(true)
-                        }
+        List {
+            if game == .pokemon {
+                Section {
+                    DisclosureGroup("Master set rules", isExpanded: $showsMasterSetRules) {
+                        Text("Standard includes every English, pack-pulled numbered card, holo, reverse holo, and secret rare. Promos and non-pack products stay out. Expanded adds catalog-confirmed special parallel patterns.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 4)
                     }
                 }
-                .frame(minHeight: 64)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(
-                    "\(set.name), \(completion.owned) of \(completion.total.map { String($0) } ?? "unknown") cards collected, set code \(set.code)"
-                )
+            }
+
+            ForEach(visible) { set in
+                let completion = SetCompletionCalculator.progress(for: set, cards: ownedCards)
+                NavigationLink {
+                    CatalogSetCardsView(set: set, catalog: catalog)
+                } label: {
+                    HStack(spacing: 12) {
+                        AsyncImage(url: set.symbolURL ?? set.logoURL) { phase in
+                            if case let .success(image) = phase { image.resizable().scaledToFit() }
+                            else { Image(systemName: "square.stack.3d.up").foregroundStyle(.secondary) }
+                        }
+                        .frame(width: 42, height: 42)
+                        .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(set.name).font(.headline)
+                            HStack(spacing: 8) {
+                                Text(completion.label)
+                                    .foregroundStyle(completion.owned > 0 ? Color.green : Color.secondary)
+                                Text(set.code)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .font(.subheadline)
+
+                            if let fraction = completion.fraction {
+                                ProgressView(value: fraction)
+                                    .tint(completion.owned > 0 ? Color.green : Color.secondary)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                    }
+                    .frame(minHeight: 64)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(
+                        "\(set.name), \(completion.owned) of \(completion.total.map { String($0) } ?? "unknown") \(completion.unit) collected, set code \(set.code)"
+                    )
+                }
             }
         }
         .navigationTitle("\(game.label) Sets")
@@ -421,7 +468,7 @@ private struct CatalogSetListView: View {
 private struct CatalogSetCardsView: View {
     let set: CatalogSet
     let catalog: any BrowseCatalogProviding
-    let ownedCards: [CollectedCard]
+    @Query private var ownedCards: [CollectedCard]
     @State private var cards: [CatalogCardSummary] = []
     @State private var cursor: String?
     @State private var isLoading = false
@@ -429,28 +476,62 @@ private struct CatalogSetCardsView: View {
     @State private var search = ""
     @State private var sort: CatalogSetSort = .numberLowToHigh
     @State private var ownership: CatalogOwnershipFilter = .all
+    /// The tier is a statement about what the user counts as a master set, not
+    /// a per-set preference, so it should not reset every time a set is opened.
+    @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
     @State private var prices: [String: Double] = [:]
     @State private var isLoadingPrices = false
     @State private var hasLoadedPrices = false
 
-    private var visible: [CatalogCardSummary] {
+    private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
-            cards,
+            masterSetSlots,
             search: search,
             sort: sort.needsPrices && !hasLoadedPrices ? .numberLowToHigh : sort,
             ownership: ownership,
-            ownedCards: ownedCards,
+            owned: owned,
             prices: prices
         )
     }
 
+    private var masterSetSlots: [CatalogCardSummary] {
+        guard set.game == .pokemon, masterSetTier == .standard else { return cards }
+        return cards.filter { !$0.isExpandedMasterSetVariant }
+    }
+
+    private var completion: SetCompletion {
+        self.set.game == .pokemon
+            ? SetCompletionCalculator.progress(for: masterSetSlots, cards: ownedCards)
+            : SetCompletionCalculator.progress(for: set, cards: ownedCards)
+    }
+
     var body: some View {
-        ScrollView {
-            if cards.isEmpty && isLoading { ProgressView().padding(.top, 80) }
+        let owned = CatalogOwnershipIndex(ownedCards)
+        let visible = visibleCards(owned: owned)
+        return ScrollView {
+            if cards.isEmpty && isLoading {
+                VStack(spacing: 12) {
+                    ProgressView()
+                    Text(set.game == .pokemon ? "Building the master-set checklist…" : "Loading cards…")
+                        .font(.headline)
+                    if set.game == .pokemon {
+                        Text("Checking the physical variations published for each card.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .padding(.horizontal, 32)
+                .padding(.top, 80)
+                .accessibilityElement(children: .combine)
+            }
             else if cards.isEmpty, let error {
                 ContentUnavailableView("Couldn't load this set", systemImage: "wifi.exclamationmark", description: Text(error))
                 Button("Retry") { Task { await load(reset: true) } }.buttonStyle(.borderedProminent)
             } else {
+                completionHeader
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
                 if isLoadingPrices {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.small)
@@ -468,7 +549,7 @@ private struct CatalogSetCardsView: View {
                     )
                     .padding(.top, 60)
                 } else {
-                    CatalogCardGrid(cards: visible, catalog: catalog, ownedCards: ownedCards, prices: prices)
+                    CatalogCardGrid(cards: visible, catalog: catalog, owned: owned, prices: prices)
                         .padding(12)
                 }
                 if cursor != nil {
@@ -510,6 +591,55 @@ private struct CatalogSetCardsView: View {
         }
     }
 
+    /// Magic sets showed completion in the set list and then nothing at all on
+    /// the set screen. Same header, without the Pokémon-only tier control.
+    private var completionHeader: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(set.game == .pokemon ? "Master Set Progress" : "Set Progress")
+                        .font(.headline)
+                    Text(completion.label)
+                        .font(.title2.bold())
+                        .foregroundStyle(completion.owned > 0 ? Color.green : Color.primary)
+                        .contentTransition(.numericText())
+                }
+                Spacer()
+                if let fraction = completion.fraction {
+                    Text(fraction, format: .percent.precision(.fractionLength(0)))
+                        .font(.headline.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            ProgressView(value: completion.fraction ?? 0)
+                .tint(.green)
+                .accessibilityLabel(set.game == .pokemon ? "Master set progress" : "Set progress")
+                .accessibilityValue(completion.label)
+
+            if set.game == .pokemon {
+                Picker("Master set definition", selection: $masterSetTier) {
+                    ForEach(PokemonMasterSetTier.allCases) { tier in
+                        Text(tier.label).tag(tier)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Text(masterSetTier.explanation)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.quaternary, lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+    }
+
     private func load(reset: Bool) async {
         guard !isLoading else { return }
         isLoading = true
@@ -541,19 +671,19 @@ private struct CatalogSetCardsView: View {
 private struct CatalogCardGrid: View {
     let cards: [CatalogCardSummary]
     let catalog: any BrowseCatalogProviding
-    let ownedCards: [CollectedCard]
+    let owned: CatalogOwnershipIndex
     let prices: [String: Double]
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
     init(
         cards: [CatalogCardSummary],
         catalog: any BrowseCatalogProviding,
-        ownedCards: [CollectedCard],
+        owned: CatalogOwnershipIndex,
         prices: [String: Double] = [:]
     ) {
         self.cards = cards
         self.catalog = catalog
-        self.ownedCards = ownedCards
+        self.owned = owned
         self.prices = prices
     }
 
@@ -565,7 +695,28 @@ private struct CatalogCardGrid: View {
                 } label: {
                     VStack(alignment: .leading, spacing: 7) {
                         CatalogArtworkView(thumbnailURL: card.thumbnailURL, imageURL: card.imageURL)
+                            .overlay(alignment: .topTrailing) {
+                                if owned.owns(card) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.title2)
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(.white, .green)
+                                        .padding(8)
+                                        .accessibilityHidden(true)
+                                }
+                            }
                         Text(card.name).font(.headline).lineLimit(2)
+                        if let variant = card.masterSetVariantLabel {
+                            Text(variant)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(card.isExpandedMasterSetVariant ? Color.purple : Color.accentColor)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(
+                                    (card.isExpandedMasterSetVariant ? Color.purple : Color.accentColor).opacity(0.12),
+                                    in: Capsule()
+                                )
+                        }
                         if let price = prices[card.id] {
                             Text(price, format: .currency(code: "USD"))
                                 .font(.subheadline.weight(.semibold))
@@ -579,6 +730,12 @@ private struct CatalogCardGrid: View {
                             if count > 0 { Text("Owned \(count)").font(.caption.bold()).foregroundStyle(.green) }
                         }
                     }
+                    .padding(10)
+                    .background(.background, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(.quaternary, lineWidth: 1)
+                    }
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(accessibilityLabel(card))
                 }
@@ -588,19 +745,14 @@ private struct CatalogCardGrid: View {
     }
 
     private func ownedQuantity(_ card: CatalogCardSummary) -> Int {
-        ownedCards.filter { owned in
-            if owned.providerID == card.providerID || owned.catalogProviderID == card.providerID {
-                return true
-            }
-            return SetCompletionCalculator.owns(card, cards: [owned])
-        }
-        .reduce(0) { $0 + $1.quantity }
+        owned.quantity(of: card)
     }
 
     private func accessibilityLabel(_ card: CatalogCardSummary) -> String {
         let owned = ownedQuantity(card)
         let price = prices[card.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
-        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(price)\(owned > 0 ? ", owned quantity \(owned)" : "")"
+        let variant = card.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
+        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(variant)\(price)\(owned > 0 ? ", owned quantity \(owned)" : ", missing")"
     }
 }
 

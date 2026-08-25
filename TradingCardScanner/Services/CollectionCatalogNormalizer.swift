@@ -10,6 +10,33 @@ struct ImportedCatalogMetadata: Sendable {
     let thumbnailURL: String?
     let tcgplayerURL: String?
     let setReleaseOrder: Int
+    let justTCGCardID: String?
+    let justTCGVariantID: String?
+    let justTCGAPIVersion: String?
+
+    init(
+        providerID: String,
+        setCode: String,
+        rarity: String?,
+        imageURL: String?,
+        thumbnailURL: String?,
+        tcgplayerURL: String?,
+        setReleaseOrder: Int,
+        justTCGCardID: String? = nil,
+        justTCGVariantID: String? = nil,
+        justTCGAPIVersion: String? = nil
+    ) {
+        self.providerID = providerID
+        self.setCode = setCode
+        self.rarity = rarity
+        self.imageURL = imageURL
+        self.thumbnailURL = thumbnailURL
+        self.tcgplayerURL = tcgplayerURL
+        self.setReleaseOrder = setReleaseOrder
+        self.justTCGCardID = justTCGCardID
+        self.justTCGVariantID = justTCGVariantID
+        self.justTCGAPIVersion = justTCGAPIVersion
+    }
 }
 
 private struct ImportedCatalogRequest: Hashable, Sendable {
@@ -18,6 +45,14 @@ private struct ImportedCatalogRequest: Hashable, Sendable {
     let name: String
     let setName: String
     let cardNumber: String
+    let itemKind: CollectionItemKind
+}
+
+private struct ImportedCatalogResolution: Sendable {
+    var matches: [String: ImportedCatalogMetadata] = [:]
+    /// Sealed rows for which the vendor directory and every relevant product
+    /// page completed successfully, but no unambiguous product existed.
+    var definitiveSealedMisses: Set<String> = []
 }
 
 /// Imports stay local and immediate. This second layer quietly turns their
@@ -39,9 +74,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// could not, so existing collections re-run against the new rules instead
     /// of waiting out `retryInterval` on a stale result.
     ///
-    /// 4: Japanese-exclusive set routing, and the end of the price-failure
-    /// starvation that kept unresolved imports out of this pass entirely.
-    private static let metadataVersion = 4
+    /// 6: exact English Pokémon artwork fallback and Magic child-set routing.
+    /// 7: distinguish definitive sealed misses from transient provider failures.
+    nonisolated static let metadataVersion = 7
     private var requestsAnotherPass = false
 
     func normalizeImportedCards(in context: ModelContext) async {
@@ -52,15 +87,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
         let now = Date.now
         let allCards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let candidates = allCards.filter { card in
-            guard card.providerID.hasPrefix("csv:"),
-                  card.catalogProviderID == nil || card.imageURL == nil else {
-                return false
-            }
-            if card.catalogMetadataVersion < Self.metadataVersion { return true }
-            guard let checkedAt = card.catalogMetadataCheckedAt else { return true }
-            return now.timeIntervalSince(checkedAt) >= Self.retryInterval
-        }
+        let candidates = allCards.filter { Self.needsNormalization($0, now: now) }
 
         let requests = Dictionary(
             candidates.map { card in
@@ -71,7 +98,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
                         game: card.cardGame,
                         name: card.name,
                         setName: card.setName,
-                        cardNumber: card.cardNumber
+                        cardNumber: card.cardNumber,
+                        itemKind: card.itemKind
                     )
                 )
             },
@@ -81,7 +109,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
         guard !requests.isEmpty else { return }
         status = .normalizing(total: requests.count)
 
-        let matches = await resolver.resolve(Array(requests))
+        let resolution = await resolver.resolve(Array(requests))
+        let matches = resolution.matches
         guard !Task.isCancelled else {
             status = .idle
             return
@@ -96,9 +125,19 @@ final class CollectionCatalogNormalizer: ObservableObject {
                     row.catalogMetadataVersion = Self.metadataVersion
                 }
             } else {
+                let isDefinitiveSealedMiss = request.itemKind == .sealedProduct
+                    && resolution.definitiveSealedMisses.contains(request.sourceProviderID)
                 for row in rows {
                     row.catalogMetadataCheckedAt = now
-                    row.catalogMetadataVersion = Self.metadataVersion
+                    // A negative current version is a completed, deterministic
+                    // sealed miss. A positive current version is a transient
+                    // sealed check (or an ordinary card miss) and remains
+                    // eligible after the normal retry interval. Using the
+                    // version avoids a SwiftData schema migration, and changing
+                    // the resolver version reopens either state safely.
+                    row.catalogMetadataVersion = isDefinitiveSealedMiss
+                        ? -Self.metadataVersion
+                        : Self.metadataVersion
                 }
             }
         }
@@ -129,21 +168,234 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
     }
 
+    /// Definitive sealed misses stay asleep until the resolver version changes.
+    /// Transient failures never receive the current version stamp, so they
+    /// remain eligible without turning a deterministic miss into an 8-hour
+    /// metered request loop.
+    static func needsNormalization(_ card: CollectedCard, now: Date = .now) -> Bool {
+        guard card.providerID.hasPrefix("csv:"),
+              card.catalogProviderID == nil || card.imageURL == nil else {
+            return false
+        }
+        if card.itemKind == .sealedProduct,
+           card.justTCGCardID == nil,
+           card.justTCGVariantID == nil,
+           card.catalogMetadataVersion < 0 {
+            // The same resolver already completed this miss. A version bump
+            // deliberately reopens it once against improved matching rules.
+            return card.catalogMetadataVersion != -Self.metadataVersion
+        }
+        if card.catalogMetadataVersion < Self.metadataVersion { return true }
+        guard let checkedAt = card.catalogMetadataCheckedAt else { return true }
+        return now.timeIntervalSince(checkedAt) >= Self.retryInterval
+    }
+
+    nonisolated static func isDefinitiveSealedMiss(_ card: CollectedCard) -> Bool {
+        card.itemKind == .sealedProduct
+            && card.providerID.hasPrefix("csv:")
+            && card.justTCGCardID == nil
+            && card.justTCGVariantID == nil
+            && card.catalogMetadataCheckedAt != nil
+            && card.catalogMetadataVersion == -Self.metadataVersion
+    }
+
 }
 
 /// Stateless and Sendable so the two provider-specific strategies can run in
 /// parallel without sharing mutable lookup state.
 private struct ImportedCatalogBatchResolver: Sendable {
     private let tcgdex = TCGdexService()
+    private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
+    private let justTCG = JustTCGV1Client(transport: JustTCGTransport())
     private static let pokemonConcurrency = 4
 
-    func resolve(_ requests: [ImportedCatalogRequest]) async -> [String: ImportedCatalogMetadata] {
-        async let pokemon = resolvePokemon(requests.filter { $0.game == .pokemon })
-        async let magic = resolveMagic(requests.filter { $0.game == .magic })
-        var result = await pokemon
+    func resolve(_ requests: [ImportedCatalogRequest]) async -> ImportedCatalogResolution {
+        // Sealed identity is the only artwork pass here that consumes the
+        // metered JustTCG allowance. Finish it first so raw-card catalog work
+        // can never race it for the requests intentionally reserved above the
+        // background ceiling.
+        var resolution = await resolveSealed(requests.filter { $0.itemKind == .sealedProduct })
+        var result = resolution.matches
+        let cards = requests.filter { $0.itemKind != .sealedProduct }
+        async let pokemon = resolvePokemon(cards.filter { $0.game == .pokemon })
+        async let magic = resolveMagic(cards.filter { $0.game == .magic })
+        result.merge(await pokemon, uniquingKeysWith: { first, _ in first })
         result.merge(await magic, uniquingKeysWith: { first, _ in first })
-        return result
+        let missingArtwork = requests.filter { request in
+            guard request.game == .pokemon, request.itemKind == .rawCard else { return false }
+            guard CatalogIdentityNormalization.japaneseSetID(forImportedName: request.setName) == nil
+            else { return false }
+            return result[request.sourceProviderID]?.imageURL == nil
+        }
+        guard !missingArtwork.isEmpty else {
+            resolution.matches = result
+            return resolution
+        }
+
+        var cursor = 0
+        await withTaskGroup(of: (String, PokemonTCGAPICard)?.self) { group in
+            let initial = min(Self.pokemonConcurrency, missingArtwork.count)
+            for _ in 0..<initial {
+                let request = missingArtwork[cursor]
+                cursor += 1
+                group.addTask { [pokemonArtwork] in
+                    guard let card = try? await pokemonArtwork.fetchArtwork(
+                        name: request.name,
+                        setName: request.setName,
+                        cardNumber: request.cardNumber
+                    ) else { return nil }
+                    return (request.sourceProviderID, card)
+                }
+            }
+            while let match = await group.next() {
+                if let (sourceID, card) = match {
+                    if let existing = result[sourceID] {
+                        result[sourceID] = ImportedCatalogMetadata(
+                            providerID: existing.providerID,
+                            setCode: existing.setCode,
+                            rarity: existing.rarity,
+                            imageURL: card.images.large.absoluteString,
+                            thumbnailURL: card.images.small.absoluteString,
+                            tcgplayerURL: existing.tcgplayerURL,
+                            setReleaseOrder: existing.setReleaseOrder,
+                            justTCGCardID: existing.justTCGCardID,
+                            justTCGVariantID: existing.justTCGVariantID,
+                            justTCGAPIVersion: existing.justTCGAPIVersion
+                        )
+                    } else {
+                        result[sourceID] = ImportedCatalogMetadata(
+                            providerID: card.id,
+                            setCode: "",
+                            rarity: nil,
+                            imageURL: card.images.large.absoluteString,
+                            thumbnailURL: card.images.small.absoluteString,
+                            tcgplayerURL: nil,
+                            setReleaseOrder: 0
+                        )
+                    }
+                }
+                if cursor < missingArtwork.count, !Task.isCancelled {
+                    let request = missingArtwork[cursor]
+                    cursor += 1
+                    group.addTask { [pokemonArtwork] in
+                        guard let card = try? await pokemonArtwork.fetchArtwork(
+                            name: request.name,
+                            setName: request.setName,
+                            cardNumber: request.cardNumber
+                        ) else { return nil }
+                        return (request.sourceProviderID, card)
+                    }
+                }
+            }
+        }
+        resolution.matches = result
+        return resolution
+    }
+
+    /// Imported sealed products have names and sets but no marketplace UUID.
+    /// Resolve a whole set at once so several boxes cost one catalogue request
+    /// instead of one request each.
+    private func resolveSealed(
+        _ requests: [ImportedCatalogRequest]
+    ) async -> ImportedCatalogResolution {
+        guard !requests.isEmpty, PriceVendorCredentials.hasKey else { return .init() }
+        var resolution = ImportedCatalogResolution()
+
+        for game in CardGame.allCases {
+            let gameRequests = requests.filter { $0.game == game }
+            guard !gameRequests.isEmpty else { continue }
+            let sets: [SealedSetSummary]
+            do {
+                sets = try await justTCG.sealedSets(game: game)
+            } catch {
+                // No current-version stamp: connectivity, quota and provider
+                // failures are retryable and must not masquerade as no match.
+                continue
+            }
+            guard !Task.isCancelled else { return resolution }
+
+            var requestsBySetID: [String: [ImportedCatalogRequest]] = [:]
+            for request in gameRequests {
+                let importedSet = CatalogIdentityNormalization.canonicalSetName(
+                    request.setName,
+                    game: game
+                )
+                guard let set = sets.first(where: {
+                    CatalogIdentityNormalization.canonicalSetName($0.name, game: game) == importedSet
+                }) else {
+                    resolution.definitiveSealedMisses.insert(request.sourceProviderID)
+                    continue
+                }
+                requestsBySetID[set.id, default: []].append(request)
+            }
+
+            for (setID, setRequests) in requestsBySetID.sorted(by: { $0.key < $1.key }) {
+                var products: [SealedProductSummary] = []
+                var offset = 0
+                var completedCatalog = true
+                repeat {
+                    let page: MarketCatalogPage<SealedProductSummary>
+                    do {
+                        page = try await justTCG.searchSealedProducts(
+                            game: game,
+                            setID: setID,
+                            query: nil,
+                            offset: offset
+                        )
+                    } catch {
+                        completedCatalog = false
+                        break
+                    }
+                    products += page.items
+                    guard page.hasMore, !page.items.isEmpty else { break }
+                    offset += page.items.count
+                } while !Task.isCancelled
+
+                guard completedCatalog, !Task.isCancelled else { continue }
+
+                for request in setRequests {
+                    guard let product = Self.matchingSealedProduct(
+                        named: request.name,
+                        in: products
+                    ) else {
+                        resolution.definitiveSealedMisses.insert(request.sourceProviderID)
+                        continue
+                    }
+                    resolution.matches[request.sourceProviderID] = ImportedCatalogMetadata(
+                        providerID: product.id,
+                        setCode: "",
+                        rarity: nil,
+                        imageURL: product.imageURL?.absoluteString,
+                        thumbnailURL: product.imageURL?.absoluteString,
+                        tcgplayerURL: nil,
+                        setReleaseOrder: 0,
+                        justTCGCardID: product.id,
+                        justTCGVariantID: product.variantID,
+                        justTCGAPIVersion: JustTCGV1Client.apiVersion
+                    )
+                }
+            }
+        }
+        return resolution
+    }
+
+    private static func matchingSealedProduct(
+        named importedName: String,
+        in products: [SealedProductSummary]
+    ) -> SealedProductSummary? {
+        let normalized = CatalogIdentityNormalization.canonicalText(importedName)
+        let exact = products.filter {
+            CatalogIdentityNormalization.canonicalText($0.name) == normalized
+        }
+        if exact.count == 1 { return exact[0] }
+
+        // Parenthetical retailer/exclusive labels sometimes differ between
+        // exports. Accept a relaxed match only when it is unambiguous.
+        let relaxed = products.filter {
+            CatalogIdentityNormalization.namesMatch(imported: importedName, catalog: $0.name)
+        }
+        return relaxed.count == 1 ? relaxed[0] : nil
     }
 
     private func resolvePokemon(
@@ -263,10 +515,13 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private func resolveMagic(
         _ requests: [ImportedCatalogRequest]
     ) async -> [String: ImportedCatalogMetadata] {
-        guard !requests.isEmpty,
-              let directory = try? await scryfall.fetchSetDirectory() else {
+        guard !requests.isEmpty else { return [:] }
+        async let setDirectory = scryfall.fetchSetDirectory()
+        async let childDirectory = scryfall.fetchChildSets()
+        guard let directory = try? await setDirectory else {
             return [:]
         }
+        let childSets = (try? await childDirectory) ?? [:]
 
         struct LookupKey: Hashable {
             let set: String
@@ -283,7 +538,18 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 in: directory,
                 game: .magic
             ).first else { continue }
-            let setID = set.id.lowercased()
+            let parentSetID = set.id.lowercased()
+            let setID: String
+            if CatalogIdentityNormalization.isTokenName(request.name),
+               let child = ScryfallService.childSet(
+                   for: .token,
+                   parentCode: parentSetID,
+                   in: childSets
+               ) {
+                setID = child.code.lowercased()
+            } else {
+                setID = parentSetID
+            }
             let key: LookupKey
             if CatalogIdentityNormalization.matchesByCardName(setID: setID) {
                 key = LookupKey(set: setID, number: "", name: request.name)
@@ -525,7 +791,7 @@ enum CatalogIdentityNormalization {
         }
     }
 
-    private static func isTokenName(_ value: String) -> Bool {
+    static func isTokenName(_ value: String) -> Bool {
         let normalized = canonicalText(value)
         return normalized == "helper card"
             || normalized.hasSuffix(" token")

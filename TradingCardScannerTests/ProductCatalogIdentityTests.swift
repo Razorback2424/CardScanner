@@ -21,7 +21,7 @@ final class ProductCatalogIdentityTests: XCTestCase {
         XCTAssertEqual(
             ProductCatalogIdentity.setSlug(
                 setName: "Inferno X", japaneseSetID: "M2",
-                game: .pokemonJapan, knownSlugs: slugs),
+                game: .pokemonJapan, directory: ProductSetDirectory(sets: slugs.map { (id: $0, name: nil) })),
             "m2-inferno-x-pokemon-japan"
         )
     }
@@ -37,7 +37,7 @@ final class ProductCatalogIdentityTests: XCTestCase {
         XCTAssertEqual(
             ProductCatalogIdentity.setSlug(
                 setName: "Ruler of the Black Flame", japaneseSetID: "SV3",
-                game: .pokemonJapan, knownSlugs: slugs),
+                game: .pokemonJapan, directory: ProductSetDirectory(sets: slugs.map { (id: $0, name: nil) })),
             "sv3-ruler-of-the-black-flame-pokemon-japan"
         )
     }
@@ -49,7 +49,7 @@ final class ProductCatalogIdentityTests: XCTestCase {
             ProductCatalogIdentity.setSlug(
                 setName: "Terastal Festival ex", japaneseSetID: "SV8a",
                 game: .pokemonJapan,
-                knownSlugs: ["sv8a-terastal-fest-ex-pokemon-japan"]),
+                directory: ProductSetDirectory(sets: ["sv8a-terastal-fest-ex-pokemon-japan"].map { (id: $0, name: nil) })),
             "sv8a-terastal-fest-ex-pokemon-japan"
         )
     }
@@ -60,7 +60,7 @@ final class ProductCatalogIdentityTests: XCTestCase {
             ProductCatalogIdentity.setSlug(
                 setName: "Whatever", japaneseSetID: "SV3",
                 game: .pokemonJapan,
-                knownSlugs: ["sv3-one-pokemon-japan", "sv3-two-pokemon-japan"])
+                directory: ProductSetDirectory(sets: ["sv3-one-pokemon-japan", "sv3-two-pokemon-japan"].map { (id: $0, name: nil) }))
         )
     }
 
@@ -75,7 +75,7 @@ final class ProductCatalogIdentityTests: XCTestCase {
         for (name, game, expected) in cases {
             XCTAssertEqual(
                 ProductCatalogIdentity.setSlug(
-                    setName: name, japaneseSetID: nil, game: game, knownSlugs: []),
+                    setName: name, japaneseSetID: nil, game: game, directory: ProductSetDirectory(sets: [].map { (id: $0, name: nil) })),
                 expected,
                 "\(name)"
             )
@@ -214,5 +214,76 @@ final class ProductCatalogIdentityTests: XCTestCase {
             ProductCatalogIdentity.game(for: .magic, catalogID: nil),
             .magic
         )
+    }
+
+    // MARK: - Matching the vendor's own set names
+
+    /// The vendor prefixes sets by era; TCGdex names carry no prefix. Deriving
+    /// the slug from the catalog name resolved 55 of 163 browsable Pokémon sets,
+    /// so two thirds of the catalogue failed set resolution before a request was
+    /// made — the reason a collection could sit on hundreds of euro-only prices
+    /// while the fallback reported progress and changed nothing.
+    func testVendorSetsAreFoundByPublishedName() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "sv-prismatic-evolutions-pokemon", name: "SV: Prismatic Evolutions"),
+            (id: "ex-dragon-pokemon", name: "EX Dragon"),
+            (id: "swsh01-sword-shield-base-set-pokemon", name: "SWSH01: Sword & Shield Base Set"),
+            (id: "base-set-pokemon", name: "Base Set")
+        ])
+
+        // Colon-prefixed era label.
+        XCTAssertEqual(
+            directory.slug(forCatalogSetName: "Prismatic Evolutions", game: .pokemon),
+            "sv-prismatic-evolutions-pokemon"
+        )
+        // Bare era token.
+        XCTAssertEqual(
+            directory.slug(forCatalogSetName: "Dragon", game: .pokemon),
+            "ex-dragon-pokemon"
+        )
+        XCTAssertEqual(
+            directory.slug(forCatalogSetName: "Sword & Shield", game: .pokemon),
+            "swsh01-sword-shield-base-set-pokemon"
+        )
+        // Exact names still match, and still win.
+        XCTAssertEqual(
+            directory.slug(forCatalogSetName: "Base Set", game: .pokemon),
+            "base-set-pokemon"
+        )
+    }
+
+    /// A key two different sets both claim is dropped rather than guessed —
+    /// picking either is how a 1996 printing gets returned for a 2025 card.
+    func testAmbiguousSetNamesResolveToNothing() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "ex-dragon-pokemon", name: "EX Dragon"),
+            (id: "sv-dragon-pokemon", name: "SV Dragon")
+        ])
+
+        XCTAssertNil(directory.slug(forCatalogSetName: "Dragon", game: .pokemon))
+    }
+
+    /// An exact name beats an era-stripped one, so a set whose real name
+    /// collides with another's suffix cannot be displaced by it.
+    func testExactNameOutranksAnEraStrippedMatch() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "ex-dragon-pokemon", name: "EX Dragon"),
+            (id: "dragon-pokemon", name: "Dragon")
+        ])
+
+        XCTAssertEqual(
+            directory.slug(forCatalogSetName: "Dragon", game: .pokemon),
+            "dragon-pokemon"
+        )
+    }
+
+    /// A set the vendor does not carry stays unresolved rather than falling
+    /// back to a derived slug that does not exist.
+    func testUnknownSetStaysUnresolved() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "base-set-pokemon", name: "Base Set")
+        ])
+
+        XCTAssertNil(directory.slug(forCatalogSetName: "Some Set", game: .pokemon))
     }
 }

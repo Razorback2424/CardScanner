@@ -47,23 +47,21 @@ enum ProductCatalogIdentity {
     /// - Everything else is `<slugified set name>-<game>`.
     ///
     /// Returns `nil` rather than a guess when neither applies.
+
     static func setSlug(
         setName: String,
         japaneseSetID: String?,
         game: Game,
-        knownSlugs: [String]
+        directory: ProductSetDirectory
     ) -> String? {
         if game == .pokemonJapan, let japaneseSetID {
             let prefix = japaneseSetID.lowercased() + "-"
-            let matches = knownSlugs.filter { $0.hasPrefix(prefix) }
+            let matches = directory.slugs.filter { $0.hasPrefix(prefix) }
             // Exactly one or nothing. Two candidates means the prefix is not the
             // identity we assumed it was, and picking either would be a guess.
-            return matches.count == 1 ? matches[0] : nil
+            if matches.count == 1 { return matches[0] }
         }
-
-        let candidate = "\(slugify(setName))-\(game.rawValue)"
-        guard knownSlugs.isEmpty || knownSlugs.contains(candidate) else { return nil }
-        return candidate
+        return directory.slug(forCatalogSetName: setName, game: game)
     }
 
     /// The vendor's slug alphabet.
@@ -161,5 +159,94 @@ enum ProductCatalogIdentity {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         if let number = Int(trimmed) { return String(number) }
         return trimmed.lowercased()
+    }
+}
+
+/// The vendor's set list, indexed so a catalog set name can find it.
+///
+/// Deriving the slug from the catalog's own name and requiring an exact hit —
+/// what this replaced — resolved 55 of 163 browsable Pokémon sets. The vendor
+/// prefixes by era (`sv-prismatic-evolutions-pokemon`, `ex-dragon-pokemon`,
+/// `swsh01-sword-shield-base-set-pokemon`) and TCGdex names carry no prefix, so
+/// two thirds of the catalogue derived a slug that does not exist. Every card in
+/// those sets failed set resolution before a request was made, which is why a
+/// collection could sit at hundreds of cards priced only in euros with the
+/// fallback reporting progress and changing nothing.
+///
+/// Matching the vendor's published *name* instead lifts that to 133 of 163.
+struct ProductSetDirectory: Sendable {
+    /// Every slug the vendor publishes, for the paths that match on slug shape
+    /// rather than on name.
+    let slugs: [String]
+    private let byName: [String: String]
+
+    init(sets: [(id: String, name: String?)]) {
+        var slugs: [String] = []
+        // Three tiers, best first. A weaker key never displaces a stronger one,
+        // and a key two different sets both claim is dropped rather than guessed.
+        var tiers: [[String: String]] = [[:], [:], [:], [:]]
+        var ambiguous: [Set<String>] = [[], [], [], []]
+
+        for set in sets {
+            slugs.append(set.id)
+            guard let name = set.name else { continue }
+            for (tier, key) in Self.keys(for: name) {
+                if let claimed = tiers[tier][key], claimed != set.id {
+                    ambiguous[tier].insert(key)
+                } else {
+                    tiers[tier][key] = set.id
+                }
+            }
+        }
+
+        var byName: [String: String] = [:]
+        for tier in (0..<tiers.count).reversed() {
+            for (key, id) in tiers[tier] where !ambiguous[tier].contains(key) {
+                byName[key] = id
+            }
+        }
+        self.slugs = slugs
+        self.byName = byName
+    }
+
+    /// The era tokens the vendor puts in front of a set's own name.
+    private static let eraPrefixes: Set<String> = [
+        "ex", "sv", "sm", "xy", "swsh", "hgss", "dp", "bw", "pl", "hs"
+    ]
+
+    private static func keys(for name: String) -> [(tier: Int, key: String)] {
+        var result: [(Int, String)] = [(0, CatalogIdentityNormalization.canonicalText(name))]
+        // "SV: Prismatic Evolutions", "SWSH01: Sword & Shield Base Set".
+        if let suffix = name.split(separator: ":", maxSplits: 1).last, name.contains(":") {
+            result.append((1, CatalogIdentityNormalization.canonicalText(String(suffix))))
+        }
+        // "EX Dragon", "XY Base Set".
+        let words = CatalogIdentityNormalization.canonicalText(name).split(separator: " ")
+        if let first = words.first, eraPrefixes.contains(String(first)), words.count > 1 {
+            result.append((2, words.dropFirst().joined(separator: " ")))
+        }
+        // The vendor names an era's opening set "<era> Base Set" where the
+        // catalog names it after the era alone: `SWSH01: Sword & Shield Base
+        // Set` against TCGdex's `Sword & Shield`. Weakest tier, so it can never
+        // displace a set actually called "Base Set".
+        let suffix = " base set"
+        for (_, key) in result where key.hasSuffix(suffix) && key != suffix.trimmingCharacters(in: .whitespaces) {
+            result.append((3, String(key.dropLast(suffix.count))))
+        }
+        return result.filter { !$0.1.isEmpty }
+    }
+
+    /// The vendor set that carries this catalog set, or nil when none does.
+    func slug(forCatalogSetName name: String, game: ProductCatalogIdentity.Game) -> String? {
+        if let matched = byName[CatalogIdentityNormalization.canonicalText(name)] {
+            return matched
+        }
+        // The derived form still wins where the vendor happens to agree, which
+        // covers sets whose published name is missing.
+        let derived = "\(ProductCatalogIdentity.slugify(name))-\(game.rawValue)"
+        // An empty directory is "nothing to check against", not "no such set" —
+        // the derivation is still the best guess available.
+        guard !slugs.isEmpty else { return derived }
+        return slugs.contains(derived) ? derived : nil
     }
 }

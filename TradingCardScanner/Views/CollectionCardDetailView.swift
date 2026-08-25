@@ -1,28 +1,45 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Bindable var card: CollectedCard
     let price: PriceDisplay
+    let unpricedReason: PricingDiagnosticReason?
+    let artworkReason: ArtworkDiagnosticReason?
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     @State private var isConfirmingRemoval = false
+    @State private var selectedArtwork: PhotosPickerItem?
 
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                AsyncImage(url: card.highImageURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFit()
-                    default:
-                        ProgressView().frame(height: 410)
-                    }
-                }
+                artwork
                 .frame(maxHeight: 460)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                PhotosPicker(selection: $selectedArtwork, matching: .images) {
+                    Label(
+                        card.userArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
+                        systemImage: "photo.badge.plus"
+                    )
+                }
+                .buttonStyle(.bordered)
+                .onChange(of: selectedArtwork) { _, item in
+                    guard let item else { return }
+                    Task { await saveSelectedArtwork(item) }
+                }
+
+                if card.userArtworkFilename != nil {
+                    Button("Use Catalog Artwork", role: .destructive) {
+                        removeUserArtwork()
+                    }
+                    .font(.subheadline)
+                }
 
                 VStack(spacing: 7) {
                     Text(card.name)
@@ -30,6 +47,11 @@ struct CollectionCardDetailView: View {
                         .multilineTextAlignment(.center)
                     Text(card.setName)
                         .foregroundStyle(.secondary)
+                    if let printRun = card.pokemonPrintRun {
+                        Text(printRun.label)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.accentColor)
+                    }
                     Text("\(card.setCode)  \(card.cardNumber)")
                         .font(.headline.monospacedDigit())
                     if let rarity = card.rarity {
@@ -72,6 +94,64 @@ struct CollectionCardDetailView: View {
         }
     }
 
+    @ViewBuilder
+    private var artwork: some View {
+        if let image = CollectionArtworkStore.image(filename: card.userArtworkFilename) {
+            Image(uiImage: image).resizable().scaledToFit()
+        } else {
+            AsyncImage(url: card.highImageURL) { phase in
+                switch phase {
+                case .success(let image):
+                    image.resizable().scaledToFit()
+                case .empty:
+                    ProgressView().frame(height: 410)
+                case .failure:
+                    missingArtworkPlaceholder
+                @unknown default:
+                    missingArtworkPlaceholder
+                }
+            }
+        }
+    }
+
+    private var missingArtworkPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(.quaternary)
+            .aspectRatio(0.727, contentMode: .fit)
+            .overlay {
+                VStack(spacing: 8) {
+                    Image(systemName: "photo")
+                    Text(artworkReason?.title ?? "Artwork unavailable")
+                        .font(.subheadline.weight(.semibold))
+                    if let artworkReason {
+                        Text(artworkReason.detail)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .foregroundStyle(.secondary)
+                .padding()
+            }
+    }
+
+    @MainActor
+    private func saveSelectedArtwork(_ item: PhotosPickerItem) async {
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              let filename = CollectionArtworkStore.save(
+                  data,
+                  replacing: card.userArtworkFilename
+              ) else { return }
+        card.userArtworkFilename = filename
+        selectedArtwork = nil
+        try? modelContext.save()
+    }
+
+    private func removeUserArtwork() {
+        CollectionArtworkStore.remove(filename: card.userArtworkFilename)
+        card.userArtworkFilename = nil
+        try? modelContext.save()
+    }
+
     private var removalMessage: String {
         if card.quantity == 1 {
             return "This removes the card. You can undo it."
@@ -107,6 +187,22 @@ struct CollectionCardDetailView: View {
                 Label("Last refresh failed", systemImage: "exclamationmark.triangle")
                     .font(.caption)
                     .foregroundStyle(.orange)
+            }
+
+            if let unpricedReason, price.amount == nil {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
+                        .font(.subheadline.weight(.semibold))
+                    Text(unpricedReason.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Diagnostic: \(unpricedReason.rawValue)")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 4)
             }
         }
         .padding(14)
@@ -204,6 +300,8 @@ struct RemovedCardSnapshot: Identifiable {
     let rarity: String?
     let imageURL: String?
     let thumbnailURL: String?
+    let userArtworkFilename: String?
+    let pokemonPrintRunRaw: String?
     let tcgplayerURL: String?
     let catalogMetadataCheckedAt: Date?
     let catalogMetadataVersion: Int
@@ -226,6 +324,8 @@ struct RemovedCardSnapshot: Identifiable {
         rarity = card.rarity
         imageURL = card.imageURL
         thumbnailURL = card.thumbnailURL
+        userArtworkFilename = card.userArtworkFilename
+        pokemonPrintRunRaw = card.pokemonPrintRunRaw
         tcgplayerURL = card.tcgplayerURL
         catalogMetadataCheckedAt = card.catalogMetadataCheckedAt
         catalogMetadataVersion = card.catalogMetadataVersion
@@ -268,6 +368,8 @@ struct RemovedCardSnapshot: Identifiable {
                 dateAdded: dateAdded
             )
             restored.tcgplayerURL = tcgplayerURL
+            restored.userArtworkFilename = userArtworkFilename
+            restored.pokemonPrintRunRaw = pokemonPrintRunRaw
             restored.catalogProviderID = catalogProviderID
             restored.catalogMetadataCheckedAt = catalogMetadataCheckedAt
             restored.catalogMetadataVersion = catalogMetadataVersion
@@ -275,5 +377,38 @@ struct RemovedCardSnapshot: Identifiable {
         }
 
         try? context.save()
+    }
+}
+
+enum CollectionArtworkStore {
+    private static var directory: URL? {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("CollectionArtwork", isDirectory: true)
+    }
+
+    static func save(_ data: Data, replacing oldFilename: String?) -> String? {
+        guard UIImage(data: data) != nil, let directory else { return nil }
+        do {
+            try FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true
+            )
+            let filename = UUID().uuidString + ".image"
+            try data.write(to: directory.appendingPathComponent(filename), options: .atomic)
+            remove(filename: oldFilename)
+            return filename
+        } catch {
+            return nil
+        }
+    }
+
+    static func image(filename: String?) -> UIImage? {
+        guard let filename, let directory else { return nil }
+        return UIImage(contentsOfFile: directory.appendingPathComponent(filename).path)
+    }
+
+    static func remove(filename: String?) {
+        guard let filename, let directory else { return }
+        try? FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
     }
 }

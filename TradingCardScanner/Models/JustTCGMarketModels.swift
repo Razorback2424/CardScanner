@@ -168,10 +168,58 @@ struct JustTCGCard: Decodable, Sendable {
         return candidates
     }
 
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case id, uuid, name, game, set, number, rarity, variants
         case tcgplayerId, mtgjsonId, scryfallId
         case setName = "set_name"
+        case setNameCamelCase = "setName"
+        case tcgplayerIdSnakeCase = "tcgplayer_id"
+        case mtgjsonIdSnakeCase = "mtgjson_id"
+        case scryfallIdSnakeCase = "scryfall_id"
+    }
+
+    /// Decoded by hand because this one object mixes key conventions: `set_name`
+    /// is snake_case while `tcgplayerSkuId` on the nested variant is camelCase,
+    /// both pinned from live responses. Nothing pins the marketplace ids either
+    /// way, and getting the spelling wrong is silent — the field decodes as nil,
+    /// the card simply has no marketplace id, and sealed products fall back to a
+    /// placeholder box instead of showing artwork. Accepting both spellings
+    /// removes the guess.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        uuid = try container.decodeIfPresent(String.self, forKey: .uuid)
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+        game = try container.decodeIfPresent(String.self, forKey: .game)
+        set = try container.decodeIfPresent(String.self, forKey: .set)
+        number = try container.decodeIfPresent(String.self, forKey: .number)
+        rarity = try container.decodeIfPresent(String.self, forKey: .rarity)
+        variants = try container.decodeIfPresent([JustTCGVariant].self, forKey: .variants)
+        setName = try container.decodeIfPresent(String.self, forKey: .setName)
+            ?? container.decodeIfPresent(String.self, forKey: .setNameCamelCase)
+        // Published as a number on some rows and a string on others.
+        tcgplayerId = Self.identifier(in: container, .tcgplayerId, .tcgplayerIdSnakeCase)
+        mtgjsonId = Self.identifier(in: container, .mtgjsonId, .mtgjsonIdSnakeCase)
+        scryfallId = Self.identifier(in: container, .scryfallId, .scryfallIdSnakeCase)
+    }
+
+    /// Non-throwing on purpose: a marketplace id published as a number under one
+    /// spelling must not abort the decode of a card that also carries it as a
+    /// string under the other.
+    private static func identifier(
+        in container: KeyedDecodingContainer<CodingKeys>,
+        _ keys: CodingKeys...
+    ) -> String? {
+        for key in keys {
+            if let value = try? container.decodeIfPresent(String.self, forKey: key),
+               !value.isEmpty {
+                return value
+            }
+            if let value = try? container.decodeIfPresent(Int.self, forKey: key) {
+                return String(value)
+            }
+        }
+        return nil
     }
 }
 
@@ -191,7 +239,12 @@ struct JustTCGVariant: Decodable, Sendable {
     let tcgplayerSkuId: String?
     /// `null` is a real answer meaning "no reliable market price", and is
     /// distinct from the field being absent.
+    ///
+    /// v1 only. v2 moves the number into `markets` — read `marketPriceUSD`
+    /// rather than this, which is nil for every v2 response.
     let price: Double?
+    /// v2 only. Per-region market blocks.
+    let markets: [JustTCGMarket]?
     let currency: String?
     let lastUpdated: Double?
     /// Present only on `/v2/cards` results for graded slabs.
@@ -210,7 +263,27 @@ struct JustTCGVariant: Decodable, Sendable {
     /// What the app sends to identify this exact object.
     var variantId: String? { uuid ?? id }
 
-    var updatedAt: Date? { lastUpdated.map { Date(timeIntervalSince1970: $0) } }
+    /// The USD market price, whichever schema published it.
+    ///
+    /// The graded path decodes v2 responses into this type, and v2 nests the
+    /// number inside `markets` rather than publishing a flat `price`. Reading
+    /// only the flat field meant every graded variant came back with no price
+    /// at all — the picker showed grades with nothing beside them and no slab
+    /// could ever contribute to a total.
+    var marketPriceUSD: Double? {
+        if let price { return price }
+        return usdMarket?.price
+    }
+
+    var updatedAt: Date? {
+        if let lastUpdated { return Date(timeIntervalSince1970: lastUpdated) }
+        return usdMarket?.updatedAt.map { Date(timeIntervalSince1970: $0) }
+    }
+
+    private var usdMarket: JustTCGMarket? {
+        markets?.first { $0.currency?.caseInsensitiveCompare("USD") == .orderedSame }
+            ?? markets?.first
+    }
 
     /// Sealed products are priced through the same variant infrastructure as
     /// singles, distinguished by this condition value.
@@ -221,14 +294,44 @@ struct JustTCGVariant: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, uuid, condition, printing, language, tcgplayerSkuId
-        case price, currency, lastUpdated, grading
+        case price, currency, lastUpdated, grading, markets
         case priceChange24hr, priceChange7d, minPrice7d, maxPrice7d
         case covPrice7d, priceChangesCount7d
     }
 }
 
+/// One region's market block on a v2 variant.
+struct JustTCGMarket: Decodable, Sendable {
+    let region: String?
+    let currency: String?
+    let price: Double?
+    let updatedAt: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case region, currency, price
+        case updatedAt = "updated_at"
+    }
+}
+
 /// The grading block on a v2 variant.
 struct JustTCGGrading: Decodable, Sendable {
+    private enum CodingKeys: String, CodingKey {
+        case company, grade, qualifier
+        case label
+        case gradeLabel = "grade_label"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        company = try container.decodeIfPresent(String.self, forKey: .company)
+        grade = try container.decodeIfPresent(Double.self, forKey: .grade)
+        qualifier = try container.decodeIfPresent(String.self, forKey: .qualifier)
+        // v2 publishes `grade_label`; the flat `label` spelling is kept so a
+        // change back does not silently drop the label again.
+        label = try container.decodeIfPresent(String.self, forKey: .label)
+            ?? container.decodeIfPresent(String.self, forKey: .gradeLabel)
+    }
+
     let company: String?
     /// Numeric for most slabs; `null` for Authentic, which the vendor models
     /// deliberately rather than inventing a number.
@@ -316,8 +419,8 @@ struct SealedProductSummary: Identifiable, Hashable, Sendable {
     let variantID: String?
     let marketPriceUSD: Double?
     let updatedAt: Date?
-    /// Only when the provider actually returned one; otherwise the UI uses a
-    /// set or game placeholder rather than an image from somewhere else.
+    /// Canonical product artwork when it can be resolved from a provider-backed
+    /// marketplace ID; otherwise the UI uses a product placeholder.
     let imageURL: URL?
 }
 
@@ -336,6 +439,9 @@ struct SealedSetSummary: Identifiable, Hashable, Sendable {
 /// One purchasable graded variant of a card.
 struct GradedVariant: Identifiable, Hashable, Sendable {
     let id: String
+    /// The vendor's card handle this variant hangs off, stored on the row so a
+    /// refresh can re-find the slab without resolving the card again.
+    var cardID: String? = nil
     let company: GradingCompany
     let grade: CardGrade
     let marketPriceUSD: Double?

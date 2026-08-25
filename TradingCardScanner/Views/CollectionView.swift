@@ -3,8 +3,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 /// The scanner reduces friction according to certainty. The collection reduces
-/// it according to intent: four chips and one sort menu answer nearly every
-/// question a collector actually asks, and none of them touch the network.
+/// it according to intent: search plus one filter control answer the common
+/// questions without turning the collection header into a toolbar of chips.
 struct CollectionView: View {
     @Environment(\.modelContext) private var modelContext
 
@@ -25,6 +25,7 @@ struct CollectionView: View {
     @State private var filters = CollectionFilters.none
     @State private var sort: CollectionSort = .priceHighToLow
     @State private var activeSheet: ActiveSheet?
+    @State private var isShowingSettings = false
     @State private var hasCheckedForStalePrices = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalUndoTask: Task<Void, Never>?
@@ -40,7 +41,7 @@ struct CollectionView: View {
     @FocusState private var isSearchFocused: Bool
 
     private enum ActiveSheet: String, Identifiable {
-        case set, price, finish, priceFallback
+        case filters
         var id: String { rawValue }
     }
 
@@ -84,10 +85,10 @@ struct CollectionView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Refresh Prices") {
-                        Task { await refreshAllPrices() }
+                    Button("Settings", systemImage: "gearshape") {
+                        isShowingSettings = true
                     }
-                    .disabled(isRefreshing)
+                    .labelStyle(.iconOnly)
                 }
 
                 ToolbarItem(placement: .topBarLeading) {
@@ -130,11 +131,6 @@ struct CollectionView: View {
                         }
                         .disabled(!cards.contains { $0.highImageURL == nil })
 
-                        Divider()
-
-                        Button("Price Fallback Settings", systemImage: "dollarsign.arrow.circlepath") {
-                            activeSheet = .priceFallback
-                        }
                     }
                     .labelStyle(.iconOnly)
                     .accessibilityLabel("Collection actions")
@@ -150,15 +146,19 @@ struct CollectionView: View {
         }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
-            case .set:
-                MultiSelectFilterSheet(title: "Sets", options: setOptions(snapshot), selection: $filters.setCodes)
-            case .finish:
-                MultiSelectFilterSheet(title: "Finish", options: finishOptions(snapshot), selection: $filters.variantIDs)
-            case .price:
-                PriceFilterSheet(selection: $filters.price)
-            case .priceFallback:
-                CollectionPriceFallbackSettingsView()
+            case .filters:
+                CollectionFilterSheet(
+                    filters: $filters,
+                    sort: $sort,
+                    setOptions: setOptions(snapshot),
+                    finishOptions: finishOptions(snapshot),
+                    gradingCompanyOptions: gradingCompanyOptions(snapshot),
+                    gradeOptions: gradeOptions(snapshot)
+                )
             }
+        }
+        .sheet(isPresented: $isShowingSettings) {
+            SettingsView()
         }
         .task(id: cards.count) { await refreshStalePricesIfNeeded() }
         .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
@@ -256,10 +256,17 @@ struct CollectionView: View {
                                 CollectionCardDetailView(
                                     card: entry.card,
                                     price: entry.row.price,
+                                    unpricedReason: entry.unpricedReason,
+                                    artworkReason: entry.artworkReason,
                                     onRemoved: presentUndo(for:)
                                 )
                             } label: {
-                                CollectionCardTile(card: entry.card, price: entry.row.price)
+                                CollectionCardTile(
+                                    card: entry.card,
+                                    price: entry.row.price,
+                                    unpricedReason: entry.unpricedReason,
+                                    artworkReason: entry.artworkReason
+                                )
                             }
                             .buttonStyle(.plain)
                         }
@@ -393,6 +400,17 @@ struct CollectionView: View {
                     .monospacedDigit()
                     .accessibilityLabel("Collection value")
 
+                Button("Refresh Prices", systemImage: "arrow.clockwise") {
+                    Task { await refreshAllPrices() }
+                }
+                .labelStyle(.iconOnly)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+                .disabled(isRefreshing)
+                .accessibilityLabel("Refresh prices")
+
                 Spacer()
 
                 if isNarrowed {
@@ -467,7 +485,7 @@ struct CollectionView: View {
         let pending = fallbackPendingCount(snapshot)
         if pending > 0 {
             Button {
-                activeSheet = .priceFallback
+                isShowingSettings = true
             } label: {
                 Label(fallbackStatusText(pending: pending), systemImage: fallbackStatusSymbol)
                     .font(.caption)
@@ -477,7 +495,7 @@ struct CollectionView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityHint("Opens price fallback settings")
+            .accessibilityHint("Opens app settings")
         }
     }
 
@@ -650,118 +668,36 @@ struct CollectionView: View {
     // MARK: - Filters
 
     private func filterBar(_ snapshot: Snapshot) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                Menu {
-                    Button("All") { selectGame(nil) }
-                    ForEach(CardGame.allCases) { game in
-                        Button(game.label) { selectGame(game) }
-                    }
-                } label: {
-                    FilterChipLabel(title: filters.game?.label ?? "Game", isActive: filters.game != nil)
-                }
-
-                // A native menu rather than another sheet: there are exactly
-                // four choices and they are mutually exclusive, so a picker is
-                // the whole interaction.
-                Menu {
-                    Picker("Item Type", selection: itemKindSelection) {
-                        Text("All Items").tag(nil as CollectionItemKind?)
-                        ForEach(CollectionItemKind.allCases, id: \.self) { kind in
-                            Label(kind.label, systemImage: kind.symbolName)
-                                .tag(kind as CollectionItemKind?)
-                        }
-                    }
-                } label: {
-                    FilterChipLabel(
-                        title: itemKindChipTitle,
-                        isActive: !filters.itemKinds.isEmpty
-                    )
-                }
-
-                FilterChip(
-                    title: setChipTitle(snapshot),
-                    isActive: !filters.setCodes.isEmpty
-                ) { activeSheet = .set }
-
-                FilterChip(
-                    title: filters.price?.label ?? "Price",
-                    isActive: filters.price != nil
-                ) { activeSheet = .price }
-
-                FilterChip(
-                    title: finishChipTitle,
-                    isActive: !filters.variantIDs.isEmpty
-                ) { activeSheet = .finish }
-
-                Divider().frame(height: 20)
-
-                Menu {
-                    Picker("Sort", selection: $sort) {
-                        ForEach(CollectionSort.allCases) { option in
-                            Text(option.label).tag(option)
-                        }
-                    }
-                } label: {
-                    FilterChipLabel(title: "Sort", isActive: false, symbol: "arrow.up.arrow.down")
-                }
-
-                if filters.isActive {
-                    Button("Clear") { filters = .none }
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.horizontal, 4)
-                }
+        HStack {
+            Button {
+                activeSheet = .filters
+            } label: {
+                Label(
+                    filters.isActive ? "Filters (\(activeFilterCount))" : "Filters",
+                    systemImage: filters.isActive
+                        ? "line.3.horizontal.decrease.circle.fill"
+                        : "line.3.horizontal.decrease.circle"
+                )
             }
-            .padding(.vertical, 2)
-        }
-        .scrollClipDisabled()
-    }
+            .buttonStyle(.bordered)
 
-    /// The filter stores a set because the query supports several kinds at once,
-    /// but the menu offers one at a time — so this bridges the two rather than
-    /// widening the UI to a multi-select nobody asked for.
-    private var itemKindSelection: Binding<CollectionItemKind?> {
-        Binding(
-            get: { filters.itemKinds.count == 1 ? filters.itemKinds.first : nil },
-            set: { filters.itemKinds = $0.map { [$0] } ?? [] }
-        )
-    }
+            Spacer()
 
-    private var itemKindChipTitle: String {
-        guard let kind = filters.itemKinds.first, filters.itemKinds.count == 1 else {
-            return "Item Type"
-        }
-        return kind.label
-    }
-
-    private func setChipTitle(_ snapshot: Snapshot) -> String {
-        switch filters.setCodes.count {
-        case 0: return "Set"
-        case 1:
-            guard let selected = filters.setCodes.first else { return "Set" }
-            return snapshot.all.first(where: { $0.setFilterID == selected })?.setCode ?? "Set"
-        default: return "\(filters.setCodes.count) sets"
+            Text(sort.label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
         }
     }
 
-    /// Set and finish selections are scoped by game. Carrying them across a game
-    /// change can leave an apparently active filter with no selectable option in
-    /// the new game, producing an unexplained empty collection.
-    private func selectGame(_ game: CardGame?) {
-        guard filters.game != game else { return }
-        filters.game = game
-        filters.setCodes.removeAll()
-        filters.variantIDs.removeAll()
-    }
-
-    private var finishChipTitle: String {
-        switch filters.variantIDs.count {
-        case 0: return "Finish"
-        case 1:
-            let id = filters.variantIDs.first ?? ""
-            return PhysicalVariant.resolving(id).label
-        default: return "\(filters.variantIDs.count) finishes"
-        }
+    private var activeFilterCount: Int {
+        (filters.game == nil ? 0 : 1)
+            + (filters.itemKinds.isEmpty ? 0 : 1)
+            + (filters.setCodes.isEmpty ? 0 : 1)
+            + (filters.price == nil ? 0 : 1)
+            + (filters.variantIDs.isEmpty ? 0 : 1)
+            + (filters.gradingCompanies.isEmpty ? 0 : 1)
+            + (filters.gradeValues.isEmpty ? 0 : 1)
     }
 
     // MARK: - Data
@@ -771,6 +707,8 @@ struct CollectionView: View {
         struct Entry: Identifiable {
             let row: CollectionRow
             let card: CollectedCard
+            let unpricedReason: PricingDiagnosticReason?
+            let artworkReason: ArtworkDiagnosticReason?
 
             var id: String { row.id }
         }
@@ -814,9 +752,11 @@ struct CollectionView: View {
                 variantLabel: card.variantLabel,
                 quantity: card.quantity,
                 dateAdded: card.dateAdded,
-                price: recordsByKey[card.priceKey]?.display ?? .unknown,
+                price: PriceStore.record(for: card, in: recordsByKey)?.display ?? .unknown,
                 itemKind: card.itemKind,
-                itemKindLabel: card.itemKindLabel
+                itemKindLabel: card.itemKindLabel,
+                gradingCompany: card.gradingCompany,
+                gradeValue: card.gradeRaw
             )
         }
 
@@ -854,7 +794,7 @@ struct CollectionView: View {
         // in that case report the oldest successful check instead.
         let relevantRecords = visible.compactMap { row -> PriceRecord? in
             guard let card = cardsByKey[row.id] else { return nil }
-            return recordsByKey[card.priceKey]
+            return PriceStore.record(for: card, in: recordsByKey)
         }
         let allSourceStamped = !relevantRecords.isEmpty && relevantRecords.allSatisfy {
             $0.source?.publishesSourceTimestamp == true && $0.sourceUpdatedAt != nil
@@ -871,7 +811,15 @@ struct CollectionView: View {
             visible: visible,
             entries: visible.compactMap { row -> Snapshot.Entry? in
                 guard let card = cardsByKey[row.id] else { return nil }
-                return Snapshot.Entry(row: row, card: card)
+                let record = PriceStore.record(for: card, in: recordsByKey)
+                return Snapshot.Entry(
+                    row: row,
+                    card: card,
+                    unpricedReason: row.unitPrice == nil
+                        ? PricingDiagnostics.unpricedReason(for: card, record: record)
+                        : nil,
+                    artworkReason: ArtworkDiagnostics.reason(for: card)
+                )
             },
             totalQuantity: all.reduce(0) { $0 + $1.quantity },
             visibleQuantity: visibleQuantity,
@@ -947,6 +895,38 @@ struct CollectionView: View {
         return orderedOptions(from: tallies)
     }
 
+    private func gradingCompanyOptions(_ snapshot: Snapshot) -> [FilterOption] {
+        var counts: [GradingCompany: Int] = [:]
+        for row in rowsForOptions(snapshot) where row.itemKind == .gradedCard {
+            guard let company = row.gradingCompany else { continue }
+            counts[company, default: 0] += row.quantity
+        }
+        return GradingCompany.allCases.compactMap { company in
+            guard let count = counts[company] else { return nil }
+            return FilterOption(id: company.rawValue, label: company.label, group: nil, count: count)
+        }
+    }
+
+    private func gradeOptions(_ snapshot: Snapshot) -> [FilterOption] {
+        var counts: [String: Int] = [:]
+        for row in rowsForOptions(snapshot) where row.itemKind == .gradedCard {
+            guard let grade = row.gradeValue, !grade.isEmpty else { continue }
+            counts[grade, default: 0] += row.quantity
+        }
+        return counts
+            .map { FilterOption(id: $0.key, label: $0.key, group: nil, count: $0.value) }
+            .sorted { left, right in
+                let leftNumber = Double(left.label)
+                let rightNumber = Double(right.label)
+                if let leftNumber, let rightNumber, leftNumber != rightNumber {
+                    return leftNumber > rightNumber
+                }
+                if leftNumber != nil, rightNumber == nil { return true }
+                if leftNumber == nil, rightNumber != nil { return false }
+                return left.label.localizedStandardCompare(right.label) == .orderedAscending
+            }
+    }
+
     private func orderedOptions(from tallies: [String: OptionTally]) -> [FilterOption] {
         let sorted = tallies.sorted { left, right in
             let a = left.value
@@ -980,7 +960,7 @@ struct CollectionView: View {
             guard let card = snapshot.cardsByKey[row.id] else { continue }
             if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
-            let record = snapshot.recordsByKey[card.priceKey]
+            let record = PriceStore.record(for: card, in: snapshot.recordsByKey)
             // When fallback is enabled, a fresh euro observation is still
             // unfinished: it cannot contribute to the USD collection total and
             // must reach the fallback immediately rather than waiting eight
@@ -993,10 +973,11 @@ struct CollectionView: View {
             result.append(
                 PriceTarget(
                     game: card.cardGame,
-                    printingID: card.providerID,
-                    catalogPrintingID: card.catalogProviderID,
+                    printingID: card.priceStorageID,
+                    catalogPrintingID: card.catalogProviderID ?? card.providerID,
                     setCode: card.setCode,
                     variantID: card.variantID,
+                    pokemonPrintRun: card.pokemonPrintRun,
                     importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
                         ? ImportedPriceIdentity(
                             name: card.name,
@@ -1007,7 +988,22 @@ struct CollectionView: View {
                     catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
                     lastFailureAt: record?.lastFailureAt,
                     hasPrice: hasFinishedPrice,
-                    lastCheckedAt: record?.lastCheckedAt
+                    lastCheckedAt: record?.lastCheckedAt,
+                    itemKind: card.itemKind,
+                    marketVariantID: card.justTCGVariantID,
+                    // Only sealed rows: their artwork comes from the vendor's
+                    // marketplace id, which arrives with the price. A card's
+                    // picture comes from the catalog and is already there.
+                    needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
+                    gradedIdentity: card.itemKind == .gradedCard
+                        ? GradedCardIdentity(
+                            name: card.name,
+                            setName: card.setName,
+                            collectorNumber: card.cardNumber
+                        )
+                        : nil,
+                    gradingCompany: card.gradingCompany,
+                    grade: card.gradeRaw
                 )
             )
         }
@@ -1025,7 +1021,7 @@ struct CollectionView: View {
         return snapshot.cardsByKey.values.reduce(into: 0) { count, card in
             guard seen.insert(card.priceKey).inserted else { return }
             guard !currentMisses.contains(card.priceKey) else { return }
-            let record = snapshot.recordsByKey[card.priceKey]
+            let record = PriceStore.record(for: card, in: snapshot.recordsByKey)
             if record?.unitMarketPriceUSD == nil || record?.currencyCode != "USD" {
                 count += 1
             }
@@ -1086,25 +1082,6 @@ struct CollectionView: View {
     }
 }
 
-private struct CollectionPriceFallbackSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                PriceFallbackSettingsSection()
-            }
-            .navigationTitle("Price Fallback")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                }
-            }
-        }
-    }
-}
-
 /// Menu labels cannot use `FilterChip` directly because a `Menu` supplies its own
 /// button behaviour, so the visual half is shared instead.
 struct FilterChipLabel: View {
@@ -1133,6 +1110,8 @@ struct FilterChipLabel: View {
 private struct CollectionCardTile: View {
     let card: CollectedCard
     let price: PriceDisplay
+    let unpricedReason: PricingDiagnosticReason?
+    let artworkReason: ArtworkDiagnosticReason?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -1140,8 +1119,10 @@ private struct CollectionCardTile: View {
                 Color.secondary.opacity(0.08)
 
                 CollectionCardArtwork(
+                    userArtworkFilename: card.userArtworkFilename,
                     thumbnailURL: card.lowImageURL,
-                    fullSizeURL: card.highImageURL
+                    fullSizeURL: card.highImageURL,
+                    placeholderText: artworkReason?.title
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -1160,14 +1141,14 @@ private struct CollectionCardTile: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(card.name)
                         .font(.headline)
                         .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     PriceLabel(price: price, style: .compact)
-                        .fixedSize(horizontal: true, vertical: false)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
 
@@ -1192,13 +1173,28 @@ private struct CollectionCardTile: View {
                         )
                     }
                 }
+
+                if let unpricedReason {
+                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             .frame(maxWidth: .infinity)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(card.quantity)"
+            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(card.quantity)\(diagnosticAccessibilityText)"
         )
+    }
+
+    private var diagnosticAccessibilityText: String {
+        [unpricedReason?.title, artworkReason?.title]
+            .compactMap { $0 }
+            .map { ", \($0)" }
+            .joined()
     }
 
     private var accessiblePrice: String {
@@ -1287,8 +1283,10 @@ private struct CollectionFinishBadge: View {
 /// records have a working full-size image while their thumbnail endpoint remains
 /// unavailable, which otherwise leaves the grid stuck on a placeholder.
 private struct CollectionCardArtwork: View {
+    let userArtworkFilename: String?
     let thumbnailURL: URL?
     let fullSizeURL: URL?
+    let placeholderText: String?
 
     private var primaryURL: URL? { fullSizeURL ?? thumbnailURL }
 
@@ -1298,16 +1296,22 @@ private struct CollectionCardArtwork: View {
     }
 
     var body: some View {
-        AsyncImage(url: primaryURL) { phase in
-            switch phase {
-            case let .success(image):
-                cardImage(image)
-            case .failure:
-                fallback
-            case .empty:
-                placeholder
-            @unknown default:
-                placeholder
+        if let image = CollectionArtworkStore.image(filename: userArtworkFilename) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+        } else {
+            AsyncImage(url: primaryURL) { phase in
+                switch phase {
+                case let .success(image):
+                    cardImage(image)
+                case .failure:
+                    fallback
+                case .empty:
+                    placeholder
+                @unknown default:
+                    placeholder
+                }
             }
         }
     }
@@ -1342,7 +1346,18 @@ private struct CollectionCardArtwork: View {
         RoundedRectangle(cornerRadius: 10)
             .fill(.quaternary)
             .aspectRatio(0.727, contentMode: .fit)
-            .overlay { Image(systemName: "photo") }
+            .overlay {
+                VStack(spacing: 6) {
+                    Image(systemName: "photo")
+                    if let placeholderText {
+                        Text(placeholderText)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 8)
+                    }
+                }
+                .foregroundStyle(.secondary)
+            }
     }
 }
 

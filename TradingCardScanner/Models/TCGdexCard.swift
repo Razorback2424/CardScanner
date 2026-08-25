@@ -100,6 +100,24 @@ struct TCGdexSetBrief: Decodable, Sendable {
 struct TCGdexCardCount: Decodable, Sendable {
     let total: Int
     let official: Int
+    let normal: Int?
+    let reverse: Int?
+    let holo: Int?
+    let firstEd: Int?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        total = try container.decode(Int.self, forKey: .total)
+        official = try container.decode(Int.self, forKey: .official)
+        normal = try container.decodeIfPresent(Int.self, forKey: .normal)
+        reverse = try container.decodeIfPresent(Int.self, forKey: .reverse)
+        holo = try container.decodeIfPresent(Int.self, forKey: .holo)
+        firstEd = try container.decodeIfPresent(Int.self, forKey: .firstEd)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case total, official, normal, reverse, holo, firstEd
+    }
 }
 
 struct TCGdexSetCatalog: Decodable, Sendable {
@@ -138,6 +156,30 @@ struct TCGdexCardBrief: Decodable, Sendable {
             localId = String(try container.decode(Int.self, forKey: .localId))
         }
     }
+}
+
+/// Minimal Pokémon TCG API representation used only as an artwork fallback.
+/// TCGdex remains the identity source; this provider fills a scan only after
+/// set, printed number and name all agree.
+struct PokemonTCGAPIResponse: Decodable, Sendable {
+    let data: [PokemonTCGAPICard]
+}
+
+struct PokemonTCGAPICard: Decodable, Sendable {
+    let id: String
+    let name: String
+    let number: String
+    let set: PokemonTCGAPISet
+    let images: PokemonTCGAPIImages
+}
+
+struct PokemonTCGAPISet: Decodable, Sendable {
+    let name: String
+}
+
+struct PokemonTCGAPIImages: Decodable, Sendable {
+    let small: URL
+    let large: URL
 }
 
 struct TCGdexVariants: Decodable, Sendable {

@@ -5,6 +5,8 @@
 DerivedData/
 .codex_build/
 .codex_build_device/
+.codex_ui_build/
+artifacts/
 *.xcuserstate
 xcuserdata/
 

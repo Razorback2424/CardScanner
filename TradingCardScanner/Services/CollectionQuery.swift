@@ -24,6 +24,10 @@ struct CollectionRow: Identifiable, Equatable {
     var itemKind: CollectionItemKind = .rawCard
     /// What the tile says under the name: `Reverse Holo`, `PSA 10`, `Sealed`.
     var itemKindLabel: String?
+    /// Structured slab metadata used by collection filters. Grade remains text
+    /// so half grades and non-numeric grades retain their exact identity.
+    var gradingCompany: GradingCompany? = nil
+    var gradeValue: String? = nil
 
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
@@ -158,10 +162,13 @@ struct CollectionFilters: Equatable {
     var price: PriceFilter?
     /// Empty means every kind, which is what "All Items" selects.
     var itemKinds: Set<CollectionItemKind> = []
+    var gradingCompanies: Set<GradingCompany> = []
+    var gradeValues: Set<String> = []
 
     var isActive: Bool {
         game != nil || !setCodes.isEmpty || !variantIDs.isEmpty
             || price != nil || !itemKinds.isEmpty
+            || !gradingCompanies.isEmpty || !gradeValues.isEmpty
     }
 
     static let none = CollectionFilters()
@@ -253,6 +260,12 @@ enum CollectionQuery {
             guard let variantID = row.variantID, filters.variantIDs.contains(variantID) else { return false }
         }
         if !filters.itemKinds.isEmpty, !filters.itemKinds.contains(row.itemKind) { return false }
+        if !filters.gradingCompanies.isEmpty {
+            guard let company = row.gradingCompany, filters.gradingCompanies.contains(company) else { return false }
+        }
+        if !filters.gradeValues.isEmpty {
+            guard let grade = row.gradeValue, filters.gradeValues.contains(grade) else { return false }
+        }
         if let price = filters.price, !price.matches(row.unitPrice) { return false }
         return true
     }

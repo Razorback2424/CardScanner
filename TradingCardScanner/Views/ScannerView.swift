@@ -6,8 +6,8 @@ import SwiftUI
 /// between cards. Success is a receipt that appears underneath while the next
 /// card is already being read.
 struct ScannerView: View {
+    @EnvironmentObject private var model: ScannerViewModel
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var model = ScannerViewModel()
 
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
@@ -33,11 +33,7 @@ struct ScannerView: View {
         .onAppear { model.start(context: modelContext) }
         .onDisappear { model.viewDisappeared() }
         .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterPresentation) {
-            ScannerSettingsView(
-                scanner: model.scanner,
-                finishLock: model.finishLock(for:),
-                setFinishLock: model.setFinishLock
-            )
+            SettingsView()
         }
         .sheet(item: $reviewing, onDismiss: model.resumeAfterPresentation) { scan in
             ScanReviewSheet(scan: scan) { variant in

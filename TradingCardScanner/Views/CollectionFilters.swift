@@ -38,6 +38,221 @@ struct FilterOption: Identifiable, Equatable {
     let count: Int
 }
 
+/// One entry point for every collection filter and sort choice. Detailed
+/// multi-select dimensions stay nested so the first screen remains scannable.
+struct CollectionFilterSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @Binding var filters: CollectionFilters
+    @Binding var sort: CollectionSort
+    let setOptions: [FilterOption]
+    let finishOptions: [FilterOption]
+    let gradingCompanyOptions: [FilterOption]
+    let gradeOptions: [FilterOption]
+
+    @State private var nestedSheet: NestedSheet?
+
+    private enum NestedSheet: String, Identifiable {
+        case sets, finishes, price, gradingCompanies, grades
+        var id: String { rawValue }
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Show") {
+                    Picker("Game", selection: gameSelection) {
+                        Text("All Games").tag(nil as CardGame?)
+                        ForEach(CardGame.allCases) { game in
+                            Text(game.label).tag(game as CardGame?)
+                        }
+                    }
+                }
+
+                Section("Item Type") {
+                    itemKindRow(
+                        title: "All Items",
+                        symbolName: "square.grid.2x2",
+                        isSelected: filters.itemKinds.isEmpty
+                    ) {
+                        filters.itemKinds.removeAll()
+                    }
+
+                    ForEach(CollectionItemKind.allCases, id: \.self) { kind in
+                        itemKindRow(
+                            title: kind.label,
+                            symbolName: kind.symbolName,
+                            isSelected: filters.itemKinds.contains(kind)
+                        ) {
+                            if filters.itemKinds.contains(kind) {
+                                filters.itemKinds.remove(kind)
+                                if kind == .gradedCard {
+                                    filters.gradingCompanies.removeAll()
+                                    filters.gradeValues.removeAll()
+                                }
+                            } else {
+                                filters.itemKinds.insert(kind)
+                            }
+                        }
+                    }
+                }
+
+                Section("Details") {
+                    detailRow("Sets", value: selectionLabel(filters.setCodes, singular: "set")) {
+                        nestedSheet = .sets
+                    }
+                    detailRow("Price", value: filters.price?.label ?? "Any") {
+                        nestedSheet = .price
+                    }
+                    detailRow("Finish", value: selectionLabel(filters.variantIDs, singular: "finish")) {
+                        nestedSheet = .finishes
+                    }
+                }
+
+                if filters.itemKinds.isEmpty || filters.itemKinds.contains(.gradedCard) {
+                    Section("Graded") {
+                        detailRow(
+                            "Grading Company",
+                            value: selectionLabel(filters.gradingCompanies, singular: "company")
+                        ) {
+                            nestedSheet = .gradingCompanies
+                        }
+                        detailRow(
+                            "Grade",
+                            value: selectionLabel(filters.gradeValues, singular: "grade")
+                        ) {
+                            nestedSheet = .grades
+                        }
+                    }
+                }
+
+                Section("Order") {
+                    Picker("Sort By", selection: $sort) {
+                        ForEach(CollectionSort.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                }
+
+                if filters.isActive {
+                    Section {
+                        Button("Clear All Filters", role: .destructive) {
+                            filters = .none
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Filter Collection")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .sheet(item: $nestedSheet) { sheet in
+            switch sheet {
+            case .sets:
+                MultiSelectFilterSheet(
+                    title: "Sets",
+                    options: setOptions,
+                    selection: $filters.setCodes
+                )
+            case .finishes:
+                MultiSelectFilterSheet(
+                    title: "Finish",
+                    options: finishOptions,
+                    selection: $filters.variantIDs
+                )
+            case .price:
+                PriceFilterSheet(selection: $filters.price)
+            case .gradingCompanies:
+                MultiSelectFilterSheet(
+                    title: "Grading Company",
+                    options: gradingCompanyOptions,
+                    selection: gradingCompanySelection
+                )
+            case .grades:
+                MultiSelectFilterSheet(
+                    title: "Grade",
+                    options: gradeOptions,
+                    selection: $filters.gradeValues
+                )
+            }
+        }
+    }
+
+    private var gradingCompanySelection: Binding<Set<String>> {
+        Binding(
+            get: { Set(filters.gradingCompanies.map(\.rawValue)) },
+            set: { values in
+                filters.gradingCompanies = Set(values.compactMap(GradingCompany.init(rawValue:)))
+            }
+        )
+    }
+
+    private var gameSelection: Binding<CardGame?> {
+        Binding(
+            get: { filters.game },
+            set: { game in
+                guard filters.game != game else { return }
+                filters.game = game
+                filters.setCodes.removeAll()
+                filters.variantIDs.removeAll()
+            }
+        )
+    }
+
+    private func selectionLabel<Value: Hashable>(_ selection: Set<Value>, singular: String) -> String {
+        switch selection.count {
+        case 0: return "Any"
+        case 1: return "1 \(singular)"
+        default: return "\(selection.count) \(singular)s"
+        }
+    }
+
+    private func itemKindRow(
+        title: String,
+        symbolName: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack {
+                Label(title, systemImage: symbolName)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.tint)
+                        .accessibilityHidden(true)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+    }
+
+    private func detailRow(
+        _ title: String,
+        value: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title).foregroundStyle(.primary)
+                Spacer()
+                Text(value).foregroundStyle(.secondary)
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+        }
+    }
+}
+
 /// Multi-select list used for both Set and Finish. Options come from the
 /// collection itself: a set the user owns nothing from is not a choice, and a
 /// finish they own none of would only be clutter.

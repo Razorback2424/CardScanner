@@ -1,13 +1,10 @@
 import SwiftData
 import SwiftUI
 
-/// Settings sheet for the scanner. Built as a `Form` from the start so that adding
+/// Shared settings sheet for the app. Built as a `Form` from the start so that adding
 /// the next setting is a new row rather than a layout rewrite.
-struct ScannerSettingsView: View {
-    @ObservedObject var scanner: CardScanner
-    let finishLock: (CardGame) -> PhysicalVariant?
-    let setFinishLock: (PhysicalVariant?, CardGame) -> Void
-
+struct SettingsView: View {
+    @EnvironmentObject private var scannerModel: ScannerViewModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingCollectionDeletion = false
@@ -50,6 +47,12 @@ struct ScannerSettingsView: View {
 
     private var collectionSection: some View {
         Section("Collection") {
+            NavigationLink {
+                CollectionActivityLogView()
+            } label: {
+                Label("Review Activity", systemImage: "clock.arrow.circlepath")
+            }
+
             Button("Delete Entire Collection", role: .destructive) {
                 isConfirmingCollectionDeletion = true
             }
@@ -83,20 +86,20 @@ struct ScannerSettingsView: View {
     @ViewBuilder
     private var cameraSection: some View {
         Section {
-            if scanner.availableLenses.count > 1 {
+            if scannerModel.scanner.availableLenses.count > 1 {
                 Picker("Lens", selection: lensBinding) {
-                    ForEach(scanner.availableLenses) { lens in
+                    ForEach(scannerModel.scanner.availableLenses) { lens in
                         Text(lens.label).tag(lens)
                     }
                 }
                 .pickerStyle(.segmented)
             } else {
-                LabeledContent("Lens", value: scanner.lens.label)
+                LabeledContent("Lens", value: scannerModel.scanner.lens.label)
             }
         } header: {
             Text("Camera")
         } footer: {
-            if scanner.availableLenses.contains(.macro) {
+            if scannerModel.scanner.availableLenses.contains(.macro) {
                 Text("Macro uses the ultra wide lens, which focuses down to a few centimetres. The standard lens cannot focus close enough to read a card's set code.")
             } else {
                 Text("This device has no ultra wide camera that can focus close, so only the standard lens is available.")
@@ -106,8 +109,8 @@ struct ScannerSettingsView: View {
 
     private func lockBinding(for game: CardGame) -> Binding<PhysicalVariant?> {
         Binding(
-            get: { finishLock(game) },
-            set: { setFinishLock($0, game) }
+            get: { scannerModel.finishLock(for: game) },
+            set: { scannerModel.setFinishLock($0, for: game) }
         )
     }
 
@@ -116,8 +119,8 @@ struct ScannerSettingsView: View {
     /// the hardware's answer rather than holding its own selection state.
     private var lensBinding: Binding<CameraLens> {
         Binding(
-            get: { scanner.lens },
-            set: { scanner.setLens($0) }
+            get: { scannerModel.scanner.lens },
+            set: { scannerModel.scanner.setLens($0) }
         )
     }
 
@@ -174,7 +177,7 @@ struct PriceFallbackSettingsSection: View {
             Text("Price Fallback")
         } footer: {
             Text(hasVendorKey
-                 ? "A key is saved in your keychain. Free-tier safety limits fallback traffic to 90 vendor requests per UTC day."
+                 ? "A key is saved in your keychain. Free-tier safety limits vendor traffic to 95 requests per UTC day; automatic price work stops at 75 to reserve 20 for sealed products and other direct actions."
                  : "Optional. Adds prices for cards TCGdex and Scryfall don't cover, such as Japanese sets, promos, tokens and art cards.")
         }
     }

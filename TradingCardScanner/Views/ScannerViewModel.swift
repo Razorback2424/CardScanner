@@ -409,7 +409,7 @@ final class ScannerViewModel: ObservableObject {
     ) {
         guard let store else { return }
 
-        let mutation = store.add(card, resolved: resolved)
+        let mutation = store.add(card, resolved: resolved, source: .scan)
         let scan = RecentScan(
             identifier: identifier,
             card: card,

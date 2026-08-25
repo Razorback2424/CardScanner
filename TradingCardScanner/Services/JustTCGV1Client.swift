@@ -111,7 +111,7 @@ struct JustTCGV1Client: Sendable {
         setID: String? = nil,
         query: String? = nil,
         offset: Int = 0,
-        limit: Int = 40
+        limit: Int = JustTCGQuota.maximumPageSize
     ) async throws -> MarketCatalogPage<SealedProductSummary> {
         var parameters: [(String, String)] = [
             ("game", Self.gameSlug(for: game)),
@@ -144,10 +144,10 @@ struct JustTCGV1Client: Sendable {
                 // are not cents.
                 marketPriceUSD: sealed?.price,
                 updatedAt: sealed?.updatedAt,
-                // The API returns no imagery for sealed products at all, so
-                // this is always nil today and the UI uses a placeholder. Kept
-                // as a field so that adding imagery later needs no migration.
-                imageURL: nil
+                // JustTCG already supplies the canonical TCGplayer product ID.
+                // Keep the CDN convention isolated here so a provider-supplied
+                // image URL can replace it without touching models or views.
+                imageURL: Self.productImageURL(tcgplayerID: card.tcgplayerId)
             )
         }
         return MarketCatalogPage(
@@ -157,6 +157,13 @@ struct JustTCGV1Client: Sendable {
             limit: response.meta?.limit ?? limit,
             hasMore: response.meta?.hasMore ?? false
         )
+    }
+
+    static func productImageURL(tcgplayerID: String?) -> URL? {
+        guard let id = tcgplayerID?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !id.isEmpty,
+              id.allSatisfy({ $0.isNumber }) else { return nil }
+        return URL(string: "https://product-images.tcgplayer.com/fit-in/1000x1000/\(id).jpg")
     }
 
     // MARK: - Games
