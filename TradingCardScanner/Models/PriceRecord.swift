@@ -69,7 +69,16 @@ final class PriceRecord {
     /// When this app last retrieved the value it is currently showing.
     var fetchedAt: Date?
     /// When this app last asked, successfully or not.
+    ///
+    /// Deliberately not a freshness signal on its own: `recordFailure` sets it
+    /// too, so a 3 PM failure would report as "checked at 3 PM" while erasing
+    /// any trace of a good 9 AM check. Use `lastSuccessfulCheckAt` for anything
+    /// that needs to know the app actually got an answer.
     var lastCheckedAt: Date?
+    /// When this app last received a real answer — a price, or an explicit
+    /// "nothing for this variant". Untouched by failures, so a later failure
+    /// can never overwrite the evidence of an earlier success.
+    var lastSuccessfulCheckAt: Date?
     // MARK: - Market metadata
     //
     // All optional, so every record written before these existed keeps working
@@ -130,6 +139,7 @@ final class PriceRecord {
         sourceUpdatedAt = price.sourceUpdatedAt
         fetchedAt = price.fetchedAt
         lastCheckedAt = price.fetchedAt
+        lastSuccessfulCheckAt = price.fetchedAt
         lastFailureAt = nil
     }
 
@@ -142,7 +152,11 @@ final class PriceRecord {
         sourceVariantID = variantID
         self.sourceUpdatedAt = sourceUpdatedAt
         fetchedAt = importedAt
+        // An import is not a provider check. Leaving both check fields empty
+        // keeps the row eligible for an immediate live check and keeps the
+        // imported value out of today's coverage numbers.
         lastCheckedAt = nil
+        lastSuccessfulCheckAt = nil
         lastFailureAt = nil
     }
 
@@ -158,10 +172,13 @@ final class PriceRecord {
             fetchedAt = date
         }
         lastCheckedAt = date
+        lastSuccessfulCheckAt = date
         lastFailureAt = nil
     }
 
-    /// The attempt failed. Keep whatever price is already here.
+    /// The attempt failed. Keep whatever price is already here — and leave
+    /// `lastSuccessfulCheckAt` alone, so today's coverage still reflects this
+    /// morning's successful check rather than this afternoon's timeout.
     func recordFailure(at date: Date) {
         lastCheckedAt = date
         lastFailureAt = date

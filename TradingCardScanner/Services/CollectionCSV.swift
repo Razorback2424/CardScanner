@@ -144,6 +144,79 @@ enum CollectionCSV {
         return CollectionCSVDocument(text: text)
     }
 
+    /// Daily closes, one row per revision.
+    ///
+    /// Phase 1 history is device-local, and an export is what keeps it from
+    /// being trapped there. It is also the thing that actually retires writing
+    /// the number into Notes every evening — which is the habit this whole
+    /// feature exists to replace, and a habit nobody gives up for a number they
+    /// cannot get back out.
+    ///
+    /// Every revision is exported, not just the latest, because the audit trail
+    /// is the point: a close that changed and a close that never moved should
+    /// not look the same in a spreadsheet.
+    static func exportPortfolioHistory(_ closes: [PortfolioDailyClose]) -> CollectionCSVDocument {
+        let headers = [
+            "date",
+            "revision",
+            "time_zone",
+            "close_value_usd",
+            "market_contribution_usd",
+            "flow_contribution_usd",
+            "correction_contribution_usd",
+            "pricing_adjustment_usd",
+            "coverage",
+            "instruments_refreshed",
+            "instruments_carried_forward",
+            "priced_positions",
+            "excluded_positions",
+            "revision_reason",
+            "computed_at"
+        ]
+        let formatter = ISO8601DateFormatter()
+        let rows = closes
+            .sorted {
+                $0.date == $1.date ? $0.revision < $1.revision : $0.date < $1.date
+            }
+            .map { close in
+                [
+                    dayString(close.date, timeZoneIdentifier: close.timeZoneIdentifier),
+                    String(close.revision),
+                    close.timeZoneIdentifier,
+                    amount(close.closeValue),
+                    amount(close.marketContribution),
+                    amount(close.flowContribution),
+                    amount(close.correctionContribution),
+                    amount(close.pricingAdjustment),
+                    close.coverageState.rawValue,
+                    String(close.refreshedInstrumentCount),
+                    String(close.carriedForwardInstrumentCount),
+                    String(close.pricedPositionCount),
+                    String(close.excludedCount),
+                    close.revisionReason?.rawValue ?? "",
+                    formatter.string(from: close.computedAt)
+                ]
+            }
+        return CollectionCSVDocument(text: csvText(headers: headers, rows: rows))
+    }
+
+    /// Four decimal places, so an exported figure round-trips exactly rather
+    /// than arriving back rounded to the cent.
+    private static func amount(_ money: Money) -> String {
+        String(format: "%.4f", money.doubleValue)
+    }
+
+    /// Formatted in the zone the day was *measured* in. Rendering a boundary
+    /// in the device's current zone is how a close would appear to land on the
+    /// wrong date after a flight.
+    private static func dayString(_ date: Date, timeZoneIdentifier: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(identifier: timeZoneIdentifier) ?? .current
+        return formatter.string(from: date)
+    }
+
     /// A compact, support-oriented export of cards that still have no exact
     /// variant price after import/refresh. It includes resolution state rather
     /// than making someone infer the failure from a blank dollar column.
@@ -318,6 +391,10 @@ enum CollectionCSV {
         let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
         var cardsByKey = Dictionary(uniqueKeysWithValues: storedCards.map { ($0.collectionKey, $0) })
         let priceStore = PriceStore(context: context)
+        let ledger = InventoryLedger(context: context)
+        // One instant for the whole import, so every row lands on the same side
+        // of a day boundary no matter how long the import takes.
+        let recordedAt = Date.now
         var inserted = 0
         var merged = 0
 
@@ -389,6 +466,25 @@ enum CollectionCSV {
                     variantID: storedCard.variantID
                 )
             }
+
+            // After the price, so the event is stamped with the value the
+            // import just established rather than with nothing.
+            //
+            // `recordExisting`, not `initialBalance`: a CSV describes a
+            // collection the person already had, but it is new to the app
+            // today, so it belongs in today's reconciliation. Left out, a
+            // seven-thousand-dollar import would surface as Unexplained — a
+            // lie about what the system knows. The CSV's own acquisition date
+            // is kept as `acquiredAt`; recorded and acquired are not the same
+            // fact.
+            ledger.record(
+                storedCard,
+                kind: .recordExisting,
+                source: .csvImport,
+                deltaQuantity: entry.quantity,
+                occurredAt: recordedAt,
+                acquiredAt: entry.dateAdded
+            )
         }
 
         try context.save()

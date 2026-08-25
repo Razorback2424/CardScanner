@@ -892,7 +892,8 @@ final class PriceRefreshController: ObservableObject {
                     ),
                     game: target.game,
                     printingID: target.printingID,
-                    variantID: target.variantID
+                    variantID: target.variantID,
+                    marketVariantID: variant.id
                 )
                 if let record = store.record(forKey: target.id) {
                     record.marketVariantID = variant.id
@@ -980,7 +981,8 @@ final class PriceRefreshController: ObservableObject {
                 .price(normalized),
                 game: owner.game,
                 printingID: owner.printingID,
-                variantID: owner.variantID
+                variantID: owner.variantID,
+                marketVariantID: variant.variantId
             )
             if let record = store.record(forKey: owner.priceKey) {
                 record.marketVariantID = variant.variantId

@@ -17,11 +17,38 @@ struct TradingCardScannerApp: App {
     // Ownership and pricing are separate entities on purpose: a price is a
     // mutable observation about a printing-and-variant, shared by every copy
     // owned, with its own freshness lifecycle.
-    private static let schema = Schema([
+    private static let syncedSchema = Schema([
         CollectedCard.self,
         PriceRecord.self,
         ProductIdentity.self,
-        CollectionActivity.self
+        CollectionActivity.self,
+        InventoryEvent.self
+    ])
+
+    /// The portfolio's knowledge history, which never leaves the device.
+    ///
+    /// Not a storage optimisation. These tables record *when this phone learned
+    /// what* — every price observation it received and every day it
+    /// successfully checked. Two devices with different refresh schedules
+    /// legitimately have different knowledge histories, and merging them would
+    /// produce a history neither device actually observed. Closes converge once
+    /// there is a shared, instrument-keyed pricing service to derive them from;
+    /// until then, honest and device-local beats synced and invented.
+    private static let localOnlySchema = Schema([
+        PriceObservation.self,
+        PriceCheckDay.self,
+        PortfolioDailyClose.self
+    ])
+
+    private static let fullSchema = Schema([
+        CollectedCard.self,
+        PriceRecord.self,
+        ProductIdentity.self,
+        CollectionActivity.self,
+        InventoryEvent.self,
+        PriceObservation.self,
+        PriceCheckDay.self,
+        PortfolioDailyClose.self
     ])
 
     /// CloudKit sync is opt-in, decided once per launch from whether the
@@ -40,15 +67,29 @@ struct TradingCardScannerApp: App {
     /// is the fallback in both the literal and the design sense: sync is
     /// additive, never a requirement to use the app.
     private static func makeContainer() -> ModelContainer {
+        // A separate store for the local-only models, so CloudKit mirroring is
+        // decided per configuration rather than per container.
+        let localOnlyConfiguration = ModelConfiguration(
+            "PortfolioLocal",
+            schema: localOnlySchema,
+            cloudKitDatabase: .none
+        )
+
         if AppleAccountCredentials.isSignedIn {
-            let cloudConfiguration = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
-            if let container = try? ModelContainer(for: schema, configurations: [cloudConfiguration]) {
+            let cloudConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .automatic)
+            if let container = try? ModelContainer(
+                for: fullSchema,
+                configurations: [cloudConfiguration, localOnlyConfiguration]
+            ) {
                 return container
             }
         }
 
-        let localConfiguration = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-        if let container = try? ModelContainer(for: schema, configurations: [localConfiguration]) {
+        let localConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .none)
+        if let container = try? ModelContainer(
+            for: fullSchema,
+            configurations: [localConfiguration, localOnlyConfiguration]
+        ) {
             return container
         }
 

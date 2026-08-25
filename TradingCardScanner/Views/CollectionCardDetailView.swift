@@ -160,10 +160,10 @@ struct CollectionCardDetailView: View {
     }
 
     private func removeCard() {
-        let removed = RemovedCardSnapshot(card: card)
-        modelContext.delete(card)
-        try? modelContext.save()
-        onRemoved(removed)
+        // Deleting the row from here is what made removals invisible to
+        // history. Ownership changes go through the store, which is the only
+        // thing that knows the ledger has to hear about them.
+        onRemoved(CollectionStore(context: modelContext).remove(card))
         dismiss()
     }
 
@@ -287,99 +287,6 @@ struct CollectionCardDetailView: View {
 
 /// Everything needed to restore a removed row without another catalog request.
 /// The value safely outlives the deleted SwiftData model.
-struct RemovedCardSnapshot: Identifiable {
-    let id = UUID()
-    let collectionKey: String
-    let game: CardGame
-    let providerID: String
-    let catalogProviderID: String?
-    let name: String
-    let setName: String
-    let setCode: String
-    let cardNumber: String
-    let rarity: String?
-    let imageURL: String?
-    let thumbnailURL: String?
-    let userArtworkFilename: String?
-    let pokemonPrintRunRaw: String?
-    let tcgplayerURL: String?
-    let catalogMetadataCheckedAt: Date?
-    let catalogMetadataVersion: Int
-    let quantity: Int
-    let dateAdded: Date
-    let variant: PhysicalVariant?
-    let variantResolution: VariantResolution
-    let identityResolution: IdentityResolution
-    let setReleaseOrder: Int
-
-    init(card: CollectedCard) {
-        collectionKey = card.collectionKey
-        game = card.cardGame
-        providerID = card.providerID
-        catalogProviderID = card.catalogProviderID
-        name = card.name
-        setName = card.setName
-        setCode = card.setCode
-        cardNumber = card.cardNumber
-        rarity = card.rarity
-        imageURL = card.imageURL
-        thumbnailURL = card.thumbnailURL
-        userArtworkFilename = card.userArtworkFilename
-        pokemonPrintRunRaw = card.pokemonPrintRunRaw
-        tcgplayerURL = card.tcgplayerURL
-        catalogMetadataCheckedAt = card.catalogMetadataCheckedAt
-        catalogMetadataVersion = card.catalogMetadataVersion
-        quantity = card.quantity
-        dateAdded = card.dateAdded
-        variant = card.variant
-        variantResolution = card.variantResolution ?? .catalogSilent
-        identityResolution = card.identityResolution ?? .printedIdentifier
-        setReleaseOrder = card.setReleaseOrder
-    }
-
-    @MainActor
-    func restore(in context: ModelContext) {
-        let key = collectionKey
-        var descriptor = FetchDescriptor<CollectedCard>(
-            predicate: #Predicate { $0.collectionKey == key }
-        )
-        descriptor.fetchLimit = 1
-
-        if let existing = try? context.fetch(descriptor).first {
-            existing.quantity += quantity
-            existing.dateAdded = max(existing.dateAdded, dateAdded)
-        } else {
-            let restored = CollectedCard(
-                collectionKey: collectionKey,
-                game: game,
-                providerID: providerID,
-                name: name,
-                setName: setName,
-                setCode: setCode,
-                cardNumber: cardNumber,
-                rarity: rarity,
-                imageURL: imageURL,
-                thumbnailURL: thumbnailURL,
-                variant: variant,
-                variantResolution: variantResolution,
-                identityResolution: identityResolution,
-                setReleaseOrder: setReleaseOrder,
-                quantity: quantity,
-                dateAdded: dateAdded
-            )
-            restored.tcgplayerURL = tcgplayerURL
-            restored.userArtworkFilename = userArtworkFilename
-            restored.pokemonPrintRunRaw = pokemonPrintRunRaw
-            restored.catalogProviderID = catalogProviderID
-            restored.catalogMetadataCheckedAt = catalogMetadataCheckedAt
-            restored.catalogMetadataVersion = catalogMetadataVersion
-            context.insert(restored)
-        }
-
-        try? context.save()
-    }
-}
-
 enum CollectionArtworkStore {
     private static var directory: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?

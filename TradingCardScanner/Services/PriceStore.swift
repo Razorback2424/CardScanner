@@ -196,11 +196,23 @@ struct PriceStore {
 
     /// Records what a provider said about one variant, creating the record if
     /// this is the first time the app has asked.
+    ///
+    /// This is also where the append-only observation log is written. Both
+    /// successful outcomes — a price, and an explicit "nothing for this
+    /// variant" — funnel through here, while failures go through
+    /// `recordFailure`, so the three outcomes stay cleanly separable without
+    /// any caller having to know the log exists.
+    ///
+    /// `marketVariantID` is passed in rather than read back off the record
+    /// because provenance is part of what is being observed: a vendor remapping
+    /// a card from one variant object to another worth the same $42 has changed
+    /// what is priced, and the record still holds the *old* id at this point.
     func store(
         _ lookup: PriceLookup,
         game: CardGame,
         printingID: String,
         variantID: String?,
+        marketVariantID: String? = nil,
         at date: Date = .now
     ) {
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
@@ -210,11 +222,22 @@ struct PriceStore {
             return created
         }()
 
+        PriceObservationLog(context: context).ingest(
+            lookup,
+            instrumentKey: key,
+            marketVariantID: marketVariantID ?? record.marketVariantID,
+            at: date
+        )
+
         switch lookup {
         case let .price(price):
             record.apply(price)
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
+        }
+
+        if let marketVariantID {
+            record.marketVariantID = marketVariantID
         }
     }
 
@@ -232,6 +255,29 @@ struct PriceStore {
             return created
         }()
         guard record.unitMarketPriceUSD == nil else { return }
+
+        // Value-setting, so it belongs in the observation log — without a row
+        // here an entire imported collection would be invisible to the close
+        // engine and its whole value would surface as unexplained. But an
+        // import is not a provider check, so it writes no `PriceCheckDay`:
+        // coverage means "a provider answered today", and a CSV did not.
+        PriceObservationLog(context: context).ingest(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: amount,
+                    currencyCode: "USD",
+                    source: .importedCSV,
+                    sourceVariantID: variantID ?? key,
+                    sourceUpdatedAt: sourceUpdatedAt,
+                    fetchedAt: .now
+                )
+            ),
+            instrumentKey: key,
+            marketVariantID: record.marketVariantID,
+            recordsCoverage: false,
+            at: .now
+        )
+
         record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt)
     }
 

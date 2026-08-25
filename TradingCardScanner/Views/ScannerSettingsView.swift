@@ -37,6 +37,7 @@ struct SettingsView: View {
                 finishLockSection
                 cameraSection
                 PriceFallbackSettingsSection()
+                portfolioSection
                 collectionSection
                 developerSection
             }
@@ -120,6 +121,52 @@ struct SettingsView: View {
                 isConfirmingCollectionDeletion = true
             }
         }
+    }
+
+    /// Read-only in Phase 1, deliberately.
+    ///
+    /// A mutable timezone setting would recompute old boundaries and rewrite
+    /// months of already-published closes — the numbers changing underneath
+    /// someone because they changed a preference is precisely the failure this
+    /// feature exists to prevent. A permanent relocation is handled later by
+    /// timezone *epochs* ("Mountain through Dec 31 · Eastern from Jan 1"),
+    /// never by reinterpreting days that have already been published.
+    private var portfolioSection: some View {
+        Section {
+            LabeledContent("Day boundary", value: portfolioTimeZoneLabel)
+            if let started = portfolioStartedAt {
+                LabeledContent(
+                    "Tracking since",
+                    value: started.formatted(date: .abbreviated, time: .omitted)
+                )
+            }
+
+            Button("Export Value History", systemImage: "square.and.arrow.up") {
+                csvExportDocument = CollectionCSV.exportPortfolioHistory(
+                    PortfolioEngine.allCloses(in: modelContext)
+                )
+                csvExportFilename = "CardScanner Value History"
+                isShowingCSVExporter = true
+            }
+            .disabled(portfolioCloseCount == 0)
+        } header: {
+            Text("Portfolio")
+        } footer: {
+            Text("Daily closes are measured in the time zone tracking started in, and stay on this device. Export keeps a copy you own.")
+        }
+    }
+
+    private var portfolioTimeZoneLabel: String {
+        let zone = PortfolioCalendar.pinnedTimeZone() ?? .current
+        return zone.identifier.replacingOccurrences(of: "_", with: " ")
+    }
+
+    private var portfolioStartedAt: Date? {
+        PortfolioEpoch.startedAt(context: modelContext)
+    }
+
+    private var portfolioCloseCount: Int {
+        PortfolioEngine.allCloses(in: modelContext).count
     }
 
     private var developerSection: some View {

@@ -268,6 +268,12 @@ private struct CollectionActivityEditor: View {
             return
         }
 
+        // Captured before the row is rewritten: afterwards the old identity is
+        // gone and the outgoing leg has nothing to value itself against.
+        let ledger = InventoryLedger(context: modelContext)
+        let previousPriceStorageKey = ledger.priceStorageKey(for: card)
+        let movedQuantity = card.quantity
+
         card.collectionKey = newKey
         card.name = name.trimmed
         card.setName = setName.trimmed
@@ -306,6 +312,19 @@ private struct CollectionActivityEditor: View {
             event.variantLabel = card.variantLabel
             event.pokemonPrintRunRaw = card.pokemonPrintRunRaw
             event.correctedAt = .now
+        }
+
+        // A correction, never an acquisition. Correcting a variant from $8 to
+        // $74 is +$66 of corrections; showing it as a market gain would be
+        // precisely the thing this feature exists to stop.
+        let newPriceStorageKey = ledger.priceStorageKey(for: card)
+        if newKey != oldKey || newPriceStorageKey != previousPriceStorageKey {
+            ledger.recordCorrection(
+                fromCollectionKey: oldKey,
+                fromPriceStorageKey: previousPriceStorageKey,
+                toCard: card,
+                quantity: movedQuantity
+            )
         }
 
         do {

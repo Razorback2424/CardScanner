@@ -15,6 +15,7 @@ struct CollectionView: View {
 
     @StateObject private var refresh = PriceRefreshController()
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
+    @StateObject private var portfolio = PortfolioEngine()
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
 
     @State private var searchText = ""
@@ -112,7 +113,14 @@ struct CollectionView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
-        .task(id: cards.count) { await refreshStalePricesIfNeeded() }
+        .task { portfolio.start(context: modelContext) }
+        // Collection change and day rollover. Never from `body`: the snapshot is
+        // already O(n) per render, and a close that moved while being read would
+        // be worth nothing.
+        .task(id: cards.count) {
+            portfolio.recompute(context: modelContext)
+            await refreshStalePricesIfNeeded()
+        }
         .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
         .task(id: fallbackAvailabilityTaskID(snapshot)) {
             await refresh.updateFallbackAvailability(pending: fallbackPendingCount(snapshot))
@@ -192,7 +200,7 @@ struct CollectionView: View {
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
         removalUndoTask?.cancel()
-        removed.restore(in: modelContext)
+        CollectionStore(context: modelContext).restore(removed)
         pendingRemoval = nil
     }
 
@@ -225,9 +233,13 @@ struct CollectionView: View {
     private func header(_ snapshot: Snapshot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack(alignment: .trailing) {
-                Text(snapshot.pricedValue, format: .currency(code: "USD").precision(.fractionLength(2)))
+                // Whole-collection, and deliberately no longer following the
+                // filter chips. A close that changed when you tapped "Holo"
+                // would be meaningless — the filtered figure moves to its own
+                // line below, where it is clearly a subtotal.
+                Text(heroValue, format: .currency(code: "USD").precision(.fractionLength(2)))
                     .font(.system(size: 60, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                    .foregroundStyle(portfolioGreen)
                     .monospacedDigit()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .accessibilityLabel("Collection value")
@@ -237,7 +249,7 @@ struct CollectionView: View {
                 }
                 .labelStyle(.iconOnly)
                 .font(.headline.weight(.semibold))
-                .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                .foregroundStyle(portfolioGreen)
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
                 .disabled(isRefreshing)
@@ -245,7 +257,16 @@ struct CollectionView: View {
 
             }
 
+            todayCard
+
             if isNarrowed {
+                Text(
+                    "Filtered: \(snapshot.pricedValue, format: .currency(code: "USD").precision(.fractionLength(2))) of \(heroValue, format: .currency(code: "USD").precision(.fractionLength(2)))"
+                )
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+
                 Text("\(snapshot.visibleQuantity) of \(snapshot.totalQuantity)")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
@@ -278,6 +299,145 @@ struct CollectionView: View {
             fallbackStatusLabel(snapshot)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var portfolioGreen: Color { Color(red: 0.18, green: 0.55, blue: 0.34) }
+
+    /// The whole collection's current value. Falls back to the filtered
+    /// snapshot only before the engine's first pass has landed.
+    private var heroValue: Double {
+        portfolio.summary?.currentValue.doubleValue ?? makeSnapshot().pricedValue
+    }
+
+    /// Yesterday's close, what has happened since, and whether any of it is
+    /// unaccounted for.
+    @ViewBuilder
+    private var todayCard: some View {
+        if let summary = portfolio.summary {
+            VStack(alignment: .leading, spacing: 6) {
+                if summary.isMigrationDay {
+                    // Contract 8. There is genuinely no yesterday, so nothing is
+                    // invented — no reconciliation block, no fabricated close.
+                    // The first legitimate close forms at the first midnight
+                    // boundary.
+                    Text("Portfolio tracking started today")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                } else if let attribution = summary.attribution {
+                    reconciliation(attribution, closeDate: summary.closeDate)
+                }
+
+                coverageLabel(summary.coverage)
+
+                if let note = summary.revisionNote, let closeDate = summary.closeDate {
+                    Text("\(closeDate.formatted(date: .abbreviated, time: .omitted)) close · \(note)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if !summary.defects.isEmpty {
+                    // Surfaced, never silently repaired. If this ever appears,
+                    // a mutation somewhere is not writing its ledger event.
+                    Label(
+                        "\(summary.defects.count) position\(summary.defects.count == 1 ? "" : "s") disagree with the ledger",
+                        systemImage: "exclamationmark.triangle"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                }
+            }
+            .padding(.top, 2)
+        }
+    }
+
+    @ViewBuilder
+    private func reconciliation(
+        _ attribution: PortfolioClose.Attribution,
+        closeDate: Date?
+    ) -> some View {
+        VStack(spacing: 3) {
+            changeRow("Market movement", attribution.market)
+            if !attribution.added.isZero {
+                changeRow("Added to collection", attribution.added)
+            }
+            if !attribution.removed.isZero {
+                changeRow("Removed", -attribution.removed)
+            }
+            if !attribution.corrections.isZero {
+                changeRow("Corrections", attribution.corrections)
+            }
+            // Its own line, always. Folding a pricing arrival into "Corrections"
+            // would be exactly the sort of thing this feature exists to stop.
+            if !attribution.pricingAdjustment.isZero {
+                changeRow("Pricing adjustment", attribution.pricingAdjustment)
+            }
+
+            Divider()
+
+            changeRow("Total change", attribution.totalChange, emphasised: true)
+
+            HStack {
+                Text(closeDate.map { "\($0.formatted(date: .abbreviated, time: .omitted)) close" } ?? "Yesterday close")
+                Spacer()
+                Text(attribution.closeValue.doubleValue, format: .currency(code: "USD").precision(.fractionLength(2)))
+                    .monospacedDigit()
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            if !attribution.unexplained.isZero {
+                // Only ever shown because it is not zero, and never absorbed
+                // into another line. A residual the app hides is a residual
+                // nobody ever fixes.
+                changeRow("Unexplained", attribution.unexplained, isDefect: true)
+            }
+        }
+    }
+
+    private func changeRow(
+        _ label: String,
+        _ amount: Money,
+        emphasised: Bool = false,
+        isDefect: Bool = false
+    ) -> some View {
+        HStack {
+            Text(label)
+            Spacer()
+            Text(signedCurrency(amount))
+                .monospacedDigit()
+        }
+        .font(emphasised ? .subheadline.weight(.semibold) : .subheadline)
+        .foregroundStyle(isDefect ? Color.orange : (emphasised ? .primary : .secondary))
+    }
+
+    private func signedCurrency(_ amount: Money) -> String {
+        let magnitude = amount.magnitude.doubleValue
+            .formatted(.currency(code: "USD").precision(.fractionLength(2)))
+        if amount.isZero { return magnitude }
+        return (amount < .zero ? "−" : "+") + magnitude
+    }
+
+    @ViewBuilder
+    private func coverageLabel(_ coverage: PortfolioCoverage) -> some View {
+        switch coverage.state {
+        case .unknown:
+            Text("Coverage unknown for this day")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        case .complete:
+            Text("\(coverage.refreshed) of \(coverage.total) repriced today")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+        case .partial:
+            // Carried forward is stated, not hidden. An outage that quietly
+            // looked like completeness would be the most damaging thing this
+            // screen could do.
+            Text("\(coverage.refreshed) of \(coverage.total) repriced today · \(coverage.carriedForward) carried forward")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+        }
     }
 
     @ViewBuilder
@@ -571,10 +731,42 @@ struct CollectionView: View {
     @MainActor
     private func makeSnapshot() -> Snapshot {
         let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-        let cardsByKey = Dictionary(cards.map { ($0.collectionKey, $0) }, uniquingKeysWith: { first, _ in first })
 
-        let all = cards.map { card in
-            CollectionRow(
+        // One collection key can legitimately have more than one row. Two
+        // devices adding the same card while offline each pass their own local
+        // uniqueness check — `CollectionStore.card(forKey:)` is a local read —
+        // and CloudKit later merges both. Keeping only the first would drop the
+        // duplicate's quantity out of the total silently, which is a wrong
+        // number rather than a cosmetic glitch.
+        //
+        // So the projection sums them. Reconciling the underlying rows is
+        // deliberately not done here: which row wins its metadata, how a
+        // deletion that another device can resurrect resolves, and how
+        // `dateAdded`, artwork and grading merge are all open questions, and a
+        // destructive normalization pass that guesses at them would be worse
+        // than a correct read. The long-term answer is that the ledger owns
+        // quantity and duplicate rows become a storage problem.
+        let duplicatesByKey = Dictionary(grouping: cards, by: \.collectionKey)
+        var seenKeys = Set<String>()
+        // `cards` is sorted newest first, so the representative is the most
+        // recent row for the key — deterministic, and the same on every render.
+        let mergedCards: [(card: CollectedCard, quantity: Int, dateAdded: Date)] = cards.compactMap { card in
+            guard seenKeys.insert(card.collectionKey).inserted else { return nil }
+            let group = duplicatesByKey[card.collectionKey] ?? [card]
+            return (
+                card,
+                group.reduce(0) { $0 + $1.quantity },
+                group.map(\.dateAdded).max() ?? card.dateAdded
+            )
+        }
+        let cardsByKey = Dictionary(
+            mergedCards.map { ($0.card.collectionKey, $0.card) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        let all = mergedCards.map { merged in
+            let card = merged.card
+            return CollectionRow(
                 id: card.collectionKey,
                 game: card.cardGame,
                 name: card.name,
@@ -584,8 +776,8 @@ struct CollectionView: View {
                 cardNumber: card.cardNumber,
                 variantID: card.variantID,
                 variantLabel: card.variantLabel,
-                quantity: card.quantity,
-                dateAdded: card.dateAdded,
+                quantity: merged.quantity,
+                dateAdded: merged.dateAdded,
                 price: PriceStore.record(for: card, in: recordsByKey)?.display ?? .unknown,
                 itemKind: card.itemKind,
                 itemKindLabel: card.itemKindLabel,
@@ -898,6 +1090,7 @@ struct CollectionView: View {
     @MainActor
     private func runRefresh(_ targets: [PriceTarget], showsStatus: Bool) async {
         await refresh.refresh(targets, store: PriceStore(context: modelContext))
+        portfolio.recompute(context: modelContext)
         guard showsStatus else {
             refresh.dismissSummary()
             return

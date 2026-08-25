@@ -71,8 +71,21 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
+		A0010087 /* PortfolioEpoch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010087 /* PortfolioEpoch.swift */; };
+		A0010088 /* PortfolioClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010088 /* PortfolioClose.swift */; };
+		A0010089 /* PortfolioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010089 /* PortfolioEngine.swift */; };
+		A001008A /* PortfolioDailyClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008A /* PortfolioDailyClose.swift */; };
+		A0010085 /* InventoryEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010085 /* InventoryEvent.swift */; };
+		A0010086 /* InventoryLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010086 /* InventoryLedger.swift */; };
+		A0010080 /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010080 /* Money.swift */; };
+		A0010081 /* PriceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010081 /* PriceObservation.swift */; };
+		A0010082 /* PriceCheckDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010082 /* PriceCheckDay.swift */; };
+		A0010083 /* PortfolioCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010083 /* PortfolioCalendar.swift */; };
+		A0010084 /* PriceObservationLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010084 /* PriceObservationLog.swift */; };
+		A0020040 /* PortfolioLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020040 /* PortfolioLedgerTests.swift */; };
 		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
 		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
+		A0020041 /* PortfolioCloseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020041 /* PortfolioCloseTests.swift */; };
 		A0020021 /* PricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020021 /* PricingTests.swift */; };
 		A0020022 /* CenteringExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020022 /* CenteringExportTests.swift */; };
 		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
@@ -172,8 +185,21 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
+		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
+		B0010089 /* PortfolioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEngine.swift; sourceTree = "<group>"; };
+		B001008A /* PortfolioDailyClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioDailyClose.swift; sourceTree = "<group>"; };
+		B0010085 /* InventoryEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryEvent.swift; sourceTree = "<group>"; };
+		B0010086 /* InventoryLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryLedger.swift; sourceTree = "<group>"; };
+		B0010080 /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
+		B0010081 /* PriceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceObservation.swift; sourceTree = "<group>"; };
+		B0010082 /* PriceCheckDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCheckDay.swift; sourceTree = "<group>"; };
+		B0010083 /* PortfolioCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCalendar.swift; sourceTree = "<group>"; };
+		B0010084 /* PriceObservationLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceObservationLog.swift; sourceTree = "<group>"; };
+		B0020040 /* PortfolioLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioLedgerTests.swift; sourceTree = "<group>"; };
 		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
 		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		B0020041 /* PortfolioCloseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCloseTests.swift; sourceTree = "<group>"; };
 		B0020021 /* PricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingTests.swift; sourceTree = "<group>"; };
 		B0020022 /* CenteringExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringExportTests.swift; sourceTree = "<group>"; };
 		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
@@ -271,6 +297,11 @@
 							B0010060 /* JustTCGMarketModels.swift */,
 							B0010068 /* MagicContentKind.swift */,
 							B0010069 /* MagicPhysicalObjects.swift */,
+				B0010080 /* Money.swift */,
+				B0010081 /* PriceObservation.swift */,
+				B0010082 /* PriceCheckDay.swift */,
+				B0010085 /* InventoryEvent.swift */,
+				B001008A /* PortfolioDailyClose.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -308,6 +339,12 @@
 							B0010063 /* JustTCGV1Client.swift */,
 							B0010064 /* JustTCGV2GradedClient.swift */,
 							B0010065 /* JustTCGRefreshCoordinator.swift */,
+				B0010083 /* PortfolioCalendar.swift */,
+				B0010084 /* PriceObservationLog.swift */,
+				B0010086 /* InventoryLedger.swift */,
+				B0010087 /* PortfolioEpoch.swift */,
+				B0010088 /* PortfolioClose.swift */,
+				B0010089 /* PortfolioEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -358,6 +395,8 @@
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
+				B0020041 /* PortfolioCloseTests.swift */,
+				B0020040 /* PortfolioLedgerTests.swift */,
 				B0020021 /* PricingTests.swift */,
 				B0020032 /* ImportedItemKindTests.swift */,
 				B0020031 /* MagicPhysicalObjectTests.swift */,
@@ -522,6 +561,17 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
+				A0010087 /* PortfolioEpoch.swift in Sources */,
+				A0010088 /* PortfolioClose.swift in Sources */,
+				A0010089 /* PortfolioEngine.swift in Sources */,
+				A001008A /* PortfolioDailyClose.swift in Sources */,
+				A0010085 /* InventoryEvent.swift in Sources */,
+				A0010086 /* InventoryLedger.swift in Sources */,
+				A0010080 /* Money.swift in Sources */,
+				A0010081 /* PriceObservation.swift in Sources */,
+				A0010082 /* PriceCheckDay.swift in Sources */,
+				A0010083 /* PortfolioCalendar.swift in Sources */,
+				A0010084 /* PriceObservationLog.swift in Sources */,
 				A0010040 /* MagicSetSnapshot.swift in Sources */,
 				A0010035 /* CollectionFilters.swift in Sources */,
 				A0010041 /* CardCenteringMeasurement.swift in Sources */,
@@ -552,6 +602,8 @@
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
+				A0020041 /* PortfolioCloseTests.swift in Sources */,
+				A0020040 /* PortfolioLedgerTests.swift in Sources */,
 				A0020021 /* PricingTests.swift in Sources */,
 				A0020032 /* ImportedItemKindTests.swift in Sources */,
 				A0020031 /* MagicPhysicalObjectTests.swift in Sources */,
