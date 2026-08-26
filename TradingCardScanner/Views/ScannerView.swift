@@ -123,6 +123,10 @@ private struct ScannerChrome: View {
         .padding(.horizontal, 16)
         .padding(.top, 6)
         .padding(.bottom, 8)
+        // The camera preview fills the window; its controls should not. Stretched
+        // to the full width of an iPad these become a very long way to travel
+        // between a mode toggle and the shutter beneath it.
+        .contentWidthLimit(.standard)
         .overlay {
             if let issue = scanner.cameraIssue {
                 cameraIssueMessage(issue)

@@ -212,6 +212,10 @@ struct CollectionView: View {
                                 )
                             }
                             .buttonStyle(.plain)
+                            // A plain button only takes hits on its drawn pixels, which
+                            // leaves the gaps inside a tile dead to both touch and the
+                            // pointer. The tile is one target, so say so.
+                            .contentShape(.rect)
                         }
                     }
                     .padding(.top, 2)
