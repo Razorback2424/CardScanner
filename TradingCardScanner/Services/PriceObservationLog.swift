@@ -103,7 +103,6 @@ enum PriceObservationRules {
 /// current answer — the app asked and the provider has nothing for this exact
 /// physical variant — so it counts as coverage, but it must not remove a price
 /// the app legitimately holds. Only an `explicitInvalidation` can do that.
-@MainActor
 struct PriceObservationLog {
     let context: ModelContext
     var timeZone: TimeZone = PortfolioCalendar.timeZone()

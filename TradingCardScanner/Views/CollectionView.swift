@@ -123,12 +123,6 @@ struct CollectionView: View {
             }
 #endif
             portfolio.start(context: modelContext)
-#if DEBUG
-            if isDebugRoute("PortfolioHistory") {
-                seedPortfolioHistoryClosesQAIfNeeded()
-                portfolio.recompute(context: modelContext)
-            }
-#endif
         }
         // Collection change and day rollover. Never from `body`: the snapshot is
         // already O(n) per render, and a close that moved while being read would
@@ -168,6 +162,7 @@ struct CollectionView: View {
                 if portfolio.summary?.isAuthoritative != false {
                     PortfolioHistoryView(
                         summary: portfolio.summary,
+                        factors: portfolio.performanceFactors,
                         refreshRevision: portfolio.inputRevision
                     )
                 }
@@ -1219,17 +1214,24 @@ struct CollectionView: View {
         return arguments[index + 1] == route
     }
 
+    /// Deterministic history fixture.
+    ///
+    /// Seeds *inputs* — an acquisition five days ago and a price observation
+    /// per day — and lets the replay derive the closes. The previous fixture
+    /// inserted fabricated zero-valued closes, which the replay now correctly
+    /// overwrites with what the inputs actually imply, so it could only ever
+    /// render a flat line at zero.
     @MainActor
     private func seedPortfolioHistoryQAIfNeeded() {
         guard cards.isEmpty else { return }
         let timeZone = PortfolioCalendar.timeZone()
         let today = PortfolioCalendar.day(containing: .now, in: timeZone)
-        let epoch = PortfolioCalendar.day(
+        let epochDay = PortfolioCalendar.day(
             containing: today.addingTimeInterval(-5 * 86_400),
             in: timeZone
         )
         UserDefaults.standard.set(
-            epoch.addingTimeInterval(60).timeIntervalSince1970,
+            epochDay.timeIntervalSince1970,
             forKey: PortfolioEpoch.defaultsKey
         )
         UserDefaults.standard.set(PortfolioHistoryMode.performance.rawValue, forKey: "portfolioHistoryMode")
@@ -1241,33 +1243,54 @@ struct CollectionView: View {
                 name: "History QA Booster Box",
                 setName: "Trustworthy History",
                 variantID: "ui-history-variant",
-                marketPriceUSD: 125,
+                marketPriceUSD: 100,
                 updatedAt: .now,
                 imageURL: nil
             ),
             game: .pokemon
         )
-    }
 
-    @MainActor
-    private func seedPortfolioHistoryClosesQAIfNeeded() {
-        let timeZone = PortfolioCalendar.timeZone()
-        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
-        let existing = Set(PortfolioEngine.allCloses(in: modelContext).map(\.date))
-        for offset in 1...5 {
+        guard let card = cards.first ?? (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.first
+        else { return }
+        let instrument = InventoryLedger(context: modelContext).priceStorageKey(for: card)
+
+        // Ownership starts at the epoch so the whole window has something held.
+        for event in InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey) {
+            event.occurredAt = epochDay.addingTimeInterval(60)
+        }
+
+        // A price per day, moving enough to make Performance legible and
+        // distinct from Collection Value.
+        let prices: [Double] = [100, 104, 101, 112, 118, 125]
+        for (offset, price) in prices.enumerated() {
             let day = PortfolioCalendar.day(
-                containing: today.addingTimeInterval(Double(-offset) * 86_400),
+                containing: epochDay.addingTimeInterval(Double(offset) * 86_400),
                 in: timeZone
             )
-            guard !existing.contains(day) else { continue }
+            // The add wrote its own observation at wall-clock now, so today's
+            // price has to be stamped after that to be the one in force.
+            let receivedAt = offset == prices.count - 1
+                ? Date.now
+                : day.addingTimeInterval(3_600)
             modelContext.insert(
-                PortfolioDailyClose(
-                    date: day, revision: 100, timeZoneIdentifier: timeZone.identifier,
-                    closeValue: .zero, market: .zero, flow: .zero, corrections: .zero,
-                    pricingAdjustment: .zero, carriedForwardValue: .zero,
-                    coverage: .complete, refreshedInstrumentCount: 1,
-                    carriedForwardInstrumentCount: 0, pricedPositionCount: 0,
-                    excludedCount: 0, inputsFingerprint: "ui-history", revisionReason: nil
+                PriceObservation(
+                    instrumentKey: instrument,
+                    kind: .marketUpdate,
+                    amount: Money(rounding: price),
+                    source: .justTCG,
+                    sourceVariantID: "ui-history-variant",
+                    marketVariantID: "ui-history-variant",
+                    effectiveAt: receivedAt,
+                    receivedAt: receivedAt,
+                    isSourceStamped: true
+                )
+            )
+            modelContext.insert(
+                PriceCheckDay(
+                    instrumentKey: instrument,
+                    portfolioDay: day,
+                    lastSuccessfulCheckAt: receivedAt,
+                    source: .justTCG
                 )
             )
         }

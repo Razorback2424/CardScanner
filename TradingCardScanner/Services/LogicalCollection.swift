@@ -69,7 +69,6 @@ struct LogicalCollectionProjection {
 /// duplicate opened its books at the wrong quantity. Each site was individually
 /// reasonable and collectively wrong; there is now a single answer to what is
 /// owned.
-@MainActor
 enum LogicalCollection {
     /// `priceStorageKey` is supplied rather than looked up so the bulk callers
     /// can answer from an in-memory index instead of one fetch per position.

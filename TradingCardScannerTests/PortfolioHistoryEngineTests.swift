@@ -90,7 +90,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             )
         )
         return PortfolioHistoryInput(
-            closes: closes, events: events, observations: observations,
+            closes: closes,
             summary: PortfolioSummary(
                 currentValue: money(currentValue), attribution: attribution,
                 closeDate: closes.max { $0.date < $1.date }?.date,
@@ -98,13 +98,15 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             ),
             epoch: closes.first?.date,
             timeZoneIdentifier: "UTC", now: now,
-            dailyPerformanceFactors: Dictionary(
-                replay.days.compactMap { day in
-                    day.performanceFactor.map { (day.displayDay, $0) }
-                },
-                uniquingKeysWith: { _, latest in latest }
-            ),
-            livePerformanceFactor: replay.live?.performanceFactor
+            factors: PortfolioPerformanceFactors(
+                daily: Dictionary(
+                    replay.days.compactMap { day in
+                        day.performanceFactor.map { (day.displayDay, $0) }
+                    },
+                    uniquingKeysWith: { _, latest in latest }
+                ),
+                live: replay.live?.performanceFactor
+            )
         )
     }
 

@@ -92,19 +92,27 @@ struct PortfolioPublishedClose: Equatable, Sendable {
     }
 }
 
+/// Time-weighted factors, produced by the one replay the engine already ran.
+///
+/// The chart never re-derives these. Before this existed the history card
+/// built its own snapshot and replayed the entire observation log a second
+/// time, so a single input change cost two full passes.
+struct PortfolioPerformanceFactors: Equatable, Sendable {
+    /// Per finished portfolio day. A day is *absent* when its factor is
+    /// undefined — filling the gap with 1 would report an unmeasurable period
+    /// as flat.
+    var daily: [Date: Decimal] = [:]
+    /// The still-open day.
+    var live: Decimal? = 1
+}
+
 struct PortfolioHistoryInput: Equatable, Sendable {
     var closes: [PortfolioPublishedClose]
-    var events: [LedgerEntry]
-    var observations: [ObservationEntry]
     var summary: PortfolioSummary
     var epoch: Date?
     var timeZoneIdentifier: String
     var now: Date
-    /// Time-weighted factor per finished portfolio day, produced by the same
-    /// replay pass that produced the closes. The chart never re-walks history.
-    var dailyPerformanceFactors: [Date: Decimal] = [:]
-    /// The factor for the still-open day.
-    var livePerformanceFactor: Decimal? = 1
+    var factors = PortfolioPerformanceFactors()
 }
 
 struct PortfolioHistoryPoint: Identifiable, Equatable, Sendable {

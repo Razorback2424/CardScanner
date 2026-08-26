@@ -48,7 +48,7 @@ enum PortfolioHistoryEngine {
         // them in the same forward pass that produced the closes. There is no
         // second walk here — the engine this replaced re-derived the whole
         // prefix once per close.
-        let dailyFactors = input.dailyPerformanceFactors
+        let dailyFactors = input.factors.daily
 
         var previousDate = anchor.date
         for close in selected.dropFirst() {
@@ -78,7 +78,7 @@ enum PortfolioHistoryEngine {
             let liveDay = PortfolioCalendar.day(containing: input.now, in: timeZone)
             while cursor <= liveDay {
                 guard let link = cursor == liveDay
-                    ? input.livePerformanceFactor
+                    ? input.factors.live
                     : dailyFactors[cursor] else {
                     factorAvailable = false
                     break
@@ -199,6 +199,7 @@ final class PortfolioHistoryController: ObservableObject {
     func recompute(
         context: ModelContext,
         summary: PortfolioSummary?,
+        factors: PortfolioPerformanceFactors,
         mode: PortfolioHistoryMode,
         range: PortfolioHistoryRange,
         now: Date = .now
@@ -208,15 +209,9 @@ final class PortfolioHistoryController: ObservableObject {
             return
         }
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? PortfolioCalendar.timeZone()
-        let snapshot = PortfolioReplaySnapshotBuilder.make(
-            context: context,
-            epoch: PortfolioEpoch.startedAt(context: context) ?? now,
-            through: now,
-            timeZone: timeZone
-        )
-        let replay = PortfolioReplayEngine.replay(snapshot.input)
-        let events = snapshot.input.events
-        let observations = snapshot.input.observations
+        // Closes only. The chart plots published days and needs no replay of
+        // its own — the factors arrive from the computation the engine already
+        // performed.
         let closes = PortfolioEngine.allCloses(in: context).map {
             PortfolioPublishedClose(
                 date: $0.date, revision: $0.revision, timeZoneIdentifier: $0.timeZoneIdentifier,
@@ -231,18 +226,12 @@ final class PortfolioHistoryController: ObservableObject {
         }
         result = PortfolioHistoryEngine.calculate(
             input: PortfolioHistoryInput(
-                closes: closes, events: events, observations: observations,
-                summary: summary, epoch: PortfolioEpoch.startedAt(context: context),
-                timeZoneIdentifier: timeZone.identifier, now: now,
-                // A missing day means the factor is undefined, not 1. Filling
-                // the gap with 1 would report an unmeasurable period as flat.
-                dailyPerformanceFactors: Dictionary(
-                    replay.days.compactMap { day in
-                        day.performanceFactor.map { (day.displayDay, $0) }
-                    },
-                    uniquingKeysWith: { _, latest in latest }
-                ),
-                livePerformanceFactor: replay.live?.performanceFactor
+                closes: closes,
+                summary: summary,
+                epoch: PortfolioEpoch.startedAt(context: context),
+                timeZoneIdentifier: timeZone.identifier,
+                now: now,
+                factors: factors
             ),
             mode: mode,
             range: range

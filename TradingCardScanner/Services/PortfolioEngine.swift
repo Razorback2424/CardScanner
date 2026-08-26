@@ -65,8 +65,14 @@ final class PortfolioEngine: ObservableObject {
     /// changing the visible summary values (for example, a close revision or
     /// two offsetting market updates).
     @Published private(set) var inputRevision: UInt = 0
+    /// Time-weighted factors from the same replay that produced the summary, so
+    /// the history card never runs a second pass.
+    @Published private(set) var performanceFactors = PortfolioPerformanceFactors()
 
     private var lastComputedDay: Date?
+    /// Guards against a slower earlier pass publishing over a fresher one.
+    private var computationSequence: UInt = 0
+    private var computationTask: Task<Void, Never>?
 
     var summary: PortfolioSummary? {
         if case let .ready(summary) = status { return summary }
@@ -98,49 +104,96 @@ final class PortfolioEngine: ObservableObject {
         return PortfolioCalendar.day(containing: now, in: timeZone) != lastComputedDay
     }
 
+    /// Starts a recomputation. Returns immediately; the result is published
+    /// when the background computation finishes.
+    ///
+    /// Everything expensive — fetching and flattening the ledger, the
+    /// observation log and the check-day rows, then replaying them — happens on
+    /// `PortfolioComputationActor`. Only the small act of building the summary
+    /// and writing at most a few hundred close rows happens here.
     func recompute(context: ModelContext, now: Date = .now) {
-        inputRevision &+= 1
         status = .computing
 
         let timeZone = PortfolioCalendar.timeZone()
-        let today = PortfolioCalendar.day(containing: now, in: timeZone)
-        lastComputedDay = today
+        lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
 
-        // One snapshot, one replay. Everything below reads from that single
-        // forward pass rather than recomputing prefixes per day.
-        let snapshot = PortfolioReplaySnapshotBuilder.make(
-            context: context,
-            epoch: PortfolioEpoch.startedAt(context: context) ?? now,
-            through: now,
-            timeZone: timeZone
-        )
-        let projection = snapshot.projection
-        let valuation = Self.currentValuation(
-            projection: projection,
-            valuations: snapshot.valuations,
-            otherCurrencyInstruments: snapshot.otherCurrencyInstruments
-        )
+        computationSequence &+= 1
+        let sequence = computationSequence
+        let container = context.container
+        let epoch = PortfolioEpoch.startedAt() ?? now
+
+        computationTask?.cancel()
+        computationTask = Task { [weak self] in
+            let actor = PortfolioComputationActor(modelContainer: container)
+            let computation = await actor.compute(
+                epoch: epoch,
+                through: now,
+                timeZoneIdentifier: timeZone.identifier
+            )
+            guard !Task.isCancelled else { return }
+            await self?.apply(
+                computation,
+                sequence: sequence,
+                now: now,
+                timeZone: timeZone,
+                context: context
+            )
+        }
+    }
+
+    /// Recomputes and waits. Tests and any caller that needs the result before
+    /// continuing use this; the app uses `recompute`.
+    func recomputeAndWait(context: ModelContext, now: Date = .now) async {
+        recompute(context: context, now: now)
+        await computationTask?.value
+    }
+
+    private func apply(
+        _ computation: PortfolioReplaySnapshotBuilder.Computation,
+        sequence: UInt,
+        now: Date,
+        timeZone: TimeZone,
+        context: ModelContext
+    ) {
+        // A slower earlier pass must never overwrite a fresher one.
+        guard sequence == computationSequence else { return }
+
+        // Bumped here rather than when the work starts. Consumers key their
+        // recomputation off this, and a revision published before the result
+        // exists means they run once against a nil summary and never run again.
+        inputRevision &+= 1
+
+        let today = PortfolioCalendar.day(containing: now, in: timeZone)
+        let valuation = computation.valuation
 
         var summary = PortfolioSummary(
             currentValue: valuation.value,
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
         )
-        summary.defects = snapshot.defects
-            + Self.reconcile(projection: projection, events: snapshot.input.events)
+        summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
         LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
-        guard let epoch = PortfolioEpoch.startedAt(context: context) else {
+        guard let epoch = PortfolioEpoch.startedAt() else {
             status = .ready(summary)
             return
         }
 
         summary.isMigrationDay = PortfolioEpoch.isMigrationDay(now, epoch: epoch, timeZone: timeZone)
 
-        let replay = PortfolioReplayEngine.replay(snapshot.input)
+        let replay = computation.replay
+        performanceFactors = PortfolioPerformanceFactors(
+            daily: Dictionary(
+                replay.days.compactMap { day in
+                    day.performanceFactor.map { (day.displayDay, $0) }
+                },
+                uniquingKeysWith: { _, latest in latest }
+            ),
+            live: replay.live?.performanceFactor
+        )
         summary.coverage = replay.live?.coverageToday(
-            index: snapshot.input.coverage,
+            index: computation.coverage,
             heldInstruments: Set(valuation.instrumentsHeld),
             day: today
         ) ?? PortfolioCoverage(state: .complete)
@@ -174,7 +227,7 @@ final class PortfolioEngine: ObservableObject {
 
     // MARK: - Current value, measured independently of the walk
 
-    struct CurrentValuation {
+    struct CurrentValuation: Sendable {
         var value: Money = .zero
         var unpricedCount: Int = 0
         var otherCurrencyCount: Int = 0
@@ -191,7 +244,7 @@ final class PortfolioEngine: ObservableObject {
     /// something if the two sides are measured independently. Prices come from
     /// the bulk index — one fetch per position would be one fetch per position
     /// against the whole observation log.
-    static func currentValuation(
+    nonisolated static func currentValuation(
         projection: LogicalCollectionProjection,
         valuations: InstrumentValuationIndex,
         otherCurrencyInstruments: Set<String>
@@ -256,7 +309,7 @@ final class PortfolioEngine: ObservableObject {
     /// repaired. Repairing it would hide the only evidence that a mutation
     /// somewhere is not writing its event — which is the failure mode this
     /// whole phase is built to catch.
-    static func reconcile(
+    nonisolated static func reconcile(
         projection: LogicalCollectionProjection,
         events: [LedgerEntry]
     ) -> [LedgerIntegrityDefect] {

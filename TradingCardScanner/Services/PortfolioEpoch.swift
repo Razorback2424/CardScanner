@@ -30,9 +30,11 @@ enum PortfolioEpoch {
     /// Ownership events sync; price observations and closes do not. Therefore
     /// a remote baseline is evidence of when ownership accounting began, not
     /// evidence that this device knew any prices on that date.
-    @MainActor
-    static func startedAt(
-        context: ModelContext,
+    /// Takes a `context` it no longer reads: local knowledge time lives in
+    /// `UserDefaults`, because a synced baseline is evidence of when ownership
+    /// accounting began, not that this device knew any prices then.
+    nonisolated static func startedAt(
+        context: ModelContext? = nil,
         defaults: UserDefaults = .standard
     ) -> Date? {
         let stored = defaults.double(forKey: defaultsKey)

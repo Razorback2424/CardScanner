@@ -168,7 +168,6 @@ enum ArtworkDiagnostics {
 /// Prices are keyed by printing plus variant, never by collection row, so eight
 /// owned copies of one printing are one record to fetch, one to refresh and one
 /// to keep fresh.
-@MainActor
 struct PriceStore {
     let context: ModelContext
 

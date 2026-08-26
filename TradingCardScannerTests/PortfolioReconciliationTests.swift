@@ -530,7 +530,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(reading.defects.map(\.reason), [.conflictingPayloadForIdempotencyKey])
     }
 
-    func testConflictingLedgerRowsPauseHistoryWithoutHidingCurrentValue() throws {
+    func testConflictingLedgerRowsPauseHistoryWithoutHidingCurrentValue() async throws {
         let context = try makeContext()
         let operationID = UUID()
         let date = Date(timeIntervalSince1970: 2_000_000_000)
@@ -547,7 +547,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         try context.save()
 
         let engine = PortfolioEngine()
-        engine.recompute(context: context, now: date.addingTimeInterval(86_400 * 2))
+        await engine.recomputeAndWait(context: context, now: date.addingTimeInterval(86_400 * 2))
 
         guard let summary = engine.summary else { return XCTFail("no summary") }
         XCTAssertFalse(summary.isAuthoritative)
@@ -558,7 +558,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
     }
 
-    func testLedgerProjectionMismatchAlsoPausesPublication() throws {
+    func testLedgerProjectionMismatchAlsoPausesPublication() async throws {
         // The ledger says one copy, the collection holds three. Today already
         // surfaced this; now it also stops the app publishing a close it has
         // just proved it cannot support.
@@ -575,7 +575,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         try context.save()
 
         let engine = PortfolioEngine()
-        engine.recompute(context: context, now: date.addingTimeInterval(86_400 * 2))
+        await engine.recomputeAndWait(context: context, now: date.addingTimeInterval(86_400 * 2))
 
         guard let summary = engine.summary else { return XCTFail("no summary") }
         XCTAssertFalse(summary.isAuthoritative)

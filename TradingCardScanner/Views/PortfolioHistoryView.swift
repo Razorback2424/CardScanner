@@ -11,6 +11,7 @@ struct PortfolioHistoryView: View {
     @AppStorage("portfolioHistoryRange") private var rangeRaw = PortfolioHistoryRange.oneMonth.rawValue
 
     let summary: PortfolioSummary?
+    let factors: PortfolioPerformanceFactors
     let refreshRevision: UInt
 
     @State private var selectedPointID: String?
@@ -96,6 +97,7 @@ struct PortfolioHistoryView: View {
             controller.recompute(
                 context: modelContext,
                 summary: summary,
+                factors: factors,
                 mode: mode,
                 range: range
             )

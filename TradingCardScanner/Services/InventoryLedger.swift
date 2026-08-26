@@ -89,7 +89,6 @@ final class LedgerIntegrityLog: ObservableObject {
 /// transaction as the mutation itself. That is deliberately not a new
 /// synchronous chokepoint — nothing queues, nothing coordinates; each existing
 /// write simply also states what it did.
-@MainActor
 struct InventoryLedger {
     let context: ModelContext
 
@@ -354,7 +353,9 @@ struct InventoryLedger {
                     collectionKey: collectionKey,
                     detail: "\(idempotencyKey): recorded \(existing.deltaQuantity) of \(existing.collectionKey), attempted \(deltaQuantity) of \(collectionKey)"
                 )
-                LedgerIntegrityLog.shared.report(defect)
+                // Returned rather than published from here: the write path is
+                // no longer main-actor isolated, and the next recomputation's
+                // ledger read finds the same conflict anyway.
                 return .conflict(defect)
             }
             return .duplicate(existing)

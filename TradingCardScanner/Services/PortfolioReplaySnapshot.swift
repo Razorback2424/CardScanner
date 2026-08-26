@@ -45,7 +45,6 @@ struct InstrumentValuationIndex: Sendable {
     }
 }
 
-@MainActor
 enum PortfolioReplaySnapshotBuilder {
 
     struct Snapshot {
@@ -59,6 +58,41 @@ enum PortfolioReplaySnapshotBuilder {
         var isAuthoritative: Bool
         var defects: [LedgerIntegrityDefect]
         var projection: LogicalCollectionProjection
+    }
+
+    /// The computation as it crosses back to the UI: fully `Sendable`, with no
+    /// SwiftData model anywhere in it.
+    struct Computation: Sendable {
+        var valuation: PortfolioEngine.CurrentValuation
+        var defects: [LedgerIntegrityDefect]
+        var isAuthoritative: Bool
+        var replay: PortfolioReplayResult
+        var coverage: PortfolioCoverageIndex
+    }
+
+    /// Everything expensive, in one place, off the main actor.
+    static func compute(
+        context: ModelContext,
+        epoch: Date,
+        through: Date,
+        timeZone: TimeZone
+    ) -> Computation {
+        let snapshot = make(context: context, epoch: epoch, through: through, timeZone: timeZone)
+        return Computation(
+            valuation: PortfolioEngine.currentValuation(
+                projection: snapshot.projection,
+                valuations: snapshot.valuations,
+                otherCurrencyInstruments: snapshot.otherCurrencyInstruments
+            ),
+            defects: snapshot.defects
+                + PortfolioEngine.reconcile(
+                    projection: snapshot.projection,
+                    events: snapshot.input.events
+                ),
+            isAuthoritative: snapshot.isAuthoritative,
+            replay: PortfolioReplayEngine.replay(snapshot.input),
+            coverage: snapshot.input.coverage
+        )
     }
 
     static func make(
@@ -82,7 +116,7 @@ enum PortfolioReplaySnapshotBuilder {
             )
         )) ?? []
         let observations = rows.map(PortfolioEngine.observationEntry(from:))
-        let records = PriceStore(context: context).allRecords()
+        let records = (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
         let valuations = valuationIndex(observations: rows, records: records)
         let otherCurrencyInstruments = Set(
             records
@@ -198,5 +232,28 @@ enum PortfolioReplaySnapshotBuilder {
             checkedByDay[check.portfolioDay, default: []].insert(check.instrumentKey)
         }
         return PortfolioCoverageIndex(checkedByDay: checkedByDay)
+    }
+}
+
+/// Owns a private `ModelContext` so fetching and flattening the portfolio's
+/// inputs happens away from the UI.
+///
+/// Moving only the pure replay off the main actor would have moved the cheap
+/// part: measured end to end, the replay is roughly 0.3s of a 2.5s
+/// recomputation and the rest is SwiftData materialising observation and
+/// check-day rows. That is the work that has to leave.
+@ModelActor
+actor PortfolioComputationActor {
+    func compute(
+        epoch: Date,
+        through: Date,
+        timeZoneIdentifier: String
+    ) -> PortfolioReplaySnapshotBuilder.Computation {
+        PortfolioReplaySnapshotBuilder.compute(
+            context: modelContext,
+            epoch: epoch,
+            through: through,
+            timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current
+        )
     }
 }
