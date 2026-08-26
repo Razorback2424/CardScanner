@@ -100,6 +100,9 @@ final class PortfolioEngine: ObservableObject {
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
+#if DEBUG
+        try? CollectionStore.repairKnownQuantityMismatches(in: context)
+#endif
         do {
             try PortfolioEpoch.establishIfNeeded(context: context, at: now)
         } catch {
@@ -192,6 +195,22 @@ final class PortfolioEngine: ObservableObject {
         summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
         LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
+
+#if DEBUG
+        if !summary.defects.isEmpty {
+            print("🚨 PORTFOLIO RECONCILIATION FAILED")
+            print("Defect count: \(summary.defects.count)")
+
+            for defect in summary.defects {
+                print("""
+                ---
+                Reason: \(defect.reason.rawValue)
+                Collection key: \(defect.collectionKey)
+                Detail: \(defect.detail)
+                """)
+            }
+        }
+#endif
 
         guard let epoch = PortfolioEpoch.startedAt() else {
             status = .ready(summary)

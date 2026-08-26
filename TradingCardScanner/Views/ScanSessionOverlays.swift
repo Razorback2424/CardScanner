@@ -41,8 +41,8 @@ struct ScanAssistanceView: View {
 /// This appears only when two or more variants are genuinely possible and the
 /// card carries nothing that separates them — the moment the person holding it
 /// knows something the scanner cannot. The tap is the whole transaction: it
-/// means this variant *and* save it. There is no follow-up confirmation,
-/// because the tap already said everything.
+/// means this variant and continue to the captured scan destination. There is
+/// no follow-up confirmation, because the tap already said everything.
 struct VariantChoiceBar: View {
     let choice: PendingVariantChoice
     let onChoose: (PhysicalVariant) -> Void
@@ -136,7 +136,7 @@ struct VariantChoiceBar: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
-        .accessibilityLabel("\(option.label), add \(choice.card.name)")
+                .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
     }
 }
 
@@ -203,7 +203,7 @@ struct PrintRunChoiceBar: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.white)
-                    .accessibilityLabel("\(option.label), add \(choice.card.name)")
+                    .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
                 }
             }
         }
@@ -267,7 +267,7 @@ struct IdentityChoiceBar: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.white)
-                .accessibilityLabel("\(candidate.setName), add \(candidate.name)")
+                .accessibilityLabel("Select \(candidate.setName) for \(candidate.name)")
             }
         }
         .foregroundStyle(.white)
@@ -312,13 +312,18 @@ struct ScanReceiptCard: View {
             }
             .buttonStyle(.plain)
 
-            Button("Undo", action: onUndo)
-                .font(.subheadline.weight(.semibold))
-                .buttonStyle(.plain)
-                .foregroundStyle(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(.white.opacity(0.16), in: Capsule())
+            Button(action: onUndo) {
+                Label("Undo Scan", systemImage: "arrow.uturn.backward")
+                    .font(.subheadline.weight(.bold))
+                    .lineLimit(1)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 9)
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.red)
+            .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
+            .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
         }
         .foregroundStyle(.white)
         .padding(10)
@@ -331,6 +336,7 @@ struct ScanReceiptCard: View {
 struct RecentScanRail: View {
     let scans: [RecentScan]
     let onSelect: (RecentScan) -> Void
+    let onDelete: (RecentScan) -> Void
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -348,6 +354,11 @@ struct RecentScanRail: View {
                             }
                     }
                     .buttonStyle(.plain)
+                    .contextMenu {
+                        Button("Remove from Collection", role: .destructive) {
+                            onDelete(scan)
+                        }
+                    }
                     .accessibilityLabel("\(scan.card.name), \(scan.resolved.label). Open to correct.")
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
                 }

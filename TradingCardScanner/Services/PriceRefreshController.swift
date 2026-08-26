@@ -168,10 +168,10 @@ final class PriceRefreshController: ObservableObject {
     private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
     private let importedResolver = ImportedCardResolver()
-    private let fallbackService = ProductPriceService()
+    private let fallbackService = ProductPriceService.shared
     /// One transport for every JustTCG client, so pacing and the request ledger
     /// are shared rather than each client keeping its own idea of the allowance.
-    private let sharedTransport = JustTCGTransport()
+    private let sharedTransport = JustTCGTransport.shared
 
     /// Opt-in, and off until a key is present. The catalog prices most of the
     /// collection for free; this is only for what it cannot reach.
@@ -496,12 +496,7 @@ final class PriceRefreshController: ObservableObject {
     /// euro price *is* a price, but not one the collection can total, so it is
     /// treated as unfinished rather than done.
     nonisolated static func needsFallback(_ lookup: PriceLookup) -> Bool {
-        switch lookup {
-        case .unavailable:
-            return true
-        case let .price(price):
-            return price.currencyCode != "USD"
-        }
+        PriceFallbackQuoteResolver.needsFallback(lookup)
     }
 
     /// One card the catalog could not finish, captured with whatever identity
@@ -538,10 +533,9 @@ final class PriceRefreshController: ObservableObject {
         /// variant handle makes every later refresh a batch.
         var externalLookups: [JustTCGBatchLookup] {
             if let catalogID = card?.providerID ?? target.catalogPrintingID,
-               let variantID = target.variantID,
-               let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
-                .first(where: { $0.variant.id == variantID }) {
-                return [.tcgplayerID(stamped.tcgplayerProductID)]
+               let variant = target.variantID.map(PhysicalVariant.resolving) {
+                let stamped = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID, variant: variant)
+                if !stamped.isEmpty { return stamped }
             }
             guard case let .magic(magic)? = card,
                   let tcgplayerID = magic.tcgplayerID else {
@@ -564,19 +558,11 @@ final class PriceRefreshController: ObservableObject {
                 name: name,
                 setName: setName,
                 cardNumber: number,
-                japaneseSetID: catalogID.flatMap(PriceRefreshController.japaneseSetID(forCatalogCardID:)),
+                japaneseSetID: catalogID.flatMap(PriceFallbackQuoteResolver.japaneseSetID(forCatalogCardID:)),
                 pokemonPrintRun: target.pokemonPrintRun,
                 vendorCardID: vendorCardID
             )
         }
-    }
-
-    /// The `ja` set id embedded in a Japanese catalog card id — `M2-001` is set
-    /// `M2`. Used to derive the vendor's set slug, which is prefixed with it.
-    private nonisolated static func japaneseSetID(forCatalogCardID id: String) -> String? {
-        guard CatalogIdentityNormalization.locale(forCatalogCardID: id) == .ja,
-              let separator = id.lastIndex(of: "-") else { return nil }
-        return String(id[id.startIndex..<separator])
     }
 
     /// Ask the vendor about everything the catalog left unfinished.

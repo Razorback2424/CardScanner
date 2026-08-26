@@ -176,9 +176,14 @@ enum CardCenteringAnalyzer {
     }
 
     private static func prepare(_ image: UIImage, rotationDegrees: Double) -> UIImage? {
-        guard let cgImage = image.cgImage else { return nil }
-        let originalWidth = CGFloat(cgImage.width)
-        let originalHeight = CGFloat(cgImage.height)
+        guard image.cgImage != nil else { return nil }
+        // Camera photos commonly carry their portrait rotation in
+        // `imageOrientation` while the CGImage remains landscape. Using the raw
+        // CGImage dimensions here and then drawing the oriented UIImage stretches
+        // the card before edge detection. Work from UIImage's display size so the
+        // pixels and the orientation describe the same rectangle.
+        let originalWidth = image.size.width
+        let originalHeight = image.size.height
         let maxDimension: CGFloat = 1_200
         let scale = min(1, maxDimension / max(originalWidth, originalHeight))
         let size = CGSize(width: originalWidth * scale, height: originalHeight * scale)

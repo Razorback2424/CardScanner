@@ -35,6 +35,7 @@ struct TradingCardScannerApp: App {
     /// there is a shared, instrument-keyed pricing service to derive them from;
     /// until then, honest and device-local beats synced and invented.
     private static let localOnlySchema = Schema([
+        ReferenceQuote.self,
         PriceObservation.self,
         PriceCheckDay.self,
         PortfolioDailyClose.self
@@ -46,6 +47,7 @@ struct TradingCardScannerApp: App {
         ProductIdentity.self,
         CollectionActivity.self,
         InventoryEvent.self,
+        ReferenceQuote.self,
         PriceObservation.self,
         PriceCheckDay.self,
         PortfolioDailyClose.self

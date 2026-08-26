@@ -61,28 +61,61 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(latch.observe(card, at: 0.5), .holdingLatch)
     }
 
+    /// A focus wobble can produce several different valid-looking OCR parses
+    /// without the physical card leaving. Those mismatches must not age out the
+    /// latch or allow the original card to be counted again.
+    func testValidOCRMismatchesDoNotCountAsCardAbsence() {
+        var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
+        let card = pokemon(223)
+        let blurRead = pokemon(204, code: "PAL")
+        latch.engage(on: card, at: 0)
+
+        for pass in 1...8 {
+            _ = latch.observe(blurRead, at: Double(pass) * 0.25)
+        }
+
+        XCTAssertEqual(latch.latched, card)
+        XCTAssertFalse(latch.admits(card))
+        XCTAssertEqual(latch.observe(card, at: 2.25), .holdingLatch)
+    }
+
     /// OCR losing the card to glare is not the card leaving. Even after the latch
     /// times out, an identical reading that never really went away is refused.
     func testGlareGapCannotProduceADuplicate() {
-        var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 1.2)
+        var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
         latch.engage(on: card, at: 0)
 
-        _ = latch.observe(nil, at: 0.25)
-        _ = latch.observe(nil, at: 0.5)
+        for pass in 1...4 {
+            _ = latch.observe(nil, at: Double(pass) * 0.25)
+        }
         XCTAssertNil(latch.latched, "the absence budget really did run out")
 
         // The card is read continuously from here on, as it would be in a real
         // session at four passes a second.
-        for pass in stride(from: 0.75, through: 6.0, by: 0.25) {
+        for pass in stride(from: 1.25, through: 6.0, by: 0.25) {
             _ = latch.observe(card, at: pass)
             XCTAssertFalse(latch.admits(card), "no duplicate while the card is still being read")
         }
     }
 
+    func testShortOCRAbsenceDoesNotReadmitConsumedCard() {
+        var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+
+        for pass in 1...6 {
+            _ = latch.observe(nil, at: Double(pass) * 0.25)
+        }
+        XCTAssertNil(latch.latched)
+
+        _ = latch.observe(card, at: 1.75)
+        XCTAssertFalse(latch.admits(card))
+    }
+
     /// A genuine second copy: the first one leaves, then an identical card lands.
     func testSecondPhysicalCopyIsAdmittedAfterTheFirstLeaves() {
-        var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 1.2)
+        var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
         latch.engage(on: card, at: 0)
 

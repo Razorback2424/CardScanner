@@ -412,6 +412,21 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    /// Discards only evidence for the card currently being considered.
+    ///
+    /// Mode changes must require a fresh observation, but they must not erase
+    /// the duplicate suppression memory for a card that was already consumed.
+    func discardCurrentObservation() {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.confirmationWindow.reset()
+            self.historicalAttempt = nil
+            self.lastAnnouncedPlausible = nil
+            self.didAnnounceLatchHold = false
+            self.isPaused = false
+        }
+    }
+
     /// Allow the very next confirmation of the card currently in the band.
     ///
     /// Only for failures that wrote nothing and say nothing about the card — a

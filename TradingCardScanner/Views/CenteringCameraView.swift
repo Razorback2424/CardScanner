@@ -87,7 +87,10 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     private func configureSession() throws {
-        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        let cameraType: AVCaptureDevice.DeviceType = CameraCapabilities.hasMacroLens()
+            ? .builtInUltraWideCamera
+            : .builtInWideAngleCamera
+        guard let camera = AVCaptureDevice.default(cameraType, for: .video, position: .back) else {
             throw CameraConfigurationError.unavailable
         }
         let input = try AVCaptureDeviceInput(device: camera)
@@ -107,9 +110,23 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             if camera.isFocusModeSupported(.continuousAutoFocus) {
                 camera.focusMode = .continuousAutoFocus
             }
+            if camera.isAutoFocusRangeRestrictionSupported {
+                camera.autoFocusRangeRestriction = .near
+            }
             if camera.isExposureModeSupported(.continuousAutoExposure) {
                 camera.exposureMode = .continuousAutoExposure
             }
+            if camera.isSmoothAutoFocusSupported {
+                camera.isSmoothAutoFocusEnabled = false
+            }
+            let focusPoint = CGPoint(x: ScanRegion.metadataRect.midX, y: ScanRegion.metadataRect.midY)
+            if camera.isFocusPointOfInterestSupported {
+                camera.focusPointOfInterest = focusPoint
+            }
+            if camera.isExposurePointOfInterestSupported {
+                camera.exposurePointOfInterest = focusPoint
+            }
+            camera.videoZoomFactor = camera.minAvailableVideoZoomFactor
         } catch {
             // Capture can still proceed with the device's existing focus and exposure.
         }

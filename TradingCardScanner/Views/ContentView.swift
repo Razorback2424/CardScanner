@@ -20,6 +20,7 @@ struct ContentView: View {
     @StateObject private var portfolio = PortfolioEngine()
     @StateObject private var refresh = PriceRefreshController()
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
+    @State private var collectionSort: CollectionSort = .priceHighToLow
     @State private var hasCheckedForStalePrices = false
     @State private var refreshStatusTask: Task<Void, Never>?
 #if DEBUG
@@ -36,7 +37,7 @@ struct ContentView: View {
         switch route {
         case "Browse", "SealedArtwork": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
-        case "WholeCardScanner": initialTab = .scan
+        case "WholeCardScanner", "PriceCheck": initialTab = .scan
         default: initialTab = .portfolio
         }
         _selectedTab = State(initialValue: initialTab)
@@ -47,7 +48,15 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            PortfolioView(portfolio: portfolio, refresh: refresh, onRefresh: refreshAllPrices)
+            PortfolioView(
+                portfolio: portfolio,
+                refresh: refresh,
+                onRefresh: refreshAllPrices,
+                onOpenCollectionSortedByPrice: {
+                    collectionSort = .priceHighToLow
+                    selectedTab = .collection
+                }
+            )
                 .tabItem {
                     Label("Portfolio", systemImage: "chart.line.uptrend.xyaxis")
                 }
@@ -56,7 +65,8 @@ struct ContentView: View {
             CollectionView(
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
-                onRefresh: refreshAllPrices
+                onRefresh: refreshAllPrices,
+                sort: $collectionSort
             )
                 .tabItem {
                     Label("Collection", systemImage: "rectangle.stack")

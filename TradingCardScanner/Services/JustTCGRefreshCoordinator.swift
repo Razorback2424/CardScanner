@@ -151,13 +151,11 @@ struct JustTCGRefreshCoordinator {
                 )
                 report.requestsUsed += 1
 
-                let returned = response.variantsByID
                 for lookup in chunk {
                     guard let owners = batched[lookup] else { continue }
-                    guard let hit = Self.match(
+                    guard case let .matched(card, variant) = Self.exactListing(
                         lookup: lookup,
                         owners: owners,
-                        in: returned,
                         response: response
                     ) else {
                         // Absent from a delta response means "unchanged", and a
@@ -167,7 +165,7 @@ struct JustTCGRefreshCoordinator {
                         // guessed at.
                         continue
                     }
-                    apply(hit.card, hit.variant, owners)
+                    apply(card, variant, owners)
                     report.variantsUpdated += owners.isEmpty ? 0 : 1
                 }
 
@@ -196,30 +194,54 @@ struct JustTCGRefreshCoordinator {
     ///
     /// Never positional. The vendor is not obliged to preserve request order,
     /// and matching by index would attach one card's price to another.
-    private nonisolated static func match(
+    /// The result of correlating a direct marketplace lookup with an exact
+    /// physical listing. `noExactListing` is deliberately distinct from
+    /// `unresolved`: the former means the provider returned the verified
+    /// product but not the requested finish/condition, while the latter is not
+    /// evidence about the card at all.
+    enum ExactLookupResult {
+        case matched(card: JustTCGCard, variant: JustTCGVariant)
+        case noExactListing
+        case unresolved
+    }
+
+    /// The exact-variant selection contract shared by collection refresh and
+    /// interactive Price Check refreshes.
+    nonisolated static func exactListing(
         lookup: JustTCGBatchLookup,
         owners: [MarketPriceTarget],
-        in returned: [String: (card: JustTCGCard, variant: JustTCGVariant)],
         response: JustTCGBatchResponse
-    ) -> (card: JustTCGCard, variant: JustTCGVariant)? {
+    ) -> ExactLookupResult {
+        let returned = response.variantsByID
         switch lookup {
         case let .variantID(id):
             // Already the exact printing and finish. Nothing to choose.
-            return returned[id]
+            guard let hit = returned[id] else { return .unresolved }
+            return .matched(card: hit.card, variant: hit.variant)
         case let .cardID(id):
             guard let card = response.data.first(where: { $0.uuid == id || $0.id == id }) else {
-                return nil
+                return .unresolved
             }
-            return listing(on: card, for: owners)
+            return listing(on: card, for: owners).map {
+                .matched(card: $0.card, variant: $0.variant)
+            } ?? .noExactListing
         case let .tcgplayerID(id):
-            guard let card = response.data.first(where: { $0.tcgplayerId == id }) else { return nil }
-            return listing(on: card, for: owners)
+            guard let card = response.data.first(where: { $0.tcgplayerId == id }) else {
+                return .unresolved
+            }
+            return listing(on: card, for: owners).map {
+                .matched(card: $0.card, variant: $0.variant)
+            } ?? .noExactListing
         case .tcgplayerSKUID, .mtgjsonID, .scryfallID:
             // These resolve to exactly one card per request item, so a single
             // returned card is unambiguous. More than one means the assumption
             // is wrong, and guessing which is the failure mode to avoid.
-            guard response.data.count == 1, let card = response.data.first else { return nil }
-            return listing(on: card, for: owners)
+            guard response.data.count == 1, let card = response.data.first else {
+                return .unresolved
+            }
+            return listing(on: card, for: owners).map {
+                .matched(card: $0.card, variant: $0.variant)
+            } ?? .noExactListing
         }
     }
 
@@ -232,7 +254,7 @@ struct JustTCGRefreshCoordinator {
     /// the market price, which could be a Damaged copy or another finish
     /// entirely. Condition is pinned the same way the search path pins it, and
     /// the finish must be the one the owner actually holds.
-    private nonisolated static func listing(
+    nonisolated static func listing(
         on card: JustTCGCard,
         for owners: [MarketPriceTarget]
     ) -> (card: JustTCGCard, variant: JustTCGVariant)? {

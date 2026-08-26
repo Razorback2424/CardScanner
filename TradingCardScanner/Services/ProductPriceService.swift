@@ -69,6 +69,10 @@ struct ProductPriceSubject: Sendable {
 /// persists its small request-count/backoff ledger in UserDefaults, keeping
 /// SwiftData and card conclusions out of the transport layer.
 actor ProductPriceService {
+    /// One identity-search client for collection fallback and Price Check so
+    /// their request pacing remains a single conversation with the vendor.
+    static let shared = ProductPriceService()
+
     struct Configuration: Sendable {
         var baseURL = URL(string: "https://api.justtcg.com/v1")!
         /// Free tier: 10 requests/minute. Paid tiers raise this, but a client

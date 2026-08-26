@@ -65,7 +65,19 @@ struct CollectionCardDetailView: View {
                 finish
                 marketplaceLinks
 
-                Stepper("Quantity: \(card.quantity)", value: $card.quantity, in: 1...999)
+                Stepper(
+                    "Quantity: \(card.quantity)",
+                    value: Binding(
+                        get: { card.quantity },
+                        set: { newQuantity in
+                            try? CollectionStore(context: modelContext).setQuantity(
+                                newQuantity,
+                                for: card
+                            )
+                        }
+                    ),
+                    in: 1...999
+                )
                     .padding(.horizontal)
 
                 Button("Remove from Collection", role: .destructive) {

@@ -8,17 +8,19 @@ import SwiftUI
 struct ScannerView: View {
     @EnvironmentObject private var model: ScannerViewModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
     @State private var isShowingUnresolved = false
 
 #if DEBUG
-    private var isWholeCardScreenshotRoute: Bool {
+    private var scannerScreenshotRoute: String? {
         let arguments = ProcessInfo.processInfo.arguments
         guard let index = arguments.firstIndex(of: "-ui_debug_route"),
-              arguments.indices.contains(index + 1) else { return false }
-        return arguments[index + 1] == "WholeCardScanner"
+              arguments.indices.contains(index + 1) else { return nil }
+        let route = arguments[index + 1]
+        return ["WholeCardScanner", "PriceCheck"].contains(route) ? route : nil
     }
 #endif
 
@@ -46,24 +48,40 @@ struct ScannerView: View {
         }
         .onAppear {
 #if DEBUG
-            guard !isWholeCardScreenshotRoute else { return }
+            if scannerScreenshotRoute == "PriceCheck" {
+                model.setPurpose(.priceCheck)
+            }
+            guard scannerScreenshotRoute == nil else { return }
 #endif
             model.start(context: modelContext)
         }
         .onDisappear { model.viewDisappeared() }
+        .onChange(of: scenePhase) { _, phase in
+            model.scenePhaseChanged(isActive: phase == .active)
+        }
         .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterPresentation) {
             SettingsView()
         }
         .sheet(item: $reviewing, onDismiss: model.resumeAfterPresentation) { scan in
-            ScanReviewSheet(scan: scan) { variant in
-                model.correct(scanID: scan.id, to: variant)
-            }
+                    ScanReviewSheet(
+                        scan: scan,
+                        onCorrect: { variant in
+                            model.correct(scanID: scan.id, to: variant)
+                        },
+                        onDelete: {
+                            model.deleteRecentScan(scan)
+                            reviewing = nil
+                        }
+                    )
         }
         .sheet(isPresented: $isShowingUnresolved, onDismiss: model.resumeAfterPresentation) {
             UnresolvedScansSheet(
                 scans: model.unresolvedScans,
                 onClear: model.clearUnresolvedScans
             )
+        }
+        .sheet(item: $model.priceCheckResult, onDismiss: model.dismissPriceCheckResult) { result in
+            PriceCheckResultView(initialResult: result)
         }
     }
 }
@@ -85,6 +103,7 @@ private struct ScannerChrome: View {
 
     var body: some View {
         VStack(spacing: 10) {
+            purposeControl
             topBar
 
             if let note = model.note {
@@ -119,6 +138,27 @@ private struct ScannerChrome: View {
     }
 
     // MARK: - Top
+
+    private var purposeControl: some View {
+        VStack(spacing: 5) {
+            Picker("Scanner purpose", selection: Binding(
+                get: { model.purpose },
+                set: model.setPurpose
+            )) {
+                ForEach(ScanPurpose.allCases) { purpose in
+                    Text(purpose.title).tag(purpose)
+                }
+            }
+            .pickerStyle(.segmented)
+            .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
+
+            Text(model.purpose.statusText)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.86))
+        }
+        .padding(8)
+        .scannerGlass(cornerRadius: 14)
+    }
 
     /// Almost nothing. There is no game picker because the printed identifier
     /// already says which game the card is, and asking the user to pre-declare it
@@ -202,7 +242,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else if let receipt = model.receipt {
+            } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
                     onUndo: model.undoLastAdd,
@@ -215,8 +255,12 @@ private struct ScannerChrome: View {
             }
 
             VStack(alignment: .trailing, spacing: 8) {
-                if !model.recent.isEmpty {
-                    RecentScanRail(scans: model.recent, onSelect: openReview)
+                if model.purpose == .collection, !model.recent.isEmpty {
+                    RecentScanRail(
+                        scans: model.recent,
+                        onSelect: openReview,
+                        onDelete: model.deleteRecentScan
+                    )
                         .frame(maxWidth: .infinity)
                 }
 

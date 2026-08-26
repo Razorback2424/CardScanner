@@ -10,6 +10,7 @@
 		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
 		A0010071 /* CollectionActivityLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010071 /* CollectionActivityLogView.swift */; };
 		A0020032 /* ImportedItemKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020032 /* ImportedItemKindTests.swift */; };
+		A00200B0 /* QuoteCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200B0 /* QuoteCacheTests.swift */; };
 		A0020031 /* MagicPhysicalObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020031 /* MagicPhysicalObjectTests.swift */; };
 		A0010069 /* MagicPhysicalObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010069 /* MagicPhysicalObjects.swift */; };
 		A0020030 /* MagicContentKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020030 /* MagicContentKindTests.swift */; };
@@ -120,6 +121,12 @@
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
 		A0010074 /* AppleAccountCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010074 /* AppleAccountCredentials.swift */; };
+		A00100B0 /* ReferenceQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B0 /* ReferenceQuote.swift */; };
+		A00100B1 /* QuoteCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B1 /* QuoteCache.swift */; };
+		A00100B2 /* PriceQuoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B2 /* PriceQuoteService.swift */; };
+		A00100B3 /* PriceCheckResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B3 /* PriceCheckResultView.swift */; };
+		A00100B4 /* PriceCheckCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B4 /* PriceCheckCoordinator.swift */; };
+		A00100B5 /* PriceFallbackQuoteResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B5 /* PriceFallbackQuoteResolver.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +143,7 @@
 		B0010070 /* CollectionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivity.swift; sourceTree = "<group>"; };
 		B0010071 /* CollectionActivityLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityLogView.swift; sourceTree = "<group>"; };
 		B0020032 /* ImportedItemKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedItemKindTests.swift; sourceTree = "<group>"; };
+		B00200B0 /* QuoteCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCacheTests.swift; sourceTree = "<group>"; };
 		B0020031 /* MagicPhysicalObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjectTests.swift; sourceTree = "<group>"; };
 		B0010069 /* MagicPhysicalObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicPhysicalObjects.swift; sourceTree = "<group>"; };
 		B0020030 /* MagicContentKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicContentKindTests.swift; sourceTree = "<group>"; };
@@ -251,6 +259,12 @@
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
 		B0010074 /* AppleAccountCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAccountCredentials.swift; sourceTree = "<group>"; };
+		B00100B0 /* ReferenceQuote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceQuote.swift; sourceTree = "<group>"; };
+		B00100B1 /* QuoteCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCache.swift; sourceTree = "<group>"; };
+		B00100B2 /* PriceQuoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceQuoteService.swift; sourceTree = "<group>"; };
+		B00100B3 /* PriceCheckResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCheckResultView.swift; sourceTree = "<group>"; };
+		B00100B4 /* PriceCheckCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCheckCoordinator.swift; sourceTree = "<group>"; };
+		B00100B5 /* PriceFallbackQuoteResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFallbackQuoteResolver.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -323,6 +337,7 @@
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
 				B0010030 /* PriceRecord.swift */,
+				B00100B0 /* ReferenceQuote.swift */,
 				B0010041 /* CardCenteringMeasurement.swift */,
 							B0010055 /* ProductIdentity.swift */,
 							B0010059 /* CollectionItemKind.swift */,
@@ -383,6 +398,10 @@
 				B0010091 /* PortfolioReplay.swift */,
 				B0010092 /* PortfolioReplaySnapshot.swift */,
 				B0010093 /* TCGplayerLink.swift */,
+				B00100B1 /* QuoteCache.swift */,
+				B00100B2 /* PriceQuoteService.swift */,
+				B00100B4 /* PriceCheckCoordinator.swift */,
+				B00100B5 /* PriceFallbackQuoteResolver.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -405,6 +424,7 @@
 				B0010014 /* ContentView.swift */,
 				B0010026 /* ScanSessionOverlays.swift */,
 				B0010027 /* ScanReviewSheet.swift */,
+				B00100B3 /* PriceCheckResultView.swift */,
 				B0010035 /* CollectionFilters.swift */,
 				B0010043 /* CardCenteringView.swift */,
 				B0010044 /* CenteringCameraView.swift */,
@@ -446,6 +466,7 @@
 				B0020043 /* PortfolioHistoryEngineTests.swift */,
 				B0020021 /* PricingTests.swift */,
 				B0020032 /* ImportedItemKindTests.swift */,
+				B00200B0 /* QuoteCacheTests.swift */,
 				B0020031 /* MagicPhysicalObjectTests.swift */,
 				B0020030 /* MagicContentKindTests.swift */,
 				B0020029 /* CollectionItemKindTests.swift */,
@@ -562,6 +583,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0010074 /* AppleAccountCredentials.swift in Sources */,
+				A00100B0 /* ReferenceQuote.swift in Sources */,
+				A00100B1 /* QuoteCache.swift in Sources */,
+				A00100B2 /* PriceQuoteService.swift in Sources */,
+				A00100B3 /* PriceCheckResultView.swift in Sources */,
+				A00100B4 /* PriceCheckCoordinator.swift in Sources */,
+				A00100B5 /* PriceFallbackQuoteResolver.swift in Sources */,
 				A0010070 /* CollectionActivity.swift in Sources */,
 				A0010071 /* CollectionActivityLogView.swift in Sources */,
 				A0010069 /* MagicPhysicalObjects.swift in Sources */,
@@ -668,6 +695,7 @@
 				A0020043 /* PortfolioHistoryEngineTests.swift in Sources */,
 				A0020021 /* PricingTests.swift in Sources */,
 				A0020032 /* ImportedItemKindTests.swift in Sources */,
+				A00200B0 /* QuoteCacheTests.swift in Sources */,
 				A0020031 /* MagicPhysicalObjectTests.swift in Sources */,
 				A0020030 /* MagicContentKindTests.swift in Sources */,
 				A0020029 /* CollectionItemKindTests.swift in Sources */,

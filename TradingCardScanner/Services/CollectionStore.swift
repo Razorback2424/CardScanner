@@ -44,6 +44,52 @@ struct CollectionStore {
         return try? context.fetch(descriptor).first
     }
 
+    /// Changes a position's quantity while recording the matching ownership
+    /// event in the same persistence transaction.
+    func setQuantity(_ newQuantity: Int, for card: CollectedCard) throws {
+        guard newQuantity >= 1 else { return }
+
+        let delta = newQuantity - card.quantity
+        guard delta != 0 else { return }
+
+        ledger.record(
+            card,
+            kind: .quantityAdjust,
+            source: .correction,
+            deltaQuantity: delta
+        )
+        card.quantity = newQuantity
+        try commit()
+    }
+
+#if DEBUG
+    /// One-time development repair for the seven quantity edits made before
+    /// the detail view routed ownership changes through this store.
+    static func repairKnownQuantityMismatches(in context: ModelContext) throws {
+        let repairs: [(String, Int, UUID)] = [
+            ("me02.5-216#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000216")!),
+            ("me04-049#normal", -2, UUID(uuidString: "00000000-0000-0000-0000-000000000417")!),
+            ("sv07-072#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000072")!),
+            ("sv08.5-077#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000077")!),
+            ("sv08.5-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000086")!),
+            ("sv09-026#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000026")!),
+            ("sv09-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000986")!)
+        ]
+        let store = CollectionStore(context: context)
+        for (key, delta, operationID) in repairs {
+            guard let card = store.card(forKey: key) else { continue }
+            InventoryLedger(context: context).record(
+                card,
+                kind: .quantityAdjust,
+                source: .correction,
+                deltaQuantity: delta,
+                operationID: operationID
+            )
+        }
+        try context.save()
+    }
+#endif
+
     // MARK: - Graded and sealed
     //
     // Both go through their own namespaced key rather than the raw card's, so a

@@ -33,6 +33,7 @@ struct PortfolioView: View {
     @ObservedObject var portfolio: PortfolioEngine
     @ObservedObject var refresh: PriceRefreshController
     let onRefresh: @MainActor () async -> Void
+    let onOpenCollectionSortedByPrice: @MainActor () -> Void
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var pendingRemoval: RemovedCardSnapshot?
@@ -392,10 +393,11 @@ struct PortfolioView: View {
                         .font(.headline)
                     Spacer()
                     if ranked.count > 5 {
-                        NavigationLink("See all") {
-                            PortfolioHoldingsView(holdings: ranked, onRemoved: presentUndo(for:))
+                        Button("See all") {
+                            onOpenCollectionSortedByPrice()
                         }
                         .font(.subheadline.weight(.semibold))
+                        .accessibilityHint("Opens Collection sorted by price, highest first")
                     }
                 }
                 ForEach(Array(ranked.prefix(5))) { holding in

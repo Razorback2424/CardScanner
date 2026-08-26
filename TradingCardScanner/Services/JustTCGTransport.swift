@@ -55,6 +55,11 @@ enum JustTCGQuota {
 /// defeated by concurrency. Every client goes through this; none of them talk to
 /// `URLSession` directly.
 actor JustTCGTransport {
+    /// Collection refreshes and interactive Price Check requests share one
+    /// pacer. The persisted ledger already shares quota; sharing the actor also
+    /// keeps concurrent requests from bypassing the vendor's rate limit.
+    static let shared = JustTCGTransport()
+
     struct Configuration: Sendable {
         var baseURL = URL(string: "https://api.justtcg.com")!
         /// Free tier allows 10 requests/minute.

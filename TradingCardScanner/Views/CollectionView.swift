@@ -13,6 +13,7 @@ struct CollectionView: View {
     let opensBrowseOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
+    @Binding var sort: CollectionSort
 
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
@@ -21,7 +22,6 @@ struct CollectionView: View {
     /// debounce so a large grid is not rebuilt on every keystroke.
     @State private var searchQuery = ""
     @State private var filters = CollectionFilters.none
-    @State private var sort: CollectionSort = .priceHighToLow
     @State private var activeSheet: ActiveSheet?
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
@@ -130,6 +130,7 @@ struct CollectionView: View {
     private func content(_ snapshot: Snapshot) -> some View {
         ScrollView {
             LazyVStack(spacing: 12) {
+                collectionSummary(snapshot)
                 filterBar(snapshot)
 
                 if snapshot.entries.isEmpty {
@@ -167,6 +168,36 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
+    }
+
+    private func collectionSummary(_ snapshot: Snapshot) -> some View {
+        let total = snapshot.entries.reduce(Money.zero) { total, entry in
+            guard entry.row.price.currencyCode == "USD",
+                  let unitPrice = entry.row.price.amount,
+                  let money = Money(rounding: unitPrice) else {
+                return total
+            }
+            return total + money * entry.row.quantity
+        }
+
+        return HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Shown value")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(total.formatted())
+                    .font(.system(.title2, design: .rounded).weight(.bold))
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                    .accessibilityLabel("Shown collection value, \(total.formatted())")
+            }
+            Spacer(minLength: 12)
+            Text("\(snapshot.entries.count) \(snapshot.entries.count == 1 ? "item" : "items")")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 4)
+        .padding(.vertical, 4)
     }
 
     private var emptyCollection: some View {

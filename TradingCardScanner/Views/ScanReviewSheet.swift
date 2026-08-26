@@ -11,13 +11,20 @@ struct ScanReviewSheet: View {
 
     let scan: RecentScan
     let onCorrect: (PhysicalVariant) -> Void
+    let onDelete: () -> Void
 
     @State private var variant: PhysicalVariant?
     @State private var resolution: VariantResolution
+    @State private var isConfirmingDelete = false
 
-    init(scan: RecentScan, onCorrect: @escaping (PhysicalVariant) -> Void) {
+    init(
+        scan: RecentScan,
+        onCorrect: @escaping (PhysicalVariant) -> Void,
+        onDelete: @escaping () -> Void
+    ) {
         self.scan = scan
         self.onCorrect = onCorrect
+        self.onDelete = onDelete
         _variant = State(initialValue: scan.resolved.variant)
         _resolution = State(initialValue: scan.resolved.resolution)
     }
@@ -52,9 +59,27 @@ struct ScanReviewSheet: View {
             .navigationTitle("Scanned")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .destructiveAction) {
+                    Button(role: .destructive) {
+                        isConfirmingDelete = true
+                    } label: {
+                        Label("Undo Scan", systemImage: "arrow.uturn.backward")
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+            .confirmationDialog(
+                "Undo this scan?",
+                isPresented: $isConfirmingDelete,
+                titleVisibility: .visible
+            ) {
+                Button("Undo Scan", role: .destructive) {
+                    onDelete()
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {}
             }
         }
     }
