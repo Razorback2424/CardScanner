@@ -64,7 +64,16 @@ final class PortfolioEngine: ObservableObject {
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
-        PortfolioEpoch.establishIfNeeded(context: context, at: now)
+        do {
+            try PortfolioEpoch.establishIfNeeded(context: context, at: now)
+        } catch {
+            // A failed baseline save must not transition the UI into the
+            // migration-day "tracking started" state. Recompute can still
+            // show the current collection value; a later start retries the
+            // durable epoch transaction.
+            recompute(context: context, now: now)
+            return
+        }
         PriceObservationLog(context: context).backfillFromRecords(receivedAt: now)
         recompute(context: context, now: now)
     }

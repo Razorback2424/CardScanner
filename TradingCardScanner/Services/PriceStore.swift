@@ -260,7 +260,8 @@ struct PriceStore {
         sourceUpdatedAt: Date?,
         game: CardGame,
         printingID: String,
-        variantID: String?
+        variantID: String?,
+        at importedAt: Date = .now
     ) {
         guard Money(rounding: amount) != nil else { return }
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
@@ -284,16 +285,16 @@ struct PriceStore {
                     source: .importedCSV,
                     sourceVariantID: variantID ?? key,
                     sourceUpdatedAt: sourceUpdatedAt,
-                    fetchedAt: .now
+                    fetchedAt: importedAt
                 )
             ),
             instrumentKey: key,
             marketVariantID: record.marketVariantID,
             recordsCoverage: false,
-            at: .now
+            at: importedAt
         )
 
-        record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt)
+        record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt, importedAt: importedAt)
     }
 
     /// A refresh attempt that never reached an answer. The previous price stays

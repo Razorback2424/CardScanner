@@ -463,7 +463,8 @@ enum CollectionCSV {
                     sourceUpdatedAt: entry.importedPriceAsOf,
                     game: entry.game,
                     printingID: storedCard.priceStorageID,
-                    variantID: storedCard.variantID
+                    variantID: storedCard.variantID,
+                    at: recordedAt
                 )
             }
 

@@ -57,8 +57,9 @@ enum PortfolioEpoch {
     static func establishIfNeeded(
         context: ModelContext,
         defaults: UserDefaults = .standard,
-        at date: Date = .now
-    ) -> Date {
+        at date: Date = .now,
+        save: (ModelContext) throws -> Void = { try $0.save() }
+    ) throws -> Date {
         let ledger = InventoryLedger(context: context)
 
         if let existing = startedAt(context: context, defaults: defaults) {
@@ -91,7 +92,15 @@ enum PortfolioEpoch {
             )
         }
 
-        try? context.save()
+        do {
+            try save(context)
+        } catch {
+            // The epoch flag is the public claim that the books are open. If
+            // the baseline transaction did not commit, roll its inserted rows
+            // back and leave that claim unset so the next launch retries.
+            context.rollback()
+            throw error
+        }
         defaults.set(date.timeIntervalSince1970, forKey: defaultsKey)
         return date
     }

@@ -103,6 +103,29 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
     }
 
+    private func card(
+        key: String = "position",
+        quantity: Int = 1,
+        dateAdded: Date = .now
+    ) -> CollectedCard {
+        CollectedCard(
+            collectionKey: key,
+            game: .pokemon,
+            providerID: key,
+            name: "Portfolio Test Card",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .imported,
+            quantity: quantity,
+            dateAdded: dateAdded
+        )
+    }
+
     // MARK: - Undo semantics
 
     func testSamePeriodAddAndUndoCollapseForAttribution() {
@@ -233,6 +256,36 @@ final class PortfolioReconciliationTests: XCTestCase {
 
     // MARK: - Local knowledge and publication
 
+    func testFailedEpochSaveDoesNotMarkTrackingEstablishedAndRetries() throws {
+        enum ExpectedFailure: Error { case save }
+
+        let context = try makeContext()
+        let defaultsName = #function
+        let defaults = UserDefaults(suiteName: defaultsName)!
+        defaults.removePersistentDomain(forName: defaultsName)
+        defer { defaults.removePersistentDomain(forName: defaultsName) }
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: now.addingTimeInterval(-86_400)))
+        try context.save()
+
+        XCTAssertThrowsError(
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: now,
+                save: { _ in throw ExpectedFailure.save }
+            )
+        )
+        XCTAssertNil(PortfolioEpoch.startedAt(context: context, defaults: defaults))
+        XCTAssertTrue(InventoryLedger(context: context).allEvents().isEmpty)
+
+        XCTAssertEqual(
+            try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults, at: now),
+            now
+        )
+        XCTAssertEqual(InventoryLedger(context: context).allEvents().count, 1)
+    }
+
     func testBackfillUsesWhenThisDeviceLearnedSyncedPrice() throws {
         let context = try makeContext()
         let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)
@@ -279,7 +332,7 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         XCTAssertNil(PortfolioEpoch.startedAt(context: context, defaults: defaults))
         XCTAssertEqual(
-            PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults, at: now),
+            try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults, at: now),
             now
         )
     }
@@ -355,6 +408,91 @@ final class PortfolioReconciliationTests: XCTestCase {
                 $0.reason == .conflictingPayloadForIdempotencyKey
             }
         )
+    }
+
+    func testEquivalentBaselineDuplicatesCanonicalizeToEarliestOwnershipTime() throws {
+        let context = try makeContext()
+        let operationID = PortfolioEpoch.baselineOperationID(collectionKey: "position")
+        let earlier = Date(timeIntervalSince1970: 2_000_000_000)
+        let later = earlier.addingTimeInterval(86_400)
+
+        let firstKnown = InventoryEvent(
+            operationID: operationID, leg: nil, kind: .initialBalance, source: .catalog,
+            collectionKey: "position", priceStorageKey: "instrument", deltaQuantity: 1,
+            occurredAt: earlier, valuation: .unpriced
+        )
+        firstKnown.eventID = UUID(uuidString: "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!
+
+        let laterRandomWinner = InventoryEvent(
+            operationID: operationID, leg: nil, kind: .initialBalance, source: .catalog,
+            collectionKey: "position", priceStorageKey: "instrument", deltaQuantity: 1,
+            occurredAt: later, valuation: .unpriced
+        )
+        laterRandomWinner.eventID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+
+        context.insert(firstKnown)
+        context.insert(laterRandomWinner)
+        try context.save()
+
+        let events = InventoryLedger(context: context).allEvents()
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.eventID, firstKnown.eventID)
+        XCTAssertEqual(events.first?.occurredAt, earlier)
+        XCTAssertFalse(
+            LedgerIntegrityLog.shared.defects.contains {
+                $0.reason == .conflictingPayloadForIdempotencyKey
+            }
+        )
+    }
+
+    // MARK: - CSV integration
+
+    func testCSVImportedPriceAttributesValueToAddedNotPricingAdjustment() throws {
+        let context = try makeContext()
+        let plan = CollectionCSVImportPlan(
+            entries: [
+                CollectionCSVEntry(
+                    collectionKey: "csv-position",
+                    game: .pokemon,
+                    providerID: "csv-printing",
+                    name: "Imported Collection",
+                    setName: "Imported Set",
+                    setCode: "CSV",
+                    cardNumber: "7",
+                    rarity: nil,
+                    imageURL: nil,
+                    thumbnailURL: nil,
+                    variant: nil,
+                    importedMarketPriceUSD: 7_000,
+                    importedPriceAsOf: Date(timeIntervalSince1970: 1_900_000_000),
+                    quantity: 1,
+                    dateAdded: Date(timeIntervalSince1970: 1_800_000_000)
+                )
+            ],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+
+        _ = try CollectionCSV.apply(plan, to: context)
+
+        let events = InventoryLedger(context: context).allEvents().map(PortfolioEngine.entry(from:))
+        let observations = PortfolioEngine.observations(in: context)
+        let eventTime = try XCTUnwrap(events.first?.occurredAt)
+        XCTAssertEqual(observations.first?.receivedAt, eventTime)
+        XCTAssertEqual(events.first?.priceReceivedAtEvent, eventTime)
+
+        let attribution = PortfolioClose.attribute(
+            events: events,
+            observations: observations,
+            boundary: eventTime.addingTimeInterval(-1),
+            now: eventTime.addingTimeInterval(1),
+            currentValue: money(7_000)
+        )
+
+        XCTAssertEqual(attribution.added, money(7_000))
+        XCTAssertEqual(attribution.pricingAdjustment, .zero)
+        XCTAssertEqual(attribution.market, .zero)
+        XCTAssertEqual(attribution.unexplained, .zero)
     }
 
     func testExplicitInvalidationCannotFallBackToMutablePriceRecord() throws {

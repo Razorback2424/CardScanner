@@ -113,9 +113,25 @@ struct InventoryLedger {
             $0.idempotencyKey.isEmpty ? "legacy:\($0.eventID.uuidString)" : $0.idempotencyKey
         }) {
             let ordered = duplicates.sorted { $0.eventID.uuidString < $1.eventID.uuidString }
-            guard let chosen = ordered.first else { continue }
+            guard let stable = ordered.first else { continue }
+
+            // Initial baselines from two offline devices intentionally ignore
+            // their device-local timestamp when deciding logical equivalence.
+            // The canonical ownership fact must nevertheless use the earliest
+            // such time; choosing by random physical row id could otherwise
+            // move an already-published close forward by a day after sync.
+            let equivalent = ordered.filter { stable.isLogicallyEquivalent(to: $0) }
+            let chosen: InventoryEvent
+            if stable.kind == .initialBalance {
+                chosen = equivalent.min {
+                    if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
+                    return $0.eventID.uuidString < $1.eventID.uuidString
+                } ?? stable
+            } else {
+                chosen = stable
+            }
             canonical.append(chosen)
-            for duplicate in ordered.dropFirst() where !chosen.isLogicallyEquivalent(to: duplicate) {
+            for duplicate in ordered where duplicate !== chosen && !chosen.isLogicallyEquivalent(to: duplicate) {
                 defects.append(
                     LedgerIntegrityDefect(
                         reason: .conflictingPayloadForIdempotencyKey,
