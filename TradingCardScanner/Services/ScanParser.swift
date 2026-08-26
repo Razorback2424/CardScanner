@@ -104,6 +104,35 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
 
 /// Keeps confirmation tolerant of an occasional missed OCR frame without allowing
 /// an old one-off reading to remain valid indefinitely.
+/// What the duplicate latch treats as "the same piece of cardboard".
+///
+/// Deliberately coarser than `ScanIdentifier` for historical Pokémon, whose
+/// identity carries every title observation: one card produces a new identifier
+/// the moment OCR picks up one more line of its name, and suppression keyed on
+/// that would stop suppressing exactly when the reading gets noisy — which is
+/// when duplicates happen. The printed number is the part that does not drift.
+///
+/// Two different historical cards printed with the same number therefore share a
+/// key, and the second has to wait for the first to leave the band. That is the
+/// same trade the latch already makes for two identical copies back to back, and
+/// it errs the same way: a missed card costs one more pass, a phantom duplicate
+/// quietly corrupts a collection.
+enum ScanSuppressionKey: Hashable, Sendable {
+    case identifier(ScanIdentifier)
+    case pokemonPrintedNumber(PokemonPrintedNumberEvidence)
+}
+
+extension ScanIdentifier {
+    var suppressionKey: ScanSuppressionKey {
+        switch self {
+        case let .pokemonHistorical(evidence):
+            return .pokemonPrintedNumber(evidence.number)
+        case .pokemon, .pokemonPromo, .magic:
+            return .identifier(self)
+        }
+    }
+}
+
 struct CandidateConfirmationWindow {
     let matchesRequired: Int
     let windowSize: Int

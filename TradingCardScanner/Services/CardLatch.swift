@@ -39,6 +39,20 @@ struct CardLatch: Equatable {
     /// believed to be a second physical copy rather than the same card.
     let minimumAbsenceBeforeRelatch: TimeInterval
 
+    /// How many recently consumed printings are remembered.
+    ///
+    /// More than one, because a single slot is the whole duplicate bug: anything
+    /// that confirms in between — a blurred frame reading a neighbouring number,
+    /// or the same card whose title read differently for a moment — replaces the
+    /// memory of the card that was actually added, and the card still sitting in
+    /// the band walks straight back in. Nothing that briefly appears to be there
+    /// can now erase what is known about the cards that were.
+    ///
+    /// Small on purpose: absence evidence advances every remembered printing at
+    /// once, so a real gap between cards clears all of them together and this
+    /// only has to span one hand movement.
+    static let recentlyConsumedLimit = 6
+
     private(set) var latched: ScanIdentifier?
     /// Consecutive readings of the latched printing since it was consumed. Lets
     /// the UI explain the one confusing case — a second identical copy dropped in
@@ -46,9 +60,22 @@ struct CardLatch: Equatable {
     private(set) var heldMatchCount = 0
 
     private var consecutiveAbsences = 0
-    private var consumed: ScanIdentifier?
-    private var consumedAbsenceStartedAt: CFAbsoluteTime?
-    private var consumedHasLeft = false
+    private var consumed: [ConsumedPrinting] = []
+
+    /// One printing that has already been counted, and what is known about
+    /// whether it is still in front of the camera.
+    private struct ConsumedPrinting: Equatable {
+        let key: ScanSuppressionKey
+        /// When this printing was last actually read. The absence is measured
+        /// from here rather than from the first unreadable frame, because that is
+        /// the moment the card was last known to be present — starting the clock
+        /// one frame later silently demands a longer gap than configured.
+        var lastSeenAt: CFAbsoluteTime
+        var consecutiveAbsences = 0
+        /// Sticky once set. A printing that has genuinely been away has left,
+        /// whatever is read afterwards — including a second copy of itself.
+        var hasLeft = false
+    }
 
     init(releaseAfterAbsences: Int = 4, minimumAbsenceBeforeRelatch: TimeInterval = 2.0) {
         self.releaseAfterAbsences = max(1, releaseAfterAbsences)
@@ -56,77 +83,56 @@ struct CardLatch: Equatable {
     }
 
     mutating func observe(_ observation: ScanIdentifier?, at now: CFAbsoluteTime) -> Decision {
-        guard let latched else {
-            if let consumed {
-                if observation == consumed {
-                    consecutiveAbsences = 0
-                    consumedAbsenceStartedAt = nil
-                } else if observation == nil {
-                    consecutiveAbsences += 1
-                    if consumedAbsenceStartedAt == nil {
-                        consumedAbsenceStartedAt = now
-                    }
-
-                    if let absenceStartedAt = consumedAbsenceStartedAt,
-                       consecutiveAbsences >= releaseAfterAbsences,
-                       now - absenceStartedAt >= minimumAbsenceBeforeRelatch {
-                        consumedHasLeft = true
-                    }
-                } else {
-                    // Another valid identifier may be a focus-induced OCR error
-                    // from the consumed card, so it is not absence evidence.
-                    consecutiveAbsences = 0
-                    consumedAbsenceStartedAt = nil
-                }
-            }
-            return .forward(observation)
+        if observation == nil {
+            consecutiveAbsences += 1
+        } else {
+            consecutiveAbsences = 0
         }
+
+        updateConsumedPresence(with: observation, at: now)
+
+        guard latched != nil else { return .forward(observation) }
 
         if observation == latched {
             heldMatchCount += 1
-            consecutiveAbsences = 0
-        } else {
-            // A differing reading is evidence, not proof. Forward it so the ordinary
-            // confirmation window decides whether a different card is really there.
-            // It is deliberately not absence evidence: a focus wobble can produce a
-            // different valid parse while the consumed card is still in view.
-            if observation == nil {
-                consecutiveAbsences += 1
-            } else {
-                consecutiveAbsences = 0
-            }
-        }
-
-        // Track continuous absence of the consumed printing independently of the
-        // ordinary latch, so a brief OCR dropout cannot unlock a duplicate.
-        if let consumed {
-            if observation == consumed {
-                consumedAbsenceStartedAt = nil
-            } else if observation == nil {
-                if consumedAbsenceStartedAt == nil {
-                    consumedAbsenceStartedAt = now
-                }
-
-                if let absenceStartedAt = consumedAbsenceStartedAt,
-                   consecutiveAbsences >= releaseAfterAbsences,
-                   now - absenceStartedAt >= minimumAbsenceBeforeRelatch {
-                    consumedHasLeft = true
-                }
-            } else {
-                // A valid mismatch is forwarded for different-card
-                // confirmation, but does not establish that this card left.
-                consumedAbsenceStartedAt = nil
-            }
-        }
-
-        if observation == latched {
             return .holdingLatch
         }
 
+        // A differing reading is evidence, not proof. Forward it so the ordinary
+        // confirmation window decides whether a different card is really there.
         if consecutiveAbsences >= releaseAfterAbsences {
             release()
         }
         return .forward(observation)
+    }
+
+    /// Ages every remembered printing against this observation.
+    ///
+    /// Absence is evidence about all of them at once — an unreadable frame says
+    /// nothing is in the band. A reading only ever says something about the one
+    /// printing it matches; for the others it is neither presence nor absence,
+    /// because a focus wobble can produce another plausible parse while the card
+    /// it came from is still sitting there.
+    private mutating func updateConsumedPresence(
+        with observation: ScanIdentifier?,
+        at now: CFAbsoluteTime
+    ) {
+        let observedKey = observation?.suppressionKey
+
+        for index in consumed.indices {
+            if let observedKey, consumed[index].key == observedKey {
+                consumed[index].lastSeenAt = now
+                consumed[index].consecutiveAbsences = 0
+            } else if observation == nil {
+                consumed[index].consecutiveAbsences += 1
+                if consumed[index].consecutiveAbsences >= releaseAfterAbsences,
+                   now - consumed[index].lastSeenAt >= minimumAbsenceBeforeRelatch {
+                    consumed[index].hasLeft = true
+                }
+            } else {
+                consumed[index].consecutiveAbsences = 0
+            }
+        }
     }
 
     /// Whether a confirmed identifier may mutate the collection right now.
@@ -134,17 +140,27 @@ struct CardLatch: Equatable {
     /// Time does not appear here: `observe` is what decides that a consumed
     /// printing has genuinely been away, so this stays a simple fact lookup.
     func admits(_ confirmed: ScanIdentifier) -> Bool {
-        guard confirmed == consumed else { return true }
-        return consumedHasLeft
+        let key = confirmed.suppressionKey
+        guard let printing = consumed.first(where: { $0.key == key }) else { return true }
+        return printing.hasLeft
     }
 
-    mutating func engage(on identifier: ScanIdentifier, at _: CFAbsoluteTime) {
+    mutating func engage(on identifier: ScanIdentifier, at now: CFAbsoluteTime) {
         latched = identifier
         heldMatchCount = 0
         consecutiveAbsences = 0
-        consumed = identifier
-        consumedAbsenceStartedAt = nil
-        consumedHasLeft = false
+        remember(identifier, at: now)
+    }
+
+    /// Moves a printing to the front of the memory, forgetting what was known
+    /// about it before: it has just been counted, so it is present by definition.
+    private mutating func remember(_ identifier: ScanIdentifier, at now: CFAbsoluteTime) {
+        let key = identifier.suppressionKey
+        consumed.removeAll { $0.key == key }
+        consumed.insert(ConsumedPrinting(key: key, lastSeenAt: now), at: 0)
+        if consumed.count > Self.recentlyConsumedLimit {
+            consumed.removeLast(consumed.count - Self.recentlyConsumedLimit)
+        }
     }
 
     /// Stop suppressing, but keep remembering what was consumed. Used when the
@@ -156,13 +172,11 @@ struct CardLatch: Equatable {
         consecutiveAbsences = 0
     }
 
-    /// Release *and* forget the consumed printing, so the very next confirmation
-    /// is accepted. Only for failures where nothing was written: a dropped
-    /// network request should cost the user a re-read, not a card.
+    /// Release *and* forget every consumed printing, so the very next
+    /// confirmation is accepted. Only for failures where nothing was written: a
+    /// dropped network request should cost the user a re-read, not a card.
     mutating func releaseAndForget() {
         release()
-        consumed = nil
-        consumedAbsenceStartedAt = nil
-        consumedHasLeft = false
+        consumed.removeAll()
     }
 }

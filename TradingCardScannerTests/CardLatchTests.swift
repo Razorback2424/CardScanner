@@ -113,6 +113,78 @@ final class CardLatchTests: XCTestCase {
         XCTAssertFalse(latch.admits(card))
     }
 
+    private func historical(_ localID: String, titles: [String]) -> ScanIdentifier {
+        .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: PokemonPrintedNumberEvidence(
+                    localID: localID,
+                    denominator: 102,
+                    scheme: .officialSet
+                ),
+                titleCandidates: titles
+            )
+        )
+    }
+
+    /// The reported bug, as a sequence of readings.
+    ///
+    /// A card is added, then lifted. On the way out a blurred frame reads a
+    /// neighbouring collector number twice, which confirms — and the scanner
+    /// engages on it before anything has tried to resolve it. The card being
+    /// lifted is still in the band, and must not go in a second time because
+    /// something else briefly appeared to be there.
+    func testAStrayConfirmationDoesNotReadmitTheCardStillInTheBand() {
+        var latch = CardLatch()
+        let card = pokemon(40)
+        let blurredNeighbour = pokemon(46)
+        latch.engage(on: card, at: 0)
+
+        latch.engage(on: blurredNeighbour, at: 0.5)
+
+        _ = latch.observe(card, at: 0.75)
+        XCTAssertFalse(
+            latch.admits(card),
+            "the card that was just added has not left the band"
+        )
+    }
+
+    /// The same defect without any misreading at all.
+    ///
+    /// A historical identifier carries every title observation, so one physical
+    /// card produces a new identifier as soon as OCR picks up one more line of
+    /// its name. That is a different `ScanIdentifier` for the same piece of
+    /// cardboard, and it must not be treated as a different card arriving.
+    func testATitleReadingDriftingDoesNotReadmitTheSamePhysicalCard() {
+        var latch = CardLatch()
+        let firstReading = historical("004", titles: ["CHARIZARD"])
+        let driftedReading = historical("004", titles: ["CHARIZARD", "STAGE 2"])
+        latch.engage(on: firstReading, at: 0)
+
+        latch.engage(on: driftedReading, at: 0.5)
+
+        _ = latch.observe(firstReading, at: 0.75)
+        XCTAssertFalse(
+            latch.admits(firstReading),
+            "one card whose name read differently for a frame is still one card"
+        )
+    }
+
+    /// The fix must not swallow real cards. Two different printings in a row,
+    /// each leaving before the next arrives, both go in.
+    func testTwoDifferentCardsInSuccessionAreBothAdmitted() {
+        var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 0.5)
+        let first = pokemon(40)
+        let second = pokemon(46)
+        latch.engage(on: first, at: 0)
+
+        for pass in stride(from: 0.25, through: 1.5, by: 0.25) {
+            _ = latch.observe(nil, at: pass)
+        }
+
+        _ = latch.observe(second, at: 1.75)
+        XCTAssertTrue(latch.admits(second), "a different card must not be blocked")
+    }
+
     /// A genuine second copy: the first one leaves, then an identical card lands.
     func testSecondPhysicalCopyIsAdmittedAfterTheFirstLeaves() {
         var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 2.0)
