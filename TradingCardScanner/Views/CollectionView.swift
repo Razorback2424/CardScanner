@@ -27,6 +27,7 @@ struct CollectionView: View {
     @State private var sort: CollectionSort = .priceHighToLow
     @State private var activeSheet: ActiveSheet?
     @State private var isShowingSettings = false
+    @State private var isShowingPortfolioDetails = false
     @State private var isShowingSearch = false
     @State private var hasCheckedForStalePrices = false
     @State private var pendingRemoval: RemovedCardSnapshot?
@@ -113,6 +114,9 @@ struct CollectionView: View {
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
+        }
+        .sheet(isPresented: $isShowingPortfolioDetails) {
+            portfolioDetailsSheet(makeSnapshot())
         }
         .task {
 #if DEBUG
@@ -255,7 +259,13 @@ struct CollectionView: View {
 
     private func header(_ snapshot: Snapshot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            ZStack(alignment: .trailing) {
+            // A row rather than an overlay: two 44pt controls stacked on the
+            // trailing edge collide with the number itself once the value gets
+            // long. Balanced on either side, the hero centres between them and
+            // scales down instead of colliding.
+            HStack(spacing: 0) {
+                detailsButton
+
                 // Whole-collection, and deliberately no longer following the
                 // filter chips. A close that changed when you tapped "Holo"
                 // would be meaningless — the filtered figure moves to its own
@@ -264,6 +274,8 @@ struct CollectionView: View {
                     .font(.system(size: 60, weight: .bold, design: .rounded))
                     .foregroundStyle(portfolioGreen)
                     .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .accessibilityLabel("Collection value")
 
@@ -277,9 +289,12 @@ struct CollectionView: View {
                 .contentShape(Rectangle())
                 .disabled(isRefreshing)
                 .accessibilityLabel("Refresh prices")
-
             }
 
+            // Only what the screen is *for*: what the collection is worth and
+            // what moved it. Coverage, provenance, exclusions and diagnostics
+            // are real and stay reachable, but they belong behind the details
+            // button rather than stacked seven deep under the number.
             todayCard
 
             if isNarrowed {
@@ -295,33 +310,45 @@ struct CollectionView: View {
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
             }
-
-            if snapshot.unpricedCount > 0 {
-                Text("\(snapshot.unpricedCount) cop\(snapshot.unpricedCount == 1 ? "y" : "ies") unpriced")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            // These have a price; it is simply not in dollars, so it is missing
-            // from the total above. Saying which is the difference between an
-            // honest total and one that looks complete.
-            if snapshot.otherCurrencyCount > 0 {
-                Text(
-                    "\(snapshot.otherCurrencyCount) cop\(snapshot.otherCurrencyCount == 1 ? "y" : "ies") priced in another currency, not included in total"
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-
-            if showsManualRefreshStatus {
-                freshnessLabel
-                    .padding(.top, 2)
-            }
-
-            catalogNormalizationLabel
-            fallbackStatusLabel(snapshot)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Opens the details sheet, badged only when something is actually wrong.
+    ///
+    /// Deliberately *not* badged for ordinary facts like carried-forward prices
+    /// or unpriced copies: most collections have some of those most of the
+    /// time, and a badge that is always lit is a badge nobody reads.
+    private var detailsButton: some View {
+        Button {
+            isShowingPortfolioDetails = true
+        } label: {
+            Image(systemName: "info.circle")
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(needsAttention ? Color.orange : portfolioGreen)
+                .overlay(alignment: .topTrailing) {
+                    if needsAttention {
+                        Circle()
+                            .fill(Color.orange)
+                            .frame(width: 7, height: 7)
+                            .offset(x: 3, y: -2)
+                    }
+                }
+        }
+        .frame(width: 44, height: 44)
+        .contentShape(Rectangle())
+        .accessibilityLabel(needsAttention ? "Collection details, needs attention" : "Collection details")
+        .accessibilityHint("Price coverage, excluded copies and diagnostics.")
+    }
+
+    /// Something the person would want to act on, as opposed to something they
+    /// might want to look up.
+    private var needsAttention: Bool {
+        if portfolio.summary?.isAuthoritative == false { return true }
+        if case let .finished(result) = refresh.status {
+            return result.providerUnreachable || result.failed > 0
+        }
+        return false
     }
 
     private var portfolioGreen: Color { Color(red: 0.18, green: 0.55, blue: 0.34) }
@@ -339,56 +366,21 @@ struct CollectionView: View {
         if let summary = portfolio.summary {
             VStack(alignment: .leading, spacing: 6) {
                 if !summary.isAuthoritative {
-                    // The value above is still real — the cards are still
-                    // owned. What cannot be trusted is the derived history, so
-                    // it is paused and said out loud rather than shown at a
-                    // confidence the ledger does not support.
-                    VStack(alignment: .leading, spacing: 2) {
-                        Label("Portfolio accounting needs reconciliation", systemImage: "exclamationmark.triangle.fill")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.orange)
-                        Text(reconciliationCause(summary.defects))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    // Still stated on the screen itself, because it changes
+                    // what the numbers below mean. The explanation of *why*
+                    // lives in Details, where there is room for it.
+                    Label("Performance paused · needs reconciliation", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.orange)
                 } else if summary.isMigrationDay {
-                    // Contract 8. There is genuinely no yesterday, so nothing is
-                    // invented — no reconciliation block, no fabricated close.
-                    // The first legitimate close forms at the first midnight
-                    // boundary.
-                    Text("Portfolio tracking started today")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                    // Contract 8. There is genuinely no yesterday, so nothing
+                    // is invented — no reconciliation block, no fabricated
+                    // close, and no explanatory caption either. The history
+                    // card already says history is being recorded, and Details
+                    // says when the first close forms.
+                    EmptyView()
                 } else if let attribution = summary.attribution {
                     reconciliation(attribution, closeDate: summary.closeDate)
-                }
-
-                if summary.isAuthoritative {
-                    coverageLabel(summary.coverage)
-                }
-
-                if let note = summary.revisionNote, let closeDate = summary.closeDate {
-                    Text("\(closeDate.formatted(date: .abbreviated, time: .omitted)) close · \(note)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                // Surfaced, never silently repaired. If this ever appears, a
-                // mutation somewhere is not writing its ledger event.
-                //
-                // One cause, one sentence: a conflicting ledger group also
-                // stops the ledger reconciling against the collection, so the
-                // same failure would otherwise be reported twice. Both defects
-                // are kept at the accounting layer — an export or a
-                // diagnostics screen should show each — but the card names the
-                // cause once.
-                if summary.isAuthoritative, !summary.defects.isEmpty {
-                    ForEach(Array(summary.defects.prefix(3))) { defect in
-                        Text("\(defect.reason.title): \(defect.collectionKey)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
                 }
             }
             .padding(.top, 2)
@@ -487,26 +479,131 @@ struct CollectionView: View {
         return (amount < .zero ? "−" : "+") + magnitude
     }
 
+    /// Everything that used to stack under the hero.
+    ///
+    /// None of it was noise — coverage, exclusions and diagnostics are exactly
+    /// what makes the number defensible — but seven stacked caption lines is
+    /// how a collection screen turns into a status console. One tap away, with
+    /// room to say things properly.
     @ViewBuilder
-    private func coverageLabel(_ coverage: PortfolioCoverage) -> some View {
-        switch coverage.state {
-        case .unknown:
-            Text("Coverage unknown for this day")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        case .complete:
-            Text("\(coverage.refreshed) of \(coverage.total) checked today")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .monospacedDigit()
-        case .partial:
-            // Carried forward is stated, not hidden. An outage that quietly
-            // looked like completeness would be the most damaging thing this
-            // screen could do.
-            Text("\(coverage.refreshed) of \(coverage.total) checked today · \(coverage.carriedForward) not refreshed")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .monospacedDigit()
+    private func portfolioDetailsSheet(_ snapshot: Snapshot) -> some View {
+        NavigationStack {
+            List {
+                if let summary = portfolio.summary, !summary.defects.isEmpty {
+                    Section {
+                        Text(reconciliationCause(summary.defects))
+                            .font(.subheadline)
+                        ForEach(summary.defects) { defect in
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(defect.reason.title)
+                                    .font(.subheadline.weight(.semibold))
+                                Text(defect.reason.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(defect.collectionKey)
+                                    .font(.caption2.monospaced())
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    } header: {
+                        Text("Needs attention")
+                    }
+                }
+
+                Section("Prices") {
+                    if let coverage = portfolio.summary?.coverage {
+                        coverageDetailRow(coverage)
+                    }
+                    if let asOf = snapshot.pricesAsOf {
+                        LabeledContent(
+                            snapshot.isSourceStamped ? "Market data through" : "Last checked",
+                            value: asOf.formatted(date: .abbreviated, time: .shortened)
+                        )
+                    }
+                    if snapshot.unpricedCount > 0 {
+                        LabeledContent(
+                            "Unpriced",
+                            value: "\(snapshot.unpricedCount) cop\(snapshot.unpricedCount == 1 ? "y" : "ies")"
+                        )
+                    }
+                    if snapshot.otherCurrencyCount > 0 {
+                        VStack(alignment: .leading, spacing: 2) {
+                            LabeledContent(
+                                "Priced in another currency",
+                                value: "\(snapshot.otherCurrencyCount) cop\(snapshot.otherCurrencyCount == 1 ? "y" : "ies")"
+                            )
+                            Text("Not included in the total — there is no live exchange rate to convert at.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    if case .finished = refresh.status {
+                        freshnessLabel
+                    } else if case .refreshing = refresh.status {
+                        freshnessLabel
+                    }
+                    fallbackStatusLabel(snapshot)
+                }
+
+                Section("Portfolio") {
+                    if portfolio.summary?.isMigrationDay == true {
+                        Text("Portfolio tracking started today. The first daily close forms at midnight.")
+                            .font(.subheadline)
+                    } else if let started = PortfolioEpoch.startedAt() {
+                        LabeledContent(
+                            "Tracking since",
+                            value: started.formatted(date: .abbreviated, time: .omitted)
+                        )
+                    }
+                    LabeledContent(
+                        "Day boundary",
+                        value: (PortfolioCalendar.pinnedTimeZone() ?? .current)
+                            .identifier.replacingOccurrences(of: "_", with: " ")
+                    )
+                    if let note = portfolio.summary?.revisionNote,
+                       let closeDate = portfolio.summary?.closeDate {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("\(closeDate.formatted(date: .abbreviated, time: .omitted)) close revised")
+                                .font(.subheadline)
+                            Text(note)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Section("Catalog") {
+                    catalogNormalizationLabel
+                    LabeledContent("Items", value: "\(snapshot.totalQuantity)")
+                }
+            }
+            .navigationTitle("Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { isShowingPortfolioDetails = false }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    /// Coverage, said in full rather than compressed into a caption.
+    @ViewBuilder
+    private func coverageDetailRow(_ coverage: PortfolioCoverage) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            switch coverage.state {
+            case .unknown:
+                Text("Coverage unknown for this day")
+            case .complete:
+                LabeledContent("Checked today", value: "\(coverage.refreshed) of \(coverage.total)")
+            case .partial:
+                LabeledContent("Checked today", value: "\(coverage.refreshed) of \(coverage.total)")
+                Text("\(coverage.carriedForward) still showing an earlier price. Refreshing updates them.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
