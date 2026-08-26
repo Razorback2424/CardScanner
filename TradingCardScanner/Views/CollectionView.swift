@@ -25,7 +25,14 @@ struct CollectionView: View {
     @State private var activeSheet: ActiveSheet?
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
+    /// The detail column's stack. Selection lives here rather than in a closure
+    /// destination so it survives the window shrinking to one column and widening
+    /// back out — resizing must never throw away where the user was.
     @State private var navigationPath: [Destination] = []
+    /// `.doubleColumn` rather than `.automatic`: automatic hides the grid behind a
+    /// toggle in a portrait iPad window, which would land the user on an empty
+    /// detail pane in the one orientation an iPad is most often held.
+    @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private enum ActiveSheet: String, Identifiable {
@@ -33,8 +40,13 @@ struct CollectionView: View {
         var id: String { rawValue }
     }
 
+    /// Both of the collection's destinations, so one hierarchy drives a push on a
+    /// phone-sized window and a second column on an iPad-sized one. `card` carries
+    /// the row id rather than the model object: a removed card's id simply stops
+    /// resolving, which is how the detail column falls back to its placeholder.
     private enum Destination: Hashable {
         case browse
+        case card(String)
     }
 
     /// Adaptive rather than a fixed pair of columns: the same minimum tile width
@@ -54,7 +66,7 @@ struct CollectionView: View {
         // filter-option counts always describe the same logical collection.
         let snapshot = makeSnapshot()
 
-        return NavigationStack(path: $navigationPath) {
+        return NavigationSplitView(columnVisibility: $columnVisibility) {
             Group {
                 if cards.isEmpty {
                     emptyCollection
@@ -62,11 +74,17 @@ struct CollectionView: View {
                     content(snapshot)
                 }
             }
+            // Wider than a stock sidebar, because this column is a grid of card
+            // art rather than a list of labels — at the default width it would
+            // show one column and waste the room it was given.
+            .navigationSplitViewColumnWidth(min: 360, ideal: 520)
             .navigationTitle("Collection")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    NavigationLink(value: Destination.browse) {
+                    Button {
+                        select(.browse)
+                    } label: {
                         Label("Find items to add", systemImage: "plus")
                     }
                     .labelStyle(.iconOnly)
@@ -89,11 +107,12 @@ struct CollectionView: View {
                     .accessibilityLabel("Settings")
                 }
             }
-            .navigationDestination(for: Destination.self) { destination in
-                switch destination {
-                case .browse:
-                    BrowseView()
-                }
+        } detail: {
+            NavigationStack(path: $navigationPath) {
+                noSelection
+                    .navigationDestination(for: Destination.self) { destination in
+                        destinationView(destination, in: snapshot)
+                    }
             }
         }
         .sheet(item: $activeSheet) { sheet in
@@ -120,13 +139,55 @@ struct CollectionView: View {
         }
         .task {
             guard opensBrowseOnLaunch, navigationPath.isEmpty else { return }
-            navigationPath.append(.browse)
+            select(.browse)
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
                 removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
             }
         }
+    }
+
+    /// Replaces whatever the detail column is showing. Replacing rather than
+    /// appending keeps the column one level deep: picking a second card from the
+    /// grid should show that card, not stack it behind the first.
+    private func select(_ destination: Destination) {
+        navigationPath = [destination]
+    }
+
+    @ViewBuilder
+    private func destinationView(_ destination: Destination, in snapshot: Snapshot) -> some View {
+        switch destination {
+        case .browse:
+            BrowseView()
+        case let .card(id):
+            if let entry = snapshot.entries.first(where: { $0.id == id }) {
+                CollectionCardDetailView(
+                    card: entry.card,
+                    price: entry.row.price,
+                    unpricedReason: entry.unpricedReason,
+                    artworkReason: entry.artworkReason,
+                    onRemoved: presentUndo(for:)
+                )
+            } else {
+                // The card was removed, or a filter now excludes it. Either way the
+                // id no longer names anything, so say so rather than showing a stale
+                // copy of a card that is not in the collection any more.
+                ContentUnavailableView(
+                    "Card not shown",
+                    systemImage: "rectangle.stack",
+                    description: Text("It was removed, or the current filters exclude it.")
+                )
+            }
+        }
+    }
+
+    private var noSelection: some View {
+        ContentUnavailableView(
+            "No card selected",
+            systemImage: "rectangle.stack",
+            description: Text("Choose a card to see its details.")
+        )
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
@@ -140,14 +201,12 @@ struct CollectionView: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: 22) {
                         ForEach(snapshot.entries) { entry in
-                            NavigationLink {
-                                CollectionCardDetailView(
-                                    card: entry.card,
-                                    price: entry.row.price,
-                                    unpricedReason: entry.unpricedReason,
-                                    artworkReason: entry.artworkReason,
-                                    onRemoved: presentUndo(for:)
-                                )
+                            // A button driving the detail column's path rather than a
+                            // `NavigationLink`: links push onto the stack that encloses
+                            // them, and the stack that must move is the one in the next
+                            // column over.
+                            Button {
+                                select(.card(entry.id))
                             } label: {
                                 CollectionCardTile(
                                     card: entry.card,
