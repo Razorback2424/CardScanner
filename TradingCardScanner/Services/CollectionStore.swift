@@ -219,6 +219,7 @@ struct CollectionStore {
         row.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
         row.justTCGCardID = product.id
         row.justTCGVariantID = product.variantID
+        row.tcgplayerProductID = product.tcgplayerProductID
         row.justTCGAPIVersion = JustTCGV1Client.apiVersion
         context.insert(row)
         storeMarketPrice(

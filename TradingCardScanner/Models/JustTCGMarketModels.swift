@@ -422,6 +422,10 @@ struct SealedProductSummary: Identifiable, Hashable, Sendable {
     /// Canonical product artwork when it can be resolved from a provider-backed
     /// marketplace ID; otherwise the UI uses a product placeholder.
     let imageURL: URL?
+    /// TCGplayer's product identifier. Already known here — the artwork URL is
+    /// derived from it — and carried through so an added product can link to
+    /// the marketplace without waiting for a refresh to resolve it again.
+    var tcgplayerProductID: String? = nil
 }
 
 /// A set as the vendor groups it, with its sealed inventory count.

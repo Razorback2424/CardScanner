@@ -76,6 +76,17 @@ final class CollectedCard {
     /// A provider-supplied destination for this exact printing. Never populated
     /// from a name-based search or a guessed marketplace slug.
     var tcgplayerURL: String?
+    /// TCGplayer's stable product identifier for this printing, as published by
+    /// a provider. Kept locally once resolved, like the rest of the catalog
+    /// metadata, so opening the marketplace never depends on a live request.
+    var tcgplayerProductID: String?
+    /// TCGplayer's SKU — product *plus* language, printing and condition.
+    ///
+    /// Persisted because it is the exact object a listing hangs off, but
+    /// deliberately not used to build the marketplace link: the collection does
+    /// not record the condition of the copy owned, so linking to a
+    /// condition-specific SKU would claim knowledge the app does not have.
+    var tcgplayerSKUID: String?
 
     // MARK: - Collection item kind
     //

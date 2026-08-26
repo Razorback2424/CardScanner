@@ -1245,7 +1245,8 @@ struct CollectionView: View {
                 variantID: "ui-history-variant",
                 marketPriceUSD: 100,
                 updatedAt: .now,
-                imageURL: nil
+                imageURL: nil,
+                tcgplayerProductID: "247241"
             ),
             game: .pokemon
         )
@@ -1293,6 +1294,18 @@ struct CollectionView: View {
                     source: .justTCG
                 )
             )
+        }
+
+        // In production `PriceStore.store` writes the record and the
+        // observation together. Seeding observations directly would otherwise
+        // leave the grid showing the opening price while the portfolio uses the
+        // latest one.
+        if let record = PriceStore(context: modelContext).record(forKey: instrument),
+           let latest = prices.last {
+            record.unitMarketPriceUSD = latest
+            record.fetchedAt = .now
+            record.sourceUpdatedAt = .now
+            record.lastSuccessfulCheckAt = .now
         }
         try? modelContext.save()
     }

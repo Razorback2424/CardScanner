@@ -965,6 +965,17 @@ final class PriceRefreshController: ObservableObject {
                 variantID: variant.variantId,
                 at: fetchedAt
             )
+            // Marketplace identity is catalog metadata: once the vendor has
+            // told us which TCGplayer product this printing is, that stays
+            // local, so opening the marketplace never needs a live request.
+            for row in rowsByPriceKey[owner.priceKey] ?? [] {
+                if let productID = card.tcgplayerId, row.tcgplayerProductID == nil {
+                    row.tcgplayerProductID = productID
+                }
+                if let sku = variant.tcgplayerSkuId, row.tcgplayerSKUID == nil {
+                    row.tcgplayerSKUID = sku
+                }
+            }
         }
 
         guard let amount = variant.marketPriceUSD else { return }

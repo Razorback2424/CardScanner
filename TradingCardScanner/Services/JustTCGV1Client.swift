@@ -147,7 +147,8 @@ struct JustTCGV1Client: Sendable {
                 // JustTCG already supplies the canonical TCGplayer product ID.
                 // Keep the CDN convention isolated here so a provider-supplied
                 // image URL can replace it without touching models or views.
-                imageURL: Self.productImageURL(tcgplayerID: card.tcgplayerId)
+                imageURL: Self.productImageURL(tcgplayerID: card.tcgplayerId),
+                tcgplayerProductID: card.tcgplayerId
             )
         }
         return MarketCatalogPage(

@@ -168,6 +168,26 @@ struct CollectionCardDetailView: View {
         dismiss()
     }
 
+    /// Straight from the number to the market it came from.
+    ///
+    /// Sits directly under the price because that is the question it answers:
+    /// "this says it is worth $31 — show me". Absent entirely when the app has
+    /// no marketplace identity it can stand behind, rather than falling back to
+    /// a search that might open the wrong reprint.
+    @ViewBuilder
+    private var marketplaceLink: some View {
+        if let url = TCGplayerLinkBuilder.url(for: card) {
+            Link(destination: url) {
+                Label("View on TCGplayer", systemImage: "arrow.up.forward.app")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .frame(minHeight: 44)
+            .padding(.top, 2)
+            .accessibilityLabel("View \(card.name) on TCGplayer")
+            .accessibilityHint("Opens the marketplace page for this printing.")
+        }
+    }
+
     /// The price belongs to this printing *and* this finish. When the provider
     /// exposes nothing for the variant the user owns, the app says so instead of
     /// borrowing a different finish's number.
@@ -189,6 +209,8 @@ struct CollectionCardDetailView: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
+
+            marketplaceLink
 
             if let unpricedReason, price.amount == nil {
                 VStack(alignment: .leading, spacing: 4) {
