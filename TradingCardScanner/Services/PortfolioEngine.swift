@@ -106,23 +106,28 @@ final class PortfolioEngine: ObservableObject {
         let today = PortfolioCalendar.day(containing: now, in: timeZone)
         lastComputedDay = today
 
-        let ledger = InventoryLedger(context: context)
-        let reading = ledger.read()
-        let events = reading.events.map(Self.entry(from:))
-        let observations = Self.observations(in: context)
-
-        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
-        let valuation = Self.currentValuation(projection: projection, ledger: ledger)
+        // One snapshot, one replay. Everything below reads from that single
+        // forward pass rather than recomputing prefixes per day.
+        let snapshot = PortfolioReplaySnapshotBuilder.make(
+            context: context,
+            epoch: PortfolioEpoch.startedAt(context: context) ?? now,
+            through: now,
+            timeZone: timeZone
+        )
+        let projection = snapshot.projection
+        let valuation = Self.currentValuation(
+            projection: projection,
+            valuations: snapshot.valuations,
+            otherCurrencyInstruments: snapshot.otherCurrencyInstruments
+        )
 
         var summary = PortfolioSummary(
             currentValue: valuation.value,
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
         )
-        summary.defects = reading.defects
-            + projection.defects
-            + Self.reconcile(projection: projection, events: events)
+        summary.defects = snapshot.defects
+            + Self.reconcile(projection: projection, events: snapshot.input.events)
         summary.isAuthoritative = summary.defects.isEmpty
         LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
@@ -132,15 +137,13 @@ final class PortfolioEngine: ObservableObject {
         }
 
         summary.isMigrationDay = PortfolioEpoch.isMigrationDay(now, epoch: epoch, timeZone: timeZone)
-        summary.coverage = Self.coverage(
-            instruments: Set(valuation.instrumentsHeld),
-            day: today,
-            context: context,
-            // Coverage is unknown only for days that predate the ledger. Today
-            // always has evidence, even when that evidence says nothing was
-            // checked.
-            isKnown: true
-        )
+
+        let replay = PortfolioReplayEngine.replay(snapshot.input)
+        summary.coverage = replay.live?.coverageToday(
+            index: snapshot.input.coverage,
+            heldInstruments: Set(valuation.instrumentsHeld),
+            day: today
+        ) ?? PortfolioCoverage(state: .complete)
 
         // Migration day has no yesterday, so there is nothing to attribute
         // against and nothing is invented. The first legitimate close forms at
@@ -150,30 +153,20 @@ final class PortfolioEngine: ObservableObject {
         // the value above is still shown, but nothing is written down as
         // history until the conflict is resolved.
         if !summary.isMigrationDay, summary.isAuthoritative {
-            let closedDay = PortfolioCalendar.day(
+            summary.closeDate = PortfolioCalendar.day(
                 containing: today.addingTimeInterval(-1),
                 in: timeZone
             )
-            let boundary = today
-            summary.closeDate = closedDay
+            summary.revisionNote = Self.publish(replay.days, timeZone: timeZone, context: context)?
+                .revisionNote
 
-            let stored = Self.publish(
-                closesUpTo: closedDay,
-                epoch: epoch,
-                events: events,
-                observations: observations,
-                timeZone: timeZone,
-                context: context
-            )
-            summary.revisionNote = stored?.revisionNote
-
-            summary.attribution = PortfolioClose.attribute(
-                events: events,
-                observations: observations,
-                boundary: boundary,
-                now: now,
-                currentValue: valuation.value
-            )
+            if var attribution = replay.live?.attribution {
+                // Current value is still measured independently, from the
+                // collection itself. Feeding the replay's own ending value back
+                // in would make the residual vacuous.
+                attribution.currentValue = valuation.value
+                summary.attribution = attribution
+            }
         }
 
         status = .ready(summary)
@@ -192,9 +185,16 @@ final class PortfolioEngine: ObservableObject {
     ///
     /// Deliberately not the walk's ending state: the residual only means
     /// something if the two sides are measured independently.
+    /// The collection's value right now, taken from the collection itself.
+    ///
+    /// Deliberately not the replay's ending state: the residual only means
+    /// something if the two sides are measured independently. Prices come from
+    /// the bulk index — one fetch per position would be one fetch per position
+    /// against the whole observation log.
     static func currentValuation(
         projection: LogicalCollectionProjection,
-        ledger: InventoryLedger
+        valuations: InstrumentValuationIndex,
+        otherCurrencyInstruments: Set<String>
     ) -> CurrentValuation {
         var valuation = CurrentValuation()
         var instruments: Set<String> = []
@@ -205,11 +205,10 @@ final class PortfolioEngine: ObservableObject {
             let instrumentKey = position.priceStorageKey
             instruments.insert(instrumentKey)
 
-            guard let price = ledger.valuation(forPriceKey: instrumentKey).unitPrice else {
+            guard let price = valuations.valuation(for: instrumentKey).unitPrice else {
                 // Two different absences, kept apart because they mean
                 // different things to the person reading the total.
-                let record = PriceStore(context: ledger.context).record(forKey: instrumentKey)
-                if record?.unitMarketPriceUSD != nil, record?.currencyCode != "USD" {
+                if otherCurrencyInstruments.contains(instrumentKey) {
                     valuation.otherCurrencyCount += quantity
                 } else {
                     valuation.unpricedCount += quantity
@@ -286,128 +285,79 @@ final class PortfolioEngine: ObservableObject {
 
     // MARK: - Publishing closes
 
-    /// Materializes every close from the local knowledge epoch through `day`,
-    /// revising a published day only when its deterministic inputs changed.
+    /// Writes or revises closes from replay output, and returns the most recent
+    /// one so the card can explain a revision.
+    ///
+    /// Revision is decided by comparing the derived payload against what is
+    /// stored, not by an input fingerprint alone: changing how the replay is
+    /// computed should not manufacture a revision on every historical day.
     @discardableResult
     static func publish(
-        closesUpTo day: Date,
-        epoch: Date,
-        events: [LedgerEntry],
-        observations: [ObservationEntry],
+        _ days: [PortfolioReplayDay],
         timeZone: TimeZone,
         context: ModelContext
     ) -> PortfolioDailyClose? {
-        let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
-        guard day >= epochDay else { return nil }
+        guard !days.isEmpty else { return nil }
 
-        var cursor = epochDay
-        var requestedClose: PortfolioDailyClose?
-        var insertedAny = false
+        // One fetch for every stored close, grouped once. The publisher used to
+        // query per day inside a loop over the whole history.
+        let stored = Dictionary(grouping: allCloses(in: context), by: \.date)
+            .compactMapValues { $0.max { $0.revision < $1.revision } }
 
-        while cursor <= day {
-            if let close = makeClose(
-                for: cursor,
-                events: events,
-                observations: observations,
-                timeZone: timeZone,
-                context: context
-            ) {
-                requestedClose = close
-                insertedAny = true
-            } else if cursor == day {
-                requestedClose = latestClose(for: cursor, in: context)
+        var latest: PortfolioDailyClose?
+        var inserted = false
+
+        for day in days {
+            let existing = stored[day.displayDay]
+            if let existing, matches(existing, day) {
+                latest = existing
+                continue
             }
-            cursor = PortfolioCalendar.boundary(afterDay: cursor, in: timeZone)
+
+            let close = PortfolioDailyClose(
+                date: day.displayDay,
+                revision: (existing?.revision ?? 0) + 1,
+                timeZoneIdentifier: timeZone.identifier,
+                closeValue: day.closeValue,
+                market: day.market,
+                flow: day.flow,
+                corrections: day.corrections,
+                pricingAdjustment: day.pricingAdjustment,
+                carriedForwardValue: day.carriedForwardValue,
+                coverage: day.coverage.state,
+                refreshedInstrumentCount: day.coverage.refreshed,
+                carriedForwardInstrumentCount: day.coverage.carriedForward,
+                pricedPositionCount: day.pricedPositionCount,
+                excludedCount: day.excludedQuantity,
+                inputsFingerprint: "",
+                // A published close can only change because ownership was
+                // incomplete: observations are read by knowledge time, so a
+                // vendor backdating a price cannot reach a day that has already
+                // closed. The wording stays at what the evidence supports.
+                revisionReason: existing == nil ? nil : .recomputed
+            )
+            context.insert(close)
+            latest = close
+            inserted = true
         }
 
-        if insertedAny { try? context.save() }
-        return requestedClose
+        if inserted { try? context.save() }
+        return latest
     }
 
-    /// Returns a newly inserted revision, or nil when the existing close is
-    /// already current.
-    private static func makeClose(
-        for day: Date,
-        events: [LedgerEntry],
-        observations: [ObservationEntry],
-        timeZone: TimeZone,
-        context: ModelContext
-    ) -> PortfolioDailyClose? {
-
-        let boundary = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
-        let state = PortfolioClose.state(
-            events: events,
-            observations: observations,
-            asOf: boundary
-        )
-        let fingerprint = self.fingerprint(
-            events: events.filter { $0.occurredAt < boundary },
-            observations: observations.filter { $0.receivedAt < boundary }
-        )
-
-        let existing = latestClose(for: day, in: context)
-        if let existing, existing.inputsFingerprint == fingerprint {
-            return nil
-        }
-
-        // A close only ever changes because ownership was incomplete. Market
-        // information arriving late cannot reach this computation at all: the
-        // close reads observations by `receivedAt`, and a vendor backdating a
-        // price is received now, not then. That is contract 7 holding by
-        // construction rather than by a rule someone has to remember.
-        // With knowledge-time-safe observations, the only new pre-boundary
-        // input that can alter an existing close is a newly visible ownership
-        // event. Its originating `recordedAt` is irrelevant to when CloudKit
-        // delivered it here; the changed input set is the evidence.
-        let reason: PortfolioRevisionReason? = existing == nil ? nil : .lateInventoryTruth
-
-        let instruments = state.heldInstrumentKeys
-        let coverage = coverage(
-            instruments: instruments,
-            day: day,
-            context: context,
-            isKnown: true
-        )
-        let checked = Set(instruments.filter {
-            PriceObservationLog(context: context).checkDay(instrumentKey: $0, day: day) != nil
-        })
-        let carriedForwardValue = state.quantities.reduce(Money.zero) { total, entry in
-            guard entry.value != 0,
-                  let instrument = state.instruments[entry.key],
-                  !checked.contains(instrument),
-                  let price = state.prices[instrument] else { return total }
-            return total + price * entry.value
-        }
-
-        let attribution = PortfolioClose.attribute(
-            events: events,
-            observations: observations,
-            boundary: PortfolioCalendar.day(containing: day, in: timeZone),
-            now: boundary,
-            currentValue: state.value,
-            includeEndpoint: false
-        )
-
-        let close = PortfolioDailyClose(
-            date: day,
-            revision: (existing?.revision ?? 0) + 1,
-            timeZoneIdentifier: timeZone.identifier,
-            closeValue: state.value,
-            market: attribution.market,
-            flow: attribution.added - attribution.removed,
-            corrections: attribution.corrections,
-            pricingAdjustment: attribution.pricingAdjustment,
-            carriedForwardValue: carriedForwardValue,
-            coverage: coverage.state,
-            refreshedInstrumentCount: coverage.refreshed,
-            carriedForwardInstrumentCount: coverage.carriedForward,
-            pricedPositionCount: state.pricedPositionCount,
-            excludedCount: state.excludedQuantity,
-            inputsFingerprint: fingerprint,
-            revisionReason: reason
-        )
-        context.insert(close)
-        return close
+    /// Whether a stored close already says exactly what the replay derived.
+    private static func matches(_ stored: PortfolioDailyClose, _ day: PortfolioReplayDay) -> Bool {
+        stored.closeValue == day.closeValue
+            && stored.marketContribution == day.market
+            && stored.flowContribution == day.flow
+            && stored.correctionContribution == day.corrections
+            && stored.pricingAdjustment == day.pricingAdjustment
+            && stored.carriedForwardValue == day.carriedForwardValue
+            && stored.coverageState == day.coverage.state
+            && stored.refreshedInstrumentCount == day.coverage.refreshed
+            && stored.carriedForwardInstrumentCount == day.coverage.carriedForward
+            && stored.pricedPositionCount == day.pricedPositionCount
+            && stored.excludedCount == day.excludedQuantity
     }
 
     static func latestClose(for day: Date, in context: ModelContext) -> PortfolioDailyClose? {
@@ -463,18 +413,19 @@ final class PortfolioEngine: ObservableObject {
         let descriptor = FetchDescriptor<PriceObservation>(
             sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
         )
-        let rows = (try? context.fetch(descriptor)) ?? []
-        return rows.map { row in
-            ObservationEntry(
-                id: row.id,
-                instrumentKey: row.instrumentKey,
-                kind: row.kind,
-                // Non-USD is normalised away here rather than deep in the walk,
-                // so exactly one place in the app decides what "not in the
-                // total" means.
-                amount: row.currencyCode == "USD" ? row.amount : nil,
-                receivedAt: row.receivedAt
-            )
-        }
+        return ((try? context.fetch(descriptor)) ?? []).map(observationEntry(from:))
+    }
+
+    static func observationEntry(from row: PriceObservation) -> ObservationEntry {
+        ObservationEntry(
+            id: row.id,
+            instrumentKey: row.instrumentKey,
+            kind: row.kind,
+            // Non-USD is normalised away here rather than deep in the walk, so
+            // exactly one place in the app decides what "not in the total"
+            // means.
+            amount: row.currencyCode == "USD" ? row.amount : nil,
+            receivedAt: row.receivedAt
+        )
     }
 }

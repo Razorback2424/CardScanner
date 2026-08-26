@@ -71,9 +71,18 @@ struct LogicalCollectionProjection {
 /// owned.
 @MainActor
 enum LogicalCollection {
+    /// `priceStorageKey` is supplied rather than looked up so the bulk callers
+    /// can answer from an in-memory index instead of one fetch per position.
     static func project(
         cards: [CollectedCard],
         ledger: InventoryLedger
+    ) -> LogicalCollectionProjection {
+        project(cards: cards) { ledger.priceStorageKey(for: $0) }
+    }
+
+    static func project(
+        cards: [CollectedCard],
+        priceStorageKey: (CollectedCard) -> String
     ) -> LogicalCollectionProjection {
         var groups: [String: [CollectedCard]] = [:]
         var order: [String] = []
@@ -90,19 +99,19 @@ enum LogicalCollection {
             guard let rows = groups[key], let first = rows.first else { continue }
 
             let representative = rows.count == 1 ? first : chooseRepresentative(from: rows)
-            let priceStorageKey = ledger.priceStorageKey(for: representative)
+            let instrument = priceStorageKey(representative)
 
             // Rows agreeing on identity but disagreeing on what they are priced
             // as cannot both be right, and picking one would decide the
             // position's value by fetch order. Surfaced instead.
             if rows.count > 1 {
-                let conflicting = rows.filter { ledger.priceStorageKey(for: $0) != priceStorageKey }
+                let conflicting = rows.filter { priceStorageKey($0) != instrument }
                 if !conflicting.isEmpty {
                     defects.append(
                         LedgerIntegrityDefect(
                             reason: .duplicatePositionPricingConflict,
                             collectionKey: key,
-                            detail: "\(rows.count) rows claim this position; \(conflicting.count) price through a different instrument than \(priceStorageKey)"
+                            detail: "\(rows.count) rows claim this position; \(conflicting.count) price through a different instrument than \(instrument)"
                         )
                     )
                 }
@@ -113,7 +122,7 @@ enum LogicalCollection {
                     collectionKey: key,
                     quantity: rows.reduce(0) { $0 + $1.quantity },
                     representative: representative,
-                    priceStorageKey: priceStorageKey,
+                    priceStorageKey: instrument,
                     dateAdded: rows.map(\.dateAdded).max() ?? representative.dateAdded,
                     physicalRowCount: rows.count
                 )

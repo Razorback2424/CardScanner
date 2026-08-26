@@ -463,14 +463,24 @@ final class PortfolioReconciliationTests: XCTestCase {
             )
         )
 
-        _ = PortfolioEngine.publish(
-            closesUpTo: lastDay,
-            epoch: epochDay.addingTimeInterval(30),
-            events: [event],
-            observations: [price],
-            timeZone: zone,
-            context: context
+        try context.save()
+
+        // Through the replay and the real storage adapter, so the bulk coverage
+        // fetch is exercised rather than a hand-built index.
+        let through = PortfolioCalendar.boundary(afterDay: lastDay, in: zone)
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: [event],
+                observations: [price],
+                coverage: PortfolioReplaySnapshotBuilder.coverageIndex(
+                    context: context, from: epochDay, through: through, timeZone: zone
+                ),
+                epoch: epochDay.addingTimeInterval(30),
+                through: through,
+                timeZoneIdentifier: zone.identifier
+            )
         )
+        _ = PortfolioEngine.publish(replay.days, timeZone: zone, context: context)
 
         let closes = PortfolioEngine.allCloses(in: context)
         XCTAssertEqual(closes.count, 7)

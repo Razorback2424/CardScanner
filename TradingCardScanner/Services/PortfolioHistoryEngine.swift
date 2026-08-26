@@ -44,22 +44,22 @@ enum PortfolioHistoryEngine {
         ))
         factors.append(1)
 
+        // Daily factors come straight from the replay, which already produced
+        // them in the same forward pass that produced the closes. There is no
+        // second walk here — the engine this replaced re-derived the whole
+        // prefix once per close.
+        let dailyFactors = input.dailyPerformanceFactors
+
         var previousDate = anchor.date
         for close in selected.dropFirst() {
-            let start = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
-            let end = PortfolioCalendar.boundary(afterDay: close.date, in: timeZone)
-            if let walked = walk(
-                events: input.events,
-                observations: input.observations,
-                from: start,
-                to: end,
-                calendar: calendar,
-                includeFinalEndpoint: false
-            ) {
-                factor = rounded(factor * walked.factor)
-                factorAvailable = factorAvailable && walked.isAvailable
-            } else {
-                factorAvailable = false
+            var cursor = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
+            while cursor <= close.date {
+                guard let link = dailyFactors[cursor] else {
+                    factorAvailable = false
+                    break
+                }
+                factor = rounded(factor * link)
+                cursor = PortfolioCalendar.boundary(afterDay: cursor, in: timeZone)
             }
             points.append(PortfolioHistoryPoint(
                 displayDay: close.date,
@@ -74,19 +74,17 @@ enum PortfolioHistoryEngine {
 
         let liveIsDistinct = input.now > (points.last?.instant ?? .distantPast)
         if liveIsDistinct {
-            let start = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
-            if let walked = walk(
-                events: input.events,
-                observations: input.observations,
-                from: start,
-                to: input.now,
-                calendar: calendar,
-                includeFinalEndpoint: true
-            ) {
-                factor = rounded(factor * walked.factor)
-                factorAvailable = factorAvailable && walked.isAvailable
-            } else {
-                factorAvailable = false
+            var cursor = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
+            let liveDay = PortfolioCalendar.day(containing: input.now, in: timeZone)
+            while cursor <= liveDay {
+                guard let link = cursor == liveDay
+                    ? input.livePerformanceFactor
+                    : dailyFactors[cursor] else {
+                    factorAvailable = false
+                    break
+                }
+                factor = rounded(factor * link)
+                cursor = PortfolioCalendar.boundary(afterDay: cursor, in: timeZone)
             }
             points.append(PortfolioHistoryPoint(
                 displayDay: PortfolioCalendar.day(containing: input.now, in: timeZone),
@@ -186,40 +184,6 @@ enum PortfolioHistoryEngine {
             .sorted { $0.date < $1.date }
     }
 
-    private static func walk(
-        events: [LedgerEntry],
-        observations: [ObservationEntry],
-        from start: Date,
-        to end: Date,
-        calendar: Calendar,
-        includeFinalEndpoint: Bool
-    ) -> PortfolioClose.PerformanceWalk? {
-        guard start <= end else { return PortfolioClose.PerformanceWalk() }
-        var cursor = start
-        var factor: Decimal = 1
-        var available = true
-        var hasLink = false
-        while cursor < end {
-            let day = PortfolioCalendar.day(containing: cursor, in: calendar.timeZone)
-            let dayEnd = PortfolioCalendar.boundary(afterDay: day, in: calendar.timeZone)
-            let segmentEnd = min(dayEnd, end)
-            let isFinalSegment = segmentEnd == end
-            let segment = PortfolioClose.performance(
-                events: events,
-                observations: observations,
-                boundary: cursor,
-                now: segmentEnd,
-                includeEndpoint: isFinalSegment && includeFinalEndpoint
-            )
-            guard segment.isAvailable else { return nil }
-            factor = rounded(factor * segment.factor)
-            available = available && segment.isAvailable
-            hasLink = hasLink || segment.hasMarketLink
-            cursor = segmentEnd
-        }
-        return PortfolioClose.PerformanceWalk(factor: factor, isAvailable: available, hasMarketLink: hasLink)
-    }
-
     private static func rounded(_ value: Decimal) -> Decimal {
         var input = value
         var output = Decimal.zero
@@ -231,7 +195,6 @@ enum PortfolioHistoryEngine {
 @MainActor
 final class PortfolioHistoryController: ObservableObject {
     @Published private(set) var result: PortfolioHistoryResult?
-    private var lastFingerprint: String?
 
     func recompute(
         context: ModelContext,
@@ -245,8 +208,15 @@ final class PortfolioHistoryController: ObservableObject {
             return
         }
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? PortfolioCalendar.timeZone()
-        let events = (InventoryLedger(context: context).allEvents()).map(PortfolioEngine.entry(from:))
-        let observations = PortfolioEngine.observations(in: context)
+        let snapshot = PortfolioReplaySnapshotBuilder.make(
+            context: context,
+            epoch: PortfolioEpoch.startedAt(context: context) ?? now,
+            through: now,
+            timeZone: timeZone
+        )
+        let replay = PortfolioReplayEngine.replay(snapshot.input)
+        let events = snapshot.input.events
+        let observations = snapshot.input.observations
         let closes = PortfolioEngine.allCloses(in: context).map {
             PortfolioPublishedClose(
                 date: $0.date, revision: $0.revision, timeZoneIdentifier: $0.timeZoneIdentifier,
@@ -259,33 +229,24 @@ final class PortfolioHistoryController: ObservableObject {
                 revisionReason: $0.revisionReason
             )
         }
-        let fingerprint = Self.fingerprint(
-            events: events, observations: observations, closes: closes,
-            summary: summary, mode: mode, range: range, now: now
-        )
-        guard fingerprint != lastFingerprint else { return }
-        lastFingerprint = fingerprint
         result = PortfolioHistoryEngine.calculate(
             input: PortfolioHistoryInput(
                 closes: closes, events: events, observations: observations,
                 summary: summary, epoch: PortfolioEpoch.startedAt(context: context),
-                timeZoneIdentifier: timeZone.identifier, now: now
+                timeZoneIdentifier: timeZone.identifier, now: now,
+                // A missing day means the factor is undefined, not 1. Filling
+                // the gap with 1 would report an unmeasurable period as flat.
+                dailyPerformanceFactors: Dictionary(
+                    replay.days.compactMap { day in
+                        day.performanceFactor.map { (day.displayDay, $0) }
+                    },
+                    uniquingKeysWith: { _, latest in latest }
+                ),
+                livePerformanceFactor: replay.live?.performanceFactor
             ),
             mode: mode,
             range: range
         )
     }
 
-    private static func fingerprint(
-        events: [LedgerEntry], observations: [ObservationEntry], closes: [PortfolioPublishedClose],
-        summary: PortfolioSummary, mode: PortfolioHistoryMode, range: PortfolioHistoryRange, now: Date
-    ) -> String {
-        var hasher = SHA256()
-        let payload = events.map { "e:\($0.eventID):\($0.occurredAt.timeIntervalSinceReferenceDate):\($0.deltaQuantity)" }.joined()
-            + observations.map { "o:\($0.id):\($0.receivedAt.timeIntervalSinceReferenceDate):\($0.amount?.tenThousandths ?? 0)" }.joined()
-            + closes.map { "c:\($0.date):\($0.revision):\($0.closeValue.tenThousandths)" }.joined()
-            + "s:\(summary.currentValue.tenThousandths):\(mode.rawValue):\(range.rawValue):\(now.timeIntervalSinceReferenceDate)"
-        hasher.update(data: Data(payload.utf8))
-        return hasher.finalize().map { String(format: "%02x", $0) }.joined()
-    }
 }

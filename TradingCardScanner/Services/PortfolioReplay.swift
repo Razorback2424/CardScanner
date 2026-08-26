@@ -86,6 +86,26 @@ struct PortfolioReplayLive: Sendable, Equatable {
     var excludedQuantity: Int
 }
 
+extension PortfolioReplayLive {
+    /// Coverage for the still-open day. Held instruments come from the live
+    /// collection rather than the replay, so a position the ledger has not yet
+    /// heard about is still counted as something needing a check.
+    func coverageToday(
+        index: PortfolioCoverageIndex,
+        heldInstruments: Set<String>,
+        day: Date
+    ) -> PortfolioCoverage {
+        guard !heldInstruments.isEmpty else { return PortfolioCoverage(state: .complete) }
+        let refreshed = heldInstruments.intersection(index.checkedInstruments(on: day)).count
+        let carriedForward = heldInstruments.count - refreshed
+        return PortfolioCoverage(
+            refreshed: refreshed,
+            carriedForward: carriedForward,
+            state: carriedForward == 0 ? .complete : .partial
+        )
+    }
+}
+
 struct PortfolioReplayResult: Sendable, Equatable {
     /// Every finished day from the epoch through the last completed boundary.
     var days: [PortfolioReplayDay]

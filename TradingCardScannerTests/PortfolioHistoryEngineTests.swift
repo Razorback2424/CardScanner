@@ -78,7 +78,18 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         now: Date,
         attribution: PortfolioClose.Attribution? = nil
     ) -> PortfolioHistoryInput {
-        PortfolioHistoryInput(
+        // Performance factors come from the replay, the same way production
+        // produces them — the history engine no longer walks history itself.
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: events,
+                observations: observations,
+                epoch: closes.map(\.date).min() ?? now,
+                through: now,
+                timeZoneIdentifier: "UTC"
+            )
+        )
+        return PortfolioHistoryInput(
             closes: closes, events: events, observations: observations,
             summary: PortfolioSummary(
                 currentValue: money(currentValue), attribution: attribution,
@@ -86,7 +97,14 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 coverage: PortfolioCoverage(refreshed: 1, carriedForward: 0, state: .complete)
             ),
             epoch: closes.first?.date,
-            timeZoneIdentifier: "UTC", now: now
+            timeZoneIdentifier: "UTC", now: now,
+            dailyPerformanceFactors: Dictionary(
+                replay.days.compactMap { day in
+                    day.performanceFactor.map { (day.displayDay, $0) }
+                },
+                uniquingKeysWith: { _, latest in latest }
+            ),
+            livePerformanceFactor: replay.live?.performanceFactor
         )
     }
 

@@ -100,6 +100,11 @@ struct PortfolioHistoryInput: Equatable, Sendable {
     var epoch: Date?
     var timeZoneIdentifier: String
     var now: Date
+    /// Time-weighted factor per finished portfolio day, produced by the same
+    /// replay pass that produced the closes. The chart never re-walks history.
+    var dailyPerformanceFactors: [Date: Decimal] = [:]
+    /// The factor for the still-open day.
+    var livePerformanceFactor: Decimal? = 1
 }
 
 struct PortfolioHistoryPoint: Identifiable, Equatable, Sendable {
