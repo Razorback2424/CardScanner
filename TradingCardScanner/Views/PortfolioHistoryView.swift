@@ -138,7 +138,6 @@ struct PortfolioHistoryView: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel(result.mode.title)
         .accessibilityValue(chartSummary(result))
-        .accessibilityHint("Swipe across the plot to inspect each real point.")
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
         .onAppear {
             selectedPointID = selectionID

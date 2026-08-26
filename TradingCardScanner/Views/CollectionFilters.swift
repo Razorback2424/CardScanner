@@ -1,34 +1,5 @@
 import SwiftUI
 
-/// One of the four dimensions. Neutral until it is doing something, and then it
-/// says what it is doing — the chip itself is the state readout, so there is no
-/// filter drawer to keep open and no advanced-search screen to go to.
-struct FilterChip: View {
-    let title: String
-    let isActive: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 4) {
-                Text(title)
-                    .font(.subheadline.weight(isActive ? .semibold : .regular))
-                    .lineLimit(1)
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 9, weight: .semibold))
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 7)
-            .foregroundStyle(isActive ? Color.white : Color.primary)
-            .background(
-                isActive ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.quaternary),
-                in: Capsule()
-            )
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 /// A choice with the number of cards behind it, so filtering is never a guess
 /// about what is on the other side.
 struct FilterOption: Identifiable, Equatable {
@@ -49,13 +20,6 @@ struct CollectionFilterSheet: View {
     let finishOptions: [FilterOption]
     let gradingCompanyOptions: [FilterOption]
     let gradeOptions: [FilterOption]
-
-    @State private var nestedSheet: NestedSheet?
-
-    private enum NestedSheet: String, Identifiable {
-        case sets, finishes, price, gradingCompanies, grades
-        var id: String { rawValue }
-    }
 
     var body: some View {
         NavigationStack {
@@ -98,30 +62,56 @@ struct CollectionFilterSheet: View {
                 }
 
                 Section("Details") {
-                    detailRow("Sets", value: selectionLabel(filters.setCodes, singular: "set")) {
-                        nestedSheet = .sets
+                    NavigationLink {
+                        MultiSelectFilterView(
+                            title: "Sets",
+                            options: setOptions,
+                            selection: $filters.setCodes
+                        )
+                    } label: {
+                        detailRow("Sets", value: selectionLabel(filters.setCodes, singular: "set"))
                     }
-                    detailRow("Price", value: filters.price?.label ?? "Any") {
-                        nestedSheet = .price
+                    NavigationLink {
+                        PriceFilterView(selection: $filters.price)
+                    } label: {
+                        detailRow("Price", value: filters.price?.label ?? "Any")
                     }
-                    detailRow("Finish", value: selectionLabel(filters.variantIDs, singular: "finish")) {
-                        nestedSheet = .finishes
+                    NavigationLink {
+                        MultiSelectFilterView(
+                            title: "Finish",
+                            options: finishOptions,
+                            selection: $filters.variantIDs
+                        )
+                    } label: {
+                        detailRow("Finish", value: selectionLabel(filters.variantIDs, singular: "finish"))
                     }
                 }
 
                 if filters.itemKinds.isEmpty || filters.itemKinds.contains(.gradedCard) {
                     Section("Graded") {
-                        detailRow(
-                            "Grading Company",
-                            value: selectionLabel(filters.gradingCompanies, singular: "company")
-                        ) {
-                            nestedSheet = .gradingCompanies
+                        NavigationLink {
+                            MultiSelectFilterView(
+                                title: "Grading Company",
+                                options: gradingCompanyOptions,
+                                selection: gradingCompanySelection
+                            )
+                        } label: {
+                            detailRow(
+                                "Grading Company",
+                                value: selectionLabel(filters.gradingCompanies, singular: "company")
+                            )
                         }
-                        detailRow(
-                            "Grade",
-                            value: selectionLabel(filters.gradeValues, singular: "grade")
-                        ) {
-                            nestedSheet = .grades
+                        NavigationLink {
+                            MultiSelectFilterView(
+                                title: "Grade",
+                                options: gradeOptions,
+                                selection: $filters.gradeValues
+                            )
+                        } label: {
+                            detailRow(
+                                "Grade",
+                                value: selectionLabel(filters.gradeValues, singular: "grade")
+                            )
                         }
                     }
                 }
@@ -151,36 +141,6 @@ struct CollectionFilterSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
-        .sheet(item: $nestedSheet) { sheet in
-            switch sheet {
-            case .sets:
-                MultiSelectFilterSheet(
-                    title: "Sets",
-                    options: setOptions,
-                    selection: $filters.setCodes
-                )
-            case .finishes:
-                MultiSelectFilterSheet(
-                    title: "Finish",
-                    options: finishOptions,
-                    selection: $filters.variantIDs
-                )
-            case .price:
-                PriceFilterSheet(selection: $filters.price)
-            case .gradingCompanies:
-                MultiSelectFilterSheet(
-                    title: "Grading Company",
-                    options: gradingCompanyOptions,
-                    selection: gradingCompanySelection
-                )
-            case .grades:
-                MultiSelectFilterSheet(
-                    title: "Grade",
-                    options: gradeOptions,
-                    selection: $filters.gradeValues
-                )
-            }
-        }
     }
 
     private var gradingCompanySelection: Binding<Set<String>> {
@@ -235,20 +195,11 @@ struct CollectionFilterSheet: View {
         .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
-    private func detailRow(
-        _ title: String,
-        value: String,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            HStack {
-                Text(title).foregroundStyle(.primary)
-                Spacer()
-                Text(value).foregroundStyle(.secondary)
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
+    private func detailRow(_ title: String, value: String) -> some View {
+        HStack {
+            Text(title).foregroundStyle(.primary)
+            Spacer()
+            Text(value).foregroundStyle(.secondary)
         }
     }
 }
@@ -256,9 +207,7 @@ struct CollectionFilterSheet: View {
 /// Multi-select list used for both Set and Finish. Options come from the
 /// collection itself: a set the user owns nothing from is not a choice, and a
 /// finish they own none of would only be clutter.
-struct MultiSelectFilterSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
+struct MultiSelectFilterView: View {
     let title: String
     let options: [FilterOption]
     @Binding var selection: Set<String>
@@ -273,41 +222,35 @@ struct MultiSelectFilterSheet: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if options.isEmpty {
-                    ContentUnavailableView(
-                        "Nothing to filter yet",
-                        systemImage: "line.3.horizontal.decrease.circle",
-                        description: Text("Scan some cards first.")
-                    )
-                } else {
-                    List {
-                        ForEach(groups, id: \.self) { group in
-                            Section {
-                                ForEach(options.filter { ($0.group ?? "") == group }) { option in
-                                    row(option)
-                                }
-                            } header: {
-                                if !group.isEmpty { Text(group) }
+        Group {
+            if options.isEmpty {
+                ContentUnavailableView(
+                    "Nothing to filter yet",
+                    systemImage: "line.3.horizontal.decrease.circle",
+                    description: Text("Scan some cards first.")
+                )
+            } else {
+                List {
+                    ForEach(groups, id: \.self) { group in
+                        Section {
+                            ForEach(options.filter { ($0.group ?? "") == group }) { option in
+                                row(option)
                             }
+                        } header: {
+                            if !group.isEmpty { Text(group) }
                         }
                     }
                 }
             }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Clear") { selection.removeAll() }
-                        .disabled(selection.isEmpty)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                }
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Clear") { selection.removeAll() }
+                    .disabled(selection.isEmpty)
             }
         }
-        .presentationDetents([.medium, .large])
     }
 
     private func row(_ option: FilterOption) -> some View {
@@ -334,7 +277,7 @@ struct MultiSelectFilterSheet: View {
 
 /// Bands rather than a slider: card prices are distributed far too unevenly for
 /// a slider to land anywhere useful. Custom covers everything else.
-struct PriceFilterSheet: View {
+struct PriceFilterView: View {
     @Environment(\.dismiss) private var dismiss
 
     @Binding var selection: PriceFilter?
@@ -343,62 +286,54 @@ struct PriceFilterSheet: View {
     @State private var customMax: String = ""
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    row(title: "Any", isSelected: selection == nil) { selection = nil }
-                    ForEach(PriceBand.allCases) { band in
-                        row(title: band.label, isSelected: selection == .band(band)) {
-                            selection = .band(band)
-                        }
+        List {
+            Section {
+                row(title: "Any", isSelected: selection == nil) { selection = nil }
+                ForEach(PriceBand.allCases) { band in
+                    row(title: band.label, isSelected: selection == .band(band)) {
+                        selection = .band(band)
                     }
-                } footer: {
-                    Text("Price is the current market price of one copy. Ten copies of a $2 card is still a $2 card.")
                 }
-
-                // Its own section because it asks a different question from the
-                // bands above: not how much a card is worth, but which cards the
-                // app still has no price for.
-                Section {
-                    row(title: "Unpriced", isSelected: selection == .unpriced) {
-                        selection = .unpriced
-                    }
-                } footer: {
-                    Text("Cards no price source covers yet.")
-                }
-
-                Section("Custom") {
-                    HStack {
-                        Text("Min")
-                        TextField("Any", text: $customMin)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                    HStack {
-                        Text("Max")
-                        TextField("Any", text: $customMax)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                    }
-                    Button("Apply range") { applyCustom() }
-                        .disabled(Double(customMin) == nil && Double(customMax) == nil)
-                }
+            } footer: {
+                Text("Price is the current market price of one copy. Ten copies of a $2 card is still a $2 card.")
             }
-            .navigationTitle("Price")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+
+            // Its own section because it asks a different question from the
+            // bands above: not how much a card is worth, but which cards the
+            // app still has no price for.
+            Section {
+                row(title: "Unpriced", isSelected: selection == .unpriced) {
+                    selection = .unpriced
                 }
+            } footer: {
+                Text("Cards no price source covers yet.")
             }
-            .onAppear {
-                if case let .custom(min, max) = selection {
-                    customMin = min.map { String($0) } ?? ""
-                    customMax = max.map { String($0) } ?? ""
+
+            Section("Custom") {
+                HStack {
+                    Text("Min")
+                    TextField("Any", text: $customMin)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
                 }
+                HStack {
+                    Text("Max")
+                    TextField("Any", text: $customMax)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                }
+                Button("Apply range") { applyCustom() }
+                    .disabled(Double(customMin) == nil && Double(customMax) == nil)
             }
         }
-        .presentationDetents([.medium, .large])
+        .navigationTitle("Price")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if case let .custom(min, max) = selection {
+                customMin = min.map { String($0) } ?? ""
+                customMax = max.map { String($0) } ?? ""
+            }
+        }
     }
 
     private func applyCustom() {

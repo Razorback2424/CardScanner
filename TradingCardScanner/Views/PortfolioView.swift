@@ -1,5 +1,12 @@
 import SwiftUI
 import SwiftData
+import UIKit
+
+/// A semantic positive value color that adapts with the system appearance and
+/// keeps gains visually consistent across Portfolio.
+private enum PortfolioPalette {
+    static let positive = Color(uiColor: .systemGreen)
+}
 
 /// The collection's home screen. It presents the value and accounting already
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
@@ -11,7 +18,6 @@ struct PortfolioView: View {
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var pendingRemoval: RemovedCardSnapshot?
-    @State private var removalUndoTask: Task<Void, Never>?
     @State private var historyResult: PortfolioHistoryResult?
     @AppStorage("portfolioHistoryMode") private var historyModeRaw = PortfolioHistoryMode.performance.rawValue
     @AppStorage("portfolioHistoryRange") private var historyRangeRaw = PortfolioHistoryRange.oneMonth.rawValue
@@ -53,8 +59,8 @@ struct PortfolioView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 20) {
-                    periodControl
                     portfolioHero
+                    periodControl
 
                     if let summary = portfolio.summary {
                         if !summary.isAuthoritative {
@@ -107,7 +113,11 @@ struct PortfolioView: View {
                         } label: {
                             Image(systemName: "info.circle")
                         }
-                        .accessibilityLabel("Pricing and data details")
+                        .accessibilityLabel(
+                            needsPortfolioAttention
+                                ? "Pricing and data details, needs attention"
+                                : "Pricing and data details"
+                        )
                         .overlay(alignment: .topTrailing) {
                             if needsPortfolioAttention {
                                 Circle()
@@ -146,9 +156,6 @@ struct PortfolioView: View {
                 removalUndoBanner(pendingRemoval)
             }
         }
-        .onDisappear {
-            removalUndoTask?.cancel()
-        }
     }
 
     private var isRefreshing: Bool {
@@ -158,13 +165,12 @@ struct PortfolioView: View {
 
     private var needsPortfolioAttention: Bool {
         guard let summary = portfolio.summary else { return false }
-        if !summary.defects.isEmpty { return true }
-        guard let result = historyResult else { return false }
-        let coverage = result.coverage
-        return coverage.partialDays > 0
-            || coverage.unknownDays > 0
-            || coverage.live?.carriedForward ?? 0 > 0
-            || !(result.accounting?.unexplained ?? .zero).isZero
+        if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
+        if !(historyResult?.accounting?.unexplained ?? .zero).isZero { return true }
+        if case let .finished(result) = refresh.status {
+            return result.providerUnreachable || result.failed > 0
+        }
+        return false
     }
 
     private var periodControl: some View {
@@ -192,7 +198,7 @@ struct PortfolioView: View {
                 HStack(spacing: 10) {
                     Text((portfolio.summary?.currentValue ?? .zero).formatted())
                         .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                        .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                        .foregroundStyle(PortfolioPalette.positive)
                         .monospacedDigit()
                         .lineLimit(1)
                         .minimumScaleFactor(0.65)
@@ -205,7 +211,7 @@ struct PortfolioView: View {
                     }
                     .labelStyle(.iconOnly)
                     .font(.headline.weight(.semibold))
-                    .foregroundStyle(Color(red: 0.18, green: 0.55, blue: 0.34))
+                    .foregroundStyle(PortfolioPalette.positive)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
                     .disabled(isRefreshing)
@@ -256,7 +262,7 @@ struct PortfolioView: View {
                 || !accounting.corrections.isZero
                 || !accounting.pricingAdjustments.isZero {
             VStack(alignment: .leading, spacing: 10) {
-                Text("What changed besides the market")
+                Text("What changed")
                     .font(.headline)
 
                 Button {
@@ -362,18 +368,10 @@ struct PortfolioView: View {
     // MARK: - Removal undo
 
     private func presentUndo(for removed: RemovedCardSnapshot) {
-        removalUndoTask?.cancel()
         pendingRemoval = removed
-
-        removalUndoTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(6))
-            guard !Task.isCancelled, pendingRemoval?.id == removed.id else { return }
-            pendingRemoval = nil
-        }
     }
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
-        removalUndoTask?.cancel()
         if (try? CollectionStore(context: modelContext).restore(removed)) != nil {
             pendingRemoval = nil
         }
@@ -393,6 +391,13 @@ struct PortfolioView: View {
             .font(.subheadline.weight(.semibold))
             .frame(minHeight: 44)
             .accessibilityLabel("Undo removal of \(removed.name)")
+
+            Button("Dismiss") {
+                pendingRemoval = nil
+            }
+            .font(.subheadline)
+            .frame(minHeight: 44)
+            .accessibilityLabel("Dismiss removal message")
         }
         .padding(.leading, 16)
         .padding(.trailing, 10)
@@ -477,7 +482,7 @@ struct PortfolioView: View {
 
     private func changeColor(_ amount: Money) -> Color {
         if amount.isZero { return .secondary }
-        return amount.tenThousandths < 0 ? .red : Color(red: 0.18, green: 0.55, blue: 0.34)
+        return amount.tenThousandths < 0 ? .red : PortfolioPalette.positive
     }
 }
 
@@ -525,7 +530,7 @@ private struct PortfolioHeroSparkline: View {
                 }
             }
             let color: Color = (values.last ?? 0) >= (values.first ?? 0)
-                ? Color(red: 0.18, green: 0.55, blue: 0.34)
+                ? PortfolioPalette.positive
                 : .red
             var fill = path
             fill.addLine(to: CGPoint(x: size.width, y: size.height))
@@ -654,7 +659,7 @@ private enum PortfolioContributionPresentation {
 
     static func color(_ amount: Money) -> Color {
         if amount.isZero { return .secondary }
-        return amount.tenThousandths < 0 ? .red : Color(red: 0.18, green: 0.55, blue: 0.34)
+        return amount.tenThousandths < 0 ? .red : PortfolioPalette.positive
     }
 
     static func magnitudeFraction(_ amount: Money, maximum: Money) -> CGFloat {
@@ -899,12 +904,25 @@ private struct PortfolioHoldingRow: View {
             .padding(.leading, 44)
         }
         .frame(minHeight: 48)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(holdingAccessibilityLabel)
+        .accessibilityValue(holdingAccessibilityValue)
     }
 
     private var holdingShare: CGFloat {
         guard let value = holding.currentValue, !portfolioValue.isZero else { return 0 }
         return min(1, CGFloat(value.doubleValue / portfolioValue.doubleValue))
+    }
+
+    private var holdingAccessibilityLabel: String {
+        let quantity = holding.quantity > 1 ? ", quantity \(holding.quantity)" : ""
+        return "\(holding.name), \(holding.detail)\(quantity)"
+    }
+
+    private var holdingAccessibilityValue: String {
+        let value = (holding.currentValue ?? .zero).formatted()
+        let share = Double(holdingShare).formatted(.percent.precision(.fractionLength(1)))
+        return "\(value), \(share) of portfolio"
     }
 }
 

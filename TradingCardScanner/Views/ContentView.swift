@@ -54,8 +54,6 @@ struct ContentView: View {
                 .tag(Tab.portfolio)
 
             CollectionView(
-                refresh: refresh,
-                portfolio: portfolio,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
                 onRefresh: refreshAllPrices
