@@ -2,50 +2,29 @@ import Accessibility
 import Charts
 import SwiftData
 import SwiftUI
+import UIKit
 
 struct PortfolioHistoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @StateObject private var controller = PortfolioHistoryController()
-    @AppStorage("portfolioHistoryMode") private var modeRaw = PortfolioHistoryMode.performance.rawValue
-    @AppStorage("portfolioHistoryRange") private var rangeRaw = PortfolioHistoryRange.oneMonth.rawValue
 
+    @Binding var mode: PortfolioHistoryMode
+    let range: PortfolioHistoryRange
     let summary: PortfolioSummary?
     let factors: PortfolioPerformanceFactors
     let contributions: PortfolioContributionIndex
     let refreshRevision: UInt
-    let onShowContributors: (PortfolioHistoryResult) -> Void
+    let onResultUpdated: (PortfolioHistoryResult?) -> Void
 
     @State private var selectedPointID: String?
-
-    private var mode: PortfolioHistoryMode {
-        get { PortfolioHistoryMode(rawValue: modeRaw) ?? .performance }
-        set { modeRaw = newValue.rawValue }
-    }
-
-    private var range: PortfolioHistoryRange {
-        get { PortfolioHistoryRange(rawValue: rangeRaw) ?? .oneMonth }
-        set { rangeRaw = newValue.rawValue }
-    }
+    @State private var lastHapticPointID: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(mode.title)
-                    .font(.title3.weight(.semibold))
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                if let result = controller.result, let accounting = result.accounting {
-                    Text(summaryValue(for: result, accounting: accounting))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(result.mode == .performance ? .green : .primary)
-                        .monospacedDigit()
-                }
-            }
-
             Picker("History mode", selection: Binding(
                 get: { mode },
-                set: { modeRaw = $0.rawValue }
+                set: { mode = $0 }
             )) {
                 ForEach(PortfolioHistoryMode.allCases, id: \.self) { item in
                     Text(item.title).tag(item)
@@ -60,20 +39,6 @@ struct PortfolioHistoryView: View {
                 historyChart(result)
                     .frame(height: 190)
 
-                Picker("History range", selection: Binding(
-                    get: { range },
-                    set: { rangeRaw = $0.rawValue }
-                )) {
-                    ForEach(PortfolioHistoryRange.allCases, id: \.self) { item in
-                        Text(item.rawValue)
-                            .accessibilityLabel(item.accessibilityName)
-                            .tag(item)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .disabled(!result.hasTwoPublishedPoints)
-                .accessibilityHint(result.hasTwoPublishedPoints ? "Choose the calendar range." : "Range selection becomes available after two published closes.")
-
                 if !result.hasTwoPublishedPoints {
                     Text("History is being recorded.")
                         .font(.caption)
@@ -86,7 +51,6 @@ struct PortfolioHistoryView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                evidence(result)
             } else {
                 Text("History is being recorded.")
                     .font(.subheadline)
@@ -104,13 +68,17 @@ struct PortfolioHistoryView: View {
                 mode: mode,
                 range: range
             )
+            onResultUpdated(controller.result)
         }
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: modeRaw)
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: rangeRaw)
+        .onDisappear {
+            onResultUpdated(nil)
+        }
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: mode)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: range)
     }
 
     private var refreshKey: String {
-        "\(refreshRevision)-\(modeRaw)-\(rangeRaw)"
+        "\(refreshRevision)-\(mode.rawValue)-\(range.rawValue)"
     }
 
     @ViewBuilder
@@ -129,21 +97,40 @@ struct PortfolioHistoryView: View {
         }
         .chartYScale(domain: yDomain(result))
         .chartYAxis { AxisMarks(position: .leading) }
-        .chartXAxis { AxisMarks(values: .automatic(desiredCount: 3)) }
+        .chartXAxis {
+            if chartSpansOnlyDays(result) {
+                AxisMarks(values: .stride(by: .day))
+            } else {
+                AxisMarks(values: .automatic(desiredCount: 3))
+            }
+        }
         .chartOverlay { proxy in
             GeometryReader { geometry in
                 if let plotFrameAnchor = proxy.plotFrame {
                     let plotFrame = geometry[plotFrameAnchor]
+                    let selectPoint: (CGPoint) -> Void = { location in
+                        guard plotFrame.contains(location),
+                              let date: Date = proxy.value(atX: location.x - plotFrame.minX)
+                        else { return }
+                        let nearestID = result.points.min {
+                            abs($0.instant.timeIntervalSince(date)) < abs($1.instant.timeIntervalSince(date))
+                        }?.id
+                        guard nearestID != selectedPointID else { return }
+                        selectedPointID = nearestID
+                        if nearestID != lastHapticPointID {
+                            UISelectionFeedbackGenerator().selectionChanged()
+                            lastHapticPointID = nearestID
+                        }
+                    }
                     Rectangle()
                         .fill(.clear)
                         .contentShape(Rectangle())
-                        .gesture(DragGesture(minimumDistance: 0).onChanged { gesture in
-                            guard plotFrame.contains(gesture.location),
-                                  let date: Date = proxy.value(atX: gesture.location.x - plotFrame.minX)
-                            else { return }
-                            selectedPointID = result.points.min {
-                                abs($0.instant.timeIntervalSince(date)) < abs($1.instant.timeIntervalSince(date))
-                            }?.id
+                        .simultaneousGesture(SpatialTapGesture().onEnded { gesture in
+                            selectPoint(gesture.location)
+                        })
+                        .simultaneousGesture(DragGesture(minimumDistance: 8).onChanged { gesture in
+                            guard abs(gesture.translation.width) > abs(gesture.translation.height) else { return }
+                            selectPoint(gesture.location)
                         })
                 }
             }
@@ -155,6 +142,7 @@ struct PortfolioHistoryView: View {
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
         .onAppear {
             selectedPointID = selectionID
+            lastHapticPointID = selectionID
         }
     }
 
@@ -194,6 +182,12 @@ struct PortfolioHistoryView: View {
     private func selectedPoint(in result: PortfolioHistoryResult) -> PortfolioHistoryPoint? {
         guard let id = selectedID(in: result) else { return nil }
         return result.points.first { $0.id == id }
+    }
+
+    private func chartSpansOnlyDays(_ result: PortfolioHistoryResult) -> Bool {
+        guard let first = result.points.first?.instant,
+              let last = result.points.last?.instant else { return false }
+        return last.timeIntervalSince(first) <= 7 * 24 * 60 * 60
     }
 
     private func pointInspector(_ point: PortfolioHistoryPoint, result: PortfolioHistoryResult) -> some View {
@@ -254,94 +248,8 @@ struct PortfolioHistoryView: View {
         case .performance:
             guard result.performanceAvailable, let factor = result.performanceFactor else { return "Unavailable" }
             let percent = NSDecimalNumber(decimal: factor).doubleValue * 100 - 100
-            return (percent / 100).formatted(.percent.precision(.fractionLength(1)))
+            return (percent / 100).formatted(.percent.precision(.fractionLength(2)))
         }
-    }
-
-    private func evidence(_ result: PortfolioHistoryResult) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            if let accounting = result.accounting {
-                switch result.mode {
-                case .performance:
-                    Button {
-                        onShowContributors(result)
-                    } label: {
-                        evidenceRow("Market-driven value change", accounting.market)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityHint("Shows contributors for this range")
-                    evidenceRow("Time-weighted market return", result.performanceAvailable ? summaryValue(for: result, accounting: accounting) : "Unavailable")
-                    Text("Net collection activity, corrections, and pricing adjustments excluded")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                case .value:
-                    evidenceRow("Total value change", accounting.totalChange)
-                    Button {
-                        onShowContributors(result)
-                    } label: {
-                        evidenceRow("Market movement", accounting.market)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityHint("Shows contributors for this range")
-                    evidenceRow("Net collection activity", accounting.netInventoryActivity)
-                    evidenceRow("Corrections", accounting.corrections)
-                    evidenceRow("Pricing adjustments", accounting.pricingAdjustments)
-                    if !accounting.unexplained.isZero {
-                        evidenceRow("Unexplained", accounting.unexplained, defect: true)
-                    }
-                }
-            }
-
-            let coverage = result.coverage
-            Text("Coverage: \(coverage.completeDays) complete · \(coverage.partialDays) partial · \(coverage.unknownDays) unknown days")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            if let live = coverage.live {
-                Text("Today: \(live.refreshed) checked · \(live.carriedForward) carried forward")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            if !result.revisions.isEmpty {
-                Text("\(result.revisions.count) reconciled day\(result.revisions.count == 1 ? "" : "s") in this range")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                DisclosureGroup("Revision details") {
-                    ForEach(result.revisions, id: \.date) { revision in
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(revision.date.formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption.weight(.semibold))
-                            Text("Original \(revision.original.closeValue.formatted()) · Latest \(revision.latest.closeValue.formatted())")
-                                .font(.caption)
-                            if let note = revision.latest.revisionNote {
-                                Text(note).font(.caption2).foregroundStyle(.secondary)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 3)
-                    }
-                }
-                .font(.caption)
-            }
-        }
-    }
-
-    private func evidenceRow(_ label: String, _ amount: Money, defect: Bool = false) -> some View {
-        HStack {
-            Text(label)
-            Spacer()
-            Text(signedCurrency(amount)).monospacedDigit()
-        }
-        .font(.caption)
-        .foregroundStyle(defect ? .orange : .primary)
-    }
-
-    private func evidenceRow(_ label: String, _ value: String) -> some View {
-        HStack {
-            Text(label)
-            Spacer()
-            Text(value).monospacedDigit()
-        }
-        .font(.caption)
     }
 
     private func chartSummary(_ result: PortfolioHistoryResult) -> String {
