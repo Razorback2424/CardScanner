@@ -71,6 +71,8 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
+		A0010091 /* PortfolioReplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010091 /* PortfolioReplay.swift */; };
+		A0010092 /* PortfolioReplaySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010092 /* PortfolioReplaySnapshot.swift */; };
 		A0010090 /* LogicalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010090 /* LogicalCollection.swift */; };
 		A0010087 /* PortfolioEpoch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010087 /* PortfolioEpoch.swift */; };
 		A0010088 /* PortfolioClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010088 /* PortfolioClose.swift */; };
@@ -89,6 +91,7 @@
 		A0020040 /* PortfolioLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020040 /* PortfolioLedgerTests.swift */; };
 		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
 		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
+		A0020050 /* PortfolioReplayEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020050 /* PortfolioReplayEngineTests.swift */; };
 		A0020041 /* PortfolioCloseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020041 /* PortfolioCloseTests.swift */; };
 		A0020042 /* PortfolioReconciliationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020042 /* PortfolioReconciliationTests.swift */; };
 		A0020043 /* PortfolioHistoryEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020043 /* PortfolioHistoryEngineTests.swift */; };
@@ -191,6 +194,8 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		B0010091 /* PortfolioReplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplay.swift; sourceTree = "<group>"; };
+		B0010092 /* PortfolioReplaySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplaySnapshot.swift; sourceTree = "<group>"; };
 		B0010090 /* LogicalCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicalCollection.swift; sourceTree = "<group>"; };
 		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
 		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
@@ -209,6 +214,7 @@
 		B0020040 /* PortfolioLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioLedgerTests.swift; sourceTree = "<group>"; };
 		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
 		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		B0020050 /* PortfolioReplayEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplayEngineTests.swift; sourceTree = "<group>"; };
 		B0020041 /* PortfolioCloseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCloseTests.swift; sourceTree = "<group>"; };
 		B0020042 /* PortfolioReconciliationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReconciliationTests.swift; sourceTree = "<group>"; };
 		B0020043 /* PortfolioHistoryEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryEngineTests.swift; sourceTree = "<group>"; };
@@ -360,6 +366,8 @@
 				B0010089 /* PortfolioEngine.swift */,
 				B001008B /* PortfolioHistoryEngine.swift */,
 				B0010090 /* LogicalCollection.swift */,
+				B0010091 /* PortfolioReplay.swift */,
+				B0010092 /* PortfolioReplaySnapshot.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -411,6 +419,7 @@
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
+				B0020050 /* PortfolioReplayEngineTests.swift */,
 				B0020041 /* PortfolioCloseTests.swift */,
 				B0020040 /* PortfolioLedgerTests.swift */,
 				B0020042 /* PortfolioReconciliationTests.swift */,
@@ -579,6 +588,8 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
+				A0010091 /* PortfolioReplay.swift in Sources */,
+				A0010092 /* PortfolioReplaySnapshot.swift in Sources */,
 				A0010090 /* LogicalCollection.swift in Sources */,
 				A0010087 /* PortfolioEpoch.swift in Sources */,
 				A0010088 /* PortfolioClose.swift in Sources */,
@@ -624,6 +635,7 @@
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
+				A0020050 /* PortfolioReplayEngineTests.swift in Sources */,
 				A0020041 /* PortfolioCloseTests.swift in Sources */,
 				A0020040 /* PortfolioLedgerTests.swift in Sources */,
 				A0020042 /* PortfolioReconciliationTests.swift in Sources */,

@@ -352,7 +352,7 @@ struct CollectionView: View {
                         Label("Portfolio accounting needs reconciliation", systemImage: "exclamationmark.triangle.fill")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.orange)
-                        Text("Current collection value is still available. Performance and history are paused because the ownership ledger contains records that disagree.")
+                        Text(reconciliationCause(summary.defects))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -379,16 +379,18 @@ struct CollectionView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if !summary.defects.isEmpty {
-                    // Surfaced, never silently repaired. If this ever appears,
-                    // a mutation somewhere is not writing its ledger event.
+                // Surfaced, never silently repaired. If this ever appears, a
+                // mutation somewhere is not writing its ledger event.
+                //
+                // One cause, one sentence: a conflicting ledger group also
+                // stops the ledger reconciling against the collection, so the
+                // same failure would otherwise be reported twice. Both defects
+                // are kept at the accounting layer — an export or a
+                // diagnostics screen should show each — but the card names the
+                // cause once.
+                if summary.isAuthoritative, !summary.defects.isEmpty {
                     ForEach(Array(summary.defects.prefix(3))) { defect in
                         Text("\(defect.reason.title): \(defect.collectionKey)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    if summary.defects.count > 3 {
-                        Text("and \(summary.defects.count - 3) more")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -449,6 +451,22 @@ struct CollectionView: View {
                 changeRow("Unexplained", attribution.unexplained, isDefect: true)
             }
         }
+    }
+
+    /// One sentence naming the cause, not one line per derived symptom. A
+    /// conflicting ledger group necessarily also breaks the ledger/collection
+    /// assertion, and saying both would describe a single failure twice.
+    private func reconciliationCause(_ defects: [LedgerIntegrityDefect]) -> String {
+        let reasons = Set(defects.map(\.reason))
+        let cause: String
+        if reasons.contains(.conflictingPayloadForIdempotencyKey) {
+            cause = "Conflicting synced ownership records were found."
+        } else if reasons.contains(.duplicatePositionPricingConflict) {
+            cause = "Stored rows for the same card disagree about how it is priced."
+        } else {
+            cause = "The ownership ledger no longer matches the collection."
+        }
+        return cause + " Current collection value is still available; performance and history are paused."
     }
 
     private func changeRow(
@@ -1101,18 +1119,31 @@ struct CollectionView: View {
     /// render was self-defeating. Nothing outside this process compares the
     /// value, so a `Hasher` is enough.
     private var collectionMutationTaskID: Int {
-        var hasher = Hasher()
-        hasher.combine(cards.count)
-        var combined = 0
+        // Commutative on purpose: CloudKit can return the same logical
+        // collection in a different fetch order, and a signature that changed
+        // with row order would restart portfolio work for no reason.
+        //
+        // XOR alone is not enough. Two rows identical in key, quantity and
+        // instrument cancel each other out — which is precisely the duplicate
+        // row case `LogicalCollection` exists to absorb. Count, wrapping sum
+        // and XOR together survive both reordering and cancellation.
+        var count = 0
+        var sum = 0
+        var xor = 0
         for card in cards {
             var element = Hasher()
             element.combine(card.collectionKey)
             element.combine(card.quantity)
             element.combine(card.priceKey)
-            // XOR so the result does not depend on fetch order.
-            combined ^= element.finalize()
+            let value = element.finalize()
+            count += 1
+            sum &+= value
+            xor ^= value
         }
-        hasher.combine(combined)
+        var hasher = Hasher()
+        hasher.combine(count)
+        hasher.combine(sum)
+        hasher.combine(xor)
         return hasher.finalize()
     }
 
