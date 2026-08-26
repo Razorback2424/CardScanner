@@ -185,6 +185,76 @@ final class CardLatchTests: XCTestCase {
         XCTAssertTrue(latch.admits(second), "a different card must not be blocked")
     }
 
+    /// The reported workflow, exactly: the phone is stationary over the table and
+    /// the card is picked up and moved aside.
+    ///
+    /// The card is right in front of the lens for the whole lift, so there is
+    /// always text in the band — it is just tilting and blurring, and parses as
+    /// nothing for a second or two before coming back into focus on its way out.
+    /// It never left, so it must not go in again.
+    func testACardBeingLiftedOutOfTheBandIsNotReadmitted() {
+        var latch = CardLatch()
+        let card = pokemon(40)
+        latch.engage(on: card, at: 0)
+
+        for pass in stride(from: 0.25, through: 2.5, by: 0.25) {
+            _ = latch.observe(nil, cardPresent: true, at: pass)
+        }
+
+        _ = latch.observe(card, cardPresent: true, at: 2.75)
+        XCTAssertFalse(
+            latch.admits(card),
+            "unreadable is not gone — the band was occupied the whole time"
+        )
+    }
+
+    /// The same lift, but the blur parses as a neighbouring number for a frame or
+    /// two on the way out. Still one card, still never left.
+    func testAMisreadDuringTheLiftDoesNotReadmitTheCard() {
+        var latch = CardLatch()
+        let card = pokemon(40)
+        latch.engage(on: card, at: 0)
+
+        for pass in stride(from: 0.25, through: 1.5, by: 0.25) {
+            _ = latch.observe(nil, cardPresent: true, at: pass)
+        }
+        _ = latch.observe(pokemon(46), cardPresent: true, at: 1.75)
+        _ = latch.observe(pokemon(46), cardPresent: true, at: 2.0)
+
+        _ = latch.observe(card, cardPresent: true, at: 2.25)
+        XCTAssertFalse(latch.admits(card))
+    }
+
+    /// The distinction the fix rests on: an empty band still means the card left.
+    func testAnEmptyBandStillMeansTheCardLeft() {
+        var latch = CardLatch()
+        let card = pokemon(40)
+        latch.engage(on: card, at: 0)
+
+        for pass in stride(from: 0.25, through: 2.5, by: 0.25) {
+            _ = latch.observe(nil, cardPresent: false, at: pass)
+        }
+
+        _ = latch.observe(card, cardPresent: true, at: 2.75)
+        XCTAssertTrue(latch.admits(card), "nothing was in the band for two seconds")
+    }
+
+    /// Nothing may be suppressed forever. A band that is never empty — because
+    /// other cards keep passing through it — must still let a printing back in
+    /// eventually, or a second copy later in a long run would be refused.
+    func testAPrintingIsPresumedGoneOnceItHasNotBeenReadForALongTime() {
+        var latch = CardLatch(presumedGoneAfter: 6.0)
+        let card = pokemon(40)
+        latch.engage(on: card, at: 0)
+
+        for pass in stride(from: 0.25, through: 6.5, by: 0.25) {
+            _ = latch.observe(pokemon(46), cardPresent: true, at: pass)
+        }
+
+        _ = latch.observe(card, cardPresent: true, at: 6.75)
+        XCTAssertTrue(latch.admits(card))
+    }
+
     /// A genuine second copy: the first one leaves, then an identical card lands.
     func testSecondPhysicalCopyIsAdmittedAfterTheFirstLeaves() {
         var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 2.0)

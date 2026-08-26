@@ -762,7 +762,11 @@ final class CardScanner: NSObject, ObservableObject {
             parsed = nil
         }
 
-        switch latch.observe(parsed, at: now) {
+        // Whether the band is occupied, which is not the same question as
+        // whether this frame produced an identifier. A card being moved is
+        // legible-but-unparseable for most of the movement, and the latch must
+        // not read that as the card having left.
+        switch latch.observe(parsed, cardPresent: !footerLines.isEmpty, at: now) {
         case .holdingLatch:
             announceLatchHoldIfNeeded()
 

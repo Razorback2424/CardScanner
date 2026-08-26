@@ -38,6 +38,14 @@ struct CardLatch: Equatable {
     /// How long a consumed printing must go unread before an identical reading is
     /// believed to be a second physical copy rather than the same card.
     let minimumAbsenceBeforeRelatch: TimeInterval
+    /// A backstop, so nothing can be suppressed forever.
+    ///
+    /// Absence evidence needs an empty band, and a band is not empty while any
+    /// other card is being read — so without this, a printing scanned early in a
+    /// long run could never become admissible again and a genuine second copy
+    /// would be refused indefinitely. Well beyond the length of a hand movement,
+    /// which is what the ordinary rule is there to survive.
+    let presumedGoneAfter: TimeInterval
 
     /// How many recently consumed printings are remembered.
     ///
@@ -77,19 +85,35 @@ struct CardLatch: Equatable {
         var hasLeft = false
     }
 
-    init(releaseAfterAbsences: Int = 4, minimumAbsenceBeforeRelatch: TimeInterval = 2.0) {
+    init(
+        releaseAfterAbsences: Int = 4,
+        minimumAbsenceBeforeRelatch: TimeInterval = 2.0,
+        presumedGoneAfter: TimeInterval = 6.0
+    ) {
         self.releaseAfterAbsences = max(1, releaseAfterAbsences)
         self.minimumAbsenceBeforeRelatch = minimumAbsenceBeforeRelatch
+        self.presumedGoneAfter = presumedGoneAfter
     }
 
-    mutating func observe(_ observation: ScanIdentifier?, at now: CFAbsoluteTime) -> Decision {
-        if observation == nil {
+    /// - Parameter cardPresent: whether anything was legible in the scan band at
+    ///   all, independent of whether it parsed into an identifier. This is the
+    ///   difference between "the band is empty" and "a card is there and I cannot
+    ///   read it", and the latch is wrong about duplicates without it: a card
+    ///   being moved spends most of the movement in the second state, and
+    ///   counting that as the card leaving is what lets the very same card be
+    ///   added again the moment it comes back into focus.
+    mutating func observe(
+        _ observation: ScanIdentifier?,
+        cardPresent: Bool = false,
+        at now: CFAbsoluteTime
+    ) -> Decision {
+        if observation == nil, !cardPresent {
             consecutiveAbsences += 1
         } else {
             consecutiveAbsences = 0
         }
 
-        updateConsumedPresence(with: observation, at: now)
+        updateConsumedPresence(with: observation, cardPresent: cardPresent, at: now)
 
         guard latched != nil else { return .forward(observation) }
 
@@ -108,13 +132,16 @@ struct CardLatch: Equatable {
 
     /// Ages every remembered printing against this observation.
     ///
-    /// Absence is evidence about all of them at once — an unreadable frame says
-    /// nothing is in the band. A reading only ever says something about the one
-    /// printing it matches; for the others it is neither presence nor absence,
-    /// because a focus wobble can produce another plausible parse while the card
-    /// it came from is still sitting there.
+    /// Only an empty band is evidence that anything left. A frame with legible
+    /// text in it says a card is present — and says nothing about *which*, since
+    /// a blurred card produces text that parses as nothing, or briefly as
+    /// something else. Either way the band is occupied, so no remembered printing
+    /// can be concluded to have gone anywhere.
+    ///
+    /// A reading only ever speaks for the one printing it matches.
     private mutating func updateConsumedPresence(
         with observation: ScanIdentifier?,
+        cardPresent: Bool,
         at now: CFAbsoluteTime
     ) {
         let observedKey = observation?.suppressionKey
@@ -123,14 +150,22 @@ struct CardLatch: Equatable {
             if let observedKey, consumed[index].key == observedKey {
                 consumed[index].lastSeenAt = now
                 consumed[index].consecutiveAbsences = 0
-            } else if observation == nil {
-                consumed[index].consecutiveAbsences += 1
-                if consumed[index].consecutiveAbsences >= releaseAfterAbsences,
-                   now - consumed[index].lastSeenAt >= minimumAbsenceBeforeRelatch {
-                    consumed[index].hasLeft = true
-                }
-            } else {
+                continue
+            }
+
+            // A frame that parsed into anything at all is a card in the band,
+            // whatever the caller reported: the identifier came off a card.
+            if cardPresent || observation != nil {
                 consumed[index].consecutiveAbsences = 0
+            } else {
+                consumed[index].consecutiveAbsences += 1
+            }
+
+            let unreadFor = now - consumed[index].lastSeenAt
+            let bandWentEmpty = consumed[index].consecutiveAbsences >= releaseAfterAbsences
+                && unreadFor >= minimumAbsenceBeforeRelatch
+            if bandWentEmpty || unreadFor >= presumedGoneAfter {
+                consumed[index].hasLeft = true
             }
         }
     }
