@@ -120,11 +120,9 @@ enum LogicalCollection {
             )
         }
 
-        LedgerIntegrityLog.shared.replace(
-            reason: .duplicatePositionPricingConflict,
-            with: defects
-        )
-
+        // Deliberately not published from here. `PortfolioEngine.recompute` is
+        // the single place that decides what the current defect set is, so a
+        // CSV import and a recomputation cannot disagree about it.
         return LogicalCollectionProjection(
             positions: positions,
             byKey: Dictionary(positions.map { ($0.collectionKey, $0) }, uniquingKeysWith: { first, _ in first }),

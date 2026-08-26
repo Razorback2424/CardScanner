@@ -509,14 +509,72 @@ final class PortfolioReconciliationTests: XCTestCase {
         context.insert(conflict)
         try context.save()
 
-        let events = InventoryLedger(context: context).allEvents()
-        XCTAssertEqual(events.count, 1)
-        XCTAssertEqual(events.first?.deltaQuantity, 1)
-        XCTAssertTrue(
-            LedgerIntegrityLog.shared.defects.contains {
-                $0.reason == .conflictingPayloadForIdempotencyKey
-            }
+        let reading = InventoryLedger(context: context).read()
+
+        // Two of the three rows are equivalent retries and collapse. The third
+        // describes a different change under the same leg identity, so no row
+        // from that group is counted — counting the lowest UUID would decide
+        // the portfolio total by sort order.
+        XCTAssertEqual(reading.events.count, 0)
+        XCTAssertFalse(reading.isAuthoritative)
+        XCTAssertEqual(reading.defects.map(\.reason), [.conflictingPayloadForIdempotencyKey])
+    }
+
+    func testConflictingLedgerRowsPauseHistoryWithoutHidingCurrentValue() throws {
+        let context = try makeContext()
+        let operationID = UUID()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        for (index, delta) in [1, 2].enumerated() {
+            let event = InventoryEvent(
+                operationID: operationID, leg: nil, kind: .acquire, source: .catalog,
+                collectionKey: "position", priceStorageKey: "instrument", deltaQuantity: delta,
+                occurredAt: date, valuation: .unpriced
+            )
+            event.eventID = UUID(uuidString: "00000000-0000-0000-0000-00000000000\(index + 1)")!
+            context.insert(event)
+        }
+        context.insert(card(key: "position", quantity: 1))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        engine.recompute(context: context, now: date.addingTimeInterval(86_400 * 2))
+
+        guard let summary = engine.summary else { return XCTFail("no summary") }
+        XCTAssertFalse(summary.isAuthoritative)
+        XCTAssertTrue(summary.defects.contains { $0.reason == .conflictingPayloadForIdempotencyKey })
+        // Paused, not published: no close may be written from a reading the
+        // app already knows is untrustworthy.
+        XCTAssertNil(summary.attribution)
+        XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
+    }
+
+    func testLedgerProjectionMismatchAlsoPausesPublication() throws {
+        // The ledger says one copy, the collection holds three. Today already
+        // surfaced this; now it also stops the app publishing a close it has
+        // just proved it cannot support.
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(), leg: nil, kind: .acquire, source: .catalog,
+                collectionKey: "position", priceStorageKey: "instrument", deltaQuantity: 1,
+                occurredAt: date, valuation: .unpriced
+            )
         )
+        context.insert(card(key: "position", quantity: 3))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        engine.recompute(context: context, now: date.addingTimeInterval(86_400 * 2))
+
+        guard let summary = engine.summary else { return XCTFail("no summary") }
+        XCTAssertFalse(summary.isAuthoritative)
+        XCTAssertEqual(
+            summary.defects.first { $0.reason == .quantityMismatch }?.detail,
+            "ledger 1, collection 3"
+        )
+        XCTAssertNil(summary.attribution)
+        XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
     }
 
     func testEquivalentBaselineDuplicatesCanonicalizeToEarliestOwnershipTime() throws {

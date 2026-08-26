@@ -35,6 +35,14 @@ struct PortfolioSummary: Equatable, Sendable {
     /// valuable instrument in the whole feature: it is what proves the ledger
     /// is complete.
     var defects: [LedgerIntegrityDefect] = []
+    /// Whether derived history can be trusted right now.
+    ///
+    /// When false the collection's current value is still shown — the cards are
+    /// still owned — but attribution and history are paused and no close is
+    /// published or revised. A system that knows its ledger is incomplete must
+    /// not simultaneously publish a supposedly trustworthy close; doing so is
+    /// what turns an integrity diagnostic into an ornament.
+    var isAuthoritative = true
 }
 
 /// Owns portfolio computation.
@@ -99,7 +107,8 @@ final class PortfolioEngine: ObservableObject {
         lastComputedDay = today
 
         let ledger = InventoryLedger(context: context)
-        let events = ledger.allEvents().map(Self.entry(from:))
+        let reading = ledger.read()
+        let events = reading.events.map(Self.entry(from:))
         let observations = Self.observations(in: context)
 
         let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
@@ -111,8 +120,11 @@ final class PortfolioEngine: ObservableObject {
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
         )
-        summary.defects = Self.reconcile(projection: projection, events: events)
+        summary.defects = reading.defects
             + projection.defects
+            + Self.reconcile(projection: projection, events: events)
+        summary.isAuthoritative = summary.defects.isEmpty
+        LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
         guard let epoch = PortfolioEpoch.startedAt(context: context) else {
             status = .ready(summary)
@@ -133,7 +145,11 @@ final class PortfolioEngine: ObservableObject {
         // Migration day has no yesterday, so there is nothing to attribute
         // against and nothing is invented. The first legitimate close forms at
         // the first midnight boundary.
-        if !summary.isMigrationDay {
+        //
+        // A non-authoritative ledger is treated the same way for publication:
+        // the value above is still shown, but nothing is written down as
+        // history until the conflict is resolved.
+        if !summary.isMigrationDay, summary.isAuthoritative {
             let closedDay = PortfolioCalendar.day(
                 containing: today.addingTimeInterval(-1),
                 in: timeZone
@@ -265,7 +281,6 @@ final class PortfolioEngine: ObservableObject {
             )
         }
 
-        LedgerIntegrityLog.shared.replace(reason: .quantityMismatch, with: defects)
         return defects.sorted { $0.collectionKey < $1.collectionKey }
     }
 

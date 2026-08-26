@@ -165,10 +165,12 @@ struct CollectionView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 header(snapshot)
-                PortfolioHistoryView(
-                    summary: portfolio.summary,
-                    refreshRevision: portfolio.inputRevision
-                )
+                if portfolio.summary?.isAuthoritative != false {
+                    PortfolioHistoryView(
+                        summary: portfolio.summary,
+                        refreshRevision: portfolio.inputRevision
+                    )
+                }
                 if isShowingSearch {
                     searchField
                 }
@@ -341,7 +343,21 @@ struct CollectionView: View {
     private var todayCard: some View {
         if let summary = portfolio.summary {
             VStack(alignment: .leading, spacing: 6) {
-                if summary.isMigrationDay {
+                if !summary.isAuthoritative {
+                    // The value above is still real — the cards are still
+                    // owned. What cannot be trusted is the derived history, so
+                    // it is paused and said out loud rather than shown at a
+                    // confidence the ledger does not support.
+                    VStack(alignment: .leading, spacing: 2) {
+                        Label("Portfolio accounting needs reconciliation", systemImage: "exclamationmark.triangle.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.orange)
+                        Text("Current collection value is still available. Performance and history are paused because the ownership ledger contains records that disagree.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                } else if summary.isMigrationDay {
                     // Contract 8. There is genuinely no yesterday, so nothing is
                     // invented — no reconciliation block, no fabricated close.
                     // The first legitimate close forms at the first midnight
@@ -353,7 +369,9 @@ struct CollectionView: View {
                     reconciliation(attribution, closeDate: summary.closeDate)
                 }
 
-                coverageLabel(summary.coverage)
+                if summary.isAuthoritative {
+                    coverageLabel(summary.coverage)
+                }
 
                 if let note = summary.revisionNote, let closeDate = summary.closeDate {
                     Text("\(closeDate.formatted(date: .abbreviated, time: .omitted)) close · \(note)")
@@ -364,12 +382,16 @@ struct CollectionView: View {
                 if !summary.defects.isEmpty {
                     // Surfaced, never silently repaired. If this ever appears,
                     // a mutation somewhere is not writing its ledger event.
-                    Label(
-                        "\(summary.defects.count) position\(summary.defects.count == 1 ? "" : "s") disagree with the ledger",
-                        systemImage: "exclamationmark.triangle"
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.orange)
+                    ForEach(Array(summary.defects.prefix(3))) { defect in
+                        Text("\(defect.reason.title): \(defect.collectionKey)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if summary.defects.count > 3 {
+                        Text("and \(summary.defects.count - 3) more")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding(.top, 2)

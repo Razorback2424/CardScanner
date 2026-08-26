@@ -73,6 +73,13 @@ final class LedgerIntegrityLog: ObservableObject {
         defects.append(contentsOf: new)
     }
 
+    /// Replaces everything derived on one full recomputation pass. Derived
+    /// checks are recomputed from scratch each time, so accumulating them would
+    /// show the same defect once per refresh.
+    func replaceAll(with new: [LedgerIntegrityDefect]) {
+        defects = Array(new.suffix(limit))
+    }
+
     func clear() { defects.removeAll() }
 }
 
@@ -105,7 +112,31 @@ struct InventoryLedger {
 
     // MARK: - Reading
 
-    func allEvents() -> [InventoryEvent] {
+    /// What the ledger can currently be read to say, and whether that reading
+    /// is safe to publish accounting from.
+    ///
+    /// Retries of one leg collapse harmlessly — that is what the idempotency
+    /// key is for. But two rows sharing a leg identity while describing
+    /// *different* changes cannot both be true, and choosing between them by
+    /// UUID order decides someone's portfolio history by an implementation
+    /// detail. The contract is that a conflict is surfaced and never resolved
+    /// arbitrarily, so neither row is counted and the whole reading stops being
+    /// authoritative.
+    struct LedgerReadResult {
+        var events: [InventoryEvent]
+        var defects: [LedgerIntegrityDefect]
+
+        /// False when something in the ledger makes derived history untrustworthy.
+        /// The current collection value is still real — the cards are still
+        /// owned — but no close may be published or revised from this reading.
+        var isAuthoritative: Bool { defects.isEmpty }
+    }
+
+    /// Convenience for callers that only need the rows and do not publish
+    /// accounting from them.
+    func allEvents() -> [InventoryEvent] { read().events }
+
+    func read() -> LedgerReadResult {
         let descriptor = FetchDescriptor<InventoryEvent>(
             sortBy: [SortDescriptor(\.occurredAt, order: .forward)]
         )
@@ -119,12 +150,27 @@ struct InventoryLedger {
             let ordered = duplicates.sorted { $0.eventID.uuidString < $1.eventID.uuidString }
             guard let stable = ordered.first else { continue }
 
-            // Initial baselines from two offline devices intentionally ignore
-            // their device-local timestamp when deciding logical equivalence.
-            // The canonical ownership fact must nevertheless use the earliest
-            // such time; choosing by random physical row id could otherwise
-            // move an already-published close forward by a day after sync.
             let equivalent = ordered.filter { stable.isLogicallyEquivalent(to: $0) }
+
+            // A genuine conflict. Counting `stable` and reporting the rest
+            // would still be picking a story: the total would silently reflect
+            // whichever row sorted first. Drop the whole group and say so.
+            guard equivalent.count == ordered.count else {
+                defects.append(
+                    LedgerIntegrityDefect(
+                        reason: .conflictingPayloadForIdempotencyKey,
+                        collectionKey: stable.collectionKey,
+                        detail: "\(stable.idempotencyKey): \(ordered.count) rows share this leg identity and describe different changes; none was counted"
+                    )
+                )
+                continue
+            }
+
+            // Equivalent retries collapse. Initial baselines from two offline
+            // devices intentionally ignore their device-local timestamp when
+            // deciding equivalence, so the canonical row must still take the
+            // earliest such time — choosing by row id could otherwise move an
+            // already-published close forward by a day after sync.
             let chosen: InventoryEvent
             if stable.kind == .initialBalance {
                 chosen = equivalent.min {
@@ -135,25 +181,15 @@ struct InventoryLedger {
                 chosen = stable
             }
             canonical.append(chosen)
-            for duplicate in ordered where duplicate !== chosen && !chosen.isLogicallyEquivalent(to: duplicate) {
-                defects.append(
-                    LedgerIntegrityDefect(
-                        reason: .conflictingPayloadForIdempotencyKey,
-                        collectionKey: chosen.collectionKey,
-                        detail: "\(chosen.idempotencyKey): conflicting synced rows; counted canonical event \(chosen.eventID.uuidString) once"
-                    )
-                )
-            }
         }
 
-        LedgerIntegrityLog.shared.replace(
-            reason: .conflictingPayloadForIdempotencyKey,
-            with: defects
+        return LedgerReadResult(
+            events: canonical.sorted {
+                if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
+                return $0.eventID.uuidString < $1.eventID.uuidString
+            },
+            defects: defects
         )
-        return canonical.sorted {
-            if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
-            return $0.eventID.uuidString < $1.eventID.uuidString
-        }
     }
 
     func events(collectionKey: String) -> [InventoryEvent] {
