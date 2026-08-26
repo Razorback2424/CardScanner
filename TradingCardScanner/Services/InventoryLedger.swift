@@ -12,12 +12,14 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
     case conflictingPayloadForIdempotencyKey = "conflicting_payload_for_idempotency_key"
     case quantityMismatch = "ledger_quantity_mismatch"
     case orphanedCorrectionLeg = "orphaned_correction_leg"
+    case duplicatePositionPricingConflict = "duplicate_position_pricing_conflict"
 
     var title: String {
         switch self {
         case .conflictingPayloadForIdempotencyKey: return "Conflicting ledger rows"
         case .quantityMismatch: return "Ledger and collection disagree"
         case .orphanedCorrectionLeg: return "Incomplete correction"
+        case .duplicatePositionPricingConflict: return "Duplicate rows disagree"
         }
     }
 
@@ -29,6 +31,8 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
             return "The quantity derived from the ledger does not match the collection. The ledger is missing an event, or an event was written that the collection never applied."
         case .orphanedCorrectionLeg:
             return "A correction recorded only one of its two halves. The two legs must be present together or the ledger does not balance."
+        case .duplicatePositionPricingConflict:
+            return "More than one stored row claims this position, and they are priced through different instruments. Which one is right decides the position's value, so neither was chosen."
         }
     }
 }

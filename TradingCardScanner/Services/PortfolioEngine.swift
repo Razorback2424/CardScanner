@@ -103,14 +103,16 @@ final class PortfolioEngine: ObservableObject {
         let observations = Self.observations(in: context)
 
         let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let valuation = Self.currentValuation(cards: cards, ledger: ledger)
+        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+        let valuation = Self.currentValuation(projection: projection, ledger: ledger)
 
         var summary = PortfolioSummary(
             currentValue: valuation.value,
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
         )
-        summary.defects = Self.reconcile(cards: cards, events: events)
+        summary.defects = Self.reconcile(projection: projection, events: events)
+            + projection.defects
 
         guard let epoch = PortfolioEpoch.startedAt(context: context) else {
             status = .ready(summary)
@@ -174,23 +176,17 @@ final class PortfolioEngine: ObservableObject {
     ///
     /// Deliberately not the walk's ending state: the residual only means
     /// something if the two sides are measured independently.
-    static func currentValuation(cards: [CollectedCard], ledger: InventoryLedger) -> CurrentValuation {
+    static func currentValuation(
+        projection: LogicalCollectionProjection,
+        ledger: InventoryLedger
+    ) -> CurrentValuation {
         var valuation = CurrentValuation()
         var instruments: Set<String> = []
 
-        // Duplicate collection keys are summed, for the same reason the grid
-        // sums them: dropping one silently understates the total.
-        let quantities = cards.reduce(into: [String: Int]()) { totals, card in
-            totals[card.collectionKey, default: 0] += card.quantity
-        }
-        var representatives: [String: CollectedCard] = [:]
-        for card in cards where representatives[card.collectionKey] == nil {
-            representatives[card.collectionKey] = card
-        }
-
-        for (key, quantity) in quantities {
-            guard quantity != 0, let card = representatives[key] else { continue }
-            let instrumentKey = ledger.priceStorageKey(for: card)
+        for position in projection.positions {
+            let quantity = position.quantity
+            guard quantity != 0 else { continue }
+            let instrumentKey = position.priceStorageKey
             instruments.insert(instrumentKey)
 
             guard let price = ledger.valuation(forPriceKey: instrumentKey).unitPrice else {
@@ -245,15 +241,15 @@ final class PortfolioEngine: ObservableObject {
     /// repaired. Repairing it would hide the only evidence that a mutation
     /// somewhere is not writing its event — which is the failure mode this
     /// whole phase is built to catch.
-    static func reconcile(cards: [CollectedCard], events: [LedgerEntry]) -> [LedgerIntegrityDefect] {
+    static func reconcile(
+        projection: LogicalCollectionProjection,
+        events: [LedgerEntry]
+    ) -> [LedgerIntegrityDefect] {
         var ledgerQuantities: [String: Int] = [:]
         for event in events {
             ledgerQuantities[event.collectionKey, default: 0] += event.deltaQuantity
         }
-        var collectionQuantities: [String: Int] = [:]
-        for card in cards {
-            collectionQuantities[card.collectionKey, default: 0] += card.quantity
-        }
+        let collectionQuantities = projection.quantities
 
         var defects: [LedgerIntegrityDefect] = []
         for key in Set(ledgerQuantities.keys).union(collectionQuantities.keys) {

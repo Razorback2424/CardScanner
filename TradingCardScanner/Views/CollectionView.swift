@@ -767,40 +767,17 @@ struct CollectionView: View {
     private func makeSnapshot() -> Snapshot {
         let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
 
-        // One collection key can legitimately have more than one row. Two
-        // devices adding the same card while offline each pass their own local
-        // uniqueness check — `CollectionStore.card(forKey:)` is a local read —
-        // and CloudKit later merges both. Keeping only the first would drop the
-        // duplicate's quantity out of the total silently, which is a wrong
-        // number rather than a cosmetic glitch.
-        //
-        // So the projection sums them. Reconciling the underlying rows is
-        // deliberately not done here: which row wins its metadata, how a
-        // deletion that another device can resurrect resolves, and how
-        // `dateAdded`, artwork and grading merge are all open questions, and a
-        // destructive normalization pass that guesses at them would be worse
-        // than a correct read. The long-term answer is that the ledger owns
-        // quantity and duplicate rows become a storage problem.
-        let duplicatesByKey = Dictionary(grouping: cards, by: \.collectionKey)
-        var seenKeys = Set<String>()
-        // `cards` is sorted newest first, so the representative is the most
-        // recent row for the key — deterministic, and the same on every render.
-        let mergedCards: [(card: CollectedCard, quantity: Int, dateAdded: Date)] = cards.compactMap { card in
-            guard seenKeys.insert(card.collectionKey).inserted else { return nil }
-            let group = duplicatesByKey[card.collectionKey] ?? [card]
-            return (
-                card,
-                group.reduce(0) { $0 + $1.quantity },
-                group.map(\.dateAdded).max() ?? card.dateAdded
-            )
-        }
-        let cardsByKey = Dictionary(
-            mergedCards.map { ($0.card.collectionKey, $0.card) },
-            uniquingKeysWith: { first, _ in first }
+        // One collection key can legitimately have more than one row, so what
+        // is owned comes from the shared projection rather than from whichever
+        // row this fetch happened to return first. See `LogicalCollection`.
+        let projection = LogicalCollection.project(
+            cards: cards,
+            ledger: InventoryLedger(context: modelContext)
         )
+        let cardsByKey = projection.byKey.mapValues(\.representative)
 
-        let all = mergedCards.map { merged in
-            let card = merged.card
+        let all = projection.positions.map { position in
+            let card = position.representative
             return CollectionRow(
                 id: card.collectionKey,
                 game: card.cardGame,
@@ -811,8 +788,8 @@ struct CollectionView: View {
                 cardNumber: card.cardNumber,
                 variantID: card.variantID,
                 variantLabel: card.variantLabel,
-                quantity: merged.quantity,
-                dateAdded: merged.dateAdded,
+                quantity: position.quantity,
+                dateAdded: position.dateAdded,
                 price: PriceStore.record(for: card, in: recordsByKey)?.display ?? .unknown,
                 itemKind: card.itemKind,
                 itemKindLabel: card.itemKindLabel,
@@ -1095,11 +1072,26 @@ struct CollectionView: View {
 
     /// Changes when quantity or identity changes, including 1 → 2 on an
     /// existing row (which `cards.count` cannot observe).
-    private var collectionMutationTaskID: String {
-        cards
-            .map { "\($0.collectionKey):\($0.quantity):\($0.priceKey)" }
-            .sorted()
-            .joined(separator: "|")
+    ///
+    /// An order-independent hash rather than a sorted, joined string: this is
+    /// re-evaluated on every body pass, and building an O(n log n) string per
+    /// render in the same file that warns the snapshot is already O(n) per
+    /// render was self-defeating. Nothing outside this process compares the
+    /// value, so a `Hasher` is enough.
+    private var collectionMutationTaskID: Int {
+        var hasher = Hasher()
+        hasher.combine(cards.count)
+        var combined = 0
+        for card in cards {
+            var element = Hasher()
+            element.combine(card.collectionKey)
+            element.combine(card.quantity)
+            element.combine(card.priceKey)
+            // XOR so the result does not depend on fetch order.
+            combined ^= element.finalize()
+        }
+        hasher.combine(combined)
+        return hasher.finalize()
     }
 
     @MainActor

@@ -71,6 +71,7 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
+		A0010090 /* LogicalCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010090 /* LogicalCollection.swift */; };
 		A0010087 /* PortfolioEpoch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010087 /* PortfolioEpoch.swift */; };
 		A0010088 /* PortfolioClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010088 /* PortfolioClose.swift */; };
 		A0010089 /* PortfolioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010089 /* PortfolioEngine.swift */; };
@@ -190,6 +191,7 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		B0010090 /* LogicalCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicalCollection.swift; sourceTree = "<group>"; };
 		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
 		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
 		B0010089 /* PortfolioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEngine.swift; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 				B0010088 /* PortfolioClose.swift */,
 				B0010089 /* PortfolioEngine.swift */,
 				B001008B /* PortfolioHistoryEngine.swift */,
+				B0010090 /* LogicalCollection.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
+				A0010090 /* LogicalCollection.swift in Sources */,
 				A0010087 /* PortfolioEpoch.swift in Sources */,
 				A0010088 /* PortfolioClose.swift in Sources */,
 				A0010089 /* PortfolioEngine.swift in Sources */,

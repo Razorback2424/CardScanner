@@ -389,9 +389,16 @@ enum CollectionCSV {
     @MainActor
     static func apply(_ plan: CollectionCSVImportPlan, to context: ModelContext) throws -> CollectionCSVImportResult {
         let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
-        var cardsByKey = Dictionary(uniqueKeysWithValues: storedCards.map { ($0.collectionKey, $0) })
         let priceStore = PriceStore(context: context)
         let ledger = InventoryLedger(context: context)
+        // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, and a
+        // duplicate `collectionKey` is a state CloudKit produces on its own —
+        // so importing a CSV into a collection that had ever synced a duplicate
+        // crashed. Merging into the projection's representative row adds the
+        // imported copies to the position exactly once.
+        var cardsByKey = LogicalCollection.project(cards: storedCards, ledger: ledger)
+            .byKey
+            .mapValues(\.representative)
         // One instant for the whole import, so every row lands on the same side
         // of a day boundary no matter how long the import takes.
         let recordedAt = Date.now

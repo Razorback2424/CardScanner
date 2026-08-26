@@ -126,6 +126,115 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
     }
 
+    private func csvEntry(key: String, quantity: Int) -> CollectionCSVEntry {
+        CollectionCSVEntry(
+            collectionKey: key,
+            game: .pokemon,
+            providerID: key,
+            name: "Portfolio Test Card",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: quantity,
+            dateAdded: Date(timeIntervalSince1970: 500)
+        )
+    }
+
+    // MARK: - Duplicate physical rows for one logical position
+    //
+    // Two devices adding the same card offline each pass their own local
+    // uniqueness check, so one `collectionKey` legitimately arrives as two
+    // stored rows. Every part of the app that answers "how many do I own" has
+    // to answer from the sum.
+
+    func testDuplicatePhysicalRowsProjectToOneSummedPosition() throws {
+        let context = try makeContext()
+        context.insert(card(key: "dupe", quantity: 1, dateAdded: Date(timeIntervalSince1970: 100)))
+        context.insert(card(key: "dupe", quantity: 2, dateAdded: Date(timeIntervalSince1970: 900)))
+        try context.save()
+
+        let ledger = InventoryLedger(context: context)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+
+        XCTAssertEqual(projection.positions.count, 1)
+        XCTAssertEqual(projection.byKey["dupe"]?.quantity, 3)
+        XCTAssertEqual(projection.byKey["dupe"]?.physicalRowCount, 2)
+        // The oldest acquisition represents the position; the newest is what
+        // "recently added" should mean for it.
+        XCTAssertEqual(
+            projection.byKey["dupe"]?.representative.dateAdded,
+            Date(timeIntervalSince1970: 100)
+        )
+        XCTAssertEqual(projection.byKey["dupe"]?.dateAdded, Date(timeIntervalSince1970: 900))
+    }
+
+    func testMigrationBaselinesDuplicateRowsAsOneEventWithTheSummedQuantity() throws {
+        // The bug this exists to stop: iterating physical rows gave both rows
+        // the same deterministic baseline id, so one was deduplicated away and
+        // the ledger opened at 1 instead of 3 — or, with differing quantities,
+        // collided as an idempotency conflict and opened at neither.
+        let context = try makeContext()
+        context.insert(card(key: "dupe", quantity: 1, dateAdded: Date(timeIntervalSince1970: 100)))
+        context.insert(card(key: "dupe", quantity: 2, dateAdded: Date(timeIntervalSince1970: 900)))
+        try context.save()
+
+        let defaults = UserDefaults(suiteName: "PortfolioEpochTests.\(UUID().uuidString)")!
+        defer { defaults.removePersistentDomain(forName: defaults.description) }
+        try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults)
+
+        let ledger = InventoryLedger(context: context)
+        let events = ledger.allEvents()
+
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.kind, .initialBalance)
+        XCTAssertEqual(events.first?.deltaQuantity, 3)
+
+        // And the ledger now agrees with the collection, which is the whole
+        // point of the assertion this feature ships.
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+        let defects = PortfolioEngine.reconcile(
+            projection: projection,
+            events: events.map(PortfolioEngine.entry(from:))
+        )
+        XCTAssertEqual(defects, [])
+    }
+
+    func testCSVImportAgainstDuplicateRowsMergesOnceInsteadOfTrapping() throws {
+        // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, so this
+        // previously crashed rather than importing.
+        let context = try makeContext()
+        context.insert(card(key: "dupe", quantity: 1, dateAdded: Date(timeIntervalSince1970: 100)))
+        context.insert(card(key: "dupe", quantity: 2, dateAdded: Date(timeIntervalSince1970: 900)))
+        try context.save()
+
+        let plan = CollectionCSVImportPlan(
+            entries: [csvEntry(key: "dupe", quantity: 4)],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+        let result = try CollectionCSV.apply(plan, to: context)
+
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.insertedEntries, 0)
+
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let projection = LogicalCollection.project(
+            cards: cards,
+            ledger: InventoryLedger(context: context)
+        )
+        // Three owned plus four imported, counted exactly once.
+        XCTAssertEqual(projection.byKey["dupe"]?.quantity, 7)
+        XCTAssertEqual(projection.positions.count, 1)
+    }
+
     // MARK: - Undo semantics
 
     func testSamePeriodAddAndUndoCollapseForAttribution() {

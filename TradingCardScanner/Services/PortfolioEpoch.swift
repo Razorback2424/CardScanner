@@ -79,16 +79,25 @@ enum PortfolioEpoch {
         // first day boundary are established by one act rather than two.
         _ = PortfolioCalendar.timeZone(defaults: defaults)
 
+        // One baseline event per *position*, not per stored row.
+        //
+        // The baseline id is deterministic on `collectionKey` so two devices
+        // racing the migration produce the same key and dedupe. That is
+        // precisely why iterating physical rows was wrong: two rows claiming
+        // one key would either collapse into a single event — opening the
+        // books below what is owned — or collide as an idempotency conflict,
+        // and neither outcome starts the ledger at the right quantity.
         let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        for card in cards where card.quantity != 0 {
+        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+        for position in projection.positions where position.quantity != 0 {
             ledger.record(
-                card,
+                position.representative,
                 kind: .initialBalance,
                 source: .catalog,
-                deltaQuantity: card.quantity,
-                operationID: baselineOperationID(collectionKey: card.collectionKey),
+                deltaQuantity: position.quantity,
+                operationID: baselineOperationID(collectionKey: position.collectionKey),
                 occurredAt: date,
-                acquiredAt: card.dateAdded
+                acquiredAt: position.representative.dateAdded
             )
         }
 

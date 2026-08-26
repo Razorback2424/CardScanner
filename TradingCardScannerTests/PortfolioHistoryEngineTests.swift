@@ -345,19 +345,40 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertTrue(afterBoundary.points.last?.isLive == true)
     }
 
-    func testEmptyAndOnePointHistoryStatesAreExplicit() {
+    func testEmptyHistoryIsExplicitlyEmpty() {
         let empty = PortfolioHistoryEngine.calculate(
             input: input(closes: [], currentValue: 0, now: date(3)), mode: .value, range: .all
-        )
-        let one = PortfolioHistoryEngine.calculate(
-            input: input(closes: [close(2, value: 100)], currentValue: 100, now: date(3)),
-            mode: .value, range: .all
         )
 
         XCTAssertTrue(empty.isEmpty)
         XCTAssertFalse(empty.hasTwoPublishedPoints)
-        XCTAssertEqual(one.points.count, 2)
-        XCTAssertFalse(one.hasTwoPublishedPoints)
+    }
+
+    func testOneCloseAtItsOwnBoundaryPlotsExactlyOnePoint() {
+        // `date(3)` *is* the economic instant of day 2's close. A live point
+        // there would draw the same moment twice under two different labels.
+        let atBoundary = PortfolioHistoryEngine.calculate(
+            input: input(closes: [close(2, value: 100)], currentValue: 100, now: date(3)),
+            mode: .value, range: .all
+        )
+
+        XCTAssertEqual(atBoundary.points.count, 1)
+        XCTAssertEqual(atBoundary.points.first?.isLive, false)
+        XCTAssertFalse(atBoundary.hasTwoPublishedPoints)
+    }
+
+    func testOneCloseGainsALivePointOnceTimeMovesPastTheBoundary() {
+        // One hour later there is a genuinely distinct instant to plot, but
+        // still only one *published* close — so the range picker stays
+        // unavailable.
+        let afterBoundary = PortfolioHistoryEngine.calculate(
+            input: input(closes: [close(2, value: 100)], currentValue: 100, now: date(3, hour: 1)),
+            mode: .value, range: .all
+        )
+
+        XCTAssertEqual(afterBoundary.points.count, 2)
+        XCTAssertEqual(afterBoundary.points.last?.isLive, true)
+        XCTAssertFalse(afterBoundary.hasTwoPublishedPoints)
     }
 
     func testShuffledInputsProduceIdenticalHistory() {
