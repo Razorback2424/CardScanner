@@ -116,9 +116,19 @@ struct CollectionView: View {
         }
         .task {
 #if DEBUG
-            seedPortfolioTodayQAIfNeeded()
+            if isDebugRoute("PortfolioHistory") {
+                seedPortfolioHistoryQAIfNeeded()
+            } else {
+                seedPortfolioTodayQAIfNeeded()
+            }
 #endif
             portfolio.start(context: modelContext)
+#if DEBUG
+            if isDebugRoute("PortfolioHistory") {
+                seedPortfolioHistoryClosesQAIfNeeded()
+                portfolio.recompute(context: modelContext)
+            }
+#endif
         }
         // Collection change and day rollover. Never from `body`: the snapshot is
         // already O(n) per render, and a close that moved while being read would
@@ -155,6 +165,7 @@ struct CollectionView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 header(snapshot)
+                PortfolioHistoryView(summary: portfolio.summary)
                 if isShowingSearch {
                     searchField
                 }
@@ -1152,6 +1163,69 @@ struct CollectionView: View {
     }
 
 #if DEBUG
+    private func isDebugRoute(_ route: String) -> Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(index + 1) else {
+            return false
+        }
+        return arguments[index + 1] == route
+    }
+
+    @MainActor
+    private func seedPortfolioHistoryQAIfNeeded() {
+        guard cards.isEmpty else { return }
+        let timeZone = PortfolioCalendar.timeZone()
+        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+        let epoch = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-5 * 86_400),
+            in: timeZone
+        )
+        UserDefaults.standard.set(
+            epoch.addingTimeInterval(60).timeIntervalSince1970,
+            forKey: PortfolioEpoch.defaultsKey
+        )
+        UserDefaults.standard.set(PortfolioHistoryMode.performance.rawValue, forKey: "portfolioHistoryMode")
+        UserDefaults.standard.set(PortfolioHistoryRange.all.rawValue, forKey: "portfolioHistoryRange")
+
+        _ = try? CollectionStore(context: modelContext).addSealed(
+            SealedProductSummary(
+                id: "ui-history-product",
+                name: "History QA Booster Box",
+                setName: "Trustworthy History",
+                variantID: "ui-history-variant",
+                marketPriceUSD: 125,
+                updatedAt: .now,
+                imageURL: nil
+            ),
+            game: .pokemon
+        )
+    }
+
+    @MainActor
+    private func seedPortfolioHistoryClosesQAIfNeeded() {
+        let timeZone = PortfolioCalendar.timeZone()
+        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+        let existing = Set(PortfolioEngine.allCloses(in: modelContext).map(\.date))
+        for offset in 1...5 {
+            let day = PortfolioCalendar.day(
+                containing: today.addingTimeInterval(Double(-offset) * 86_400),
+                in: timeZone
+            )
+            guard !existing.contains(day) else { continue }
+            modelContext.insert(
+                PortfolioDailyClose(
+                    date: day, revision: 100, timeZoneIdentifier: timeZone.identifier,
+                    closeValue: .zero, market: .zero, flow: .zero, corrections: .zero,
+                    pricingAdjustment: .zero, carriedForwardValue: .zero,
+                    coverage: .complete, refreshedInstrumentCount: 1,
+                    carriedForwardInstrumentCount: 0, pricedPositionCount: 0,
+                    excludedCount: 0, inputsFingerprint: "ui-history", revisionReason: nil
+                )
+            )
+        }
+        try? modelContext.save()
+    }
+
     /// Deterministic Today-card fixture for screenshot verification. The local
     /// epoch predates the add, so this renders the normal reconciliation state
     /// (yesterday close + today's flow), not the migration-day placeholder.

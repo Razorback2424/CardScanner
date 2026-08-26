@@ -111,15 +111,21 @@ enum PortfolioClose {
         asOf instant: Date
     ) -> State {
         var state = State()
+        let timeline = orderedTimeline(
+            events: events.filter { $0.occurredAt < instant },
+            observations: observations.filter { $0.receivedAt < instant }
+        )
 
-        for event in events where event.occurredAt < instant {
-            state.quantities[event.collectionKey, default: 0] += event.deltaQuantity
-            state.instruments[event.collectionKey] = event.priceStorageKey
-        }
-
-        for observation in observations.sorted(by: { $0.receivedAt < $1.receivedAt })
-        where observation.receivedAt < instant {
-            apply(observation, to: &state)
+        for item in timeline {
+            switch item {
+            case let .observation(observation):
+                apply(observation, to: &state)
+            case let .operation(legs):
+                for event in legs {
+                    state.quantities[event.collectionKey, default: 0] += event.deltaQuantity
+                    state.instruments[event.collectionKey] = event.priceStorageKey
+                }
+            }
         }
 
         return state
@@ -179,14 +185,18 @@ enum PortfolioClose {
         observations: [ObservationEntry],
         boundary: Date,
         now: Date,
-        currentValue: Money
+        currentValue: Money,
+        includeEndpoint: Bool = true
     ) -> Attribution {
         var state = state(events: events, observations: observations, asOf: boundary)
         var result = Attribution()
         result.closeValue = state.value
         result.currentValue = currentValue
 
-        let periodEvents = events.filter { $0.occurredAt >= boundary && $0.occurredAt <= now }
+        let inPeriod: (Date) -> Bool = { instant in
+            instant >= boundary && (includeEndpoint ? instant <= now : instant < now)
+        }
+        let periodEvents = events.filter { inPeriod($0.occurredAt) }
         let eventByID = Dictionary(uniqueKeysWithValues: events.map { ($0.eventID, $0) })
 
         // An operation and its explicit undo in the same unpublished period
@@ -199,14 +209,14 @@ enum PortfolioClose {
         for reversal in periodEvents {
             guard let originalID = reversal.reversesEventID,
                   let original = eventByID[originalID],
-                  original.occurredAt >= boundary else { continue }
+                  inPeriod(original.occurredAt) else { continue }
             collapsedEventIDs.insert(originalID)
             collapsedEventIDs.insert(reversal.eventID)
         }
 
         let timeline = orderedTimeline(
             events: periodEvents.filter { !collapsedEventIDs.contains($0.eventID) },
-            observations: observations.filter { $0.receivedAt >= boundary && $0.receivedAt <= now }
+            observations: observations.filter { inPeriod($0.receivedAt) }
         )
 
         for item in timeline {
@@ -273,6 +283,87 @@ enum PortfolioClose {
 
         result.pricedPositionCount = state.pricedPositionCount
         return result
+    }
+
+    /// The time-weighted market factor for one accounting period. Inventory
+    /// flows and knowledge changes update the replay state but never create a
+    /// link. A nil result is an honest "not defined" percentage, not a 0%.
+    struct PerformanceWalk: Equatable, Sendable {
+        var factor: Decimal = 1
+        var isAvailable = true
+        var hasMarketLink = false
+    }
+
+    nonisolated static func performance(
+        events: [LedgerEntry],
+        observations: [ObservationEntry],
+        boundary: Date,
+        now: Date,
+        includeEndpoint: Bool = false
+    ) -> PerformanceWalk {
+        var state = state(events: events, observations: observations, asOf: boundary)
+        var result = PerformanceWalk()
+        let inPeriod: (Date) -> Bool = { instant in
+            instant >= boundary && (includeEndpoint ? instant <= now : instant < now)
+        }
+        let periodEvents = events.filter { inPeriod($0.occurredAt) }
+        let eventByID = Dictionary(uniqueKeysWithValues: events.map { ($0.eventID, $0) })
+        var collapsedEventIDs: Set<UUID> = []
+        for reversal in periodEvents {
+            guard let originalID = reversal.reversesEventID,
+                  let original = eventByID[originalID],
+                  inPeriod(original.occurredAt) else { continue }
+            collapsedEventIDs.insert(originalID)
+            collapsedEventIDs.insert(reversal.eventID)
+        }
+
+        let timeline = orderedTimeline(
+            events: periodEvents.filter { !collapsedEventIDs.contains($0.eventID) },
+            observations: observations.filter { inPeriod($0.receivedAt) }
+        )
+
+        for item in timeline {
+            switch item {
+            case let .observation(observation):
+                let old = state.prices[observation.instrumentKey]
+                let quantity = quantityPriced(through: observation.instrumentKey, in: state)
+                let new = observation.amount
+                let changedValue = old != nil && new != nil && old != new
+
+                if observation.kind == .marketUpdate,
+                   old != nil,
+                   new != nil,
+                   quantity != 0,
+                   changedValue {
+                    let before = state.value
+                    apply(observation, to: &state)
+                    let after = state.value
+                    guard before.tenThousandths > 0 else {
+                        result.isAvailable = false
+                        return result
+                    }
+                    let link = Decimal(after.tenThousandths) / Decimal(before.tenThousandths)
+                    result.factor = rounded(result.factor * link)
+                    result.hasMarketLink = true
+                } else {
+                    apply(observation, to: &state)
+                }
+
+            case let .operation(legs):
+                for event in legs {
+                    state.quantities[event.collectionKey, default: 0] += event.deltaQuantity
+                    state.instruments[event.collectionKey] = event.priceStorageKey
+                }
+            }
+        }
+        return result
+    }
+
+    private nonisolated static func rounded(_ value: Decimal) -> Decimal {
+        var input = value
+        var output = Decimal.zero
+        NSDecimalRound(&output, &input, 16, .bankers)
+        return output
     }
 
     // MARK: - Ordering (contract 6)

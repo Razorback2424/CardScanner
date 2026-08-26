@@ -368,7 +368,8 @@ final class PortfolioEngine: ObservableObject {
             observations: observations,
             boundary: PortfolioCalendar.day(containing: day, in: timeZone),
             now: boundary,
-            currentValue: state.value
+            currentValue: state.value,
+            includeEndpoint: false
         )
 
         let close = PortfolioDailyClose(
