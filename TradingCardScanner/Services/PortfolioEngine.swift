@@ -53,6 +53,10 @@ final class PortfolioEngine: ObservableObject {
     }
 
     @Published private(set) var status: Status = .idle
+    /// Monotonic signal for consumers whose derived inputs may change without
+    /// changing the visible summary values (for example, a close revision or
+    /// two offsetting market updates).
+    @Published private(set) var inputRevision: UInt = 0
 
     private var lastComputedDay: Date?
 
@@ -87,6 +91,7 @@ final class PortfolioEngine: ObservableObject {
     }
 
     func recompute(context: ModelContext, now: Date = .now) {
+        inputRevision &+= 1
         status = .computing
 
         let timeZone = PortfolioCalendar.timeZone()

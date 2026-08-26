@@ -11,6 +11,7 @@ struct PortfolioHistoryView: View {
     @AppStorage("portfolioHistoryRange") private var rangeRaw = PortfolioHistoryRange.oneMonth.rawValue
 
     let summary: PortfolioSummary?
+    let refreshRevision: UInt
 
     @State private var selectedPointID: String?
 
@@ -50,6 +51,9 @@ struct PortfolioHistoryView: View {
             .pickerStyle(.segmented)
 
             if let result = controller.result, !result.isEmpty {
+                if let point = selectedPoint(in: result) {
+                    pointInspector(point, result: result)
+                }
                 historyChart(result)
                     .frame(height: 190)
 
@@ -101,19 +105,20 @@ struct PortfolioHistoryView: View {
     }
 
     private var refreshKey: String {
-        "\(modeRaw)-\(rangeRaw)-\(summary?.currentValue.tenThousandths ?? -1)-\(summary?.closeDate?.timeIntervalSinceReferenceDate ?? -1)"
+        "\(refreshRevision)-\(modeRaw)-\(rangeRaw)"
     }
 
     @ViewBuilder
     private func historyChart(_ result: PortfolioHistoryResult) -> some View {
+        let selectionID = selectedID(in: result)
         Chart {
             if result.mode == .value {
                 ForEach(result.points) { point in
-                    historyLine(point, result: result)
+                    historyLine(point, result: result, selectionID: selectionID)
                 }
             } else {
                 ForEach(result.points.filter { $0.performanceFactor != nil }) { point in
-                    historyLine(point, result: result)
+                    historyLine(point, result: result, selectionID: selectionID)
                 }
             }
         }
@@ -132,7 +137,7 @@ struct PortfolioHistoryView: View {
                                   let date: Date = proxy.value(atX: gesture.location.x - plotFrame.minX)
                             else { return }
                             selectedPointID = result.points.min {
-                                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+                                abs($0.instant.timeIntervalSince(date)) < abs($1.instant.timeIntervalSince(date))
                             }?.id
                         })
                 }
@@ -144,28 +149,75 @@ struct PortfolioHistoryView: View {
         .accessibilityHint("Swipe across the plot to inspect each real point.")
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
         .onAppear {
-            if selectedPointID == nil { selectedPointID = result.points.last?.id }
+            selectedPointID = selectionID
         }
     }
 
     @ChartContentBuilder
-    private func historyLine(_ point: PortfolioHistoryPoint, result: PortfolioHistoryResult) -> some ChartContent {
+    private func historyLine(
+        _ point: PortfolioHistoryPoint,
+        result: PortfolioHistoryResult,
+        selectionID: String?
+    ) -> some ChartContent {
         LineMark(
-            x: .value("Date", point.date),
+            x: .value("Date", point.instant),
             y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
         )
         .foregroundStyle(result.mode == .performance ? Color.green : Color.accentColor)
 
-        let isSelected = point.id == (selectedPointID ?? result.points.last?.id)
+        let isSelected = point.id == selectionID
         if isSelected {
             PointMark(
-                x: .value("Date", point.date),
+                x: .value("Date", point.instant),
                 y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
             )
             .foregroundStyle(result.mode == .performance ? Color.green : Color.accentColor)
-            RuleMark(x: .value("Selected date", point.date))
+            RuleMark(x: .value("Selected date", point.instant))
                 .foregroundStyle(.secondary.opacity(0.45))
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+        }
+    }
+
+    private func selectedID(in result: PortfolioHistoryResult) -> String? {
+        guard let selectedPointID,
+              result.points.contains(where: { $0.id == selectedPointID }) else {
+            return result.points.last?.id
+        }
+        return selectedPointID
+    }
+
+    private func selectedPoint(in result: PortfolioHistoryResult) -> PortfolioHistoryPoint? {
+        guard let id = selectedID(in: result) else { return nil }
+        return result.points.first { $0.id == id }
+    }
+
+    private func pointInspector(_ point: PortfolioHistoryPoint, result: PortfolioHistoryResult) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(point.isLive ? "Today" : "\(point.displayDay.formatted(date: .abbreviated, time: .omitted)) close")
+                    .font(.caption.weight(.semibold))
+                Text(point.isLive ? "Live portfolio value" : "Published daily close")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(inspectorValue(point, mode: result.mode))
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(result.mode == .performance ? .green : .primary)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(point.isLive ? "Today" : "\(point.displayDay.formatted(date: .abbreviated, time: .omitted)) close")
+        .accessibilityValue(inspectorValue(point, mode: result.mode))
+    }
+
+    private func inspectorValue(_ point: PortfolioHistoryPoint, mode: PortfolioHistoryMode) -> String {
+        switch mode {
+        case .value:
+            return point.value.formatted()
+        case .performance:
+            guard let factor = point.performanceFactor else { return "Unavailable" }
+            let percent = NSDecimalNumber(decimal: factor).doubleValue * 100 - 100
+            return (percent / 100).formatted(.percent.precision(.fractionLength(2)))
         }
     }
 
@@ -277,7 +329,7 @@ struct PortfolioHistoryView: View {
 
     private func chartSummary(_ result: PortfolioHistoryResult) -> String {
         guard let accounting = result.accounting else { return "No published history yet." }
-        return "From \(accounting.anchorValue.formatted()) to \(accounting.endValue.formatted()). (summaryValue(for: result, accounting: accounting)). (result.points.count) real points."
+        return "From \(accounting.anchorValue.formatted()) to \(accounting.endValue.formatted()). \(summaryValue(for: result, accounting: accounting)). \(result.points.count) real points."
     }
 
     private func signedCurrency(_ amount: Money) -> String {
@@ -306,11 +358,13 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
             gridlinePositions: [],
             valueDescriptionProvider: { value in
                 result.mode == .performance
-                    ? value.formatted(.percent.precision(.fractionLength(1)))
+                    ? (value / 100).formatted(.percent.precision(.fractionLength(1)))
                     : value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
             }
         )
-        let dateLabels = result.points.map { $0.date.formatted(date: .abbreviated, time: .omitted) }
+        let dateLabels = result.points.map {
+            $0.isLive ? "Today" : "\($0.displayDay.formatted(date: .abbreviated, time: .omitted)) close"
+        }
         let xAxis = AXCategoricalDataAxisDescriptor(title: "Date", categoryOrder: dateLabels)
         let points = result.points.enumerated().compactMap { index, point -> AXDataPoint? in
             guard let value = pointValues[index] else { return nil }

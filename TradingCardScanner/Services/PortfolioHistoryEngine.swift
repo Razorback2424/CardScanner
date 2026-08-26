@@ -35,7 +35,13 @@ enum PortfolioHistoryEngine {
         var factors: [Decimal?] = []
         var factorAvailable = true
         var factor: Decimal = 1
-        points.append(PortfolioHistoryPoint(date: anchor.date, value: anchor.closeValue, performanceFactor: 1, isLive: false))
+        points.append(PortfolioHistoryPoint(
+            displayDay: anchor.date,
+            instant: anchor.instant,
+            value: anchor.closeValue,
+            performanceFactor: 1,
+            isLive: false
+        ))
         factors.append(1)
 
         var previousDate = anchor.date
@@ -56,7 +62,8 @@ enum PortfolioHistoryEngine {
                 factorAvailable = false
             }
             points.append(PortfolioHistoryPoint(
-                date: close.date,
+                displayDay: close.date,
+                instant: close.instant,
                 value: close.closeValue,
                 performanceFactor: factorAvailable ? factor : nil,
                 isLive: false
@@ -65,7 +72,7 @@ enum PortfolioHistoryEngine {
             previousDate = close.date
         }
 
-        let liveIsDistinct = input.now > (points.last?.date ?? .distantPast)
+        let liveIsDistinct = input.now > (points.last?.instant ?? .distantPast)
         if liveIsDistinct {
             let start = PortfolioCalendar.boundary(afterDay: previousDate, in: timeZone)
             if let walked = walk(
@@ -82,7 +89,8 @@ enum PortfolioHistoryEngine {
                 factorAvailable = false
             }
             points.append(PortfolioHistoryPoint(
-                date: input.now,
+                displayDay: PortfolioCalendar.day(containing: input.now, in: timeZone),
+                instant: input.now,
                 value: input.summary.currentValue,
                 performanceFactor: factorAvailable ? factor : nil,
                 isLive: true

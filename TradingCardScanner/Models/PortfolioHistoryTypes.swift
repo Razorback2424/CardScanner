@@ -74,6 +74,15 @@ struct PortfolioPublishedClose: Equatable, Sendable {
     var excludedCount: Int
     var revisionReason: PortfolioRevisionReason?
 
+    /// The close is labeled by its economic day but plotted at the boundary
+    /// where that day became final.
+    var instant: Date {
+        PortfolioCalendar.boundary(
+            afterDay: date,
+            in: TimeZone(identifier: timeZoneIdentifier) ?? .current
+        )
+    }
+
     var revisionNote: String? {
         guard revision > 1, let revisionReason else { return nil }
         switch revisionReason {
@@ -94,12 +103,16 @@ struct PortfolioHistoryInput: Equatable, Sendable {
 }
 
 struct PortfolioHistoryPoint: Identifiable, Equatable, Sendable {
-    var date: Date
+    /// The calendar day represented by this point, such as Aug 24.
+    var displayDay: Date
+    /// The economic instant represented by the point: the next midnight for a
+    /// published close, or the live summary's current instant.
+    var instant: Date
     var value: Money
     var performanceFactor: Decimal?
     var isLive: Bool
 
-    var id: String { "\(date.timeIntervalSinceReferenceDate)-\(isLive)" }
+    var id: String { "\(instant.timeIntervalSinceReferenceDate)-\(isLive)" }
 }
 
 struct PortfolioHistoryCoverage: Equatable, Sendable {

@@ -165,7 +165,10 @@ struct CollectionView: View {
         ScrollView {
             LazyVStack(spacing: 12) {
                 header(snapshot)
-                PortfolioHistoryView(summary: portfolio.summary)
+                PortfolioHistoryView(
+                    summary: portfolio.summary,
+                    refreshRevision: portfolio.inputRevision
+                )
                 if isShowingSearch {
                     searchField
                 }
