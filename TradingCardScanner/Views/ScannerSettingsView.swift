@@ -392,6 +392,14 @@ struct AccountSettingsSection: View {
 
     var body: some View {
         Section {
+#if LOCAL_ONLY_SIGNING
+            // Sign in with Apple and iCloud need a paid Apple Developer Program
+            // membership to provision. Offering the button in a build that
+            // cannot use it would only produce an error on tap.
+            Text("Everything stays on this device in this build. iCloud sync needs a paid Apple Developer Program membership to sign.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+#else
             if isSignedIn {
                 LabeledContent("Signed in as", value: displayName ?? "Apple ID")
                 Button("Sign Out", role: .destructive) { signOut() }
@@ -407,12 +415,17 @@ struct AccountSettingsSection: View {
                     .font(.footnote)
                     .foregroundStyle(statusIsError ? .red : .secondary)
             }
+#endif
         } header: {
             Text("Account")
         } footer: {
+#if LOCAL_ONLY_SIGNING
+            Text("Your collection is stored locally and is not backed up by this app.")
+#else
             Text(isSignedIn
                  ? "Your collection syncs to iCloud under this Apple ID. If you just signed in, restart the app to start syncing."
                  : "Optional. Sign in to back up your collection and sync it across your devices with iCloud. Everything works fully signed out — it just stays on this device.")
+#endif
         }
         .task { await refreshCredentialState() }
     }

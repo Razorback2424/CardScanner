@@ -75,6 +75,11 @@ struct TradingCardScannerApp: App {
             cloudKitDatabase: .none
         )
 
+        // A build signed by a personal Apple Developer team cannot carry the
+        // iCloud entitlement at all, so there is nothing to attempt. The
+        // fallback below is the same one used when CloudKit is unavailable for
+        // any other reason — this just skips a request that is known to fail.
+#if !LOCAL_ONLY_SIGNING
         if AppleAccountCredentials.isSignedIn {
             let cloudConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .automatic)
             if let container = try? ModelContainer(
@@ -84,6 +89,7 @@ struct TradingCardScannerApp: App {
                 return container
             }
         }
+#endif
 
         let localConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .none)
         if let container = try? ModelContainer(
