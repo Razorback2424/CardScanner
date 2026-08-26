@@ -19,8 +19,14 @@ enum ScanPurpose: String, CaseIterable, Identifiable, Hashable {
 
     var id: String { rawValue }
     var title: String { self == .collection ? "Collection" : "Price Check" }
+    /// What choosing this mode actually does. Shown where the choice is made
+    /// rather than permanently on the camera: it is the thing you need at the
+    /// moment of deciding, and noise once you are scanning.
     var statusText: String {
         self == .collection ? "Scans are added automatically" : "Value only · Nothing is added"
+    }
+    var symbolName: String {
+        self == .collection ? "rectangle.stack.badge.plus" : "tag"
     }
 }
 

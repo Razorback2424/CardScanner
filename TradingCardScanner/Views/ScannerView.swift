@@ -103,7 +103,6 @@ private struct ScannerChrome: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            purposeControl
             topBar
 
             if let note = model.note {
@@ -143,25 +142,47 @@ private struct ScannerChrome: View {
 
     // MARK: - Top
 
+    /// The mode you are in, not the modes you could be in.
+    ///
+    /// A segmented control spends half its width showing the option you did not
+    /// pick, and on a camera screen the useful fact is which mode is live — the
+    /// consequence of `collection` is silent and accumulating, so it has to be
+    /// readable at a glance without dominating the viewfinder. The alternatives,
+    /// and what each one does, live one tap away in the menu, which is where they
+    /// are needed: at the moment of deciding.
     private var purposeControl: some View {
-        VStack(spacing: 5) {
-            Picker("Scanner purpose", selection: Binding(
-                get: { model.purpose },
-                set: model.setPurpose
-            )) {
-                ForEach(ScanPurpose.allCases) { purpose in
-                    Text(purpose.title).tag(purpose)
+        Menu {
+            ForEach(ScanPurpose.allCases) { purpose in
+                Button {
+                    model.setPurpose(purpose)
+                } label: {
+                    Text(purpose.title)
+                    Text(purpose.statusText)
+                    if model.purpose == purpose {
+                        Image(systemName: "checkmark")
+                    }
                 }
             }
-            .pickerStyle(.segmented)
-            .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
-
-            Text(model.purpose.statusText)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.86))
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: model.purpose.symbolName)
+                    .font(.system(size: 13, weight: .semibold))
+                Text(model.purpose.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .frame(height: 34)
+            .scannerGlass(cornerRadius: 17)
         }
-        .padding(8)
-        .scannerGlass(cornerRadius: 14)
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .accessibilityLabel("Scan mode: \(model.purpose.title)")
+        .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
     }
 
     /// Almost nothing. There is no game picker because the printed identifier
@@ -169,6 +190,8 @@ private struct ScannerChrome: View {
     /// was asking for information the card carries.
     private var topBar: some View {
         HStack(spacing: 8) {
+            purposeControl
+
             if model.isSlowIdentifying {
                 ProgressView()
                     .tint(.white)
