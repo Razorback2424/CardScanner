@@ -12,7 +12,10 @@ struct FilterOption: Identifiable, Equatable {
 /// One entry point for every collection filter and sort choice. Detailed
 /// multi-select dimensions stay nested so the first screen remains scannable.
 struct CollectionFilterSheet: View {
-    @Environment(\.dismiss) private var dismiss
+    /// Dismissal is a binding rather than `\.dismiss` because this is presented as
+    /// an inspector in a wide window, where there is no sheet to dismiss — the
+    /// column simply closes.
+    @Binding var isPresented: Bool
 
     @Binding var filters: CollectionFilters
     @Binding var sort: CollectionSort
@@ -138,11 +141,14 @@ struct CollectionFilterSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Done") { isPresented = false }
                 }
             }
         }
+        // Honoured when the window is too narrow for an inspector column and the
+        // system falls back to a sheet; ignored when it is wide enough not to.
         .presentationDetents([.medium, .large])
+        .inspectorColumnWidth(min: 300, ideal: 360, max: 460)
     }
 
     private var gradingCompanySelection: Binding<Set<String>> {

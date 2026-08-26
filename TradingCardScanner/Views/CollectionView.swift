@@ -22,7 +22,10 @@ struct CollectionView: View {
     /// debounce so a large grid is not rebuilt on every keystroke.
     @State private var searchQuery = ""
     @State private var filters = CollectionFilters.none
-    @State private var activeSheet: ActiveSheet?
+    /// Filters are an inspector rather than a sheet: in a wide window they sit
+    /// beside the grid so the result of a change is visible as it is made, and
+    /// SwiftUI falls back to a sheet when there is no room for a column.
+    @State private var isShowingFilters = false
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     /// The detail column's stack. Selection lives here rather than in a closure
@@ -34,11 +37,6 @@ struct CollectionView: View {
     /// detail pane in the one orientation an iPad is most often held.
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    private enum ActiveSheet: String, Identifiable {
-        case filters
-        var id: String { rawValue }
-    }
 
     /// Both of the collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
@@ -93,7 +91,7 @@ struct CollectionView: View {
                     Button("Filters", systemImage: filters.isActive
                            ? "line.3.horizontal.decrease.circle.fill"
                            : "line.3.horizontal.decrease.circle") {
-                        activeSheet = .filters
+                        isShowingFilters = true
                     }
                     .labelStyle(.iconOnly)
                     .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
@@ -115,18 +113,16 @@ struct CollectionView: View {
                     }
             }
         }
-        .sheet(item: $activeSheet) { sheet in
-            switch sheet {
-            case .filters:
-                CollectionFilterSheet(
-                    filters: $filters,
-                    sort: $sort,
-                    setOptions: setOptions(snapshot),
-                    finishOptions: finishOptions(snapshot),
-                    gradingCompanyOptions: gradingCompanyOptions(snapshot),
-                    gradeOptions: gradeOptions(snapshot)
-                )
-            }
+        .inspector(isPresented: $isShowingFilters) {
+            CollectionFilterSheet(
+                isPresented: $isShowingFilters,
+                filters: $filters,
+                sort: $sort,
+                setOptions: setOptions(snapshot),
+                finishOptions: finishOptions(snapshot),
+                gradingCompanyOptions: gradingCompanyOptions(snapshot),
+                gradeOptions: gradeOptions(snapshot)
+            )
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()

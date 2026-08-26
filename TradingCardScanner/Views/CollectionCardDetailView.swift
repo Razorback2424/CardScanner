@@ -17,93 +17,123 @@ struct CollectionCardDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                artwork
-                .frame(maxHeight: 460)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                PhotosPicker(selection: $selectedArtwork, matching: .images) {
-                    Label(
-                        card.userArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
-                        systemImage: "photo.badge.plus"
-                    )
+            // Side by side when the window can hold both columns, stacked when it
+            // cannot. `ViewThatFits` asks the space rather than the device, so the
+            // same view answers correctly at every window width without ever
+            // consulting an idiom or an orientation. The `minWidth` is the
+            // threshold: it is the width the two-column arrangement needs, not an
+            // assumption about any particular screen.
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .top, spacing: 28) {
+                    artworkColumn
+                        .frame(maxWidth: 360)
+                    detailsColumn
+                        .frame(minWidth: 380, maxWidth: 440)
                 }
-                .buttonStyle(.bordered)
-                .onChange(of: selectedArtwork) { _, item in
-                    guard let item else { return }
-                    Task { await saveSelectedArtwork(item) }
-                }
+                .frame(minWidth: 780)
 
-                if card.userArtworkFilename != nil {
-                    Button("Use Catalog Artwork", role: .destructive) {
-                        removeUserArtwork()
-                    }
-                    .font(.subheadline)
+                VStack(spacing: 20) {
+                    artworkColumn
+                    detailsColumn
                 }
-
-                VStack(spacing: 7) {
-                    Text(card.name)
-                        .font(.title2.bold())
-                        .multilineTextAlignment(.center)
-                    Text(card.setName)
-                        .foregroundStyle(.secondary)
-                    if let printRun = card.pokemonPrintRun {
-                        Text(printRun.label)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.accentColor)
-                    }
-                    Text("\(card.setCode)  \(card.cardNumber)")
-                        .font(.headline.monospacedDigit())
-                    if let rarity = card.rarity {
-                        Text(rarity)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                pricing
-                finish
-                marketplaceLinks
-
-                Stepper(
-                    "Quantity: \(card.quantity)",
-                    value: Binding(
-                        get: { card.quantity },
-                        set: { newQuantity in
-                            try? CollectionStore(context: modelContext).setQuantity(
-                                newQuantity,
-                                for: card
-                            )
-                        }
-                    ),
-                    in: 1...999
-                )
-                    .padding(.horizontal)
-
-                Button("Remove from Collection", role: .destructive) {
-                    isConfirmingRemoval = true
-                }
-                .buttonStyle(.bordered)
-                .confirmationDialog(
-                    "Remove \(card.name)?",
-                    isPresented: $isConfirmingRemoval,
-                    titleVisibility: .visible
-                ) {
-                    Button("Remove", role: .destructive) {
-                        removeCard()
-                    }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text(removalMessage)
-                }
+                .contentWidthLimit(.standard)
             }
             .padding(20)
-            .contentWidthLimit(.standard)
+            .frame(maxWidth: .infinity)
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
+        }
+    }
+
+    @ViewBuilder
+    private var artworkColumn: some View {
+        VStack(spacing: 16) {
+            artwork
+                .frame(maxHeight: 460)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+
+            PhotosPicker(selection: $selectedArtwork, matching: .images) {
+                Label(
+                    card.userArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
+                    systemImage: "photo.badge.plus"
+                )
+            }
+            .buttonStyle(.bordered)
+            .onChange(of: selectedArtwork) { _, item in
+                guard let item else { return }
+                Task { await saveSelectedArtwork(item) }
+            }
+
+            if card.userArtworkFilename != nil {
+                Button("Use Catalog Artwork", role: .destructive) {
+                    removeUserArtwork()
+                }
+                .font(.subheadline)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var detailsColumn: some View {
+        VStack(spacing: 20) {
+            VStack(spacing: 7) {
+                Text(card.name)
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                Text(card.setName)
+                    .foregroundStyle(.secondary)
+                if let printRun = card.pokemonPrintRun {
+                    Text(printRun.label)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+                Text("\(card.setCode)  \(card.cardNumber)")
+                    .font(.headline.monospacedDigit())
+                if let rarity = card.rarity {
+                    Text(rarity)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            pricing
+            finish
+            marketplaceLinks
+
+            Stepper(
+                "Quantity: \(card.quantity)",
+                value: Binding(
+                    get: { card.quantity },
+                    set: { newQuantity in
+                        try? CollectionStore(context: modelContext).setQuantity(
+                            newQuantity,
+                            for: card
+                        )
+                    }
+                ),
+                in: 1...999
+            )
+                .padding(.horizontal)
+
+            Button("Remove from Collection", role: .destructive) {
+                isConfirmingRemoval = true
+            }
+            .buttonStyle(.bordered)
+            .confirmationDialog(
+                "Remove \(card.name)?",
+                isPresented: $isConfirmingRemoval,
+                titleVisibility: .visible
+            ) {
+                Button("Remove", role: .destructive) {
+                    removeCard()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(removalMessage)
+            }
         }
     }
 
