@@ -1029,6 +1029,35 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
+    /// Clears the ten-second "here's what that refresh did" feedback, and only
+    /// that.
+    ///
+    /// A refresh that failed or could not reach the provider is not transient
+    /// feedback — it is an unresolved condition, and the Portfolio attention
+    /// indicator reads it. Letting a timer clear it meant the app noticed a
+    /// problem, mentioned it for ten seconds, and then looked healthy again
+    /// while nothing had been fixed. Only a later successful refresh resolves
+    /// it.
+    func dismissTransientSuccessSummary() {
+        guard Self.isTransientSuccessStatus(status) else { return }
+        status = .idle
+    }
+
+    /// Whether a status is merely "here's what that refresh did", as opposed to
+    /// an unresolved condition someone still has to act on.
+    ///
+    /// Pure so the rule can be tested without driving a whole refresh.
+    nonisolated static func isTransientSuccessStatus(_ status: Status) -> Bool {
+        switch status {
+        case let .finished(summary):
+            return !summary.providerUnreachable && summary.failed == 0
+        case .recentlyChecked:
+            return true
+        case .idle, .refreshing:
+            return false
+        }
+    }
+
     func markRecentlyChecked() {
         guard !isRefreshing else { return }
         status = .recentlyChecked

@@ -126,7 +126,9 @@ struct CollectionFilterSheet: View {
 
                 if filters.isActive {
                     Section {
-                        Button("Clear All Filters", role: .destructive) {
+                        // Clearing filters removes nothing the person owns; the
+                        // destructive role made it read like deletion.
+                        Button("Clear All Filters") {
                             filters = .none
                         }
                     }
@@ -227,7 +229,7 @@ struct MultiSelectFilterView: View {
                 ContentUnavailableView(
                     "Nothing to filter yet",
                     systemImage: "line.3.horizontal.decrease.circle",
-                    description: Text("Scan some cards first.")
+                    description: Text("Add some items to your collection first.")
                 )
             } else {
                 List {
@@ -337,8 +339,11 @@ struct PriceFilterView: View {
     }
 
     private func applyCustom() {
+        // Deliberately no `dismiss()`. Tapping a preset band updates the
+        // selection and leaves you here; a custom range doing something
+        // different made the same screen behave two ways. Back and Done remain
+        // the only ways out.
         selection = .custom(min: Double(customMin), max: Double(customMax))
-        dismiss()
     }
 
     private func row(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {

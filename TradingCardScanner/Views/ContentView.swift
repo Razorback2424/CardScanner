@@ -201,15 +201,18 @@ struct ContentView: View {
         let targets = PriceRefreshController.staleTargets(from: priceTargets(includeImported: false))
         guard !targets.isEmpty else { return }
         await refresh.refresh(targets, store: PriceStore(context: modelContext))
-        refresh.dismissSummary()
+        // The automatic stale check is silent when it works. When it does not,
+        // the failure is still the app's to surface.
+        refresh.dismissTransientSuccessSummary()
         portfolio.recompute(context: modelContext)
     }
 
+    /// Success fades; an unresolved failure does not.
     private func dismissRefreshStatusLater() {
         refreshStatusTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(10))
             guard !Task.isCancelled else { return }
-            refresh.dismissSummary()
+            refresh.dismissTransientSuccessSummary()
         }
     }
 

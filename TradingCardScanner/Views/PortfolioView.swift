@@ -2,10 +2,28 @@ import SwiftUI
 import SwiftData
 import UIKit
 
-/// A semantic positive value color that adapts with the system appearance and
-/// keeps gains visually consistent across Portfolio.
-private enum PortfolioPalette {
-    static let positive = Color(uiColor: .systemGreen)
+/// One meaning per colour.
+///
+/// Green stopped meaning "gain" the moment it also meant "this is the
+/// portfolio": a red loss beside a green current value reads as two facts of
+/// the same kind, and the eye has to be told which green is which. So value is
+/// neutral, direction is green/red, and orange is reserved for things a person
+/// can actually act on.
+enum PortfolioPalette {
+    /// Positive market or performance movement, and nothing else.
+    static let gain = Color(uiColor: .systemGreen)
+    /// Negative movement, and nothing else.
+    static let loss = Color(uiColor: .systemRed)
+    /// An actionable integrity or provider problem. Never decoration.
+    static let attention = Color(uiColor: .systemOrange)
+    /// The valuation itself. Deliberately not a signal colour — it is the
+    /// subject of the screen, not a judgement about it.
+    static let value = Color.primary
+
+    static func direction(_ amount: Money) -> Color {
+        if amount.isZero { return .secondary }
+        return amount < .zero ? loss : gain
+    }
 }
 
 /// The collection's home screen. It presents the value and accounting already
@@ -30,6 +48,21 @@ struct PortfolioView: View {
     private var historyRange: PortfolioHistoryRange {
         get { PortfolioHistoryRange(rawValue: historyRangeRaw) ?? .oneMonth }
         nonmutating set { historyRangeRaw = newValue.rawValue }
+    }
+
+    /// The history result that actually belongs to the current selection.
+    ///
+    /// `historyResult` arrives asynchronously, so between changing the range and
+    /// the replacement landing it still holds the *previous* period's
+    /// accounting. Rendering that under the new label would state a 1M total
+    /// beside a 3M heading — a mismatch a person has no way to detect. Anything
+    /// that describes the selected period reads this and shows nothing until a
+    /// matching result exists.
+    private var activeHistoryResult: PortfolioHistoryResult? {
+        guard let result = historyResult,
+              result.matches(range: historyRange, mode: historyMode)
+        else { return nil }
+        return result
     }
 
     private var startsAtPhase3DebugSection: Bool {
@@ -59,8 +92,11 @@ struct PortfolioView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 20) {
+                    // Order is the argument: what it is worth, then over what
+                    // period, then everything scoped to that period. The range
+                    // control precedes every range-scoped number so no figure
+                    // is ever read before its scope.
                     portfolioHero
-                    periodControl
 
                     if let summary = portfolio.summary {
                         if !summary.isAuthoritative {
@@ -68,6 +104,9 @@ struct PortfolioView: View {
                         }
 
                         if summary.isAuthoritative {
+                            periodControl
+                            periodSummary
+
                             PortfolioHistoryView(
                                 mode: Binding(get: { historyMode }, set: { historyMode = $0 }),
                                 range: historyRange,
@@ -78,8 +117,8 @@ struct PortfolioView: View {
                                 onResultUpdated: { historyResult = $0 }
                             )
 
-                            if let historyResult {
-                                periodActivityBreakdown(historyResult)
+                            if let activeHistoryResult {
+                                periodActivityBreakdown(activeHistoryResult)
                             }
 
                             biggestMovers()
@@ -108,7 +147,7 @@ struct PortfolioView: View {
                             PortfolioDetailsView(
                                 summary: summary,
                                 refresh: refresh,
-                                historyResult: historyResult
+                                historyResult: activeHistoryResult
                             )
                         } label: {
                             Image(systemName: "info.circle")
@@ -121,7 +160,7 @@ struct PortfolioView: View {
                         .overlay(alignment: .topTrailing) {
                             if needsPortfolioAttention {
                                 Circle()
-                                    .fill(.orange)
+                                    .fill(PortfolioPalette.attention)
                                     .frame(width: 7, height: 7)
                                     .accessibilityHidden(true)
                             }
@@ -166,7 +205,7 @@ struct PortfolioView: View {
     private var needsPortfolioAttention: Bool {
         guard let summary = portfolio.summary else { return false }
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
-        if !(historyResult?.accounting?.unexplained ?? .zero).isZero { return true }
+        if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
         if case let .finished(result) = refresh.status {
             return result.providerUnreachable || result.failed > 0
         }
@@ -185,60 +224,66 @@ struct PortfolioView: View {
         .accessibilityHint("Choose the period used for the portfolio summary, chart, and movers.")
     }
 
+    /// The valuation, and nothing that depends on a period.
+    ///
+    /// The decorative sparkline is gone: there is one authoritative trend
+    /// display, and it is the chart a person can actually scrub.
     private var portfolioHero: some View {
-        let displayedChange = historyResult?.accounting?.totalChange
-            ?? portfolio.summary?.attribution?.totalChange
-            ?? .zero
-        return VStack(alignment: .leading, spacing: 5) {
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Current value")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Current value")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
 
-                HStack(spacing: 10) {
-                    Text((portfolio.summary?.currentValue ?? .zero).formatted())
-                        .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                        .foregroundStyle(PortfolioPalette.positive)
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.65)
-                        .contentTransition(.numericText())
-                        .animation(.snappy, value: portfolio.summary?.currentValue)
-                        .accessibilityLabel("Collection value, \((portfolio.summary?.currentValue ?? .zero).formatted())")
+            HStack(spacing: 10) {
+                Text((portfolio.summary?.currentValue ?? .zero).formatted())
+                    .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                    .foregroundStyle(PortfolioPalette.value)
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: portfolio.summary?.currentValue)
+                    .accessibilityLabel("Collection value, \((portfolio.summary?.currentValue ?? .zero).formatted())")
 
-                    Button("Refresh Prices", systemImage: "arrow.clockwise") {
-                        Task { await onRefresh() }
-                    }
-                    .labelStyle(.iconOnly)
-                    .font(.headline.weight(.semibold))
-                    .foregroundStyle(PortfolioPalette.positive)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-                    .disabled(isRefreshing)
-                    .accessibilityLabel("Refresh prices")
+                Button("Refresh Prices", systemImage: "arrow.clockwise") {
+                    Task { await onRefresh() }
                 }
-
-                if portfolio.summary?.isAuthoritative == true,
-                   portfolio.summary?.isMigrationDay == false {
-                    Text("\(signedCurrency(displayedChange)) over \(historyRange.rawValue)")
-                        .font(.headline)
-                        .foregroundStyle(changeColor(displayedChange))
-                        .monospacedDigit()
-                } else if portfolio.summary?.isMigrationDay == true {
-                    Text("Tracking started today")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+                .labelStyle(.iconOnly)
+                .font(.headline.weight(.semibold))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+                .disabled(isRefreshing)
+                .accessibilityLabel("Refresh prices")
             }
 
-            if let result = historyResult, result.points.count > 1 {
-                PortfolioHeroSparkline(result: result)
-                    .frame(height: 34)
-                    .accessibilityHidden(true)
+            if portfolio.summary?.isMigrationDay == true {
+                Text("Tracking started today")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 8)
+    }
+
+    /// The selected period's change, stated once, directly under the control
+    /// that scopes it.
+    ///
+    /// Absent — not zero, and never Today's figure — while a newly selected
+    /// period is still computing. A placeholder number here would be a wrong
+    /// number, and `$0.00` is a claim about the market rather than an admission
+    /// that the app does not know yet.
+    @ViewBuilder
+    private var periodSummary: some View {
+        if let accounting = activeHistoryResult?.accounting {
+            Text("\(signedCurrency(accounting.totalChange)) over \(historyRange.rawValue)")
+                .font(.headline)
+                .foregroundStyle(PortfolioPalette.direction(accounting.totalChange))
+                .monospacedDigit()
+                .accessibilityLabel(
+                    "\(signedCurrency(accounting.totalChange)) over \(historyRange.accessibilityName)"
+                )
+        }
     }
 
     private func integrityWarning(_ summary: PortfolioSummary) -> some View {
@@ -249,10 +294,13 @@ struct PortfolioView: View {
             systemImage: "exclamationmark.triangle.fill"
         )
         .font(.subheadline.weight(.semibold))
-        .foregroundStyle(.orange)
+        .foregroundStyle(PortfolioPalette.attention)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(
+            PortfolioPalette.attention.opacity(0.12),
+            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+        )
     }
 
     @ViewBuilder
@@ -290,10 +338,15 @@ struct PortfolioView: View {
 
     @ViewBuilder
     private func biggestMovers() -> some View {
-        let contributions = historyResult?.contributions ?? [:]
-        let hasEligibleMovement = historyResult?.hasEligibleMarketMovement ?? false
-        let total = historyResult?.accounting?.market ?? .zero
-        if !hasEligibleMovement {
+        let active = activeHistoryResult
+        let contributions = active?.contributions ?? [:]
+        let hasEligibleMovement = active?.hasEligibleMarketMovement ?? false
+        let total = active?.accounting?.market ?? .zero
+        if active == nil {
+            // Recomputing for a newly chosen period. Say nothing rather than
+            // claim the market was flat.
+            EmptyView()
+        } else if !hasEligibleMovement {
             Label("No market movement in \(historyRange.rawValue)", systemImage: "minus.circle")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -304,8 +357,8 @@ struct PortfolioView: View {
                         .font(.headline)
                     Spacer()
                     Button("See all") {
-                        if let historyResult {
-                            contributorContext = historicalContext(from: historyResult)
+                        if let active {
+                            contributorContext = historicalContext(from: active)
                         }
                     }
                     .font(.subheadline.weight(.semibold))
@@ -352,10 +405,7 @@ struct PortfolioView: View {
                             onRemoved: presentUndo(for:)
                         )
                     } label: {
-                        PortfolioHoldingRow(
-                            holding: holding,
-                            portfolioValue: portfolio.summary?.currentValue ?? .zero
-                        )
+                        PortfolioHoldingRow(holding: holding)
                     }
                     .buttonStyle(.plain)
                 }
@@ -378,34 +428,11 @@ struct PortfolioView: View {
     }
 
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
-        HStack(spacing: 12) {
-            Text("Removed \(removed.name)")
-                .font(.subheadline)
-                .lineLimit(2)
-
-            Spacer(minLength: 8)
-
-            Button("Undo") {
-                undoRemoval(removed)
-            }
-            .font(.subheadline.weight(.semibold))
-            .frame(minHeight: 44)
-            .accessibilityLabel("Undo removal of \(removed.name)")
-
-            Button("Dismiss") {
-                pendingRemoval = nil
-            }
-            .font(.subheadline)
-            .frame(minHeight: 44)
-            .accessibilityLabel("Dismiss removal message")
-        }
-        .padding(.leading, 16)
-        .padding(.trailing, 10)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .shadow(color: .black.opacity(0.14), radius: 10, y: 4)
-        .padding(.horizontal, 12)
-        .padding(.bottom, 8)
-        .accessibilityElement(children: .contain)
+        RemovalUndoBanner(
+            name: removed.name,
+            onUndo: { undoRemoval(removed) },
+            onDismiss: { pendingRemoval = nil }
+        )
     }
 
     private func todayContext(_ attribution: PortfolioClose.Attribution) -> PortfolioContributorContext {
@@ -480,10 +507,7 @@ struct PortfolioView: View {
         return sign + amount.magnitude.formatted()
     }
 
-    private func changeColor(_ amount: Money) -> Color {
-        if amount.isZero { return .secondary }
-        return amount.tenThousandths < 0 ? .red : PortfolioPalette.positive
-    }
+    private func changeColor(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 }
 
 private struct PortfolioContributorContext: Identifiable, Hashable {
@@ -496,61 +520,6 @@ private struct PortfolioContributorContext: Identifiable, Hashable {
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
-}
-
-private struct PortfolioHeroSparkline: View {
-    let result: PortfolioHistoryResult
-
-    private var values: [Double] {
-        result.points.compactMap { point in
-            switch result.mode {
-            case .value:
-                return point.value.doubleValue
-            case .performance:
-                return point.performanceFactor.map { NSDecimalNumber(decimal: $0).doubleValue - 1 }
-            }
-        }
-    }
-
-    var body: some View {
-        Canvas { context, size in
-            guard values.count > 1,
-                  let minimum = values.min(),
-                  let maximum = values.max() else { return }
-            let span = max(maximum - minimum, 0.0001)
-            var path = Path()
-            for (index, value) in values.enumerated() {
-                let x = size.width * CGFloat(index) / CGFloat(values.count - 1)
-                let normalized = (value - minimum) / span
-                let y = size.height * (1 - CGFloat(normalized))
-                if index == 0 {
-                    path.move(to: CGPoint(x: x, y: y))
-                } else {
-                    path.addLine(to: CGPoint(x: x, y: y))
-                }
-            }
-            let color: Color = (values.last ?? 0) >= (values.first ?? 0)
-                ? PortfolioPalette.positive
-                : .red
-            var fill = path
-            fill.addLine(to: CGPoint(x: size.width, y: size.height))
-            fill.addLine(to: CGPoint(x: 0, y: size.height))
-            fill.closeSubpath()
-            context.fill(
-                fill,
-                with: .linearGradient(
-                    Gradient(colors: [color.opacity(0.18), color.opacity(0.01)]),
-                    startPoint: .zero,
-                    endPoint: CGPoint(x: 0, y: size.height)
-                )
-            )
-            var baseline = Path()
-            baseline.move(to: CGPoint(x: 0, y: size.height - 0.5))
-            baseline.addLine(to: CGPoint(x: size.width, y: size.height - 0.5))
-            context.stroke(baseline, with: .color(.secondary.opacity(0.18)), lineWidth: 1)
-            context.stroke(path, with: .color(color), lineWidth: 2)
-        }
-    }
 }
 
 private struct PortfolioContributionRowModel: Identifiable {
@@ -657,10 +626,7 @@ private enum PortfolioContributionPresentation {
         return sign + amount.magnitude.formatted()
     }
 
-    static func color(_ amount: Money) -> Color {
-        if amount.isZero { return .secondary }
-        return amount.tenThousandths < 0 ? .red : PortfolioPalette.positive
-    }
+    static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 
     static func magnitudeFraction(_ amount: Money, maximum: Money) -> CGFloat {
         guard maximum.tenThousandths > 0 else { return 0 }
@@ -862,12 +828,11 @@ private struct PortfolioHoldingsView: View {
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
-        let total = holdings.compactMap(\.currentValue).sum()
         List(holdings) { holding in
             NavigationLink {
                 PortfolioOwnedCardDestination(collectionKey: holding.collectionKey, onRemoved: onRemoved)
             } label: {
-                PortfolioHoldingRow(holding: holding, portfolioValue: total)
+                PortfolioHoldingRow(holding: holding)
             }
         }
         .navigationTitle("Largest holdings")
@@ -877,41 +842,27 @@ private struct PortfolioHoldingsView: View {
 
 private struct PortfolioHoldingRow: View {
     let holding: PortfolioHoldingSnapshot
-    let portfolioValue: Money
 
     var body: some View {
-        VStack(spacing: 5) {
-            HStack(spacing: 10) {
-                PortfolioArtwork(url: holding.artworkURL)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(holding.name).foregroundStyle(.primary)
-                    Text([holding.detail, holding.quantity > 1 ? "×\(holding.quantity)" : nil]
-                        .compactMap { $0 }
-                        .joined(separator: " · "))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 8)
-                Text((holding.currentValue ?? .zero).formatted())
-                    .font(.subheadline.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(.primary)
+        HStack(spacing: 10) {
+            PortfolioArtwork(url: holding.artworkURL)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(holding.name).foregroundStyle(.primary)
+                Text([holding.detail, holding.quantity > 1 ? "×\(holding.quantity)" : nil]
+                    .compactMap { $0 }
+                    .joined(separator: " · "))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
-            PortfolioMagnitudeBar(
-                fraction: holdingShare,
-                color: Color.accentColor
-            )
-            .padding(.leading, 44)
+            Spacer(minLength: 8)
+            Text((holding.currentValue ?? .zero).formatted())
+                .font(.subheadline.weight(.semibold).monospacedDigit())
+                .foregroundStyle(.primary)
         }
         .frame(minHeight: 48)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(holdingAccessibilityLabel)
-        .accessibilityValue(holdingAccessibilityValue)
-    }
-
-    private var holdingShare: CGFloat {
-        guard let value = holding.currentValue, !portfolioValue.isZero else { return 0 }
-        return min(1, CGFloat(value.doubleValue / portfolioValue.doubleValue))
     }
 
     private var holdingAccessibilityLabel: String {
@@ -919,11 +870,6 @@ private struct PortfolioHoldingRow: View {
         return "\(holding.name), \(holding.detail)\(quantity)"
     }
 
-    private var holdingAccessibilityValue: String {
-        let value = (holding.currentValue ?? .zero).formatted()
-        let share = Double(holdingShare).formatted(.percent.precision(.fractionLength(1)))
-        return "\(value), \(share) of portfolio"
-    }
 }
 
 private struct PortfolioMagnitudeBar: View {
@@ -1032,7 +978,7 @@ private struct PortfolioDetailsView: View {
 
                 if !summary.isAuthoritative {
                     Text("Performance and history resume after reconciliation.")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(PortfolioPalette.attention)
                 }
             }
 
@@ -1070,7 +1016,7 @@ private struct PortfolioDetailsView: View {
                 }
                 if !accounting.unexplained.isZero {
                     LabeledContent("Unexplained", value: signed(accounting.unexplained))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(PortfolioPalette.attention)
                 }
             }
 
@@ -1103,13 +1049,13 @@ private struct PortfolioDetailsView: View {
                   coverage.unknownDays > 0 ? "\(coverage.unknownDays) unknown day\(coverage.unknownDays == 1 ? "" : "s")" : nil]
                 .compactMap { $0 }
                 .joined(separator: " · "))
-                .foregroundStyle(.orange)
+                .foregroundStyle(PortfolioPalette.attention)
         } else if coverage.completeDays > 0 {
             LabeledContent("Completed-day coverage", value: "\(coverage.completeDays) complete")
         }
         if let live = coverage.live, live.carriedForward > 0 {
             Text("Today: \(live.refreshed) checked · \(live.carriedForward) carried forward")
-                .foregroundStyle(.orange)
+                .foregroundStyle(PortfolioPalette.attention)
         }
     }
 
@@ -1134,7 +1080,7 @@ private struct PortfolioDetailsView: View {
                  ? "The card catalog is unreachable. Check your connection and try again."
                  : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened)).")
                 .font(.subheadline)
-                .foregroundStyle(result.providerUnreachable || result.failed > 0 ? .orange : .secondary)
+                .foregroundStyle(result.providerUnreachable || result.failed > 0 ? PortfolioPalette.attention : .secondary)
         case .recentlyChecked:
             Text("Prices were checked recently.")
                 .font(.subheadline)

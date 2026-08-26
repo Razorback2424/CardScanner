@@ -171,7 +171,7 @@ struct CollectionView: View {
 
     private var emptyCollection: some View {
         ContentUnavailableView {
-            Label("No cards yet", systemImage: "rectangle.stack.badge.plus")
+            Label("No items yet", systemImage: "rectangle.stack.badge.plus")
         } description: {
             Text("Scan your first card or find one to add.")
         } actions: {
@@ -202,34 +202,11 @@ struct CollectionView: View {
     }
 
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
-        HStack(spacing: 12) {
-            Text("Removed \(removed.name)")
-                .font(.subheadline)
-                .lineLimit(2)
-
-            Spacer(minLength: 8)
-
-            Button("Undo") {
-                undoRemoval(removed)
-            }
-            .font(.subheadline.weight(.semibold))
-            .frame(minHeight: 44)
-            .accessibilityLabel("Undo removal of \(removed.name)")
-
-            Button("Dismiss") {
-                pendingRemoval = nil
-            }
-            .font(.subheadline)
-            .frame(minHeight: 44)
-            .accessibilityLabel("Dismiss removal message")
-        }
-        .padding(.leading, 16)
-        .padding(.trailing, 10)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .shadow(color: .black.opacity(0.14), radius: 10, y: 4)
-        .padding(.horizontal, 12)
-        .padding(.bottom, 8)
-        .accessibilityElement(children: .contain)
+        RemovalUndoBanner(
+            name: removed.name,
+            onUndo: { undoRemoval(removed) },
+            onDismiss: { pendingRemoval = nil }
+        )
     }
 
     @ViewBuilder

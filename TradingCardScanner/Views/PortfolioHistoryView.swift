@@ -155,7 +155,7 @@ struct PortfolioHistoryView: View {
             x: .value("Date", point.instant),
             y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
         )
-        .foregroundStyle(result.mode == .performance ? Color.green : Color.accentColor)
+        .foregroundStyle(seriesColor(result))
 
         let isSelected = point.id == selectionID
         if isSelected {
@@ -163,11 +163,31 @@ struct PortfolioHistoryView: View {
                 x: .value("Date", point.instant),
                 y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
             )
-            .foregroundStyle(result.mode == .performance ? Color.green : Color.accentColor)
+            .foregroundStyle(seriesColor(result))
             RuleMark(x: .value("Selected date", point.instant))
                 .foregroundStyle(.secondary.opacity(0.45))
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
         }
+    }
+
+    /// Green only when the period actually gained.
+    ///
+    /// A permanently green performance line makes green mean "this is
+    /// performance" rather than "this went up", which is exactly the ambiguity
+    /// the palette exists to remove. Collection Value stays on the neutral
+    /// accent: a level is not a direction.
+    private func seriesColor(_ result: PortfolioHistoryResult) -> Color {
+        guard result.mode == .performance else { return Color.accentColor }
+        guard let factor = result.performanceFactor, factor != 1 else { return .secondary }
+        return factor > 1 ? PortfolioPalette.gain : PortfolioPalette.loss
+    }
+
+    /// The colour for one plotted point, judged on that point rather than on
+    /// the period, so scrubbing back to a losing day shows a losing colour.
+    private func pointColor(_ point: PortfolioHistoryPoint, mode: PortfolioHistoryMode) -> Color {
+        guard mode == .performance else { return .primary }
+        guard let factor = point.performanceFactor, factor != 1 else { return .secondary }
+        return factor > 1 ? PortfolioPalette.gain : PortfolioPalette.loss
     }
 
     private func selectedID(in result: PortfolioHistoryResult) -> String? {
@@ -194,18 +214,32 @@ struct PortfolioHistoryView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(point.isLive ? "Today" : "\(point.displayDay.formatted(date: .abbreviated, time: .omitted)) close")
                     .font(.caption.weight(.semibold))
-                Text(point.isLive ? "Live portfolio value" : "Published daily close")
+                Text(inspectorSubtitle(point, mode: result.mode))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
             Spacer()
             Text(inspectorValue(point, mode: result.mode))
                 .font(.headline.monospacedDigit())
-                .foregroundStyle(result.mode == .performance ? .green : .primary)
+                .foregroundStyle(pointColor(point, mode: result.mode))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(point.isLive ? "Today" : "\(point.displayDay.formatted(date: .abbreviated, time: .omitted)) close")
         .accessibilityValue(inspectorValue(point, mode: result.mode))
+    }
+
+    /// "Live portfolio value" under a percentage described the wrong quantity.
+    /// The subtitle names what the number above it actually is.
+    private func inspectorSubtitle(
+        _ point: PortfolioHistoryPoint,
+        mode: PortfolioHistoryMode
+    ) -> String {
+        switch (mode, point.isLive) {
+        case (.value, true): return "Live portfolio value"
+        case (.value, false): return "Published daily close"
+        case (.performance, true): return "Return so far today"
+        case (.performance, false): return "Return through this close"
+        }
     }
 
     private func inspectorValue(_ point: PortfolioHistoryPoint, mode: PortfolioHistoryMode) -> String {

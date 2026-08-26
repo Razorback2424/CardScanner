@@ -71,6 +71,7 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
+		A00100A5 /* RemovalUndoBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100A5 /* RemovalUndoBanner.swift */; };
 		A0010093 /* TCGplayerLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010093 /* TCGplayerLink.swift */; };
 		A0010091 /* PortfolioReplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010091 /* PortfolioReplay.swift */; };
 		A0010092 /* PortfolioReplaySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010092 /* PortfolioReplaySnapshot.swift */; };
@@ -94,6 +95,7 @@
 		A0020040 /* PortfolioLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020040 /* PortfolioLedgerTests.swift */; };
 		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
 		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
+		A0020060 /* PortfolioTrustPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020060 /* PortfolioTrustPassTests.swift */; };
 		A0020051 /* TCGplayerLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020051 /* TCGplayerLinkTests.swift */; };
 		A0020050 /* PortfolioReplayEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020050 /* PortfolioReplayEngineTests.swift */; };
 		A0020041 /* PortfolioCloseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020041 /* PortfolioCloseTests.swift */; };
@@ -198,6 +200,7 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		B00100A5 /* RemovalUndoBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemovalUndoBanner.swift; sourceTree = "<group>"; };
 		B0010093 /* TCGplayerLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGplayerLink.swift; sourceTree = "<group>"; };
 		B0010091 /* PortfolioReplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplay.swift; sourceTree = "<group>"; };
 		B0010092 /* PortfolioReplaySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplaySnapshot.swift; sourceTree = "<group>"; };
@@ -222,6 +225,7 @@
 		B0020040 /* PortfolioLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioLedgerTests.swift; sourceTree = "<group>"; };
 		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
 		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		B0020060 /* PortfolioTrustPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioTrustPassTests.swift; sourceTree = "<group>"; };
 		B0020051 /* TCGplayerLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGplayerLinkTests.swift; sourceTree = "<group>"; };
 		B0020050 /* PortfolioReplayEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplayEngineTests.swift; sourceTree = "<group>"; };
 		B0020041 /* PortfolioCloseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioCloseTests.swift; sourceTree = "<group>"; };
@@ -406,6 +410,7 @@
 				B0010044 /* CenteringCameraView.swift */,
 							B0010066 /* SealedBrowseViews.swift */,
 							B0010067 /* GradedVariantPickerView.swift */,
+				B00100A5 /* RemovalUndoBanner.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,6 +437,7 @@
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
+				B0020060 /* PortfolioTrustPassTests.swift */,
 				B0020051 /* TCGplayerLinkTests.swift */,
 				B0020050 /* PortfolioReplayEngineTests.swift */,
 				B0020041 /* PortfolioCloseTests.swift */,
@@ -602,6 +608,7 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
+				A00100A5 /* RemovalUndoBanner.swift in Sources */,
 				A0010093 /* TCGplayerLink.swift in Sources */,
 				A0010091 /* PortfolioReplay.swift in Sources */,
 				A0010092 /* PortfolioReplaySnapshot.swift in Sources */,
@@ -652,6 +659,7 @@
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
+				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				A0020051 /* TCGplayerLinkTests.swift in Sources */,
 				A0020050 /* PortfolioReplayEngineTests.swift in Sources */,
 				A0020041 /* PortfolioCloseTests.swift in Sources */,

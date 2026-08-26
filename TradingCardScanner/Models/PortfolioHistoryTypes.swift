@@ -211,4 +211,14 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     var hasEligibleMarketMovement: Bool
 
     var isEmpty: Bool { points.isEmpty }
+
+    /// Whether this result actually describes the given selection.
+    ///
+    /// Results arrive asynchronously, so a view holding one has no guarantee it
+    /// still matches what the range control says. Presenting a mismatched
+    /// result puts a 1M total under a 3M heading, which a person has no way to
+    /// detect — so every period-scoped surface asks this first.
+    func matches(range: PortfolioHistoryRange, mode: PortfolioHistoryMode) -> Bool {
+        self.range == range && self.mode == mode
+    }
 }
