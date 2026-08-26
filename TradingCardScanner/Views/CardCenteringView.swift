@@ -201,6 +201,7 @@ struct CardCenteringView: View {
                         isShowingSettings = true
                     }
                     .labelStyle(.iconOnly)
+                    .accessibilityLabel("Settings")
                 }
 
                 if model.image != nil {

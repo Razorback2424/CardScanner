@@ -3,8 +3,9 @@ import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// Shared settings sheet for the app. Built as a `Form` from the start so that adding
-/// the next setting is a new row rather than a layout rewrite.
+/// Shared settings sheet for the app. The root stays deliberately short: each
+/// category leads to a focused form instead of asking someone to scan every
+/// low-frequency control before finding the one they need.
 struct SettingsView: View {
     @EnvironmentObject private var scannerModel: ScannerViewModel
     @Environment(\.dismiss) private var dismiss
@@ -33,13 +34,51 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                AccountSettingsSection()
-                finishLockSection
-                cameraSection
-                PriceFallbackSettingsSection()
-                portfolioSection
-                collectionSection
-                developerSection
+                Section {
+                    NavigationLink {
+                        SettingsCategoryView("Scanning") {
+                            finishLockSection
+                            cameraSection
+                        }
+                    } label: {
+                        Label("Scanning", systemImage: "viewfinder")
+                    }
+
+                    NavigationLink {
+                        SettingsCategoryView("Pricing") {
+                            PriceFallbackSettingsSection()
+                        }
+                    } label: {
+                        Label("Pricing", systemImage: "dollarsign.circle")
+                    }
+
+                    NavigationLink {
+                        SettingsCategoryView("Collection & Portfolio") {
+                            collectionSection
+                            portfolioSection
+                        }
+                    } label: {
+                        Label("Collection & Portfolio", systemImage: "rectangle.stack")
+                    }
+
+                    NavigationLink {
+                        SettingsCategoryView("Account & Sync") {
+                            AccountSettingsSection()
+                        }
+                    } label: {
+                        Label("Account & Sync", systemImage: "person.crop.circle")
+                    }
+                }
+
+                Section("Advanced") {
+                    NavigationLink {
+                        SettingsCategoryView("Developer & Diagnostics") {
+                            developerSection
+                        }
+                    } label: {
+                        Label("Developer & Diagnostics", systemImage: "wrench.and.screwdriver")
+                    }
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -303,6 +342,24 @@ struct SettingsView: View {
         } catch {
             deletionError = error.localizedDescription
         }
+    }
+}
+
+private struct SettingsCategoryView<Content: View>: View {
+    let title: String
+    private let content: Content
+
+    init(_ title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        Form {
+            content
+        }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -26,7 +26,9 @@ enum PortfolioHistoryEngine {
                 mode: mode, range: range, points: [], accounting: nil,
                 performanceFactor: nil, performanceAvailable: true,
                 coverage: PortfolioHistoryCoverage(), revisions: [],
-                trackingBeganDate: nil, hasTwoPublishedPoints: false
+                trackingBeganDate: nil, hasTwoPublishedPoints: false,
+                accountingInterval: nil, contributions: [:],
+                hasEligibleMarketMovement: false
             )
         }
 
@@ -98,10 +100,16 @@ enum PortfolioHistoryEngine {
 
         let selectedDates = Set(selected.map(\.date))
         let audit = revisionAudit(closes: input.closes, dates: selectedDates)
+        let interval = PortfolioAccountingInterval(
+            anchorDate: anchor.date,
+            includedClosedDays: Array(selected.dropFirst().map(\.date)),
+            includesLiveDay: liveIsDistinct,
+            liveDay: liveIsDistinct ? PortfolioCalendar.day(containing: input.now, in: timeZone) : nil
+        )
         let accounting = accounting(
             anchor: anchor,
-            selected: selected,
-            liveIncluded: liveIsDistinct,
+            interval: interval,
+            closes: latestByDate,
             liveAttribution: input.summary.attribution,
             endValue: points.last?.value ?? anchor.closeValue
         )
@@ -117,14 +125,17 @@ enum PortfolioHistoryEngine {
             coverage: coverage(selected: selected, live: liveIsDistinct ? input.summary.coverage : nil),
             revisions: audit,
             trackingBeganDate: requestedStart < anchor.date ? anchor.date : nil,
-            hasTwoPublishedPoints: selected.count >= 2
+            hasTwoPublishedPoints: selected.count >= 2,
+            accountingInterval: interval,
+            contributions: input.contributions.contributions(in: interval),
+            hasEligibleMarketMovement: input.contributions.hasEligibleMarketMovement(in: interval)
         )
     }
 
     private static func accounting(
         anchor: PortfolioPublishedClose,
-        selected: [PortfolioPublishedClose],
-        liveIncluded: Bool,
+        interval: PortfolioAccountingInterval,
+        closes: [Date: PortfolioPublishedClose],
         liveAttribution: PortfolioClose.Attribution?,
         endValue: Money
     ) -> PortfolioHistoryAccounting {
@@ -132,13 +143,14 @@ enum PortfolioHistoryEngine {
         var flow = Money.zero
         var corrections = Money.zero
         var pricing = Money.zero
-        for close in selected.dropFirst() {
+        for day in interval.includedClosedDays {
+            guard let close = closes[day] else { continue }
             market += close.market
             flow += close.flow
             corrections += close.corrections
             pricing += close.pricingAdjustment
         }
-        if liveIncluded, let live = liveAttribution {
+        if interval.includesLiveDay, let live = liveAttribution {
             market += live.market
             flow += live.added - live.removed
             corrections += live.corrections
@@ -200,6 +212,7 @@ final class PortfolioHistoryController: ObservableObject {
         context: ModelContext,
         summary: PortfolioSummary?,
         factors: PortfolioPerformanceFactors,
+        contributions: PortfolioContributionIndex,
         mode: PortfolioHistoryMode,
         range: PortfolioHistoryRange,
         now: Date = .now
@@ -231,7 +244,8 @@ final class PortfolioHistoryController: ObservableObject {
                 epoch: PortfolioEpoch.startedAt(context: context),
                 timeZoneIdentifier: timeZone.identifier,
                 now: now,
-                factors: factors
+                factors: factors,
+                contributions: contributions
             ),
             mode: mode,
             range: range

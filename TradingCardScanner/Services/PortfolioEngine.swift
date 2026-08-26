@@ -45,6 +45,20 @@ struct PortfolioSummary: Equatable, Sendable {
     var isAuthoritative = true
 }
 
+/// Current, authoritative presentation metadata for a logical owned position.
+/// Historical contribution keys that do not resolve here are deliberately not
+/// named by inference in the UI.
+struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
+    var collectionKey: String
+    var name: String
+    var detail: String
+    var artworkURL: URL?
+    var quantity: Int
+    var currentValue: Money?
+
+    var id: String { collectionKey }
+}
+
 /// Owns portfolio computation.
 ///
 /// A status enum as the presentation contract, matching
@@ -68,6 +82,10 @@ final class PortfolioEngine: ObservableObject {
     /// Time-weighted factors from the same replay that produced the summary, so
     /// the history card never runs a second pass.
     @Published private(set) var performanceFactors = PortfolioPerformanceFactors()
+    /// One sparse value snapshot published per completed replay, never a
+    /// nested observable that changes while SwiftUI is rendering it.
+    @Published private(set) var contributionIndex = PortfolioContributionIndex()
+    @Published private(set) var holdings: [PortfolioHoldingSnapshot] = []
 
     private var lastComputedDay: Date?
     /// Guards against a slower earlier pass publishing over a fresher one.
@@ -183,6 +201,8 @@ final class PortfolioEngine: ObservableObject {
         summary.isMigrationDay = PortfolioEpoch.isMigrationDay(now, epoch: epoch, timeZone: timeZone)
 
         let replay = computation.replay
+        contributionIndex = replay.contributionIndex
+        holdings = computation.holdings
         performanceFactors = PortfolioPerformanceFactors(
             daily: Dictionary(
                 replay.days.compactMap { day in

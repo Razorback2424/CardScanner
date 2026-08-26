@@ -68,6 +68,7 @@ enum PortfolioReplaySnapshotBuilder {
         var isAuthoritative: Bool
         var replay: PortfolioReplayResult
         var coverage: PortfolioCoverageIndex
+        var holdings: [PortfolioHoldingSnapshot]
     }
 
     /// Everything expensive, in one place, off the main actor.
@@ -91,8 +92,30 @@ enum PortfolioReplaySnapshotBuilder {
                 ),
             isAuthoritative: snapshot.isAuthoritative,
             replay: PortfolioReplayEngine.replay(snapshot.input),
-            coverage: snapshot.input.coverage
+            coverage: snapshot.input.coverage,
+            holdings: holdingSnapshots(projection: snapshot.projection, valuations: snapshot.valuations)
         )
+    }
+
+    private static func holdingSnapshots(
+        projection: LogicalCollectionProjection,
+        valuations: InstrumentValuationIndex
+    ) -> [PortfolioHoldingSnapshot] {
+        projection.positions.compactMap { position in
+            guard position.quantity > 0 else { return nil }
+            let card = position.representative
+            let price = valuations.valuation(for: position.priceStorageKey).unitPrice
+            let detailParts = [card.setName, card.variantLabel ?? card.itemKindLabel]
+                .filter { !$0.isEmpty }
+            return PortfolioHoldingSnapshot(
+                collectionKey: position.collectionKey,
+                name: card.name,
+                detail: detailParts.joined(separator: " · "),
+                artworkURL: URL(string: card.thumbnailURL ?? card.imageURL ?? ""),
+                quantity: position.quantity,
+                currentValue: price.map { $0 * position.quantity }
+            )
+        }
     }
 
     static func make(

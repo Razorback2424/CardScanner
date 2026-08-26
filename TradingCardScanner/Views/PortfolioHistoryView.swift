@@ -12,7 +12,9 @@ struct PortfolioHistoryView: View {
 
     let summary: PortfolioSummary?
     let factors: PortfolioPerformanceFactors
+    let contributions: PortfolioContributionIndex
     let refreshRevision: UInt
+    let onShowContributors: (PortfolioHistoryResult) -> Void
 
     @State private var selectedPointID: String?
 
@@ -98,6 +100,7 @@ struct PortfolioHistoryView: View {
                 context: modelContext,
                 summary: summary,
                 factors: factors,
+                contributions: contributions,
                 mode: mode,
                 range: range
             )
@@ -260,14 +263,26 @@ struct PortfolioHistoryView: View {
             if let accounting = result.accounting {
                 switch result.mode {
                 case .performance:
-                    evidenceRow("Market-driven value change", accounting.market)
+                    Button {
+                        onShowContributors(result)
+                    } label: {
+                        evidenceRow("Market-driven value change", accounting.market)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Shows contributors for this range")
                     evidenceRow("Time-weighted market return", result.performanceAvailable ? summaryValue(for: result, accounting: accounting) : "Unavailable")
                     Text("Net collection activity, corrections, and pricing adjustments excluded")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 case .value:
                     evidenceRow("Total value change", accounting.totalChange)
-                    evidenceRow("Market movement", accounting.market)
+                    Button {
+                        onShowContributors(result)
+                    } label: {
+                        evidenceRow("Market movement", accounting.market)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Shows contributors for this range")
                     evidenceRow("Net collection activity", accounting.netInventoryActivity)
                     evidenceRow("Corrections", accounting.corrections)
                     evidenceRow("Pricing adjustments", accounting.pricingAdjustments)

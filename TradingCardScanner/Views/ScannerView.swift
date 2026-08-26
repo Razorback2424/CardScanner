@@ -166,7 +166,7 @@ private struct ScannerChrome: View {
 
     private var settingsButton: some View {
         Button(action: openSettings) {
-            Image(systemName: "gearshape.fill")
+            Image(systemName: "gearshape")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.white)
                 .frame(width: 34, height: 34)

@@ -106,8 +106,35 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                     uniquingKeysWith: { _, latest in latest }
                 ),
                 live: replay.live?.performanceFactor
-            )
+            ),
+            contributions: replay.contributionIndex
         )
+    }
+
+    func testContributionAggregationUsesTheAccountingIntervalNotTheAnchorDay() {
+        let dayOne = date(1)
+        let dayTwo = date(2)
+        let result = PortfolioHistoryEngine.calculate(
+            input: PortfolioHistoryInput(
+                closes: [
+                    close(1, value: 100, market: 100),
+                    close(2, value: 130, market: 30)
+                ],
+                summary: PortfolioSummary(currentValue: money(130)),
+                epoch: dayOne,
+                timeZoneIdentifier: "UTC",
+                now: dayTwo,
+                contributions: PortfolioContributionIndex(
+                    byDay: [dayOne: ["anchor": money(100)], dayTwo: ["card": money(30)]]
+                )
+            ),
+            mode: .value,
+            range: .all
+        )
+
+        XCTAssertEqual(result.accounting?.market, money(30))
+        XCTAssertEqual(result.contributions, ["card": money(30)])
+        XCTAssertEqual(result.accountingInterval?.includedClosedDays, [dayTwo])
     }
 
     private func zonedDay(_ year: Int, _ month: Int, _ day: Int, timeZoneID: String) -> Date {

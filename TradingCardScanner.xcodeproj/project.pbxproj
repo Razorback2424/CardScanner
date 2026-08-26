@@ -82,6 +82,8 @@
 		A001008B /* PortfolioHistoryEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008B /* PortfolioHistoryEngine.swift */; };
 		A001008C /* PortfolioHistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008C /* PortfolioHistoryTypes.swift */; };
 		A001008D /* PortfolioHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008D /* PortfolioHistoryView.swift */; };
+		A0010094 /* PortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010094 /* PortfolioView.swift */; };
+		A0010095 /* PortfolioDebugFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010095 /* PortfolioDebugFixtures.swift */; };
 		A0010085 /* InventoryEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010085 /* InventoryEvent.swift */; };
 		A0010086 /* InventoryLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010086 /* InventoryLedger.swift */; };
 		A0010080 /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010080 /* Money.swift */; };
@@ -208,6 +210,8 @@
 		B001008B /* PortfolioHistoryEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryEngine.swift; sourceTree = "<group>"; };
 		B001008C /* PortfolioHistoryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryTypes.swift; sourceTree = "<group>"; };
 		B001008D /* PortfolioHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryView.swift; sourceTree = "<group>"; };
+		B0010094 /* PortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioView.swift; sourceTree = "<group>"; };
+		B0010095 /* PortfolioDebugFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioDebugFixtures.swift; sourceTree = "<group>"; };
 		B0010085 /* InventoryEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryEvent.swift; sourceTree = "<group>"; };
 		B0010086 /* InventoryLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryLedger.swift; sourceTree = "<group>"; };
 		B0010080 /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
@@ -392,6 +396,8 @@
 				B0010012 /* CollectionView.swift */,
 				B0010013 /* CollectionCardDetailView.swift */,
 				B001008D /* PortfolioHistoryView.swift */,
+				B0010094 /* PortfolioView.swift */,
+				B0010095 /* PortfolioDebugFixtures.swift */,
 				B0010014 /* ContentView.swift */,
 				B0010026 /* ScanSessionOverlays.swift */,
 				B0010027 /* ScanReviewSheet.swift */,
@@ -607,6 +613,8 @@
 				A001008B /* PortfolioHistoryEngine.swift in Sources */,
 				A001008C /* PortfolioHistoryTypes.swift in Sources */,
 				A001008D /* PortfolioHistoryView.swift in Sources */,
+				A0010094 /* PortfolioView.swift in Sources */,
+				A0010095 /* PortfolioDebugFixtures.swift in Sources */,
 				A0010085 /* InventoryEvent.swift in Sources */,
 				A0010086 /* InventoryLedger.swift in Sources */,
 				A0010080 /* Money.swift in Sources */,

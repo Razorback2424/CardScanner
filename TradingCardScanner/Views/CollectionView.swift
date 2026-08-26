@@ -6,7 +6,6 @@ import SwiftUI
 /// questions without turning the collection header into a toolbar of chips.
 struct CollectionView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.scenePhase) private var scenePhase
 
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
@@ -14,9 +13,13 @@ struct CollectionView: View {
     @Query private var priceRecords: [PriceRecord]
     @Query private var productIdentities: [ProductIdentity]
 
-    @StateObject private var refresh = PriceRefreshController()
+    @ObservedObject var refresh: PriceRefreshController
+    @ObservedObject var portfolio: PortfolioEngine
+    let opensBrowseOnLaunch: Bool
+    let onOpenScanner: @MainActor () -> Void
+    let onRefresh: @MainActor () async -> Void
+
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
-    @StateObject private var portfolio = PortfolioEngine()
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
 
     @State private var searchText = ""
@@ -35,10 +38,15 @@ struct CollectionView: View {
     @State private var showsManualRefreshStatus = false
     @State private var refreshStatusTask: Task<Void, Never>?
     @FocusState private var isSearchFocused: Bool
+    @State private var navigationPath: [Destination] = []
 
     private enum ActiveSheet: String, Identifiable {
         case filters
         var id: String { rawValue }
+    }
+
+    private enum Destination: Hashable {
+        case browse
     }
 
     private let columns = [
@@ -52,14 +60,10 @@ struct CollectionView: View {
         // grid and the refresh targets would do it four times for nothing.
         let snapshot = makeSnapshot()
 
-        return NavigationStack {
+        return NavigationStack(path: $navigationPath) {
             Group {
                 if cards.isEmpty {
-                    ContentUnavailableView(
-                        "No cards yet",
-                        systemImage: "rectangle.stack.badge.plus",
-                        description: Text("Scan a card and it lands here.")
-                    )
+                    emptyCollection
                 } else {
                     content(snapshot)
                 }
@@ -89,6 +93,7 @@ struct CollectionView: View {
                         isShowingSettings = true
                     }
                     .labelStyle(.iconOnly)
+                    .accessibilityLabel("Settings")
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {
@@ -96,6 +101,12 @@ struct CollectionView: View {
                     Button("Done") {
                         isSearchFocused = false
                     }
+                }
+            }
+            .navigationDestination(for: Destination.self) { destination in
+                switch destination {
+                case .browse:
+                    BrowseView()
                 }
             }
         }
@@ -115,31 +126,6 @@ struct CollectionView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
-        .sheet(isPresented: $isShowingPortfolioDetails) {
-            portfolioDetailsSheet(makeSnapshot())
-        }
-        .task {
-#if DEBUG
-            if isDebugRoute("PortfolioHistory") {
-                seedPortfolioHistoryQAIfNeeded()
-            } else {
-                seedPortfolioTodayQAIfNeeded()
-            }
-#endif
-            portfolio.start(context: modelContext)
-        }
-        // Collection change and day rollover. Never from `body`: the snapshot is
-        // already O(n) per render, and a close that moved while being read would
-        // be worth nothing.
-        .task(id: collectionMutationTaskID) {
-            portfolio.recompute(context: modelContext)
-            await refreshStalePricesIfNeeded()
-        }
-        .task { await recomputeAtDayRollover() }
-        .onChange(of: scenePhase) { _, phase in
-            guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
-            portfolio.recompute(context: modelContext)
-        }
         .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
         .task(id: fallbackAvailabilityTaskID(snapshot)) {
             await refresh.updateFallbackAvailability(pending: fallbackPendingCount(snapshot))
@@ -152,6 +138,10 @@ struct CollectionView: View {
         .onDisappear {
             refreshStatusTask?.cancel()
         }
+        .task {
+            guard opensBrowseOnLaunch, navigationPath.isEmpty else { return }
+            navigationPath.append(.browse)
+        }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
                 removalUndoBanner(pendingRemoval)
@@ -162,14 +152,7 @@ struct CollectionView: View {
     private func content(_ snapshot: Snapshot) -> some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                header(snapshot)
-                if portfolio.summary?.isAuthoritative != false {
-                    PortfolioHistoryView(
-                        summary: portfolio.summary,
-                        factors: portfolio.performanceFactors,
-                        refreshRevision: portfolio.inputRevision
-                    )
-                }
+                browseCatalogEntry
                 if isShowingSearch {
                     searchField
                 }
@@ -205,10 +188,59 @@ struct CollectionView: View {
             .padding(12)
         }
         .scrollDismissesKeyboard(.interactively)
-        .refreshable { await refreshAllPrices() }
+        .refreshable { await onRefresh() }
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
+    }
+
+    private var emptyCollection: some View {
+        ContentUnavailableView {
+            Label("No cards yet", systemImage: "rectangle.stack.badge.plus")
+        } description: {
+            Text("Scan your first card or find one to add.")
+        } actions: {
+            VStack(spacing: 12) {
+                Button("Scan a Card", systemImage: "viewfinder") {
+                    onOpenScanner()
+                }
+                .buttonStyle(.borderedProminent)
+
+                NavigationLink(value: Destination.browse) {
+                    Label("Find Items to Add", systemImage: "plus.circle")
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+    }
+
+    private var browseCatalogEntry: some View {
+        NavigationLink(value: Destination.browse) {
+            HStack(spacing: 12) {
+                Image(systemName: "plus.circle")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 36, height: 36)
+                    .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Find Items to Add")
+                        .font(.headline)
+                    Text("Cards, sets, and sealed products")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+            .background(.quaternary.opacity(0.55), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Find items to add")
+        .accessibilityHint("Browse cards, sets, and sealed products to add to your collection")
     }
 
     // MARK: - Removal undo
@@ -1302,147 +1334,6 @@ struct CollectionView: View {
         }
     }
 
-#if DEBUG
-    private func isDebugRoute(_ route: String) -> Bool {
-        let arguments = ProcessInfo.processInfo.arguments
-        guard let index = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(index + 1) else {
-            return false
-        }
-        return arguments[index + 1] == route
-    }
-
-    /// Deterministic history fixture.
-    ///
-    /// Seeds *inputs* — an acquisition five days ago and a price observation
-    /// per day — and lets the replay derive the closes. The previous fixture
-    /// inserted fabricated zero-valued closes, which the replay now correctly
-    /// overwrites with what the inputs actually imply, so it could only ever
-    /// render a flat line at zero.
-    @MainActor
-    private func seedPortfolioHistoryQAIfNeeded() {
-        guard cards.isEmpty else { return }
-        let timeZone = PortfolioCalendar.timeZone()
-        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
-        let epochDay = PortfolioCalendar.day(
-            containing: today.addingTimeInterval(-5 * 86_400),
-            in: timeZone
-        )
-        UserDefaults.standard.set(
-            epochDay.timeIntervalSince1970,
-            forKey: PortfolioEpoch.defaultsKey
-        )
-        UserDefaults.standard.set(PortfolioHistoryMode.performance.rawValue, forKey: "portfolioHistoryMode")
-        UserDefaults.standard.set(PortfolioHistoryRange.all.rawValue, forKey: "portfolioHistoryRange")
-
-        _ = try? CollectionStore(context: modelContext).addSealed(
-            SealedProductSummary(
-                id: "ui-history-product",
-                name: "History QA Booster Box",
-                setName: "Trustworthy History",
-                variantID: "ui-history-variant",
-                marketPriceUSD: 100,
-                updatedAt: .now,
-                imageURL: nil,
-                tcgplayerProductID: "247241"
-            ),
-            game: .pokemon
-        )
-
-        guard let card = cards.first ?? (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.first
-        else { return }
-        let instrument = InventoryLedger(context: modelContext).priceStorageKey(for: card)
-
-        // Ownership starts at the epoch so the whole window has something held.
-        for event in InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey) {
-            event.occurredAt = epochDay.addingTimeInterval(60)
-        }
-
-        // A price per day, moving enough to make Performance legible and
-        // distinct from Collection Value.
-        let prices: [Double] = [100, 104, 101, 112, 118, 125]
-        for (offset, price) in prices.enumerated() {
-            let day = PortfolioCalendar.day(
-                containing: epochDay.addingTimeInterval(Double(offset) * 86_400),
-                in: timeZone
-            )
-            // The add wrote its own observation at wall-clock now, so today's
-            // price has to be stamped after that to be the one in force.
-            let receivedAt = offset == prices.count - 1
-                ? Date.now
-                : day.addingTimeInterval(3_600)
-            modelContext.insert(
-                PriceObservation(
-                    instrumentKey: instrument,
-                    kind: .marketUpdate,
-                    amount: Money(rounding: price),
-                    source: .justTCG,
-                    sourceVariantID: "ui-history-variant",
-                    marketVariantID: "ui-history-variant",
-                    effectiveAt: receivedAt,
-                    receivedAt: receivedAt,
-                    isSourceStamped: true
-                )
-            )
-            modelContext.insert(
-                PriceCheckDay(
-                    instrumentKey: instrument,
-                    portfolioDay: day,
-                    lastSuccessfulCheckAt: receivedAt,
-                    source: .justTCG
-                )
-            )
-        }
-
-        // In production `PriceStore.store` writes the record and the
-        // observation together. Seeding observations directly would otherwise
-        // leave the grid showing the opening price while the portfolio uses the
-        // latest one.
-        if let record = PriceStore(context: modelContext).record(forKey: instrument),
-           let latest = prices.last {
-            record.unitMarketPriceUSD = latest
-            record.fetchedAt = .now
-            record.sourceUpdatedAt = .now
-            record.lastSuccessfulCheckAt = .now
-        }
-        try? modelContext.save()
-    }
-
-    /// Deterministic Today-card fixture for screenshot verification. The local
-    /// epoch predates the add, so this renders the normal reconciliation state
-    /// (yesterday close + today's flow), not the migration-day placeholder.
-    @MainActor
-    private func seedPortfolioTodayQAIfNeeded() {
-        let arguments = ProcessInfo.processInfo.arguments
-        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
-              arguments.indices.contains(index + 1),
-              arguments[index + 1] == "PortfolioToday",
-              cards.isEmpty else { return }
-
-        let timeZone = PortfolioCalendar.timeZone()
-        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
-        let epoch = PortfolioCalendar.day(
-            containing: today.addingTimeInterval(-2 * 86_400),
-            in: timeZone
-        )
-        UserDefaults.standard.set(
-            epoch.addingTimeInterval(60).timeIntervalSince1970,
-            forKey: PortfolioEpoch.defaultsKey
-        )
-
-        _ = try? CollectionStore(context: modelContext).addSealed(
-            SealedProductSummary(
-                id: "ui-portfolio-product",
-                name: "Portfolio QA Booster Box",
-                setName: "Trustworthy History",
-                variantID: "ui-portfolio-variant",
-                marketPriceUSD: 125,
-                updatedAt: .now,
-                imageURL: nil
-            ),
-            game: .pokemon
-        )
-    }
-#endif
 }
 
 /// Menu labels cannot use `FilterChip` directly because a `Menu` supplies its own

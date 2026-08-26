@@ -113,6 +113,48 @@ struct PortfolioHistoryInput: Equatable, Sendable {
     var timeZoneIdentifier: String
     var now: Date
     var factors = PortfolioPerformanceFactors()
+    /// Sparse impacts from the replay that produced the closes. History uses
+    /// the resolved accounting interval below rather than reinterpreting a
+    /// calendar range for contributors.
+    var contributions = PortfolioContributionIndex()
+}
+
+/// The exact economic interval a history result explains. Its anchor close is
+/// the starting value, never a contribution inside the selected period.
+struct PortfolioAccountingInterval: Equatable, Sendable {
+    var anchorDate: Date
+    var includedClosedDays: [Date]
+    var includesLiveDay: Bool
+    var liveDay: Date?
+}
+
+/// Sparse position-level market impacts from replay. This is derived data, not
+/// a persisted accounting model: a key is retained only for a nonzero eligible
+/// market update on that portfolio day.
+struct PortfolioContributionIndex: Equatable, Sendable {
+    var byDay: [Date: [String: Money]] = [:]
+    /// A day may have genuine market updates whose position impacts cancel to
+    /// zero. Keep that state separate from the sparse value index so the UI
+    /// does not mistake an interesting $0 day for no movement.
+    var daysWithEligibleMarketMovement: Set<Date> = []
+
+    func contributions(in interval: PortfolioAccountingInterval) -> [String: Money] {
+        var result: [String: Money] = [:]
+        let days = interval.includedClosedDays
+            + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+        for day in days {
+            for (key, amount) in byDay[day, default: [:]] {
+                result[key, default: .zero] += amount
+            }
+        }
+        return result.filter { !$0.value.isZero }
+    }
+
+    func hasEligibleMarketMovement(in interval: PortfolioAccountingInterval) -> Bool {
+        let days = interval.includedClosedDays
+            + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+        return days.contains { daysWithEligibleMarketMovement.contains($0) }
+    }
 }
 
 struct PortfolioHistoryPoint: Identifiable, Equatable, Sendable {
@@ -164,6 +206,9 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     var revisions: [PortfolioHistoryRevision]
     var trackingBeganDate: Date?
     var hasTwoPublishedPoints: Bool
+    var accountingInterval: PortfolioAccountingInterval?
+    var contributions: [String: Money]
+    var hasEligibleMarketMovement: Bool
 
     var isEmpty: Bool { points.isEmpty }
 }

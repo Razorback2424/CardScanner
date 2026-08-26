@@ -235,6 +235,90 @@ final class PortfolioReplayEngineTests: XCTestCase {
 
     // MARK: - What only the one-pass engine can do
 
+    func testSharedInstrumentSplitsContributionAcrossPositionsExactly() {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [
+                    event(delta: 2, at: at(1, hour: 9), position: "a", instrument: "shared"),
+                    event(delta: 3, at: at(1, hour: 9), position: "b", instrument: "shared")
+                ],
+                observations: [
+                    observation(10, at: at(1, hour: 8), instrument: "shared"),
+                    observation(15, at: at(2, hour: 10), instrument: "shared")
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, usd(25))
+        XCTAssertEqual(result.live?.contributions["a"], usd(10))
+        XCTAssertEqual(result.live?.contributions["b"], usd(15))
+        XCTAssertEqual(result.live?.contributions.values.sum(), result.live?.attribution.market)
+    }
+
+    func testOffsettingContributorsRemainVisibleAtZeroNetMarketMovement() {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [
+                    event(delta: 1, at: at(1, hour: 9), position: "a", instrument: "a"),
+                    event(delta: 1, at: at(1, hour: 9), position: "b", instrument: "b")
+                ],
+                observations: [
+                    observation(100, at: at(1, hour: 8), instrument: "a"),
+                    observation(100, at: at(1, hour: 8), instrument: "b"),
+                    observation(150, at: at(2, hour: 10), instrument: "a"),
+                    observation(50, at: at(2, hour: 10), instrument: "b")
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, .zero)
+        XCTAssertEqual(result.live?.contributions, ["a": usd(50), "b": usd(-50)])
+        XCTAssertFalse(result.live?.contributions.isEmpty ?? true)
+        XCTAssertTrue(result.live?.hasEligibleMarketMovement ?? false)
+    }
+
+    func testCancelledUpdatesForOnePositionRetainTheEligibleMovementState() {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [event(delta: 1, at: at(1, hour: 9))],
+                observations: [
+                    observation(100, at: at(1, hour: 8)),
+                    observation(150, at: at(2, hour: 10)),
+                    observation(100, at: at(2, hour: 11))
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, .zero)
+        XCTAssertTrue(result.live?.contributions.isEmpty ?? false)
+        XCTAssertTrue(result.live?.hasEligibleMarketMovement ?? false)
+        XCTAssertTrue(result.contributionIndex.daysWithEligibleMarketMovement.contains(day(2)))
+    }
+
+    func testNonMarketUpdatesNeverCreateContributions() {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [event(delta: 1, at: at(1, hour: 9))],
+                observations: [
+                    observation(10, at: at(1, hour: 8)),
+                    observation(30, at: at(2, hour: 10), kind: .sourceRestatement),
+                    observation(40, at: at(2, hour: 11), kind: .sourceTransition)
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(result.live?.attribution.market, .zero)
+        XCTAssertTrue(result.live?.contributions.isEmpty ?? false)
+    }
+
     func testEveryDayFromTheEpochIsEmittedOnce() {
         let result = PortfolioReplayEngine.replay(
             input(

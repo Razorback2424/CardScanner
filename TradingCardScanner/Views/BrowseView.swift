@@ -172,44 +172,44 @@ struct BrowseView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 18) {
-                    searchField
-                    // An explicit scope rather than mixing cards and sealed
-                    // products in one result list: they are different kinds of
-                    // thing, from different catalogues, and a shared list would
-                    // leave the user guessing which they were looking at.
-                    Picker("Browse scope", selection: $browseScope) {
-                        Text("Cards").tag(BrowseScope.cards)
-                        Text("Sealed").tag(BrowseScope.sealed)
-                    }
-                    .pickerStyle(.segmented)
-
-                    switch browseScope {
-                    case .cards:
-                        if model.isSearching { searchBody } else { gameChooser }
-                    case .sealed:
-                        sealedChooser
-                    }
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 18) {
+                searchField
+                // An explicit scope rather than mixing cards and sealed
+                // products in one result list: they are different kinds of
+                // thing, from different catalogues, and a shared list would
+                // leave the user guessing which they were looking at.
+                Picker("Browse scope", selection: $browseScope) {
+                    Text("Cards").tag(BrowseScope.cards)
+                    Text("Sealed").tag(BrowseScope.sealed)
                 }
-                .padding(16)
+                .pickerStyle(.segmented)
+
+                switch browseScope {
+                case .cards:
+                    if model.isSearching { searchBody } else { gameChooser }
+                case .sealed:
+                    sealedChooser
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Browse")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Settings", systemImage: "gearshape") {
-                        isShowingSettings = true
-                    }
-                    .labelStyle(.iconOnly)
+            .padding(16)
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .navigationTitle("Browse")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Settings", systemImage: "gearshape") {
+                    isShowingSettings = true
                 }
-
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { searchFocused = false }
-                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("Settings")
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { searchFocused = false }
             }
         }
         .sheet(isPresented: $isShowingSettings) {

@@ -73,6 +73,9 @@ struct PortfolioReplayDay: Sendable, Equatable {
     var excludedQuantity: Int
     var coverage: PortfolioCoverage
     var carriedForwardValue: Money
+    /// Sparse position impacts for this completed portfolio day.
+    var contributions: [String: Money]
+    var hasEligibleMarketMovement: Bool
 
     var flow: Money { added - removed }
 }
@@ -84,6 +87,8 @@ struct PortfolioReplayLive: Sendable, Equatable {
     var performanceFactor: Decimal?
     var pricedPositionCount: Int
     var excludedQuantity: Int
+    var contributions: [String: Money]
+    var hasEligibleMarketMovement: Bool
 }
 
 extension PortfolioReplayLive {
@@ -114,6 +119,7 @@ struct PortfolioReplayResult: Sendable, Equatable {
     var live: PortfolioReplayLive?
     /// Cumulative time-weighted factor across every finished day.
     var performanceAvailable: Bool
+    var contributionIndex: PortfolioContributionIndex
 }
 
 /// One forward pass over the merged timeline.
@@ -331,14 +337,35 @@ enum PortfolioReplayEngine {
                 attribution: attribution,
                 performanceFactor: accumulator.performanceFactor,
                 pricedPositionCount: state.pricedPositionCount,
-                excludedQuantity: state.excludedQuantity
+                excludedQuantity: state.excludedQuantity,
+                contributions: accumulator.contributions,
+                hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
             )
+        }
+
+        var contributionIndex = PortfolioContributionIndex()
+        for finished in days {
+            if !finished.contributions.isEmpty {
+                contributionIndex.byDay[finished.displayDay] = finished.contributions
+            }
+            if finished.hasEligibleMarketMovement {
+                contributionIndex.daysWithEligibleMarketMovement.insert(finished.displayDay)
+            }
+        }
+        if let live {
+            if !live.contributions.isEmpty {
+                contributionIndex.byDay[live.day] = live.contributions
+            }
+            if live.hasEligibleMarketMovement {
+                contributionIndex.daysWithEligibleMarketMovement.insert(live.day)
+            }
         }
 
         return PortfolioReplayResult(
             days: days,
             live: live,
-            performanceAvailable: performanceAvailable
+            performanceAvailable: performanceAvailable,
+            contributionIndex: contributionIndex
         )
     }
 
@@ -352,6 +379,8 @@ enum PortfolioReplayEngine {
         var corrections = Money.zero
         var pricingAdjustment = Money.zero
         var performanceFactor: Decimal? = 1
+        var contributions: [String: Money] = [:]
+        var hasEligibleMarketMovement = false
     }
 
     private nonisolated static func apply(
@@ -374,6 +403,19 @@ enum PortfolioReplayEngine {
 
         if isMarketMovement {
             accumulator.market += difference * quantity
+            if quantity != 0, !difference.isZero {
+                accumulator.hasEligibleMarketMovement = true
+            }
+            if !difference.isZero {
+                for (position, heldQuantity) in state.positionsPriced(through: instrument) {
+                    let contribution = difference * heldQuantity
+                    guard !contribution.isZero else { continue }
+                    accumulator.contributions[position, default: .zero] += contribution
+                    if accumulator.contributions[position]?.isZero == true {
+                        accumulator.contributions.removeValue(forKey: position)
+                    }
+                }
+            }
         } else {
             accumulator.pricingAdjustment += difference * quantity
         }
@@ -475,7 +517,9 @@ enum PortfolioReplayEngine {
                     ? .complete
                     : (carriedForwardInstruments == 0 ? .complete : .partial)
             ),
-            carriedForwardValue: carriedForwardValue
+            carriedForwardValue: carriedForwardValue,
+            contributions: accumulator.contributions,
+            hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
         )
     }
 
@@ -503,6 +547,10 @@ struct PortfolioReplayState: Equatable {
     /// Total quantity valued through each instrument. One observation values
     /// every position sharing it, so this is what a price change multiplies by.
     private(set) var quantityByInstrument: [String: Int] = [:]
+    /// Current position quantities by instrument. This lets a price update
+    /// attribute its impact to the precise positions it values without
+    /// scanning the full collection on every observation.
+    private(set) var quantitiesByPositionByInstrument: [String: [String: Int]] = [:]
     /// `Σ price × quantity` over priceable instruments, maintained in step.
     /// Unpriced and non-USD positions are excluded, never zeroed into the
     /// total and never converted at a rate the app does not have.
@@ -543,6 +591,10 @@ struct PortfolioReplayState: Equatable {
         quantityByInstrument[instrument] ?? 0
     }
 
+    func positionsPriced(through instrument: String) -> [String: Int] {
+        quantitiesByPositionByInstrument[instrument] ?? [:]
+    }
+
     /// Sets or withdraws an instrument's price, moving `value` by exactly what
     /// the holders of that instrument are worth.
     mutating func setPrice(_ new: Money?, for instrument: String) {
@@ -571,10 +623,12 @@ struct PortfolioReplayState: Equatable {
 
         if let previousInstrument {
             adjust(instrument: previousInstrument, by: -previousQuantity)
+            adjust(position: position, instrument: previousInstrument, by: -previousQuantity)
         }
         quantities[position] = newQuantity
         instruments[position] = instrument
         adjust(instrument: instrument, by: newQuantity)
+        adjust(position: position, instrument: instrument, by: newQuantity)
     }
 
     private mutating func adjust(instrument: String, by delta: Int) {
@@ -582,6 +636,22 @@ struct PortfolioReplayState: Equatable {
         quantityByInstrument[instrument, default: 0] += delta
         if let price = prices[instrument] {
             value += price * delta
+        }
+    }
+
+    private mutating func adjust(position: String, instrument: String, by delta: Int) {
+        guard delta != 0 else { return }
+        var positions = quantitiesByPositionByInstrument[instrument, default: [:]]
+        let updated = (positions[position] ?? 0) + delta
+        if updated == 0 {
+            positions.removeValue(forKey: position)
+        } else {
+            positions[position] = updated
+        }
+        if positions.isEmpty {
+            quantitiesByPositionByInstrument.removeValue(forKey: instrument)
+        } else {
+            quantitiesByPositionByInstrument[instrument] = positions
         }
     }
 }
