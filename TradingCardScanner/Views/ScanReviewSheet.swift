@@ -55,6 +55,7 @@ struct ScanReviewSheet: View {
                     }
                 }
                 .padding(20)
+                .contentWidthLimit(.standard)
             }
             .navigationTitle("Scanned")
             .navigationBarTitleDisplayMode(.inline)

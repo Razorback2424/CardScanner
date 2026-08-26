@@ -133,6 +133,7 @@ struct PortfolioView: View {
                     }
                     }
                     .padding(16)
+                    .contentWidthLimit(.wide)
                 }
                 .task {
                     guard startsAtPhase3DebugSection else { return }
@@ -193,7 +194,7 @@ struct PortfolioView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
-                removalUndoBanner(pendingRemoval)
+                removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
             }
         }
     }

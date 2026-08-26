@@ -98,6 +98,7 @@ struct CollectionCardDetailView: View {
                 }
             }
             .padding(20)
+            .contentWidthLimit(.standard)
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)

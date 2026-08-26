@@ -180,6 +180,7 @@ struct SealedProductGridView: View {
                 }
             }
             .padding(12)
+            .contentWidthLimit(.wide)
 
             if model.hasMore {
                 Button("Load More") {
@@ -293,7 +294,7 @@ struct SealedProductDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             if pendingMutation != nil {
-                undoBanner
+                undoBanner.contentWidthLimit(.standard)
             }
         }
         .onDisappear { undoTask?.cancel() }

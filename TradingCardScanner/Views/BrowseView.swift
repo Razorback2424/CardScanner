@@ -193,6 +193,7 @@ struct BrowseView: View {
                 }
             }
             .padding(16)
+            .contentWidthLimit(.standard)
         }
         .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Browse")
@@ -532,6 +533,7 @@ private struct CatalogSetCardsView: View {
                 completionHeader
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
+                    .contentWidthLimit(.standard)
                 if isLoadingPrices {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.small)
@@ -551,6 +553,7 @@ private struct CatalogSetCardsView: View {
                 } else {
                     CatalogCardGrid(cards: visible, catalog: catalog, owned: owned, prices: prices)
                         .padding(12)
+                        .contentWidthLimit(.wide)
                 }
                 if cursor != nil {
                     ProgressView().padding().task { await load(reset: false) }
@@ -673,7 +676,10 @@ private struct CatalogCardGrid: View {
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
     let prices: [String: Double]
-    private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    /// Adaptive so the catalog gains columns with the window instead of stretching
+    /// two of them across a thirteen-inch iPad. The minimum matches the tile width
+    /// the two-column phone layout already produces.
+    private let columns = [GridItem(.adaptive(minimum: 160), spacing: 14)]
 
     init(
         cards: [CatalogCardSummary],

@@ -4,15 +4,25 @@ import UIKit
 
 struct CameraPreview: UIViewRepresentable {
     @ObservedObject var scanner: CardScanner
+    /// Observed so the preview layer and the guide overlays follow the device as
+    /// it turns, rather than being pinned to portrait.
+    @ObservedObject private var rotationTracker: CameraRotationTracker
     /// Increments once per successful add. The band itself acknowledging the
     /// card is the cheapest possible way to say "consumed, give me the next
     /// one" without moving the user anywhere.
     var successCount: Int
 
+    init(scanner: CardScanner, successCount: Int) {
+        self.scanner = scanner
+        self.successCount = successCount
+        _rotationTracker = ObservedObject(wrappedValue: scanner.rotation)
+    }
+
     func makeUIView(context: Context) -> PreviewView {
         let view = PreviewView()
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
+        view.rotationAngle = scanner.rotation.previewAngle
         view.syncSuccessCount(successCount)
 #if DEBUG
         view.debugVisionBoxes = scanner.debugVisionBoxes
@@ -22,6 +32,7 @@ struct CameraPreview: UIViewRepresentable {
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
         uiView.previewLayer.session = scanner.session
+        uiView.rotationAngle = scanner.rotation.previewAngle
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         uiView.debugVisionBoxes = scanner.debugVisionBoxes
@@ -31,6 +42,17 @@ struct CameraPreview: UIViewRepresentable {
 }
 
 final class PreviewView: UIView {
+    /// The rotation currently applied to the sensor image. Drives both the preview
+    /// connection and the Vision-to-metadata conversion for the guide overlays, so
+    /// the band always lands on the same part of the frame Vision is reading.
+    var rotationAngle: CGFloat = CameraRotationTracker.defaultAngle {
+        didSet {
+            guard rotationAngle != oldValue else { return }
+            applyRotationAngle()
+            setNeedsLayout()
+        }
+    }
+
     private let cardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
@@ -61,6 +83,7 @@ final class PreviewView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        applyRotationAngle()
 
         // Sublayers of the preview layer animate frame/path changes implicitly over
         // ~0.25s. At roughly four OCR passes per second that smears the debug boxes
@@ -73,10 +96,16 @@ final class PreviewView: UIView {
         // AVFoundation's unrotated-landscape/top-left metadata coordinates first.
         // The preview layer then applies orientation and aspect-fill geometry.
         scanRegionLayer.frame = previewLayer.layerRectConverted(
-            fromMetadataOutputRect: CardFramingRegion.metadataRect(fromVisionRect: CardFramingRegion.visionRect)
+            fromMetadataOutputRect: CardFramingRegion.metadataRect(
+                fromVisionRect: CardFramingRegion.visionRect,
+                rotationAngle: rotationAngle
+            )
         )
         let cardRect = previewLayer.layerRectConverted(
-            fromMetadataOutputRect: CardFramingRegion.metadataRect(fromVisionRect: CardFramingRegion.cardVisionRect)
+            fromMetadataOutputRect: CardFramingRegion.metadataRect(
+                fromVisionRect: CardFramingRegion.cardVisionRect,
+                rotationAngle: rotationAngle
+            )
         )
         cardRegionLayer.frame = cardRect
         cardRegionLayer.path = UIBezierPath(
@@ -110,6 +139,13 @@ final class PreviewView: UIView {
 
         scanRegionLayer.add(border, forKey: "successBorderFlash")
         scanRegionLayer.add(fill, forKey: "successFillFlash")
+    }
+
+    private func applyRotationAngle() {
+        guard let connection = previewLayer.connection,
+              connection.isVideoRotationAngleSupported(rotationAngle) else { return }
+        guard connection.videoRotationAngle != rotationAngle else { return }
+        connection.videoRotationAngle = rotationAngle
     }
 
     private func configureScanRegionLayer() {
@@ -154,7 +190,10 @@ final class PreviewView: UIView {
                 fromObservationBoundingBox: debugVisionBoxes[index],
                 in: ScanRegion.activeVisionROI
             )
-            let metadataRect = ScanRegion.metadataRect(fromVisionRect: fullFrameRect)
+            let metadataRect = ScanRegion.metadataRect(
+                fromVisionRect: fullFrameRect,
+                rotationAngle: rotationAngle
+            )
             let layerRect = previewLayer.layerRectConverted(fromMetadataOutputRect: metadataRect)
 
             layer.isHidden = false

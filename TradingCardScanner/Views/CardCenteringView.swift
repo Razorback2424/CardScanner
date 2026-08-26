@@ -153,7 +153,11 @@ struct CardCenteringView: View {
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
     @State private var isShowingFileImporter = false
-    @State private var exportFile: CenteringExportFile?
+    /// The rendered export, prepared ahead of the tap so `ShareLink` can own the
+    /// presentation. `ShareLink` anchors itself correctly as a popover in wide
+    /// windows and as a sheet in narrow ones, which a hand-rolled
+    /// `UIActivityViewController` does not.
+    @State private var exportURL: URL?
 
     var body: some View {
         NavigationStack {
@@ -193,6 +197,7 @@ struct CardCenteringView: View {
                     }
                 }
                 .padding(16)
+                .contentWidthLimit(.standard)
             }
             .navigationTitle("Centering")
             .toolbar {
@@ -206,12 +211,18 @@ struct CardCenteringView: View {
 
                 if model.image != nil {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        Button("Export Image", systemImage: "square.and.arrow.up") {
-                            exportCenteringImage()
+                        if let exportURL {
+                            ShareLink(item: exportURL) {
+                                Label("Export Image", systemImage: "square.and.arrow.up")
+                            }
+                            .labelStyle(.iconOnly)
+                            .accessibilityLabel("Export the centering image")
+                        } else {
+                            Button("Export Image", systemImage: "square.and.arrow.up") {}
+                                .labelStyle(.iconOnly)
+                                .accessibilityLabel("Export the centering image")
+                                .disabled(true)
                         }
-                        .labelStyle(.iconOnly)
-                        .accessibilityLabel("Export the centering image")
-                        .disabled(model.measurement == nil)
 
                         Button("Take Photo", systemImage: "camera") {
                             isShowingCamera = true
@@ -244,8 +255,8 @@ struct CardCenteringView: View {
                     }
                 }
             }
-            .sheet(item: $exportFile) { file in
-                CenteringShareSheet(url: file.url)
+            .task(id: model.measurement) {
+                exportURL = model.makeExportFile()
             }
             .sheet(isPresented: $isShowingSettings) {
                 SettingsView()
@@ -343,19 +354,16 @@ struct CardCenteringView: View {
 
             Divider()
 
-            Button("Export Image", systemImage: "square.and.arrow.up") {
-                exportCenteringImage()
+            if let exportURL {
+                ShareLink(item: exportURL) {
+                    Label("Export Image", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.borderedProminent)
+                .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .frame(maxWidth: .infinity)
         }
         .padding(14)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    private func exportCenteringImage() {
-        guard let url = model.makeExportFile() else { return }
-        exportFile = CenteringExportFile(url: url)
     }
 
     private func borderValue(_ label: String, _ value: Int) -> some View {
@@ -466,27 +474,6 @@ struct CardCenteringView: View {
             set: { model.updateInner(keyPath, to: $0) }
         )
     }
-}
-
-/// A rendered export waiting to be shared. Identifiable so the share sheet can
-/// be driven by its presence rather than by a separate boolean that can drift
-/// out of step with the URL.
-private struct CenteringExportFile: Identifiable {
-    let url: URL
-    var id: String { url.path }
-}
-
-/// The system share sheet. Used in place of `fileExporter` because an image is
-/// usually wanted in Photos or a message, not only in Files — and this offers
-/// all three.
-private struct CenteringShareSheet: UIViewControllerRepresentable {
-    let url: URL
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
 private struct CenteringMetric: View {

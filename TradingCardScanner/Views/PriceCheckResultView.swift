@@ -25,6 +25,7 @@ struct PriceCheckResultView: View {
                     quote
                 }
                 .padding(20)
+                .contentWidthLimit(.standard)
             }
             .navigationTitle("Price Check")
             .navigationBarTitleDisplayMode(.inline)

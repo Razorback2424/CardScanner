@@ -47,7 +47,9 @@
 		A0010012 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010012 /* CollectionView.swift */; };
 		A0010013 /* CollectionCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010013 /* CollectionCardDetailView.swift */; };
 		A0010014 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010014 /* ContentView.swift */; };
+		A00300C1 /* ContentWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300C1 /* ContentWidth.swift */; };
 		A0010015 /* CameraCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010016 /* CameraCapabilities.swift */; };
+		A00300A1 /* CameraRotationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300A1 /* CameraRotationTracker.swift */; };
 		A0010016 /* ScannerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010017 /* ScannerSettingsView.swift */; };
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
 		A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* WholeCardHistoricalCaptureTests.swift */; };
@@ -65,6 +67,7 @@
 		A0010026 /* ScanSessionOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010026 /* ScanSessionOverlays.swift */; };
 		A0010027 /* ScanReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010027 /* ScanReviewSheet.swift */; };
 		A0020010 /* CardLatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020010 /* CardLatchTests.swift */; };
+		A00300B1 /* CameraRotationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300B1 /* CameraRotationTests.swift */; };
 		A0020011 /* VariantResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020011 /* VariantResolverTests.swift */; };
 		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
 		A0010030 /* PriceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010030 /* PriceRecord.swift */; };
@@ -180,7 +183,9 @@
 		B0010012 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		B0010013 /* CollectionCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCardDetailView.swift; sourceTree = "<group>"; };
 		B0010014 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B00300C1 /* ContentWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentWidth.swift; sourceTree = "<group>"; };
 		B0010016 /* CameraCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCapabilities.swift; sourceTree = "<group>"; };
+		B00300A1 /* CameraRotationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationTracker.swift; sourceTree = "<group>"; };
 		B0010017 /* ScannerSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerSettingsView.swift; sourceTree = "<group>"; };
 		B0010015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0010099 /* TradingCardScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TradingCardScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +206,7 @@
 		B0010026 /* ScanSessionOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionOverlays.swift; sourceTree = "<group>"; };
 		B0010027 /* ScanReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewSheet.swift; sourceTree = "<group>"; };
 		B0020010 /* CardLatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatchTests.swift; sourceTree = "<group>"; };
+		B00300B1 /* CameraRotationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationTests.swift; sourceTree = "<group>"; };
 		B0020011 /* VariantResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolverTests.swift; sourceTree = "<group>"; };
 		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
 		B0010030 /* PriceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRecord.swift; sourceTree = "<group>"; };
@@ -363,6 +369,7 @@
 				B0010006 /* TCGdexService.swift */,
 				B0010007 /* CardScanner.swift */,
 				B0010016 /* CameraCapabilities.swift */,
+				B00300A1 /* CameraRotationTracker.swift */,
 				B0010021 /* VariantResolver.swift */,
 				B0010022 /* CardCatalog.swift */,
 				B0010023 /* CardLatch.swift */,
@@ -422,6 +429,7 @@
 				B0010094 /* PortfolioView.swift */,
 				B0010095 /* PortfolioDebugFixtures.swift */,
 				B0010014 /* ContentView.swift */,
+				B00300C1 /* ContentWidth.swift */,
 				B0010026 /* ScanSessionOverlays.swift */,
 				B0010027 /* ScanReviewSheet.swift */,
 				B00100B3 /* PriceCheckResultView.swift */,
@@ -454,6 +462,7 @@
 				B00200F2 /* PortfolioNameCleaningTests.swift */,
 				B00200F1 /* HistoricalCatalogRequestTests.swift */,
 				B0020010 /* CardLatchTests.swift */,
+				B00300B1 /* CameraRotationTests.swift */,
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
 				B0020020 /* CollectionQueryTests.swift */,
@@ -620,7 +629,9 @@
 				A0010012 /* CollectionView.swift in Sources */,
 				A0010013 /* CollectionCardDetailView.swift in Sources */,
 				A0010014 /* ContentView.swift in Sources */,
+				A00300C1 /* ContentWidth.swift in Sources */,
 				A0010015 /* CameraCapabilities.swift in Sources */,
+				A00300A1 /* CameraRotationTracker.swift in Sources */,
 				A0010016 /* ScannerSettingsView.swift in Sources */,
 				A0010020 /* CardVariant.swift in Sources */,
 				A0010021 /* VariantResolver.swift in Sources */,
@@ -683,6 +694,7 @@
 				A00200F2 /* PortfolioNameCleaningTests.swift in Sources */,
 				A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */,
 				A0020010 /* CardLatchTests.swift in Sources */,
+				A00300B1 /* CameraRotationTests.swift in Sources */,
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
@@ -769,7 +781,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -793,7 +805,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -813,7 +825,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
 			};
 			name = Debug;
@@ -834,7 +846,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
 			};
 			name = Release;

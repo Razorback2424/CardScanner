@@ -73,8 +73,8 @@ enum CardFramingRegion {
 #endif
     }
 
-    static var metadataRect: CGRect {
-        return metadataRect(fromVisionRect: visionRect)
+    static func metadataRect(rotationAngle: CGFloat) -> CGRect {
+        metadataRect(fromVisionRect: visionRect, rotationAngle: rotationAngle)
     }
 
     /// Vision normalizes observation bounding boxes against the request's
@@ -90,24 +90,89 @@ enum CardFramingRegion {
         )
     }
 
-    static func metadataRect(fromVisionRect rect: CGRect) -> CGRect {
-        // Current `.right` transform assumption:
-        // metadataX = 1 - visionY
-        // metadataY = 1 - visionX
-        // Rect bounds must use max values because both axes reverse direction.
-        //
-        // IMPORTANT FIELD-TEST CHECK:
-        // Apple's orientation wording is easy to interpret in either rotation direction.
-        // If the on-device green band/recognized-text boxes are mirrored to the wrong
-        // vertical end of the card, the alternate transform is:
-        // CGRect(x: rect.minY, y: rect.minX,
-        //        width: rect.height, height: rect.width)
-        CGRect(
-            x: 1 - rect.maxY,
-            y: 1 - rect.maxX,
-            width: rect.height,
-            height: rect.width
-        )
+    /// Converts a Vision rect (bottom-left origin, in the *upright* image the
+    /// camera frame becomes once rotated) into an AVFoundation metadata-output
+    /// rect (top-left origin, in the sensor's native unrotated landscape frame).
+    ///
+    /// `rotationAngle` is the `AVCaptureConnection.videoRotationAngle` currently
+    /// applied — the clockwise rotation that turns the sensor image upright. The
+    /// transform is genuinely angle-dependent: metadata space stays sensor-relative
+    /// no matter how the window is oriented, so this cannot be collapsed into one
+    /// formula. Anything other than a quarter turn is treated as 0.
+    ///
+    /// Derivation, for a point in the upright top-left space `(ux, uy)` where
+    /// `ux = visionX` and `uy = 1 - visionY`: `upright = rotate(sensor, angle)`,
+    /// so `sensor = rotate(upright, -angle)`. The four cases below are that
+    /// inverse rotation written out, with rect bounds taken from whichever corner
+    /// becomes the minimum once the axes reverse.
+    static func metadataRect(fromVisionRect rect: CGRect, rotationAngle: CGFloat) -> CGRect {
+        switch normalizedRotationAngle(rotationAngle) {
+        case 90:
+            // sx = 1 - visionMaxY, sy = 1 - visionMaxX; both axes reverse.
+            return CGRect(
+                x: 1 - rect.maxY,
+                y: 1 - rect.maxX,
+                width: rect.height,
+                height: rect.width
+            )
+        case 180:
+            return CGRect(
+                x: 1 - rect.maxX,
+                y: rect.minY,
+                width: rect.width,
+                height: rect.height
+            )
+        case 270:
+            return CGRect(
+                x: rect.minY,
+                y: rect.minX,
+                width: rect.height,
+                height: rect.width
+            )
+        default:
+            return CGRect(
+                x: rect.minX,
+                y: 1 - rect.maxY,
+                width: rect.width,
+                height: rect.height
+            )
+        }
+    }
+
+    /// Snaps to the nearest quarter turn in `[0, 360)`. `RotationCoordinator`
+    /// only ever reports quarter turns, but the value arrives as a `CGFloat` and
+    /// exact equality on a float is a bad thing to build a coordinate transform on.
+    static func normalizedRotationAngle(_ angle: CGFloat) -> Int {
+        let quarters = Int((angle / 90).rounded())
+        return ((quarters % 4) + 4) % 4 * 90
+    }
+
+    /// The Vision orientation that turns a sensor-space frame upright for the
+    /// same rotation `rotationAngle` describes. `CGImagePropertyOrientation` names
+    /// where the original first row sits in the displayed image, so a 90° clockwise
+    /// rotation is `.right`.
+    static func imageOrientation(forRotationAngle angle: CGFloat) -> CGImagePropertyOrientation {
+        switch normalizedRotationAngle(angle) {
+        case 90: return .right
+        case 180: return .down
+        case 270: return .left
+        default: return .up
+        }
+    }
+
+    /// Vision reports sizes in the upright image, so the sensor's landscape
+    /// dimensions are swapped for the quarter turns and kept for the half turns.
+    static func visionSourceSize(
+        forRotationAngle angle: CGFloat,
+        sensorWidth: Int,
+        sensorHeight: Int
+    ) -> CGSize {
+        switch normalizedRotationAngle(angle) {
+        case 90, 270:
+            return CGSize(width: sensorHeight, height: sensorWidth)
+        default:
+            return CGSize(width: sensorWidth, height: sensorHeight)
+        }
     }
 }
 
@@ -315,6 +380,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
     var onLatchHolding: ((ScanIdentifier) -> Void)?
+
+    /// Which way the sensor is currently held. Read by the preview layer and by
+    /// every Vision pass, so overlays and recognition share one answer.
+    let rotation = CameraRotationTracker()
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
@@ -573,6 +642,7 @@ final class CardScanner: NSObject, ObservableObject {
         try configureCamera(device)
 
         currentLens = lens
+        rotation.track(device: device)
         DispatchQueue.main.async { [weak self] in
             self?.lens = lens
         }
@@ -623,7 +693,12 @@ final class CardScanner: NSObject, ObservableObject {
 
         // Focus and meter on the scan band rather than the frame centre, so a busy
         // card illustration cannot pull focus away from the text being read.
-        let focusPoint = CGPoint(x: ScanRegion.metadataRect.midX, y: ScanRegion.metadataRect.midY)
+        // Focus/exposure points are in metadata (sensor) space, so the scan band's
+        // location there depends on how the device is held. Set from the rotation
+        // known at configure time; a later rotation moves the point by less than the
+        // depth of field at card distance, so it is not re-applied per rotation.
+        let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentPreviewAngle)
+        let focusPoint = CGPoint(x: focusRect.midX, y: focusRect.midY)
         if device.isFocusPointOfInterestSupported {
             device.focusPointOfInterest = focusPoint
         }
@@ -934,10 +1009,12 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard now - lastVisionTime >= minimumVisionInterval else { return }
         lastVisionTime = now
 
+        let rotationAngle = rotation.currentPreviewAngle
+
         do {
             let handler = VNImageRequestHandler(
                 cmSampleBuffer: sampleBuffer,
-                orientation: .right,
+                orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle),
                 options: [:]
             )
             try handler.perform([footerRequest])
@@ -945,9 +1022,13 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             let dimensions = CMVideoFormatDescriptionGetDimensions(
                 CMSampleBufferGetFormatDescription(sampleBuffer)!
             )
-            // Vision sees the portrait-oriented image, so source width/height are
-            // swapped from the native landscape camera buffer.
-            let sourceSize = CGSize(width: Int(dimensions.height), height: Int(dimensions.width))
+            // Vision measures the upright image, so the sensor's landscape
+            // width/height swap for a quarter turn and stay put for a half turn.
+            let sourceSize = CardFramingRegion.visionSourceSize(
+                forRotationAngle: rotationAngle,
+                sensorWidth: Int(dimensions.width),
+                sensorHeight: Int(dimensions.height)
+            )
             let lines = recognizedLines(
                 from: footerRequest,
                 roi: CardFramingRegion.visionRect,

@@ -37,14 +37,16 @@ struct CollectionView: View {
         case browse
     }
 
+    /// Adaptive rather than a fixed pair of columns: the same minimum tile width
+    /// yields two columns at phone width and as many as the window earns on an
+    /// iPad, without anything having to ask which device it is running on. 165pt
+    /// is what a tile measures today in the two-column phone layout, so the phone
+    /// result is unchanged.
     private var columns: [GridItem] {
         if dynamicTypeSize.isAccessibilitySize {
             return [GridItem(.flexible(), alignment: .top)]
         }
-        return [
-            GridItem(.flexible(), spacing: 16, alignment: .top),
-            GridItem(.flexible(), spacing: 16, alignment: .top)
-        ]
+        return [GridItem(.adaptive(minimum: 165), spacing: 16, alignment: .top)]
     }
 
     var body: some View {
@@ -122,7 +124,7 @@ struct CollectionView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
-                removalUndoBanner(pendingRemoval)
+                removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
             }
         }
     }
@@ -161,6 +163,7 @@ struct CollectionView: View {
                 }
             }
             .padding(12)
+            .contentWidthLimit(.wide)
         }
         .scrollDismissesKeyboard(.interactively)
         .searchable(text: $searchText, prompt: "Search collection")

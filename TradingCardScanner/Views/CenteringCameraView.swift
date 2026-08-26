@@ -5,6 +5,9 @@ import UIKit
 
 final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     let session = AVCaptureSession()
+    /// Which way the sensor is held. The photo connection and the preview layer
+    /// both follow it, so a capture taken on an iPad in landscape is upright.
+    let rotation = CameraRotationTracker()
 
     @Published private(set) var cameraIssue: CameraIssue?
     @Published private(set) var levelOffset: CGSize = .zero
@@ -36,6 +39,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 
     func stop() {
         motionManager.stopDeviceMotionUpdates()
+        rotation.stop()
         sessionQueue.async { [weak self] in
             guard let self, self.session.isRunning else { return }
             self.session.stopRunning()
@@ -47,9 +51,10 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             guard let self, self.session.isRunning else { return }
             let settings = AVCapturePhotoSettings()
             settings.photoQualityPrioritization = .quality
+            let angle = self.rotation.currentCaptureAngle
             if let connection = self.photoOutput.connection(with: .video),
-               connection.isVideoRotationAngleSupported(90) {
-                connection.videoRotationAngle = 90
+               connection.isVideoRotationAngleSupported(angle) {
+                connection.videoRotationAngle = angle
             }
             self.photoOutput.capturePhoto(with: settings, delegate: self)
         }
@@ -103,6 +108,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         session.addInput(input)
         session.addOutput(photoOutput)
         photoOutput.maxPhotoQualityPrioritization = .quality
+        rotation.track(device: camera)
 
         do {
             try camera.lockForConfiguration()
@@ -119,7 +125,8 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             if camera.isSmoothAutoFocusSupported {
                 camera.isSmoothAutoFocusEnabled = false
             }
-            let focusPoint = CGPoint(x: ScanRegion.metadataRect.midX, y: ScanRegion.metadataRect.midY)
+            let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentPreviewAngle)
+            let focusPoint = CGPoint(x: focusRect.midX, y: focusRect.midY)
             if camera.isFocusPointOfInterestSupported {
                 camera.focusPointOfInterest = focusPoint
             }
@@ -167,7 +174,7 @@ struct CenteringCameraView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            CenteringCameraPreview(session: camera.session)
+            CenteringCameraPreview(session: camera.session, rotationAngle: camera.rotation.previewAngle)
                 .ignoresSafeArea()
 
             CameraGrid()
@@ -237,19 +244,30 @@ struct CenteringCameraView: View {
 private struct CenteringCameraPreview: UIViewRepresentable {
     let session: AVCaptureSession
 
+    let rotationAngle: CGFloat
+
     func makeUIView(context: Context) -> CameraPreviewSurface {
         let view = CameraPreviewSurface()
         view.previewLayer.session = session
         view.previewLayer.videoGravity = .resizeAspectFill
+        view.rotationAngle = rotationAngle
         return view
     }
 
     func updateUIView(_ uiView: CameraPreviewSurface, context: Context) {
         uiView.previewLayer.session = session
+        uiView.rotationAngle = rotationAngle
     }
 }
 
 private final class CameraPreviewSurface: UIView {
+    var rotationAngle: CGFloat = CameraRotationTracker.defaultAngle {
+        didSet {
+            guard rotationAngle != oldValue else { return }
+            setNeedsLayout()
+        }
+    }
+
     override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
 
     var previewLayer: AVCaptureVideoPreviewLayer {
@@ -258,10 +276,10 @@ private final class CameraPreviewSurface: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        if let connection = previewLayer.connection,
-           connection.isVideoRotationAngleSupported(90) {
-            connection.videoRotationAngle = 90
-        }
+        guard let connection = previewLayer.connection,
+              connection.isVideoRotationAngleSupported(rotationAngle),
+              connection.videoRotationAngle != rotationAngle else { return }
+        connection.videoRotationAngle = rotationAngle
     }
 }
 

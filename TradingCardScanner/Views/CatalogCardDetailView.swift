@@ -47,7 +47,9 @@ struct CatalogCardDetailView: View {
             Button("Cancel", role: .cancel) {}
         } message: { Text("Add the physical version you own.") }
         .safeAreaInset(edge: .bottom) {
-            if let mutation = pendingMutation { addedBanner(mutation) }
+            if let mutation = pendingMutation {
+                addedBanner(mutation).contentWidthLimit(.standard)
+            }
         }
     }
 
@@ -98,6 +100,7 @@ struct CatalogCardDetailView: View {
             .buttonStyle(.bordered)
         }
         .padding(20)
+        .contentWidthLimit(.standard)
     }
 
     @ViewBuilder private func ownedSection(_ card: IdentifiedCard) -> some View {
