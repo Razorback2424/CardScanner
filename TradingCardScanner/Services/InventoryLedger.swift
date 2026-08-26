@@ -105,15 +105,39 @@ struct InventoryLedger {
         let descriptor = FetchDescriptor<InventoryEvent>(
             sortBy: [SortDescriptor(\.occurredAt, order: .forward)]
         )
-        return (try? context.fetch(descriptor)) ?? []
+        let rows = (try? context.fetch(descriptor)) ?? []
+        var canonical: [InventoryEvent] = []
+        var defects: [LedgerIntegrityDefect] = []
+
+        for (_, duplicates) in Dictionary(grouping: rows, by: {
+            $0.idempotencyKey.isEmpty ? "legacy:\($0.eventID.uuidString)" : $0.idempotencyKey
+        }) {
+            let ordered = duplicates.sorted { $0.eventID.uuidString < $1.eventID.uuidString }
+            guard let chosen = ordered.first else { continue }
+            canonical.append(chosen)
+            for duplicate in ordered.dropFirst() where !chosen.isLogicallyEquivalent(to: duplicate) {
+                defects.append(
+                    LedgerIntegrityDefect(
+                        reason: .conflictingPayloadForIdempotencyKey,
+                        collectionKey: chosen.collectionKey,
+                        detail: "\(chosen.idempotencyKey): conflicting synced rows; counted canonical event \(chosen.eventID.uuidString) once"
+                    )
+                )
+            }
+        }
+
+        LedgerIntegrityLog.shared.replace(
+            reason: .conflictingPayloadForIdempotencyKey,
+            with: defects
+        )
+        return canonical.sorted {
+            if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
+            return $0.eventID.uuidString < $1.eventID.uuidString
+        }
     }
 
     func events(collectionKey: String) -> [InventoryEvent] {
-        let descriptor = FetchDescriptor<InventoryEvent>(
-            predicate: #Predicate { $0.collectionKey == collectionKey },
-            sortBy: [SortDescriptor(\.occurredAt, order: .forward)]
-        )
-        return (try? context.fetch(descriptor)) ?? []
+        allEvents().filter { $0.collectionKey == collectionKey }
     }
 
     func event(idempotencyKey: String) -> InventoryEvent? {
@@ -160,10 +184,12 @@ struct InventoryLedger {
     /// `PriceRecord` for positions priced before the log existed.
     func valuation(forPriceKey key: String) -> InventoryValuation {
         if let observation = PriceObservationLog(context: context)
-            .newestObservation(instrumentKey: key),
-           observation.kind != .explicitInvalidation,
-           let amount = observation.amount,
-           observation.currencyCode == "USD" {
+            .newestObservation(instrumentKey: key) {
+            // An invalidation is authoritative. Falling through to the mutable
+            // PriceRecord would resurrect exactly the price the log withdrew.
+            if observation.kind == .explicitInvalidation { return .unpriced }
+            if let amount = observation.amount,
+               observation.currencyCode == "USD" {
             return InventoryValuation(
                 unitPrice: amount,
                 source: observation.source,
@@ -171,6 +197,7 @@ struct InventoryLedger {
                 receivedAt: observation.receivedAt,
                 observationID: observation.id
             )
+            }
         }
 
         guard let record = PriceStore(context: context).record(forKey: key),
@@ -182,8 +209,9 @@ struct InventoryLedger {
             return .unpriced
         }
 
+        guard let money = Money(rounding: amount) else { return .unpriced }
         return InventoryValuation(
-            unitPrice: Money(rounding: amount),
+            unitPrice: money,
             source: record.source,
             effectiveAt: record.sourceUpdatedAt ?? record.fetchedAt,
             receivedAt: record.fetchedAt,
@@ -249,15 +277,22 @@ struct InventoryLedger {
         let idempotencyKey = InventoryEvent.idempotencyKey(operationID: operationID, leg: leg)
         let candidate = InventoryEventPayload(
             kindRaw: kind.rawValue,
+            sourceRaw: source.rawValue,
             collectionKey: collectionKey,
             priceStorageKey: priceStorageKey,
             deltaQuantity: deltaQuantity,
             occurredAt: occurredAt,
-            unitPriceUSDTenThousandths: valuation.unitPrice?.tenThousandths
+            unitPriceUSDTenThousandths: valuation.unitPrice?.tenThousandths,
+            reversesEventID: reversesEventID
         )
 
         if let existing = event(idempotencyKey: idempotencyKey) {
-            guard existing.payload == candidate else {
+            let equivalent = kind == .initialBalance && existing.kind == .initialBalance
+                ? existing.collectionKey == collectionKey
+                    && existing.priceStorageKey == priceStorageKey
+                    && existing.deltaQuantity == deltaQuantity
+                : existing.payload == candidate
+            guard equivalent else {
                 let defect = LedgerIntegrityDefect(
                     reason: .conflictingPayloadForIdempotencyKey,
                     collectionKey: collectionKey,

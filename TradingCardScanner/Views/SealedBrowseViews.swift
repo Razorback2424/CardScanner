@@ -319,7 +319,7 @@ struct SealedProductDetailView: View {
     /// listing, and routine repricing happens later through a batch.
     private func add() {
         let store = CollectionStore(context: modelContext)
-        pendingMutation = store.addSealed(product, game: game)
+        pendingMutation = try? store.addSealed(product, game: game)
         undoTask?.cancel()
         undoTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(6))
@@ -329,9 +329,10 @@ struct SealedProductDetailView: View {
 
     private func undo() {
         guard let pendingMutation else { return }
-        CollectionStore(context: modelContext).undo(pendingMutation)
-        self.pendingMutation = nil
-        undoTask?.cancel()
+        if (try? CollectionStore(context: modelContext).undo(pendingMutation)) != nil {
+            self.pendingMutation = nil
+            undoTask?.cancel()
+        }
     }
 }
 

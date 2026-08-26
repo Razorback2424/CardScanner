@@ -203,12 +203,12 @@ struct GradedSlabConfirmationView: View {
 
     private func add() {
         let trimmed = certificationNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-        CollectionStore(context: modelContext).addGraded(
+        guard (try? CollectionStore(context: modelContext).addGraded(
             underlying: card,
             variant: variant,
             certificationNumber: trimmed.isEmpty ? nil : trimmed,
             setReleaseOrder: setReleaseOrder
-        )
+        )) != nil else { return }
         onAdded(variant.displayName)
     }
 }

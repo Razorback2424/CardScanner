@@ -62,7 +62,7 @@ struct CollectionStore {
         variant: GradedVariant,
         certificationNumber: String?,
         setReleaseOrder: Int? = nil
-    ) -> CollectionMutation {
+    ) throws -> CollectionMutation {
         let key = CollectedCard.gradedCollectionKey(
             game: card.game,
             underlyingPrintingID: card.providerID,
@@ -79,7 +79,6 @@ struct CollectionStore {
                 marketVariantID: variant.id,
                 for: existing
             )
-            try? context.save()
             let activity = record(existing, source: .gradedCatalog)
             let operationID = UUID()
             ledger.record(
@@ -89,7 +88,7 @@ struct CollectionStore {
                 deltaQuantity: 1,
                 operationID: operationID
             )
-            try? context.save()
+            try commit()
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
@@ -145,7 +144,7 @@ struct CollectionStore {
             deltaQuantity: 1,
             operationID: operationID
         )
-        try? context.save()
+        try commit()
         return CollectionMutation(
             collectionKey: key,
             activityID: activity.id,
@@ -160,7 +159,7 @@ struct CollectionStore {
     func addSealed(
         _ product: SealedProductSummary,
         game: CardGame
-    ) -> CollectionMutation {
+    ) throws -> CollectionMutation {
         let variantUUID = product.variantID ?? product.id
         let key = CollectedCard.sealedCollectionKey(
             game: game,
@@ -190,7 +189,7 @@ struct CollectionStore {
                 deltaQuantity: 1,
                 operationID: operationID
             )
-            try? context.save()
+            try commit()
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
@@ -237,7 +236,7 @@ struct CollectionStore {
             deltaQuantity: 1,
             operationID: operationID
         )
-        try? context.save()
+        try commit()
         return CollectionMutation(
             collectionKey: key,
             activityID: activity.id,
@@ -297,8 +296,11 @@ struct CollectionStore {
         /// correction group of its own. A correction is a copy moving between
         /// identities, not an acquisition, and recording it as one would put a
         /// card the user already owned into "Added to collection".
-        writesInventoryEvent: Bool = true
-    ) -> CollectionMutation {
+        writesInventoryEvent: Bool = true,
+        /// False only while a larger ledger-bearing mutation is being staged.
+        /// The caller then writes every event and performs the single save.
+        savesChanges: Bool = true
+    ) throws -> CollectionMutation {
         let baseKey = card.collectionKey(variant: resolved.variant)
         let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
         let mutation: CollectionMutation
@@ -364,7 +366,7 @@ struct CollectionStore {
                 operationID: operationID
             )
         }
-        try? context.save()
+        if savesChanges { try commit() }
         return CollectionMutation(
             collectionKey: mutation.collectionKey,
             activityID: activity.id,
@@ -391,7 +393,7 @@ struct CollectionStore {
         }
     }
 
-    func undo(_ mutation: CollectionMutation) {
+    func undo(_ mutation: CollectionMutation) throws {
         guard let row = card(forKey: mutation.collectionKey) else { return }
 
         // The ledger is taken back by inverting every leg of the operation,
@@ -421,7 +423,7 @@ struct CollectionStore {
             }
         }
 
-        try? context.save()
+        try commit()
     }
 
     /// Removes every owned card while leaving catalog and price data alone.
@@ -443,7 +445,7 @@ struct CollectionStore {
             )
             context.delete(card)
         }
-        try context.save()
+        try commit()
     }
 
     // MARK: - Removal
@@ -455,7 +457,7 @@ struct CollectionStore {
 
     /// Removes every copy of one position, returning what is needed to put it
     /// back.
-    func remove(_ card: CollectedCard) -> RemovedCardSnapshot {
+    func remove(_ card: CollectedCard) throws -> RemovedCardSnapshot {
         let snapshot = RemovedCardSnapshot(card: card)
         let operationID = UUID()
         ledger.record(
@@ -466,7 +468,7 @@ struct CollectionStore {
             operationID: operationID
         )
         context.delete(card)
-        try? context.save()
+        try commit()
         var stamped = snapshot
         stamped.operationID = operationID
         return stamped
@@ -474,7 +476,7 @@ struct CollectionStore {
 
     /// Puts a removed position back, as the inverse of the disposal rather than
     /// as a new acquisition — undoing a removal is not buying the card again.
-    func restore(_ snapshot: RemovedCardSnapshot) {
+    func restore(_ snapshot: RemovedCardSnapshot) throws {
         snapshot.reinsert(in: context)
         if let operationID = snapshot.operationID {
             ledger.reverseOperation(operationID)
@@ -489,7 +491,7 @@ struct CollectionStore {
                 deltaQuantity: snapshot.quantity
             )
         }
-        try? context.save()
+        try commit()
     }
 
     @discardableResult
@@ -503,6 +505,19 @@ struct CollectionStore {
         return activity
     }
 
+    /// SwiftData commits the ownership mutation, ledger rows, activity, and
+    /// price metadata in one store transaction. On any persistence failure the
+    /// in-memory context is rolled back before the error reaches the caller, so
+    /// a later unrelated save cannot accidentally commit a half-failed action.
+    private func commit() throws {
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
     /// Moves one copy from the variant it was recorded as to the one it really
     /// is. A different variant is a different physical object, so this is a move
     /// between rows rather than an edit in place.
@@ -513,7 +528,7 @@ struct CollectionStore {
         to corrected: ResolvedVariant,
         pokemonPrintRun: PokemonPrintRun? = nil,
         previousCollectionKey: String? = nil
-    ) -> CollectionMutation? {
+    ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
 
         let previousBaseKey = card.collectionKey(variant: current)
@@ -540,12 +555,13 @@ struct CollectionStore {
             }
         }
 
-        let mutation = add(
+        let mutation = try add(
             card,
             resolved: corrected,
             source: .correction,
             pokemonPrintRun: pokemonPrintRun,
-            writesInventoryEvent: false
+            writesInventoryEvent: false,
+            savesChanges: false
         )
 
         // Two legs, one operation: −1 of the wrong identity and +1 of the right
@@ -564,7 +580,7 @@ struct CollectionStore {
 
         guard let activityToRetarget,
               let correctedCard = self.card(forKey: mutation.collectionKey) else {
-            try? context.save()
+            try commit()
             return CollectionMutation(
                 collectionKey: mutation.collectionKey,
                 activityID: mutation.activityID,
@@ -593,7 +609,7 @@ struct CollectionStore {
         activityToRetarget.variantLabel = correctedCard.variantLabel
         activityToRetarget.pokemonPrintRunRaw = correctedCard.pokemonPrintRunRaw
         activityToRetarget.correctedAt = .now
-        try? context.save()
+        try commit()
 
         return CollectionMutation(
             collectionKey: mutation.collectionKey,
@@ -704,6 +720,5 @@ struct RemovedCardSnapshot: Identifiable {
             context.insert(restored)
         }
 
-        try? context.save()
     }
 }

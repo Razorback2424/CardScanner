@@ -43,6 +43,9 @@ enum PriceObservationRules {
         /// Nothing value-setting happened. The prior value stands, and the
         /// check is still recorded as coverage.
         case unchanged
+        /// A non-finite or unrepresentable provider amount. Not a successful
+        /// check and never persisted as value evidence.
+        case rejectedInvalidQuote
     }
 
     /// Whether a provider answer is value-setting, and if so what it means.
@@ -52,6 +55,16 @@ enum PriceObservationRules {
         // rows a day that say "still $42, still from the same object".
         if let previous, previous.value == candidate.value {
             return .unchanged
+        }
+
+        // A provider or mapping transition changes what the app is pricing.
+        // Even if the new object is worth more, that delta is a pricing
+        // adjustment, not appreciation.
+        if let previous,
+           previous.value.sourceRaw != candidate.value.sourceRaw
+            || previous.value.sourceVariantID != candidate.value.sourceVariantID
+            || previous.value.marketVariantID != candidate.value.marketVariantID {
+            return .append(.sourceTransition)
         }
 
         // A provider that publishes its own clock and hands back a clock at or
@@ -69,9 +82,7 @@ enum PriceObservationRules {
 
         // Everything else — including every value from a provider with no
         // clock, such as Scryfall — is a market update unless separate
-        // evidence says otherwise. Note that a provenance-only change lands
-        // here and contributes exactly zero market movement, because the
-        // amount did not move.
+        // evidence says otherwise.
         return .append(.marketUpdate)
     }
 }
@@ -145,9 +156,12 @@ struct PriceObservationLog {
 
         switch lookup {
         case let .price(price):
+            guard let amount = Money(rounding: price.unitMarketPriceUSD) else {
+                return .rejectedInvalidQuote
+            }
             let candidate = PriceObservationRules.Candidate(
                 value: PriceObservationValue(
-                    amount: Money(rounding: price.unitMarketPriceUSD),
+                    amount: amount,
                     currencyCode: price.currencyCode,
                     sourceRaw: price.source.rawValue,
                     sourceVariantID: price.sourceVariantID,
@@ -250,7 +264,7 @@ struct PriceObservationLog {
     /// synced `PriceRecord`s but none of the first device's local observations,
     /// and seeds its own.
     @discardableResult
-    func backfillFromRecords() -> Int {
+    func backfillFromRecords(receivedAt localKnowledgeTime: Date = .now) -> Int {
         let records = PriceStore(context: context).allRecords()
         var written = 0
 
@@ -258,20 +272,24 @@ struct PriceObservationLog {
             guard let amount = record.unitMarketPriceUSD,
                   record.currencyCode == "USD",
                   let source = record.source,
+                  let money = Money(rounding: amount),
                   newestObservation(instrumentKey: record.key) == nil else { continue }
 
-            let receivedAt = record.fetchedAt ?? record.lastSuccessfulCheckAt ?? .now
             context.insert(
                 PriceObservation(
                     instrumentKey: record.key,
                     kind: .marketUpdate,
-                    amount: Money(rounding: amount),
+                    amount: money,
                     currencyCode: record.currencyCode,
                     source: source,
                     sourceVariantID: record.sourceVariantID,
                     marketVariantID: record.marketVariantID,
-                    effectiveAt: record.sourceUpdatedAt ?? receivedAt,
-                    receivedAt: receivedAt,
+                    effectiveAt: record.sourceUpdatedAt ?? localKnowledgeTime,
+                    // A synced PriceRecord's fetchedAt belongs to the device
+                    // that originally fetched it. This device learned the
+                    // inherited value now and must never fabricate history by
+                    // copying the remote timestamp into local knowledge time.
+                    receivedAt: localKnowledgeTime,
                     isSourceStamped: source.publishesSourceTimestamp && record.sourceUpdatedAt != nil
                 )
             )

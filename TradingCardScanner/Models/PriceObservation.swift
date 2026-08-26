@@ -15,6 +15,10 @@ enum PriceObservationKind: String, Codable, Hashable, Sendable {
     /// The provider republished a value for a period it had already reported.
     /// Contributes to pricing adjustment, never to performance.
     case sourceRestatement
+    /// The app changed provider or corrected which provider-side object maps
+    /// to this instrument. A value delta here is pricing provenance being
+    /// repaired, not market performance.
+    case sourceTransition
     /// The app is withdrawing a value it should not have held — a price found
     /// to have been attached to the wrong market variant. The only thing that
     /// can remove a value.

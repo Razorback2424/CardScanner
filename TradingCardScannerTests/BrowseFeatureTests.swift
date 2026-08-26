@@ -66,7 +66,7 @@ final class BrowseCollectionTests: XCTestCase {
         try context.save()
 
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
-        let mutation = CollectionStore(context: context).add(
+        let mutation = try! CollectionStore(context: context).add(
             card,
             resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
             identityResolution: .catalogSelected,
@@ -83,7 +83,7 @@ final class BrowseCollectionTests: XCTestCase {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
         let store = CollectionStore(context: context)
-        let mutation = store.add(
+        let mutation = try! store.add(
             card,
             resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
             identityResolution: .catalogSelected,
@@ -95,7 +95,7 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(inserted.identityResolution, .catalogSelected)
         XCTAssertEqual(inserted.setReleaseOrder, 300)
 
-        store.undo(mutation)
+        try! store.undo(mutation)
         XCTAssertNil(store.card(forKey: mutation.collectionKey))
     }
 
@@ -162,14 +162,14 @@ final class BrowseCollectionTests: XCTestCase {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
         let store = CollectionStore(context: context)
-        _ = store.add(
+        _ = try! store.add(
             card,
             resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
             source: .scan
         )
 
         let mutation = try XCTUnwrap(
-            store.recordVariantCorrection(
+            try! store.recordVariantCorrection(
                 for: card,
                 from: .normal,
                 to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed)
@@ -188,7 +188,7 @@ final class BrowseCollectionTests: XCTestCase {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "BASE1")
         let store = CollectionStore(context: context)
-        _ = store.add(
+        _ = try! store.add(
             card,
             resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
             source: .scan,
@@ -196,7 +196,7 @@ final class BrowseCollectionTests: XCTestCase {
         )
 
         let mutation = try XCTUnwrap(
-            store.recordVariantCorrection(
+            try! store.recordVariantCorrection(
                 for: card,
                 from: .normal,
                 to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
@@ -217,7 +217,7 @@ final class BrowseCollectionTests: XCTestCase {
         context.insert(legacy)
         try context.save()
 
-        let mutation = CollectionStore(context: context).add(
+        let mutation = try! CollectionStore(context: context).add(
             card,
             resolved: resolved,
             source: .scan,
@@ -290,7 +290,7 @@ final class BrowseCollectionTests: XCTestCase {
             PokemonStampedReleaseCatalog.entries(providerID: "swsh11-066").first?.variant
         )
 
-        let mutation = CollectionStore(context: context).add(
+        let mutation = try! CollectionStore(context: context).add(
             card,
             resolved: ResolvedVariant(variant: stamped, resolution: .userConfirmed),
             identityResolution: .printedIdentifier

@@ -163,7 +163,8 @@ struct CollectionCardDetailView: View {
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
-        onRemoved(CollectionStore(context: modelContext).remove(card))
+        guard let snapshot = try? CollectionStore(context: modelContext).remove(card) else { return }
+        onRemoved(snapshot)
         dismiss()
     }
 

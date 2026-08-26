@@ -25,23 +25,14 @@ struct Money: Hashable, Comparable, Sendable {
         self.tenThousandths = tenThousandths
     }
 
-    /// The single conversion point from provider floating point. Rounds half
-    /// away from zero so a value is never quietly biased in one direction, and
-    /// clamps rather than trapping on a nonsense provider figure — a broken
-    /// quote should be a visible absurdity, not a crash in the price pipeline.
-    init(rounding dollars: Double) {
-        guard dollars.isFinite else {
-            self.tenThousandths = 0
-            return
-        }
+    /// The single conversion point from provider floating point. Invalid or
+    /// unrepresentable quotes are rejected; they never become a real zero or a
+    /// near-maximum integer that can overflow later arithmetic.
+    init?(rounding dollars: Double) {
+        guard dollars.isFinite else { return nil }
         let scaled = (dollars * Double(Money.scale)).rounded()
-        if scaled >= Double(Int64.max) {
-            self.tenThousandths = .max
-        } else if scaled <= Double(Int64.min) {
-            self.tenThousandths = .min
-        } else {
-            self.tenThousandths = Int64(scaled)
-        }
+        guard scaled < Double(Int64.max), scaled > Double(Int64.min) else { return nil }
+        self.tenThousandths = Int64(scaled)
     }
 
     /// Lossy on purpose, and only for display and for the existing `Double`

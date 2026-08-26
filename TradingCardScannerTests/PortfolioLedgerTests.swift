@@ -9,7 +9,7 @@ final class PortfolioLedgerTests: XCTestCase {
     // MARK: - Factories
 
     private func value(
-        amount: Money? = Money(rounding: 42),
+        amount: Money? = Money(rounding: 42)!,
         currency: String = "USD",
         source: PriceSource = .justTCG,
         sourceVariantID: String? = "v1",
@@ -64,12 +64,12 @@ final class PortfolioLedgerTests: XCTestCase {
 
         var total = Money.zero
         for (price, quantity) in zip(prices, quantities) {
-            total += Money(rounding: price) * quantity
+            total += Money(rounding: price)! * quantity
         }
 
         var unwound = total
         for (price, quantity) in zip(prices, quantities) {
-            unwound -= Money(rounding: price) * quantity
+            unwound -= Money(rounding: price)! * quantity
         }
 
         XCTAssertEqual(unwound, .zero)
@@ -80,31 +80,28 @@ final class PortfolioLedgerTests: XCTestCase {
         // The reason `Money` exists rather than a tolerance on `Double`.
         let prices = [0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07, 0.07]
         let doubleTotal = prices.reduce(0, +) - 0.7
-        let moneyTotal = prices.map { Money(rounding: $0) }.sum() - Money(rounding: 0.7)
+        let moneyTotal = prices.compactMap { Money(rounding: $0) }.sum() - Money(rounding: 0.7)!
 
         XCTAssertNotEqual(doubleTotal, 0)
         XCTAssertEqual(moneyTotal, .zero)
     }
 
     func testRoundingIsHalfAwayFromZeroAtTheStoredScale() {
-        XCTAssertEqual(Money(rounding: 0.00005).tenThousandths, 1)
-        XCTAssertEqual(Money(rounding: -0.00005).tenThousandths, -1)
-        XCTAssertEqual(Money(rounding: 42).tenThousandths, 420_000)
-        XCTAssertEqual(Money(rounding: 1234.5678).tenThousandths, 12_345_678)
+        XCTAssertEqual(Money(rounding: 0.00005)!.tenThousandths, 1)
+        XCTAssertEqual(Money(rounding: -0.00005)!.tenThousandths, -1)
+        XCTAssertEqual(Money(rounding: 42)!.tenThousandths, 420_000)
+        XCTAssertEqual(Money(rounding: 1234.5678)!.tenThousandths, 12_345_678)
     }
 
     func testNonsenseProviderValuesDoNotTrapThePricingPipeline() {
-        // A garbage quote should be a visible absurdity, not a crash halfway
-        // through a batch refresh. Non-finite becomes zero; a finite figure
-        // past the representable range clamps.
-        XCTAssertEqual(Money(rounding: .nan), .zero)
-        XCTAssertEqual(Money(rounding: .infinity), .zero)
-        XCTAssertEqual(Money(rounding: 1e30).tenThousandths, .max)
-        XCTAssertEqual(Money(rounding: -1e30).tenThousandths, .min)
+        XCTAssertNil(Money(rounding: .nan))
+        XCTAssertNil(Money(rounding: .infinity))
+        XCTAssertNil(Money(rounding: 1e30))
+        XCTAssertNil(Money(rounding: -1e30))
     }
 
     func testQuantityMultiplicationScalesExactly() {
-        XCTAssertEqual(Money(rounding: 0.03) * 999, Money(tenThousandths: 299_700))
+        XCTAssertEqual(Money(rounding: 0.03)! * 999, Money(tenThousandths: 299_700))
     }
 
     // MARK: - When an observation is worth writing
@@ -133,7 +130,7 @@ final class PortfolioLedgerTests: XCTestCase {
             previous: previous(value: value(marketVariantID: "m1"), effectiveAt: date(1))
         )
 
-        XCTAssertEqual(decision, .append(.marketUpdate))
+        XCTAssertEqual(decision, .append(.sourceTransition))
     }
 
     func testFirstEverObservationIsAMarketUpdate() {

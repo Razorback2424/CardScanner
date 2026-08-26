@@ -404,7 +404,13 @@ final class ScannerViewModel: ObservableObject {
     func undoLastAdd() {
         guard let store, let lastAdd else { return }
 
-        store.undo(lastAdd.mutation)
+        do {
+            try store.undo(lastAdd.mutation)
+        } catch {
+            show(ScanNote(text: "Undo could not be saved", tone: .problem))
+            feedback.problem()
+            return
+        }
         recent.removeAll { $0.id == lastAdd.id }
         receipt = nil
         receiptTask?.cancel()
@@ -452,7 +458,7 @@ final class ScannerViewModel: ObservableObject {
               scan.resolved.variant != variant else { return }
 
         let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
-        guard let mutation = store.recordVariantCorrection(
+        guard let mutation = try? store.recordVariantCorrection(
             for: scan.card,
             from: scan.resolved.variant,
             to: corrected,
@@ -692,13 +698,17 @@ final class ScannerViewModel: ObservableObject {
             savingImmediately: false
         )
 
-        let mutation = store.add(
+        guard let mutation = try? store.add(
             card,
             resolved: resolved,
             source: .scan,
             pokemonPrintRun: pokemonPrintRun,
             matchCatalogAliases: pokemonPrintRun != nil
-        )
+        ) else {
+            show(ScanNote(text: "Card could not be saved", tone: .problem))
+            feedback.problem()
+            return
+        }
         let scan = RecentScan(
             identifier: identifier,
             card: card,

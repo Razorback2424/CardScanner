@@ -6,6 +6,7 @@ import SwiftUI
 /// questions without turning the collection header into a toolbar of chips.
 struct CollectionView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
 
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
@@ -113,13 +114,23 @@ struct CollectionView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
-        .task { portfolio.start(context: modelContext) }
+        .task {
+#if DEBUG
+            seedPortfolioTodayQAIfNeeded()
+#endif
+            portfolio.start(context: modelContext)
+        }
         // Collection change and day rollover. Never from `body`: the snapshot is
         // already O(n) per render, and a close that moved while being read would
         // be worth nothing.
-        .task(id: cards.count) {
+        .task(id: collectionMutationTaskID) {
             portfolio.recompute(context: modelContext)
             await refreshStalePricesIfNeeded()
+        }
+        .task { await recomputeAtDayRollover() }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
+            portfolio.recompute(context: modelContext)
         }
         .task { await catalogNormalizer.normalizeImportedCards(in: modelContext) }
         .task(id: fallbackAvailabilityTaskID(snapshot)) {
@@ -200,8 +211,9 @@ struct CollectionView: View {
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
         removalUndoTask?.cancel()
-        CollectionStore(context: modelContext).restore(removed)
-        pendingRemoval = nil
+        if (try? CollectionStore(context: modelContext).restore(removed)) != nil {
+            pendingRemoval = nil
+        }
     }
 
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {
@@ -385,6 +397,15 @@ struct CollectionView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
 
+            HStack {
+                Text("Current")
+                Spacer()
+                Text(attribution.currentValue.doubleValue, format: .currency(code: "USD").precision(.fractionLength(2)))
+                    .monospacedDigit()
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
             if !attribution.unexplained.isZero {
                 // Only ever shown because it is not zero, and never absorbed
                 // into another line. A residual the app hides is a residual
@@ -425,7 +446,7 @@ struct CollectionView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         case .complete:
-            Text("\(coverage.refreshed) of \(coverage.total) repriced today")
+            Text("\(coverage.refreshed) of \(coverage.total) checked today")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
@@ -433,7 +454,7 @@ struct CollectionView: View {
             // Carried forward is stated, not hidden. An outage that quietly
             // looked like completeness would be the most damaging thing this
             // screen could do.
-            Text("\(coverage.refreshed) of \(coverage.total) repriced today · \(coverage.carriedForward) carried forward")
+            Text("\(coverage.refreshed) of \(coverage.total) checked today · \(coverage.carriedForward) not refreshed")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
@@ -1058,6 +1079,28 @@ struct CollectionView: View {
         "\(fallbackPendingCount(snapshot)):\(usesPriceFallback):\(PriceVendorCredentials.hasKey)"
     }
 
+    /// Changes when quantity or identity changes, including 1 → 2 on an
+    /// existing row (which `cards.count` cannot observe).
+    private var collectionMutationTaskID: String {
+        cards
+            .map { "\($0.collectionKey):\($0.quantity):\($0.priceKey)" }
+            .sorted()
+            .joined(separator: "|")
+    }
+
+    @MainActor
+    private func recomputeAtDayRollover() async {
+        while !Task.isCancelled {
+            let timeZone = PortfolioCalendar.timeZone()
+            let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+            let next = PortfolioCalendar.boundary(afterDay: today, in: timeZone)
+            let delay = max(1, next.timeIntervalSinceNow + 0.5)
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled else { return }
+            portfolio.recompute(context: modelContext)
+        }
+    }
+
     @MainActor
     private func refreshAllPrices() async {
         refreshStatusTask?.cancel()
@@ -1107,6 +1150,44 @@ struct CollectionView: View {
             refresh.dismissSummary()
         }
     }
+
+#if DEBUG
+    /// Deterministic Today-card fixture for screenshot verification. The local
+    /// epoch predates the add, so this renders the normal reconciliation state
+    /// (yesterday close + today's flow), not the migration-day placeholder.
+    @MainActor
+    private func seedPortfolioTodayQAIfNeeded() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1),
+              arguments[index + 1] == "PortfolioToday",
+              cards.isEmpty else { return }
+
+        let timeZone = PortfolioCalendar.timeZone()
+        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+        let epoch = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-2 * 86_400),
+            in: timeZone
+        )
+        UserDefaults.standard.set(
+            epoch.addingTimeInterval(60).timeIntervalSince1970,
+            forKey: PortfolioEpoch.defaultsKey
+        )
+
+        _ = try? CollectionStore(context: modelContext).addSealed(
+            SealedProductSummary(
+                id: "ui-portfolio-product",
+                name: "Portfolio QA Booster Box",
+                setName: "Trustworthy History",
+                variantID: "ui-portfolio-variant",
+                marketPriceUSD: 125,
+                updatedAt: .now,
+                imageURL: nil
+            ),
+            game: .pokemon
+        )
+    }
+#endif
 }
 
 /// Menu labels cannot use `FilterChip` directly because a `Menu` supplies its own

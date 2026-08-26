@@ -75,7 +75,7 @@ struct ContentView: View {
         let artworkURL = URL(
             string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
-        _ = store.addSealed(
+        _ = try? store.addSealed(
             SealedProductSummary(
                 id: "ui-artwork-product",
                 name: "Legendary Treasures Booster Box",
@@ -88,7 +88,7 @@ struct ContentView: View {
             game: .pokemon
         )
 
-        let unavailable = store.addSealed(
+        guard let unavailable = try? store.addSealed(
             SealedProductSummary(
                 id: "ui-no-artwork-product",
                 name: "Provider Artwork Missing",
@@ -99,7 +99,7 @@ struct ContentView: View {
                 imageURL: nil
             ),
             game: .pokemon
-        )
+        ) else { return }
         if let row = store.card(forKey: unavailable.collectionKey) {
             row.catalogMetadataCheckedAt = .now
             row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion

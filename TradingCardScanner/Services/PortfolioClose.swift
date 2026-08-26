@@ -11,6 +11,9 @@ struct LedgerEntry: Equatable, Sendable {
     /// an `occurredAt` before a published boundary and a `recordedAt` after it
     /// is late ownership truth, not new activity.
     var recordedAt: Date
+    /// The row this entry explicitly takes back. Reversal semantics belong to
+    /// the accounting walk, not to the physical kind of the inverse row.
+    var reversesEventID: UUID?
     var collectionKey: String
     var priceStorageKey: String
     var deltaQuantity: Int
@@ -75,6 +78,24 @@ enum PortfolioClose {
                       let instrument = instruments[entry.key],
                       prices[instrument] != nil else { return count }
                 return count + 1
+            }
+        }
+
+        var heldInstrumentKeys: Set<String> {
+            Set(quantities.compactMap { key, quantity in
+                guard quantity != 0 else { return nil }
+                return instruments[key]
+            })
+        }
+
+        var excludedQuantity: Int {
+            quantities.reduce(0) { count, entry in
+                guard entry.value != 0,
+                      let instrument = instruments[entry.key],
+                      prices[instrument] != nil else {
+                    return count + Swift.abs(entry.value)
+                }
+                return count
             }
         }
     }
@@ -165,8 +186,26 @@ enum PortfolioClose {
         result.closeValue = state.value
         result.currentValue = currentValue
 
+        let periodEvents = events.filter { $0.occurredAt >= boundary && $0.occurredAt <= now }
+        let eventByID = Dictionary(uniqueKeysWithValues: events.map { ($0.eventID, $0) })
+
+        // An operation and its explicit undo in the same unpublished period
+        // are audit rows, but not user-facing economic activity. Removing both
+        // from the walk makes an add+Undo disappear and makes a remove+Undo
+        // behave as though the temporary inventory mutation never happened.
+        // Price observations still apply to the position that was actually
+        // held across the period.
+        var collapsedEventIDs: Set<UUID> = []
+        for reversal in periodEvents {
+            guard let originalID = reversal.reversesEventID,
+                  let original = eventByID[originalID],
+                  original.occurredAt >= boundary else { continue }
+            collapsedEventIDs.insert(originalID)
+            collapsedEventIDs.insert(reversal.eventID)
+        }
+
         let timeline = orderedTimeline(
-            events: events.filter { $0.occurredAt >= boundary && $0.occurredAt <= now },
+            events: periodEvents.filter { !collapsedEventIDs.contains($0.eventID) },
             observations: observations.filter { $0.receivedAt >= boundary && $0.receivedAt <= now }
         )
 
@@ -204,15 +243,26 @@ enum PortfolioClose {
                     let price = currentPrice(for: event, in: state)
                     let value = (price ?? .zero) * event.deltaQuantity
 
+                    if event.reversesEventID != nil {
+                        // Reversing an operation from an already-published
+                        // period is today's correction. The old close remains
+                        // immutable; the correction is valued at today's
+                        // running price and keeps negative Added/Removed out of
+                        // the UI.
+                        result.corrections += value
+                    } else {
                     switch event.kind {
                     case .correction:
                         result.corrections += value
                     case .dispose:
                         result.removed += Money(tenThousandths: -value.tenThousandths)
-                    case .acquire, .recordExisting, .initialBalance, .quantityAdjust:
+                    case .quantityAdjust:
+                        result.corrections += value
+                    case .acquire, .recordExisting, .initialBalance:
                         // A signed add: an undo of an acquisition retracts it
                         // from "Added" rather than reporting it as a sale.
                         result.added += value
+                    }
                     }
 
                     state.quantities[event.collectionKey, default: 0] += event.deltaQuantity
@@ -276,17 +326,18 @@ enum PortfolioClose {
                 .filter { $0.receivedAt == instant }
                 .sorted { $0.id.uuidString < $1.id.uuidString }
 
-            let observationsFirst = tiedOperations.contains { legs in
+            // One instant can contain operations valued from both sides of the
+            // observation. The ordering decision is per operation, not global:
+            // old-basis operations → observations → new-basis operations.
+            let oldBasis = tiedOperations.filter { legs in
+                !legs.contains { $0.priceReceivedAtEvent == instant }
+            }
+            let newBasis = tiedOperations.filter { legs in
                 legs.contains { $0.priceReceivedAtEvent == instant }
             }
-
-            if observationsFirst {
-                ordered.append(contentsOf: tiedObservations.map(TimelineItem.observation))
-                ordered.append(contentsOf: tiedOperations.map(TimelineItem.operation))
-            } else {
-                ordered.append(contentsOf: tiedOperations.map(TimelineItem.operation))
-                ordered.append(contentsOf: tiedObservations.map(TimelineItem.observation))
-            }
+            ordered.append(contentsOf: oldBasis.map(TimelineItem.operation))
+            ordered.append(contentsOf: tiedObservations.map(TimelineItem.observation))
+            ordered.append(contentsOf: newBasis.map(TimelineItem.operation))
         }
 
         return ordered

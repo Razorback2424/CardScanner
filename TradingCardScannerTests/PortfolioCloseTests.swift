@@ -22,7 +22,7 @@ final class PortfolioCloseTests: XCTestCase {
         Date(timeIntervalSince1970: 1_699_920_000).addingTimeInterval(hours * 3600)
     }
 
-    private func usd(_ dollars: Double) -> Money { Money(rounding: dollars) }
+    private func usd(_ dollars: Double) -> Money { Money(rounding: dollars)! }
 
     private func event(
         kind: InventoryEventKind,
@@ -42,6 +42,7 @@ final class PortfolioCloseTests: XCTestCase {
             kind: kind,
             occurredAt: occurredAt,
             recordedAt: occurredAt,
+            reversesEventID: nil,
             collectionKey: position ?? self.position,
             priceStorageKey: instrument ?? self.instrument,
             deltaQuantity: delta,

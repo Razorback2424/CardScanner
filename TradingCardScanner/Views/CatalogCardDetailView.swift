@@ -156,14 +156,14 @@ struct CatalogCardDetailView: View {
     private func commit(_ resolved: ResolvedVariant) {
         guard let details else { return }
         let store = CollectionStore(context: modelContext)
-        let mutation = store.add(
+        guard let mutation = try? store.add(
             details.card,
             resolved: resolved,
             pokemonPrintRun: summary.pokemonPrintRun,
             identityResolution: .catalogSelected,
             setReleaseOrder: details.set.releaseOrder,
             matchCatalogAliases: true
-        )
+        ) else { return }
         let stored = store.card(forKey: mutation.collectionKey)
         let storageID = stored?.priceStorageID ?? details.card.providerID
         let prices = PriceStore(context: modelContext)
@@ -202,8 +202,9 @@ struct CatalogCardDetailView: View {
             Spacer()
             Button("Undo") {
                 undoTask?.cancel()
-                CollectionStore(context: modelContext).undo(mutation)
-                pendingMutation = nil
+                if (try? CollectionStore(context: modelContext).undo(mutation)) != nil {
+                    pendingMutation = nil
+                }
             }
             .fontWeight(.semibold)
             .frame(minHeight: 44)

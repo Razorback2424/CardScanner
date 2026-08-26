@@ -12,7 +12,8 @@ SCREENSHOT_PATH="$ARTIFACTS_DIR/ui-latest.png"
 META_PATH="$ARTIFACTS_DIR/ui-latest.json"
 
 mkdir -p "$ARTIFACTS_DIR"
-xcrun simctl bootstatus booted -b
+xcrun simctl boot "$UI_DEVICE_ID" >/dev/null 2>&1 || true
+xcrun simctl bootstatus "$UI_DEVICE_ID" -b
 xcodebuild -project TradingCardScanner.xcodeproj -scheme "$SCHEME" -configuration Debug \
   -derivedDataPath "$DERIVED_DATA" -destination "platform=iOS Simulator,id=$UI_DEVICE_ID" build
 
@@ -22,11 +23,11 @@ if [[ -z "${APP_PATH:-}" ]]; then
   exit 1
 fi
 
-xcrun simctl uninstall booted "$BUNDLE_ID" >/dev/null 2>&1 || true
-xcrun simctl install booted "$APP_PATH"
-xcrun simctl launch booted "$BUNDLE_ID" -ui_debug_route "$ROUTE"
+xcrun simctl uninstall "$UI_DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
+xcrun simctl install "$UI_DEVICE_ID" "$APP_PATH"
+xcrun simctl launch "$UI_DEVICE_ID" "$BUNDLE_ID" -ui_debug_route "$ROUTE"
 sleep 2.5
-"$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH"
+"$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH" "$UI_DEVICE_ID"
 
 python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" <<'PY'
 import json, sys, time

@@ -64,8 +64,8 @@ final class PortfolioEngine: ObservableObject {
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
-        PriceObservationLog(context: context).backfillFromRecords()
         PortfolioEpoch.establishIfNeeded(context: context, at: now)
+        PriceObservationLog(context: context).backfillFromRecords(receivedAt: now)
         recompute(context: context, now: now)
     }
 
@@ -131,8 +131,6 @@ final class PortfolioEngine: ObservableObject {
                 events: events,
                 observations: observations,
                 timeZone: timeZone,
-                coverage: summary.coverage,
-                excludedCount: valuation.unpricedCount + valuation.otherCurrencyCount,
                 context: context
             )
             summary.revisionNote = stored?.revisionNote
@@ -263,7 +261,8 @@ final class PortfolioEngine: ObservableObject {
 
     // MARK: - Publishing closes
 
-    /// Writes or revises the close for `day`, and returns what is now current.
+    /// Materializes every close from the local knowledge epoch through `day`,
+    /// revising a published day only when its deterministic inputs changed.
     @discardableResult
     static func publish(
         closesUpTo day: Date,
@@ -271,12 +270,44 @@ final class PortfolioEngine: ObservableObject {
         events: [LedgerEntry],
         observations: [ObservationEntry],
         timeZone: TimeZone,
-        coverage: PortfolioCoverage,
-        excludedCount: Int,
         context: ModelContext
     ) -> PortfolioDailyClose? {
         let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
         guard day >= epochDay else { return nil }
+
+        var cursor = epochDay
+        var requestedClose: PortfolioDailyClose?
+        var insertedAny = false
+
+        while cursor <= day {
+            if let close = makeClose(
+                for: cursor,
+                events: events,
+                observations: observations,
+                timeZone: timeZone,
+                context: context
+            ) {
+                requestedClose = close
+                insertedAny = true
+            } else if cursor == day {
+                requestedClose = latestClose(for: cursor, in: context)
+            }
+            cursor = PortfolioCalendar.boundary(afterDay: cursor, in: timeZone)
+        }
+
+        if insertedAny { try? context.save() }
+        return requestedClose
+    }
+
+    /// Returns a newly inserted revision, or nil when the existing close is
+    /// already current.
+    private static func makeClose(
+        for day: Date,
+        events: [LedgerEntry],
+        observations: [ObservationEntry],
+        timeZone: TimeZone,
+        context: ModelContext
+    ) -> PortfolioDailyClose? {
 
         let boundary = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
         let state = PortfolioClose.state(
@@ -291,7 +322,7 @@ final class PortfolioEngine: ObservableObject {
 
         let existing = latestClose(for: day, in: context)
         if let existing, existing.inputsFingerprint == fingerprint {
-            return existing
+            return nil
         }
 
         // A close only ever changes because ownership was incomplete. Market
@@ -299,14 +330,28 @@ final class PortfolioEngine: ObservableObject {
         // close reads observations by `receivedAt`, and a vendor backdating a
         // price is received now, not then. That is contract 7 holding by
         // construction rather than by a rule someone has to remember.
-        let reason: PortfolioRevisionReason?
-        if let existing {
-            let lateTruth = events.contains {
-                $0.occurredAt < boundary && $0.recordedAt > existing.computedAt
-            }
-            reason = lateTruth ? .lateInventoryTruth : .recomputed
-        } else {
-            reason = nil
+        // With knowledge-time-safe observations, the only new pre-boundary
+        // input that can alter an existing close is a newly visible ownership
+        // event. Its originating `recordedAt` is irrelevant to when CloudKit
+        // delivered it here; the changed input set is the evidence.
+        let reason: PortfolioRevisionReason? = existing == nil ? nil : .lateInventoryTruth
+
+        let instruments = state.heldInstrumentKeys
+        let coverage = coverage(
+            instruments: instruments,
+            day: day,
+            context: context,
+            isKnown: true
+        )
+        let checked = Set(instruments.filter {
+            PriceObservationLog(context: context).checkDay(instrumentKey: $0, day: day) != nil
+        })
+        let carriedForwardValue = state.quantities.reduce(Money.zero) { total, entry in
+            guard entry.value != 0,
+                  let instrument = state.instruments[entry.key],
+                  !checked.contains(instrument),
+                  let price = state.prices[instrument] else { return total }
+            return total + price * entry.value
         }
 
         let attribution = PortfolioClose.attribute(
@@ -326,17 +371,16 @@ final class PortfolioEngine: ObservableObject {
             flow: attribution.added - attribution.removed,
             corrections: attribution.corrections,
             pricingAdjustment: attribution.pricingAdjustment,
-            carriedForwardValue: .zero,
+            carriedForwardValue: carriedForwardValue,
             coverage: coverage.state,
             refreshedInstrumentCount: coverage.refreshed,
             carriedForwardInstrumentCount: coverage.carriedForward,
             pricedPositionCount: state.pricedPositionCount,
-            excludedCount: excludedCount,
+            excludedCount: state.excludedQuantity,
             inputsFingerprint: fingerprint,
             revisionReason: reason
         )
         context.insert(close)
-        try? context.save()
         return close
     }
 
@@ -364,10 +408,10 @@ final class PortfolioEngine: ObservableObject {
     static func fingerprint(events: [LedgerEntry], observations: [ObservationEntry]) -> String {
         var hasher = SHA256()
         for event in events.sorted(by: { $0.eventID.uuidString < $1.eventID.uuidString }) {
-            hasher.update(data: Data("\(event.eventID.uuidString):\(event.deltaQuantity):\(event.collectionKey)".utf8))
+            hasher.update(data: Data("\(event.eventID.uuidString):\(event.operationID.uuidString):\(event.kind.rawValue):\(event.deltaQuantity):\(event.collectionKey):\(event.priceStorageKey):\(event.reversesEventID?.uuidString ?? "-")".utf8))
         }
         for observation in observations.sorted(by: { $0.id.uuidString < $1.id.uuidString }) {
-            hasher.update(data: Data("\(observation.id.uuidString):\(observation.amount?.tenThousandths ?? 0)".utf8))
+            hasher.update(data: Data("\(observation.id.uuidString):\(observation.instrumentKey):\(observation.kind.rawValue):\(observation.amount?.tenThousandths.description ?? "nil")".utf8))
         }
         return hasher.finalize().map { String(format: "%02x", $0) }.joined()
     }
@@ -380,6 +424,7 @@ final class PortfolioEngine: ObservableObject {
             kind: event.kind,
             occurredAt: event.occurredAt,
             recordedAt: event.recordedAt,
+            reversesEventID: event.reversesEventID,
             collectionKey: event.collectionKey,
             priceStorageKey: event.priceStorageKey,
             deltaQuantity: event.deltaQuantity,

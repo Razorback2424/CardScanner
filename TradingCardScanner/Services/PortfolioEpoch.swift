@@ -25,14 +25,16 @@ enum PortfolioEpoch {
     /// doubling the collection.
     private static let namespace = "trading-card-scanner.portfolio-epoch"
 
-    /// When tracking started, preferring the ledger's own evidence over local
-    /// state — the baseline events sync, the `UserDefaults` value does not.
+    /// When this device began accumulating portfolio knowledge.
+    ///
+    /// Ownership events sync; price observations and closes do not. Therefore
+    /// a remote baseline is evidence of when ownership accounting began, not
+    /// evidence that this device knew any prices on that date.
     @MainActor
     static func startedAt(
         context: ModelContext,
         defaults: UserDefaults = .standard
     ) -> Date? {
-        if let earliest = earliestBaseline(in: context) { return earliest }
         let stored = defaults.double(forKey: defaultsKey)
         return stored > 0 ? Date(timeIntervalSince1970: stored) : nil
     }
@@ -64,9 +66,9 @@ enum PortfolioEpoch {
             return existing
         }
 
-        // Any ledger activity at all means another device already opened this
-        // collection's books. Adding a baseline now would double every position
-        // it has since recorded.
+        // Any ledger activity means ownership accounting already exists,
+        // usually because CloudKit delivered it from another device. This
+        // device starts local history today and does not add another baseline.
         guard !ledger.hasAnyEvent() else {
             defaults.set(date.timeIntervalSince1970, forKey: defaultsKey)
             return date
@@ -105,6 +107,13 @@ enum PortfolioEpoch {
         )
         descriptor.fetchLimit = 1
         return (try? context.fetch(descriptor).first)?.occurredAt
+    }
+
+    /// Synced ownership epoch, for diagnostics only. It must not be used as the
+    /// local close/observation epoch.
+    @MainActor
+    static func ownershipStartedAt(context: ModelContext) -> Date? {
+        earliestBaseline(in: context)
     }
 
     /// A version-3 UUID over the position's collection key, so the id is a

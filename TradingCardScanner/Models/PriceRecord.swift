@@ -110,6 +110,8 @@ final class PriceRecord {
     /// Set when the most recent attempt failed. Cleared on the next success, so a
     /// stale-but-real price is never replaced by nothing.
     var lastFailureAt: Date?
+    /// Stable support-facing diagnosis for rejected data or request failures.
+    var lastFailureReasonRaw: String?
 
     init(
         key: String,
@@ -141,6 +143,7 @@ final class PriceRecord {
         lastCheckedAt = price.fetchedAt
         lastSuccessfulCheckAt = price.fetchedAt
         lastFailureAt = nil
+        lastFailureReasonRaw = nil
     }
 
     /// Keeps the exact per-variant market value supplied by an import while
@@ -158,6 +161,7 @@ final class PriceRecord {
         lastCheckedAt = nil
         lastSuccessfulCheckAt = nil
         lastFailureAt = nil
+        lastFailureReasonRaw = nil
     }
 
     /// The provider answered and had nothing for this variant. That is a real,

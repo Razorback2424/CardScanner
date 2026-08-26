@@ -174,23 +174,39 @@ final class InventoryEvent {
     var payload: InventoryEventPayload {
         InventoryEventPayload(
             kindRaw: kindRaw,
+            sourceRaw: sourceRaw,
             collectionKey: collectionKey,
             priceStorageKey: priceStorageKey,
             deltaQuantity: deltaQuantity,
             occurredAt: occurredAt,
-            unitPriceUSDTenThousandths: unitPriceUSDTenThousandths
+            unitPriceUSDTenThousandths: unitPriceUSDTenThousandths,
+            reversesEventID: reversesEventID
         )
+    }
+
+    func isLogicallyEquivalent(to other: InventoryEvent) -> Bool {
+        if kind == .initialBalance, other.kind == .initialBalance {
+            // Devices racing the migration deliberately share a deterministic
+            // key. Their local knowledge times and stamped prices may differ;
+            // ownership identity is the position, instrument, and quantity.
+            return collectionKey == other.collectionKey
+                && priceStorageKey == other.priceStorageKey
+                && deltaQuantity == other.deltaQuantity
+        }
+        return payload == other.payload
     }
 }
 
 /// The comparable content of a ledger row.
 struct InventoryEventPayload: Equatable, Sendable {
     var kindRaw: String
+    var sourceRaw: String
     var collectionKey: String
     var priceStorageKey: String
     var deltaQuantity: Int
     var occurredAt: Date
     var unitPriceUSDTenThousandths: Int64?
+    var reversesEventID: UUID?
 }
 
 /// The price evidence an event is stamped with, resolved once at write time.

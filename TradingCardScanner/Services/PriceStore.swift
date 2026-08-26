@@ -16,6 +16,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case providerRequestFailed = "provider_request_failed"
     case gradedMarketPriceNull = "graded_market_price_null"
     case justTCGVariantUnresolved = "justtcg_variant_unresolved"
+    case invalidProviderQuote = "invalid_provider_quote"
 
     var title: String {
         switch self {
@@ -28,6 +29,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .providerRequestFailed: return "Price provider request failed"
         case .gradedMarketPriceNull: return "Graded market price unavailable"
         case .justTCGVariantUnresolved: return "Market variant not resolved"
+        case .invalidProviderQuote: return "Invalid provider quote rejected"
         }
     }
 
@@ -51,6 +53,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "The exact graded listing exists, but the provider currently reports no market price."
         case .justTCGVariantUnresolved:
             return "The marketplace card was identified, but its exact physical variant was not."
+        case .invalidProviderQuote:
+            return "The provider returned a non-finite or unrepresentable amount. The quote was rejected and the prior value was kept."
         }
     }
 }
@@ -60,6 +64,9 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if record?.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue {
+            return .invalidProviderQuote
+        }
         if card.itemKind == .sealedProduct, card.justTCGVariantID == nil {
             if card.justTCGCardID != nil { return .noExactVariantPrice }
             return CollectionCatalogNormalizer.isDefinitiveSealedMiss(card)
@@ -222,12 +229,18 @@ struct PriceStore {
             return created
         }()
 
-        PriceObservationLog(context: context).ingest(
+        let observationDecision = PriceObservationLog(context: context).ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,
             at: date
         )
+
+        if observationDecision == .rejectedInvalidQuote {
+            record.recordFailure(at: date)
+            record.lastFailureReasonRaw = PricingDiagnosticReason.invalidProviderQuote.rawValue
+            return
+        }
 
         switch lookup {
         case let .price(price):
@@ -235,6 +248,7 @@ struct PriceStore {
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
         }
+        record.lastFailureReasonRaw = nil
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
@@ -248,6 +262,7 @@ struct PriceStore {
         printingID: String,
         variantID: String?
     ) {
+        guard Money(rounding: amount) != nil else { return }
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
         let record = self.record(forKey: key) ?? {
             let created = PriceRecord(key: key, game: game, printingID: printingID, variantID: variantID)

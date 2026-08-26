@@ -129,10 +129,10 @@ final class CollectionItemKindTests: XCTestCase {
             marketPriceUSD: 500, updatedAt: nil
         )
 
-        let first = store.addGraded(
+        let first = try! store.addGraded(
             underlying: card, variant: variant, certificationNumber: "11111111"
         )
-        let second = store.addGraded(
+        let second = try! store.addGraded(
             underlying: card, variant: variant, certificationNumber: "22222222"
         )
 
@@ -162,8 +162,8 @@ final class CollectionItemKindTests: XCTestCase {
             marketPriceUSD: 500, updatedAt: nil
         )
 
-        let first = store.addGraded(underlying: card, variant: variant, certificationNumber: nil)
-        let second = store.addGraded(underlying: card, variant: variant, certificationNumber: nil)
+        let first = try! store.addGraded(underlying: card, variant: variant, certificationNumber: nil)
+        let second = try! store.addGraded(underlying: card, variant: variant, certificationNumber: nil)
 
         XCTAssertTrue(first.didInsert)
         XCTAssertFalse(second.didInsert, "identical uncertified slabs stack")
@@ -182,8 +182,8 @@ final class CollectionItemKindTests: XCTestCase {
             marketPriceUSD: 18_750, updatedAt: nil, imageURL: artwork
         )
 
-        let first = store.addSealed(product, game: .pokemon)
-        let second = store.addSealed(product, game: .pokemon)
+        let first = try! store.addSealed(product, game: .pokemon)
+        let second = try! store.addSealed(product, game: .pokemon)
 
         XCTAssertTrue(first.didInsert)
         XCTAssertFalse(second.didInsert)
@@ -208,7 +208,7 @@ final class CollectionItemKindTests: XCTestCase {
             setName: "Legendary Treasures", variantID: "v-uuid",
             marketPriceUSD: 18_750, updatedAt: nil, imageURL: nil
         )
-        let first = store.addSealed(withoutArtwork, game: .pokemon)
+        let first = try! store.addSealed(withoutArtwork, game: .pokemon)
         let artwork = try XCTUnwrap(URL(
             string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         ))
@@ -219,7 +219,7 @@ final class CollectionItemKindTests: XCTestCase {
             updatedAt: withoutArtwork.updatedAt, imageURL: artwork
         )
 
-        _ = store.addSealed(withArtwork, game: .pokemon)
+        _ = try! store.addSealed(withArtwork, game: .pokemon)
 
         XCTAssertEqual(store.card(forKey: first.collectionKey)?.imageURL, artwork.absoluteString)
     }
@@ -227,7 +227,7 @@ final class CollectionItemKindTests: XCTestCase {
     func testNullPriceBatchStillBackfillsSealedArtworkAndIdentity() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let mutation = store.addSealed(
+        let mutation = try! store.addSealed(
             SealedProductSummary(
                 id: "p-uuid", name: "Legendary Treasures Booster Box",
                 setName: "Legendary Treasures", variantID: "v-uuid",
@@ -268,7 +268,7 @@ final class CollectionItemKindTests: XCTestCase {
     func testProviderWithoutArtworkBecomesTerminalInsteadOfRetryingForever() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let mutation = store.addSealed(
+        let mutation = try! store.addSealed(
             SealedProductSummary(
                 id: "p-uuid", name: "Artworkless Box", setName: "Set",
                 variantID: "v-uuid", marketPriceUSD: 25,
@@ -297,7 +297,7 @@ final class CollectionItemKindTests: XCTestCase {
     func testExistingSealedRowFromOlderArtworkRulesGetsOneBackfill() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let mutation = store.addSealed(
+        let mutation = try! store.addSealed(
             SealedProductSummary(
                 id: "p-uuid", name: "Legacy Box", setName: "Set",
                 variantID: "v-uuid", marketPriceUSD: 25,
@@ -319,7 +319,7 @@ final class CollectionItemKindTests: XCTestCase {
         let legacyURL = try XCTUnwrap(URL(
             string: "https://product-images.tcgplayer.com/fit-in/1000x1000/98580.jpg"
         ))
-        let mutation = store.addSealed(
+        let mutation = try! store.addSealed(
             SealedProductSummary(
                 id: "p-uuid", name: "Legacy Box", setName: "Set",
                 variantID: "v-uuid", marketPriceUSD: 25,
