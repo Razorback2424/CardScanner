@@ -39,7 +39,6 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 
     func stop() {
         motionManager.stopDeviceMotionUpdates()
-        rotation.stop()
         sessionQueue.async { [weak self] in
             guard let self, self.session.isRunning else { return }
             self.session.stopRunning()
@@ -51,7 +50,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             guard let self, self.session.isRunning else { return }
             let settings = AVCapturePhotoSettings()
             settings.photoQualityPrioritization = .quality
-            let angle = self.rotation.currentCaptureAngle
+            let angle = self.rotation.currentAngle
             if let connection = self.photoOutput.connection(with: .video),
                connection.isVideoRotationAngleSupported(angle) {
                 connection.videoRotationAngle = angle
@@ -108,7 +107,6 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         session.addInput(input)
         session.addOutput(photoOutput)
         photoOutput.maxPhotoQualityPrioritization = .quality
-        rotation.track(device: camera)
 
         do {
             try camera.lockForConfiguration()
@@ -125,7 +123,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             if camera.isSmoothAutoFocusSupported {
                 camera.isSmoothAutoFocusEnabled = false
             }
-            let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentPreviewAngle)
+            let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentAngle)
             let focusPoint = CGPoint(x: focusRect.midX, y: focusRect.midY)
             if camera.isFocusPointOfInterestSupported {
                 camera.focusPointOfInterest = focusPoint
@@ -174,7 +172,7 @@ struct CenteringCameraView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            CenteringCameraPreview(session: camera.session, rotationAngle: camera.rotation.previewAngle)
+            CenteringCameraPreview(session: camera.session, rotation: camera.rotation)
                 .ignoresSafeArea()
 
             CameraGrid()
@@ -244,29 +242,24 @@ struct CenteringCameraView: View {
 private struct CenteringCameraPreview: UIViewRepresentable {
     let session: AVCaptureSession
 
-    let rotationAngle: CGFloat
+    let rotation: CameraRotationTracker
 
     func makeUIView(context: Context) -> CameraPreviewSurface {
         let view = CameraPreviewSurface()
         view.previewLayer.session = session
         view.previewLayer.videoGravity = .resizeAspectFill
-        view.rotationAngle = rotationAngle
+        view.rotation = rotation
         return view
     }
 
     func updateUIView(_ uiView: CameraPreviewSurface, context: Context) {
         uiView.previewLayer.session = session
-        uiView.rotationAngle = rotationAngle
+        uiView.rotation = rotation
     }
 }
 
 private final class CameraPreviewSurface: UIView {
-    var rotationAngle: CGFloat = CameraRotationTracker.defaultAngle {
-        didSet {
-            guard rotationAngle != oldValue else { return }
-            setNeedsLayout()
-        }
-    }
+    var rotation: CameraRotationTracker?
 
     override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
 
@@ -276,10 +269,14 @@ private final class CameraPreviewSurface: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        // Layout runs on rotation, so the angle is re-read from this view's own
+        // window here rather than through a separate orientation observer.
+        let angle = cameraRotationAngle
+        rotation?.report(angle)
         guard let connection = previewLayer.connection,
-              connection.isVideoRotationAngleSupported(rotationAngle),
-              connection.videoRotationAngle != rotationAngle else { return }
-        connection.videoRotationAngle = rotationAngle
+              connection.isVideoRotationAngleSupported(angle),
+              connection.videoRotationAngle != angle else { return }
+        connection.videoRotationAngle = angle
     }
 }
 

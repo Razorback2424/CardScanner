@@ -10,7 +10,7 @@ import Foundation
 ///     exact printing -> possible physical variants -> trusted evidence -> resolved or one tap
 ///
 /// `id` is persisted, so it must stay stable. `label` is presentation only.
-struct PhysicalVariant: Identifiable, Hashable, Sendable {
+struct PhysicalVariant: Identifiable, Hashable, Sendable, Codable {
     let id: String
     let label: String
 

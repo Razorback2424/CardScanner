@@ -53,7 +53,7 @@ enum CardFramingRegion {
     /// Calibration switch for the first on-device run.
     ///
     /// Set this to `true` to widen Vision's ROI to the whole frame for one build.
-    /// That matters because if `metadataRect(fromVisionRect:)` has the rotation
+    /// That matters because if `metadataRect(fromVisionRect:rotationAngle:)` has the rotation
     /// backwards, the normal ROI points at the wrong end of the card, Vision finds
     /// no text there, and the debug overlay draws nothing — no signal in exactly the
     /// case the overlay exists to diagnose. With the full frame, Vision reports text
@@ -108,7 +108,16 @@ enum CardFramingRegion {
     static func metadataRect(fromVisionRect rect: CGRect, rotationAngle: CGFloat) -> CGRect {
         switch normalizedRotationAngle(rotationAngle) {
         case 90:
-            // sx = 1 - visionMaxY, sy = 1 - visionMaxX; both axes reverse.
+            // The portrait case, and the only one an iPhone ever takes. This is the
+            // transform the scanner shipped with, unchanged:
+            //   metadataX = 1 - visionY, metadataY = 1 - visionX
+            // Rect bounds use max values because both axes reverse direction.
+            //
+            // IMPORTANT FIELD-TEST CHECK:
+            // Apple's orientation wording is easy to interpret in either rotation
+            // direction. If the on-device green band/recognized-text boxes are
+            // mirrored to the wrong vertical end of the card, the alternate
+            // transform is the 270 case below.
             return CGRect(
                 x: 1 - rect.maxY,
                 y: 1 - rect.maxX,
@@ -139,9 +148,9 @@ enum CardFramingRegion {
         }
     }
 
-    /// Snaps to the nearest quarter turn in `[0, 360)`. `RotationCoordinator`
-    /// only ever reports quarter turns, but the value arrives as a `CGFloat` and
-    /// exact equality on a float is a bad thing to build a coordinate transform on.
+    /// Snaps to the nearest quarter turn in `[0, 360)`. Only quarter turns are ever
+    /// reported, but the value arrives as a `CGFloat` and exact equality on a float
+    /// is a bad thing to build a coordinate transform on.
     static func normalizedRotationAngle(_ angle: CGFloat) -> Int {
         let quarters = Int((angle / 90).rounded())
         return ((quarters % 4) + 4) % 4 * 90
@@ -642,7 +651,6 @@ final class CardScanner: NSObject, ObservableObject {
         try configureCamera(device)
 
         currentLens = lens
-        rotation.track(device: device)
         DispatchQueue.main.async { [weak self] in
             self?.lens = lens
         }
@@ -697,7 +705,7 @@ final class CardScanner: NSObject, ObservableObject {
         // location there depends on how the device is held. Set from the rotation
         // known at configure time; a later rotation moves the point by less than the
         // depth of field at card distance, so it is not re-applied per rotation.
-        let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentPreviewAngle)
+        let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentAngle)
         let focusPoint = CGPoint(x: focusRect.midX, y: focusRect.midY)
         if device.isFocusPointOfInterestSupported {
             device.focusPointOfInterest = focusPoint
@@ -1009,7 +1017,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard now - lastVisionTime >= minimumVisionInterval else { return }
         lastVisionTime = now
 
-        let rotationAngle = rotation.currentPreviewAngle
+        let rotationAngle = rotation.currentAngle
 
         do {
             let handler = VNImageRequestHandler(

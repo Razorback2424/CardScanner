@@ -4,8 +4,8 @@ import UIKit
 
 struct CameraPreview: UIViewRepresentable {
     @ObservedObject var scanner: CardScanner
-    /// Observed so the preview layer and the guide overlays follow the device as
-    /// it turns, rather than being pinned to portrait.
+    /// Observed so an iPad's preview and guide overlays re-lay-out when the window
+    /// turns. On iPhone this never changes value.
     @ObservedObject private var rotationTracker: CameraRotationTracker
     /// Increments once per successful add. The band itself acknowledging the
     /// card is the cheapest possible way to say "consumed, give me the next
@@ -22,7 +22,7 @@ struct CameraPreview: UIViewRepresentable {
         let view = PreviewView()
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
-        view.rotationAngle = scanner.rotation.previewAngle
+        view.rotation = scanner.rotation
         view.syncSuccessCount(successCount)
 #if DEBUG
         view.debugVisionBoxes = scanner.debugVisionBoxes
@@ -32,7 +32,7 @@ struct CameraPreview: UIViewRepresentable {
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
         uiView.previewLayer.session = scanner.session
-        uiView.rotationAngle = scanner.rotation.previewAngle
+        uiView.rotation = scanner.rotation
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         uiView.debugVisionBoxes = scanner.debugVisionBoxes
@@ -42,16 +42,12 @@ struct CameraPreview: UIViewRepresentable {
 }
 
 final class PreviewView: UIView {
-    /// The rotation currently applied to the sensor image. Drives both the preview
-    /// connection and the Vision-to-metadata conversion for the guide overlays, so
-    /// the band always lands on the same part of the frame Vision is reading.
-    var rotationAngle: CGFloat = CameraRotationTracker.defaultAngle {
-        didSet {
-            guard rotationAngle != oldValue else { return }
-            applyRotationAngle()
-            setNeedsLayout()
-        }
-    }
+    /// Told to the scanner so Vision reads the frame the same way up the preview
+    /// shows it. Set from this view's own window during layout — a view's window is
+    /// the authority on how the view is turned.
+    var rotation: CameraRotationTracker?
+
+    private var rotationAngle = CameraRotationTracker.defaultAngle
 
     private let cardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
@@ -83,7 +79,18 @@ final class PreviewView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        applyRotationAngle()
+        // Layout is also what runs on rotation, so this is where the angle is
+        // re-read rather than in a separate orientation observer.
+        rotationAngle = cameraRotationAngle
+        rotation?.report(rotationAngle)
+        // Only on iPad. This view never wrote to the preview connection before —
+        // `AVCaptureVideoPreviewLayer` applies its own orientation, and on a
+        // portrait-locked phone that is already right. Writing 90 here would
+        // almost certainly be the same value, and "almost certainly" is not a
+        // reason to start writing to a connection that worked untouched.
+        if CameraRotationTracker.tracksInterfaceRotation {
+            applyRotationAngle()
+        }
 
         // Sublayers of the preview layer animate frame/path changes implicitly over
         // ~0.25s. At roughly four OCR passes per second that smears the debug boxes

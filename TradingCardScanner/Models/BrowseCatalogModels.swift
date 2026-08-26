@@ -1,6 +1,6 @@
 import Foundation
 
-enum PokemonPrintRun: String, Hashable, Sendable {
+enum PokemonPrintRun: String, Hashable, Sendable, Codable {
     case firstEdition
     case shadowless
     case unlimited
@@ -14,7 +14,7 @@ enum PokemonPrintRun: String, Hashable, Sendable {
     }
 }
 
-struct CatalogSetID: Hashable, Identifiable, Sendable {
+struct CatalogSetID: Hashable, Identifiable, Sendable, Codable {
     let game: CardGame
     let providerID: String
     var pokemonPrintRun: PokemonPrintRun? = nil
@@ -26,7 +26,7 @@ struct CatalogSetID: Hashable, Identifiable, Sendable {
     }
 }
 
-struct CatalogSet: Identifiable, Hashable, Sendable {
+struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     let catalogID: CatalogSetID
     let name: String
     let code: String
@@ -49,7 +49,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable {
     }
 }
 
-struct CatalogCardSummary: Identifiable, Hashable, Sendable {
+struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     let game: CardGame
     let providerID: String
     let setID: CatalogSetID
@@ -89,6 +89,8 @@ struct CatalogPage<Element: Sendable>: Sendable {
     let items: [Element]
     let nextCursor: String?
 }
+
+extension CatalogPage: Codable where Element: Codable {}
 
 struct SetCompletion: Equatable, Sendable {
     let owned: Int

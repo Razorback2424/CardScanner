@@ -17,11 +17,13 @@ final class SealedBrowseModel: ObservableObject {
     @Published private(set) var hasMore = false
 
     private let client: JustTCGV1Client
+    private let cache: CatalogCacheStore
     private var offset = 0
     private var loadedGame: CardGame?
 
-    init(transport: JustTCGTransport) {
+    init(transport: JustTCGTransport, cache: CatalogCacheStore = .shared) {
         self.client = JustTCGV1Client(transport: transport)
+        self.cache = cache
     }
 
     var isConfigured: Bool { PriceVendorCredentials.hasKey }
@@ -29,51 +31,97 @@ final class SealedBrowseModel: ObservableObject {
     /// One request, and only when the directory is not already loaded for this
     /// game. Sealed browse is interactive, but it is still the user's quota.
     func loadSetsIfNeeded(game: CardGame) async {
-        guard isConfigured, loadedGame != game || sets.isEmpty, !isLoading else { return }
+        guard isConfigured, (loadedGame != game || sets.isEmpty), !isLoading else { return }
+        if let saved = await cache.sealedSets(for: game) {
+            sets = saved.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            loadedGame = game
+            if saved.isFresh {
+                errorMessage = nil
+                return
+            }
+        }
         isLoading = true
         defer { isLoading = false }
         do {
             sets = try await client.sealedSets(game: game)
                 .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             loadedGame = game
+            await cache.storeSealedSets(sets, for: game)
             errorMessage = nil
         } catch {
-            errorMessage = Self.message(for: error)
+            errorMessage = sets.isEmpty
+                ? Self.message(for: error)
+                : "Showing saved sealed sets · \(Self.message(for: error))"
         }
     }
 
     func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
         guard isConfigured, !isLoading else { return }
+        offset = 0
+        let cacheKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: offset)
+        if let saved = await cache.sealedProductPage(for: cacheKey) {
+            apply(saved.value, replacing: true)
+            if saved.isFresh {
+                errorMessage = nil
+                return
+            }
+        }
         isLoading = true
         defer { isLoading = false }
-        offset = 0
         do {
             let page = try await client.searchSealedProducts(
                 game: game, setID: setID, query: query, offset: 0
             )
-            products = page.items
-            hasMore = page.hasMore
-            offset = page.items.count
+            let cachePage = cachePage(from: page)
+            apply(cachePage, replacing: true)
+            await cache.storeSealedProductPage(cachePage, for: cacheKey)
             errorMessage = nil
         } catch {
-            errorMessage = Self.message(for: error)
+            errorMessage = products.isEmpty
+                ? Self.message(for: error)
+                : "Showing saved products · \(Self.message(for: error))"
         }
     }
 
     func loadMore(game: CardGame, setID: String?, query: String? = nil) async {
         guard isConfigured, hasMore, !isLoading else { return }
+        let requestedOffset = offset
+        let cacheKey = CatalogCacheStore.sealedPageKey(
+            game: game, setID: setID, query: query, offset: requestedOffset
+        )
+        if let saved = await cache.sealedProductPage(for: cacheKey), saved.isFresh {
+            apply(saved.value, replacing: false)
+            errorMessage = nil
+            return
+        }
         isLoading = true
         defer { isLoading = false }
         do {
             let page = try await client.searchSealedProducts(
-                game: game, setID: setID, query: query, offset: offset
+                game: game, setID: setID, query: query, offset: requestedOffset
             )
-            products += page.items
-            hasMore = page.hasMore
-            offset += page.items.count
+            let cachePage = cachePage(from: page)
+            apply(cachePage, replacing: false)
+            await cache.storeSealedProductPage(cachePage, for: cacheKey)
+            errorMessage = nil
         } catch {
-            errorMessage = Self.message(for: error)
+            errorMessage = products.isEmpty
+                ? Self.message(for: error)
+                : "Showing saved products · \(Self.message(for: error))"
         }
+    }
+
+    private func cachePage(from page: MarketCatalogPage<SealedProductSummary>) -> CatalogPage<SealedProductSummary> {
+        CatalogPage(
+            items: page.items,
+            nextCursor: page.hasMore ? String(page.offset + page.items.count) : nil
+        )
+    }
+
+    private func apply(_ page: CatalogPage<SealedProductSummary>, replacing: Bool) {
+        products = replacing ? page.items : products + page.items
+        hasMore = page.nextCursor != nil
+        offset = Int(page.nextCursor ?? "") ?? products.count
     }
 
     /// Quota and rate-limit stops get their own wording, including when they
@@ -169,6 +217,16 @@ struct SealedProductGridView: View {
 
     var body: some View {
         ScrollView {
+            if let errorMessage = model.errorMessage, !model.products.isEmpty {
+                Label(errorMessage, systemImage: "clock.arrow.circlepath")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal, 12)
+                    .padding(.top, 8)
+            }
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(model.products) { product in
                     NavigationLink {
@@ -341,26 +399,9 @@ private struct SealedProductArtwork: View {
     let imageURL: URL?
 
     var body: some View {
-        AsyncImage(url: imageURL) { phase in
-            switch phase {
-            case let .success(image):
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .padding(8)
-            case .empty, .failure:
-                placeholder
-            @unknown default:
-                placeholder
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.secondary.opacity(0.08))
-    }
-
-    private var placeholder: some View {
-        Image(systemName: "shippingbox.fill")
-            .font(.system(size: 34))
-            .foregroundStyle(.secondary)
+        CatalogCachedImage(url: imageURL, placeholderSymbol: "shippingbox.fill")
+            .padding(8)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.secondary.opacity(0.08))
     }
 }

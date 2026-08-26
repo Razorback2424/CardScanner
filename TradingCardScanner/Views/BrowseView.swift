@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
 @MainActor
 final class BrowseViewModel: ObservableObject {
@@ -430,10 +431,10 @@ private struct CatalogSetListView: View {
                     CatalogSetCardsView(set: set, catalog: catalog)
                 } label: {
                     HStack(spacing: 12) {
-                        AsyncImage(url: set.symbolURL ?? set.logoURL) { phase in
-                            if case let .success(image) = phase { image.resizable().scaledToFit() }
-                            else { Image(systemName: "square.stack.3d.up").foregroundStyle(.secondary) }
-                        }
+                        CatalogCachedImage(
+                            url: set.symbolURL ?? set.logoURL,
+                            placeholderSymbol: "square.stack.3d.up"
+                        )
                         .frame(width: 42, height: 42)
                         .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 3) {
@@ -765,30 +766,156 @@ private struct CatalogCardGrid: View {
 struct CatalogArtworkView: View {
     let thumbnailURL: URL?
     let imageURL: URL?
+    var prefersFullSize = false
+
+    private var primaryURL: URL? {
+        prefersFullSize ? (imageURL ?? thumbnailURL) : (thumbnailURL ?? imageURL)
+    }
+
+    private var fallbackURL: URL? {
+        guard primaryURL != thumbnailURL else { return imageURL }
+        return thumbnailURL
+    }
 
     var body: some View {
-        AsyncImage(url: imageURL ?? thumbnailURL) { phase in
-            switch phase {
-            case let .success(image): image.resizable().scaledToFit()
-            case .failure: fallback
-            default: placeholder.overlay { ProgressView() }
-            }
-        }
+        CatalogCachedImage(url: primaryURL, fallbackURL: fallbackURL)
         .aspectRatio(0.727, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
+}
 
-    @ViewBuilder private var fallback: some View {
-        if let thumbnailURL, thumbnailURL != imageURL {
-            AsyncImage(url: thumbnailURL) { phase in
-                if case let .success(image) = phase { image.resizable().scaledToFit() }
-                else { placeholder }
+/// Small, app-owned remote artwork view. The corresponding disk cache lives in
+/// Caches (not Application Support), so iOS may reclaim it under pressure and
+/// it never becomes synced collection data.
+struct CatalogCachedImage: View {
+    let url: URL?
+    var fallbackURL: URL? = nil
+    var placeholderSymbol = "photo"
+    @StateObject private var loader = CatalogImageLoader()
+
+    var body: some View {
+        Group {
+            if let image = loader.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+            } else if loader.failed, let fallbackURL, fallbackURL != url {
+                CatalogCachedImage(url: fallbackURL, placeholderSymbol: placeholderSymbol)
+            } else {
+                placeholder
             }
-        } else { placeholder }
+        }
+        .task(id: url) { loader.load(url) }
     }
 
     private var placeholder: some View {
-        RoundedRectangle(cornerRadius: 10).fill(.quaternary).overlay { Image(systemName: "photo") }
+        RoundedRectangle(cornerRadius: 10)
+            .fill(.quaternary)
+            .overlay {
+                if loader.isLoading { ProgressView() }
+                else { Image(systemName: placeholderSymbol).foregroundStyle(.secondary) }
+            }
+    }
+}
+
+@MainActor
+private final class CatalogImageLoader: ObservableObject {
+    @Published var image: UIImage?
+    @Published var isLoading = false
+    @Published var failed = false
+    private var task: Task<Void, Never>?
+
+    deinit { task?.cancel() }
+
+    func load(_ url: URL?) {
+        task?.cancel()
+        image = nil
+        failed = false
+        guard let url else {
+            isLoading = false
+            return
+        }
+        isLoading = true
+        task = Task { [weak self] in
+            do {
+                let data = try await CatalogImageCache.shared.data(for: url)
+                guard !Task.isCancelled, let image = UIImage(data: data) else { return }
+                self?.image = image
+            } catch {
+                if !Task.isCancelled { self?.failed = true }
+            }
+            if !Task.isCancelled { self?.isLoading = false }
+        }
+    }
+}
+
+/// A 60 MiB LRU disk cache for provider artwork. It deliberately persists only
+/// source-URL keyed image bytes, never collection photos or provider responses.
+actor CatalogImageCache {
+    static let shared = CatalogImageCache()
+    private static let maximumBytes = 60 * 1_024 * 1_024
+    private static let maximumAssetBytes = 5 * 1_024 * 1_024
+
+    private let directory: URL
+
+    init(directory: URL? = nil) {
+        self.directory = directory ?? FileManager.default
+            .urls(for: .cachesDirectory, in: .userDomainMask)
+            .first!
+            .appendingPathComponent("BrowseArtworkCache", isDirectory: true)
+    }
+
+    func data(for url: URL) async throws -> Data {
+        let file = directory.appendingPathComponent(filename(for: url))
+        if let cached = try? Data(contentsOf: file) {
+            touch(file)
+            return cached
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw BrowseCatalogError.badResponse
+        }
+        if data.count <= Self.maximumAssetBytes {
+            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try? data.write(to: file, options: .atomic)
+            trim()
+        }
+        return data
+    }
+
+    private func touch(_ url: URL) {
+        try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
+    }
+
+    private func trim() {
+        let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
+        guard let urls = try? FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsHiddenFiles]
+        ) else { return }
+        let files = urls.compactMap { url -> (URL, Int, Date)? in
+            guard let values = try? url.resourceValues(forKeys: keys) else { return nil }
+            return (url, values.fileSize ?? 0, values.contentModificationDate ?? .distantPast)
+        }.sorted { $0.2 < $1.2 }
+        var total = files.reduce(0) { $0 + $1.1 }
+        for (url, size, _) in files where total > Self.maximumBytes {
+            guard (try? FileManager.default.removeItem(at: url)) != nil else { continue }
+            total -= size
+        }
+    }
+
+    private func filename(for url: URL) -> String {
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        for byte in url.absoluteString.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= 1_099_511_628_211
+        }
+        return String(hash, radix: 16) + ".image"
     }
 }
 

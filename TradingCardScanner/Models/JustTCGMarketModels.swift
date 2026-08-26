@@ -412,7 +412,7 @@ struct JustTCGQuotaMetadata: Decodable, Sendable, Equatable {
 /// Deliberately narrow. The vendor does not document UPC, MSRP, pack counts or
 /// product taxonomy, so this type does not carry fields the UI would then be
 /// tempted to display as fact.
-struct SealedProductSummary: Identifiable, Hashable, Sendable {
+struct SealedProductSummary: Identifiable, Hashable, Sendable, Codable {
     let id: String
     let name: String
     let setName: String?
@@ -433,7 +433,7 @@ struct SealedProductSummary: Identifiable, Hashable, Sendable {
 /// Sealed browse uses the vendor's own set directory rather than TCGdex's or
 /// Scryfall's, because mapping between the two groupings is unreliable and a
 /// wrong mapping would show the wrong products.
-struct SealedSetSummary: Identifiable, Hashable, Sendable {
+struct SealedSetSummary: Identifiable, Hashable, Sendable, Codable {
     let id: String
     let name: String
     let sealedCount: Int

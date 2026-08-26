@@ -1,4 +1,5 @@
 import ImageIO
+import UIKit
 import XCTest
 @testable import TradingCardScanner
 
@@ -101,6 +102,72 @@ final class CameraRotationTests: XCTestCase {
 
     /// The angle arrives from `RotationCoordinator` as a `CGFloat`, so the transform
     /// must not depend on exact float equality with a literal.
+    /// The scanner is portrait-locked on iPhone, so this is the whole of its
+    /// rotation behaviour there — and it must stay exactly what the code did when
+    /// the angle was a hardcoded 90.
+    func testPortraitIsAlwaysNinetyDegrees() {
+        XCTAssertEqual(CameraRotationTracker.angle(for: .portrait), 90)
+        XCTAssertEqual(CameraRotationTracker.defaultAngle, 90)
+        XCTAssertEqual(CameraRotationTracker.angle(for: .unknown), 90, "no orientation yet")
+    }
+
+    /// The guarantee that matters: on iPhone every part of the scanner's geometry
+    /// resolves to exactly what the code did when the angle was hardcoded. If this
+    /// fails, the phone scanner has been changed, whatever else was intended.
+    func testPhoneGeometryIsIdenticalToTheOriginalHardcodedPipeline() {
+        // A view with no window — and, on a phone host, any view at all.
+        XCTAssertEqual(UIView().cameraRotationAngle, 90)
+
+        let angle = CameraRotationTracker.defaultAngle
+        XCTAssertEqual(CardFramingRegion.imageOrientation(forRotationAngle: angle), .right)
+        XCTAssertEqual(
+            CardFramingRegion.visionSourceSize(forRotationAngle: angle, sensorWidth: 1920, sensorHeight: 1080),
+            CGSize(width: 1080, height: 1920),
+            "the original swapped the landscape buffer's dimensions"
+        )
+        assertRect(
+            CardFramingRegion.metadataRect(fromVisionRect: visionRect, rotationAngle: angle),
+            equals: CGRect(
+                // The original expression, written out.
+                x: 1 - visionRect.maxY,
+                y: 1 - visionRect.maxX,
+                width: visionRect.height,
+                height: visionRect.width
+            )
+        )
+    }
+
+    /// Each interface orientation must map to a distinct quarter turn, and
+    /// landscapeRight to the sensor's own native orientation.
+    func testEachInterfaceOrientationMapsToItsOwnQuarterTurn() {
+        let angles: [UIInterfaceOrientation: CGFloat] = [
+            .portrait: 90,
+            .portraitUpsideDown: 270,
+            .landscapeLeft: 180,
+            .landscapeRight: 0
+        ]
+        for (orientation, expected) in angles {
+            XCTAssertEqual(CameraRotationTracker.angle(for: orientation), expected)
+        }
+        XCTAssertEqual(Set(angles.values).count, 4, "no two orientations share an angle")
+    }
+
+    /// The angle is read on the Vision queue every frame while being written from
+    /// the main thread on rotation, so the mirror must be readable from anywhere.
+    func testReportedAngleIsVisibleToOtherQueues() {
+        let tracker = CameraRotationTracker()
+        XCTAssertEqual(tracker.currentAngle, 90)
+
+        tracker.report(180)
+
+        let read = expectation(description: "read off the main thread")
+        DispatchQueue.global().async {
+            XCTAssertEqual(tracker.currentAngle, 180)
+            read.fulfill()
+        }
+        wait(for: [read], timeout: 1)
+    }
+
     func testAngleNormalizationSnapsToQuarterTurnsAndWraps() {
         XCTAssertEqual(CardFramingRegion.normalizedRotationAngle(89.999), 90)
         XCTAssertEqual(CardFramingRegion.normalizedRotationAngle(360), 0)

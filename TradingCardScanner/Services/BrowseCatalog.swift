@@ -40,6 +40,7 @@ enum BrowseRequestBuilder {
 actor BrowseCatalog: BrowseCatalogProviding {
     private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
+    private let cache: CatalogCacheStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
@@ -50,19 +51,52 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var pokemonSetSummaries: [String: [CatalogCardSummary]] = [:]
     private var sortPriceCache: [String: Double] = [:]
     private var resolvedSortPrices: Set<String> = []
+    private var refreshingSetDirectories: Set<CardGame> = []
+
+    init(cache: CatalogCacheStore = .shared) {
+        self.cache = cache
+    }
 
     func sets(for game: CardGame) async throws -> [CatalogSet] {
         if let cached = setCache[game] { return cached }
+        if let saved = await cache.sets(for: game) {
+            setCache[game] = saved.value
+            installPokemonReleaseOrder(from: saved.value, game: game)
+            if !saved.isFresh { scheduleSetDirectoryRefresh(for: game) }
+            return saved.value
+        }
+        return try await loadSetDirectory(for: game)
+    }
+
+    private func loadSetDirectory(for game: CardGame) async throws -> [CatalogSet] {
         let loaded: [CatalogSet]
         switch game {
         case .pokemon: loaded = try await pokemonSets()
         case .magic: loaded = try await magicSets()
         }
         setCache[game] = loaded
+        await cache.storeSets(loaded, for: game)
         return loaded
     }
 
+    private func scheduleSetDirectoryRefresh(for game: CardGame) {
+        guard refreshingSetDirectories.insert(game).inserted else { return }
+        Task { [weak self] in
+            guard let self else { return }
+            _ = try? await self.loadSetDirectory(for: game)
+            await self.finishSetDirectoryRefresh(for: game)
+        }
+    }
+
+    private func finishSetDirectoryRefresh(for game: CardGame) {
+        refreshingSetDirectories.remove(game)
+    }
+
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
+        if let saved = await cache.cardPage(for: cacheKey) { return saved }
+
+        let page: CatalogPage<CatalogCardSummary>
         switch set.game {
         case .pokemon:
             if let cached = pokemonSetSummaries[set.id] {
@@ -79,10 +113,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             let summaries = try await pokemonMasterSetSummaries(cards, set: resolvedSet)
             pokemonSetSummaries[set.id] = summaries
-            return CatalogPage(items: summaries, nextCursor: nil)
+            page = CatalogPage(items: summaries, nextCursor: nil)
         case .magic:
-            return try await magicCards(query: "e:\(set.providerID) lang:en game:paper", cursor: cursor)
+            page = try await magicCards(query: "e:\(set.providerID) lang:en game:paper", cursor: cursor)
         }
+        await cache.storeCardPage(page, for: cacheKey)
+        return page
     }
 
     func searchCards(
@@ -236,12 +272,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 cardCount: countsByID[set.providerID.lowercased()]
             )
         }
-        PokemonCatalogReleaseOrder.install(
-            Dictionary(uniqueKeysWithValues: baseSets.map {
-                ($0.providerID.lowercased(), $0.sortRank)
-            })
-        )
+        installPokemonReleaseOrder(from: baseSets, game: .pokemon)
         return sets
+    }
+
+    private func installPokemonReleaseOrder(from sets: [CatalogSet], game: CardGame) {
+        guard game == .pokemon else { return }
+        var values: [String: Int] = [:]
+        for set in sets where set.pokemonPrintRun == nil {
+            values[set.providerID.lowercased()] = set.sortRank
+        }
+        PokemonCatalogReleaseOrder.install(values)
     }
 
     private func pokemonPocketSetIDs() async throws -> Set<String> {
@@ -456,6 +497,166 @@ actor BrowseCatalog: BrowseCatalogProviding {
         var seen: Set<String> = []
         return values.filter { seen.insert($0.id).inserted }
     }
+}
+
+/// App-private, local-only Browse cache.
+///
+/// The collection database is intentionally not used here: catalogue downloads
+/// are disposable device state, not user inventory, and must never be uploaded
+/// to CloudKit. Set directories are small and protected; viewed card/product
+/// pages live under separate LRU byte caps.
+actor CatalogCacheStore {
+    struct Cached<Value: Sendable>: Sendable {
+        let value: Value
+        let storedAt: Date
+        let isFresh: Bool
+    }
+
+    static let shared = CatalogCacheStore()
+
+    private static let setDirectoryMaxAge: TimeInterval = 24 * 60 * 60
+    private static let sealedSetDirectoryMaxAge: TimeInterval = 7 * 24 * 60 * 60
+    private static let sealedProductMaxAge: TimeInterval = 6 * 60 * 60
+    private static let cardPageLimit = 25 * 1_024 * 1_024
+    private static let sealedPageLimit = 10 * 1_024 * 1_024
+
+    private let root: URL
+
+    init(root: URL? = nil) {
+        if let root {
+            self.root = root
+        } else {
+            self.root = FileManager.default
+                .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+                .first!
+                .appendingPathComponent("BrowseCatalogCache", isDirectory: true)
+        }
+    }
+
+    func sets(for game: CardGame) -> Cached<[CatalogSet]>? {
+        load([CatalogSet].self, from: setDirectoryURL(for: game), maxAge: Self.setDirectoryMaxAge)
+    }
+
+    func storeSets(_ sets: [CatalogSet], for game: CardGame) {
+        store(sets, at: setDirectoryURL(for: game))
+    }
+
+    func cardPage(for key: String) -> CatalogPage<CatalogCardSummary>? {
+        let url = cardPagesDirectory.appendingPathComponent(filename(for: key))
+        guard let cached = load(CatalogPage<CatalogCardSummary>.self, from: url, maxAge: nil) else {
+            return nil
+        }
+        touch(url)
+        return cached.value
+    }
+
+    func storeCardPage(_ page: CatalogPage<CatalogCardSummary>, for key: String) {
+        store(page, at: cardPagesDirectory.appendingPathComponent(filename(for: key)))
+        trim(cardPagesDirectory, maximumBytes: Self.cardPageLimit)
+    }
+
+    func sealedSets(for game: CardGame) -> Cached<[SealedSetSummary]>? {
+        load([SealedSetSummary].self, from: sealedSetDirectoryURL(for: game), maxAge: Self.sealedSetDirectoryMaxAge)
+    }
+
+    func storeSealedSets(_ sets: [SealedSetSummary], for game: CardGame) {
+        store(sets, at: sealedSetDirectoryURL(for: game))
+    }
+
+    func sealedProductPage(for key: String) -> Cached<CatalogPage<SealedProductSummary>>? {
+        let url = sealedPagesDirectory.appendingPathComponent(filename(for: key))
+        guard let cached = load(CatalogPage<SealedProductSummary>.self, from: url, maxAge: Self.sealedProductMaxAge) else {
+            return nil
+        }
+        touch(url)
+        return cached
+    }
+
+    func storeSealedProductPage(_ page: CatalogPage<SealedProductSummary>, for key: String) {
+        store(page, at: sealedPagesDirectory.appendingPathComponent(filename(for: key)))
+        trim(sealedPagesDirectory, maximumBytes: Self.sealedPageLimit)
+    }
+
+    static func cardPageKey(for set: CatalogSet, cursor: String?) -> String {
+        "cards|\(set.id)|\(cursor ?? "initial")"
+    }
+
+    static func sealedPageKey(game: CardGame, setID: String?, query: String?, offset: Int) -> String {
+        "sealed|\(game.rawValue)|\(setID ?? "all")|\(query?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? "")|\(offset)"
+    }
+
+    private var cardPagesDirectory: URL { root.appendingPathComponent("CardPages", isDirectory: true) }
+    private var sealedPagesDirectory: URL { root.appendingPathComponent("SealedPages", isDirectory: true) }
+
+    private func setDirectoryURL(for game: CardGame) -> URL {
+        root.appendingPathComponent("Sets-\(game.rawValue).json")
+    }
+
+    private func sealedSetDirectoryURL(for game: CardGame) -> URL {
+        root.appendingPathComponent("SealedSets-\(game.rawValue).json")
+    }
+
+    private func load<Value: Codable & Sendable>(
+        _ type: Value.Type,
+        from url: URL,
+        maxAge: TimeInterval?
+    ) -> Cached<Value>? {
+        guard let data = try? Data(contentsOf: url),
+              let envelope = try? JSONDecoder().decode(CacheEnvelope<Value>.self, from: data) else {
+            return nil
+        }
+        let isFresh = maxAge.map { Date.now.timeIntervalSince(envelope.storedAt) < $0 } ?? true
+        return Cached(value: envelope.value, storedAt: envelope.storedAt, isFresh: isFresh)
+    }
+
+    private func store<Value: Codable & Sendable>(_ value: Value, at url: URL) {
+        let directory = url.deletingLastPathComponent()
+        guard (try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)) != nil,
+              let data = try? JSONEncoder().encode(CacheEnvelope(storedAt: .now, value: value)) else {
+            return
+        }
+        try? data.write(to: url, options: .atomic)
+    }
+
+    private func touch(_ url: URL) {
+        try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
+    }
+
+    private func trim(_ directory: URL, maximumBytes: Int) {
+        let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
+        guard let urls = try? FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsHiddenFiles]
+        ) else { return }
+
+        let files = urls.compactMap { url -> (url: URL, size: Int, date: Date)? in
+            guard let values = try? url.resourceValues(forKeys: keys) else { return nil }
+            return (url, values.fileSize ?? 0, values.contentModificationDate ?? .distantPast)
+        }.sorted { $0.date < $1.date }
+
+        var total = files.reduce(0) { $0 + $1.size }
+        for file in files where total > maximumBytes {
+            guard (try? FileManager.default.removeItem(at: file.url)) != nil else { continue }
+            total -= file.size
+        }
+    }
+
+    private func filename(for key: String) -> String {
+        // Stable FNV-1a avoids putting long, provider-supplied cursors directly
+        // into filesystem paths while keeping cache keys deterministic.
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        for byte in key.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= 1_099_511_628_211
+        }
+        return String(hash, radix: 16) + ".json"
+    }
+}
+
+private struct CacheEnvelope<Value: Codable>: Codable {
+    let storedAt: Date
+    let value: Value
 }
 
 enum PokemonMasterSetDefinition {

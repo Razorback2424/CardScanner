@@ -1,6 +1,6 @@
 import Foundation
 
-enum CardGame: String, CaseIterable, Identifiable, Hashable, Sendable {
+enum CardGame: String, CaseIterable, Identifiable, Hashable, Sendable, Codable {
     case pokemon
     case magic
 

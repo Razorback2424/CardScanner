@@ -32,6 +32,64 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(values["q"], query)
         XCTAssertEqual(values["unique"], "prints")
     }
+
+    func testSetDirectoryCacheSurvivesANewStoreInstance() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "sv08.5"),
+            name: "Prismatic Evolutions",
+            code: "PRE",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 180,
+            releaseDate: nil,
+            sortRank: 1
+        )
+
+        let writer = CatalogCacheStore(root: root)
+        await writer.storeSets([set], for: .pokemon)
+        let reader = CatalogCacheStore(root: root)
+        let saved = await reader.sets(for: .pokemon)
+
+        XCTAssertEqual(saved?.value, [set])
+        XCTAssertTrue(saved?.isFresh == true)
+    }
+
+    func testSealedPageCacheRetainsSavedPageAndFreshness() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let product = SealedProductSummary(
+            id: "sealed-1",
+            name: "Booster Box",
+            setName: "Example Set",
+            variantID: "sealed",
+            marketPriceUSD: 120,
+            updatedAt: .now,
+            imageURL: URL(string: "https://example.com/product.jpg"),
+            tcgplayerProductID: "123"
+        )
+        let key = CatalogCacheStore.sealedPageKey(game: .pokemon, setID: "example", query: nil, offset: 0)
+        let writer = CatalogCacheStore(root: root)
+        await writer.storeSealedProductPage(
+            CatalogPage(items: [product], nextCursor: "1"),
+            for: key
+        )
+
+        let reader = CatalogCacheStore(root: root)
+        let saved = await reader.sealedProductPage(for: key)
+
+        XCTAssertEqual(saved?.value.items, [product])
+        XCTAssertEqual(saved?.value.nextCursor, "1")
+        XCTAssertTrue(saved?.isFresh == true)
+    }
+
+    private func makeTemporaryCacheDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
+    }
 }
 
 @MainActor

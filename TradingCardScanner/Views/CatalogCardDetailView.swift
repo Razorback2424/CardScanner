@@ -55,7 +55,11 @@ struct CatalogCardDetailView: View {
 
     private func content(_ details: CatalogCardDetails) -> some View {
         VStack(spacing: 20) {
-            CatalogArtworkView(thumbnailURL: summary.thumbnailURL, imageURL: details.card.displayImageURL ?? summary.imageURL)
+            CatalogArtworkView(
+                thumbnailURL: summary.thumbnailURL,
+                imageURL: details.card.displayImageURL ?? summary.imageURL,
+                prefersFullSize: true
+            )
                 .frame(maxHeight: 470)
 
             VStack(spacing: 6) {
