@@ -582,6 +582,14 @@ struct CollectionStore {
         let previousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
+        // A stale scanner entry can outlive the collection row it was created
+        // from (for example, the row may have been removed on another screen or
+        // device). Do not manufacture the destination row and then record a
+        // `-1` correction for a source that is no longer present: that leaves
+        // the ledger permanently ahead of the collection and triggers the
+        // reconciliation warning on the next portfolio pass.
+        guard let previous = self.card(forKey: previousKey) else { return nil }
+
         let activityDescriptor = FetchDescriptor<CollectionActivity>(
             predicate: #Predicate { $0.collectionKey == previousKey }
         )
@@ -592,14 +600,11 @@ struct CollectionStore {
 
         // Read the outgoing side's price key before the row is decremented or
         // deleted — afterwards there is nothing left to ask.
-        var previousPriceStorageKey: String?
-        if let previous = self.card(forKey: previousKey) {
-            previousPriceStorageKey = ledger.priceStorageKey(for: previous)
-            if previous.quantity <= 1 {
-                context.delete(previous)
-            } else {
-                previous.quantity -= 1
-            }
+        let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+        if previous.quantity <= 1 {
+            context.delete(previous)
+        } else {
+            previous.quantity -= 1
         }
 
         let mutation = try add(

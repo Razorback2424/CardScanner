@@ -7,6 +7,7 @@ struct ContentView: View {
 
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
+    @Query private var inventoryEvents: [InventoryEvent]
     @Query private var priceRecords: [PriceRecord]
 
     private enum Tab: Hashable {
@@ -22,6 +23,10 @@ struct ContentView: View {
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var collectionSort: CollectionSort = .priceHighToLow
     @State private var hasCheckedForStalePrices = false
+    /// The mutation observer can start before the separate launch task. Keep it
+    /// behind portfolio initialization so it cannot replay a populated
+    /// collection before `PortfolioEpoch` has written its baseline.
+    @State private var hasStartedPortfolio = false
     @State private var refreshStatusTask: Task<Void, Never>?
 #if DEBUG
     private let debugRoute: String?
@@ -98,13 +103,20 @@ struct ContentView: View {
                 break
             }
             portfolio.start(context: modelContext)
+            hasStartedPortfolio = true
         }
 #else
-        .task { portfolio.start(context: modelContext) }
+        .task {
+            portfolio.start(context: modelContext)
+            hasStartedPortfolio = true
+        }
 #endif
         // Portfolio truth is app-scoped: scanning or importing must recompute it
-        // even if Collection has never been selected in this app session.
-        .task(id: collectionMutationTaskID) {
+        // even if Collection has never been selected in this app session. The
+        // ledger is synced separately from collection rows, so both tables are
+        // part of the trigger; CloudKit can deliver either one first.
+        .task(id: portfolioInputTaskID) {
+            guard hasStartedPortfolio else { return }
             portfolio.recompute(context: modelContext)
             await refreshStalePricesIfNeeded()
         }
@@ -116,24 +128,34 @@ struct ContentView: View {
         .onDisappear { refreshStatusTask?.cancel() }
     }
 
-    private var collectionMutationTaskID: Int {
-        var count = 0
-        var sum = 0
-        var xor = 0
-        for card in cards {
-            var element = Hasher()
-            element.combine(card.collectionKey)
-            element.combine(card.quantity)
-            element.combine(card.priceKey)
-            let value = element.finalize()
-            count += 1
-            sum &+= value
-            xor ^= value
-        }
+    private var portfolioInputTaskID: Int {
         var hasher = Hasher()
-        hasher.combine(count)
-        hasher.combine(sum)
-        hasher.combine(xor)
+        hasher.combine(hasStartedPortfolio)
+
+        for card in cards {
+            hasher.combine(card.collectionKey)
+            hasher.combine(card.quantity)
+            hasher.combine(card.priceKey)
+        }
+
+        // Inventory events are synced independently from CollectedCard rows.
+        // Include payload fields, not just the count, so a late-arriving event
+        // or a repaired conflicting row causes a fresh reconciliation pass.
+        for event in inventoryEvents {
+            hasher.combine(event.eventID)
+            hasher.combine(event.idempotencyKey)
+            hasher.combine(event.kindRaw)
+            hasher.combine(event.sourceRaw)
+            hasher.combine(event.collectionKey)
+            hasher.combine(event.priceStorageKey)
+            hasher.combine(event.deltaQuantity)
+            hasher.combine(event.occurredAt)
+            hasher.combine(event.unitPriceUSDTenThousandths)
+            hasher.combine(event.reversesEventID)
+        }
+
+        hasher.combine(cards.count)
+        hasher.combine(inventoryEvents.count)
         return hasher.finalize()
     }
 
