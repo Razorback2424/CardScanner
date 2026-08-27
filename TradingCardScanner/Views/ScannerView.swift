@@ -115,6 +115,14 @@ private struct ScannerChrome: View {
                     .transition(.opacity)
             }
 
+            if let offer = model.heldDuplicateOffer {
+                HeldDuplicateOfferView(
+                    offer: offer,
+                    onAddAnother: model.addAnotherHeldCopy
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
             Spacer(minLength: 0)
 
             bottomStack

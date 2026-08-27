@@ -385,6 +385,65 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
+    func testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+
+        latch.authorizeHeldRepeat(for: card.suppressionKey)
+        XCTAssertNil(latch.latched)
+        XCTAssertFalse(latch.admits(card), "authorization is not spatial exit evidence")
+        XCTAssertTrue(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
+        XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
+
+        latch.engage(on: card, at: 1)
+        XCTAssertFalse(latch.admits(card), "the newly authorized copy remains suppressed after its one use")
+    }
+
+    func testHeldRepeatAuthorizationDoesNotAdmitAnotherIdentity() {
+        var latch = CardLatch()
+        let first = pokemon(223)
+        let different = pokemon(204, code: "PAL")
+        latch.engage(on: first, at: 0)
+        latch.authorizeHeldRepeat(for: first.suppressionKey)
+
+        XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: different.suppressionKey))
+        latch.cancelHeldRepeatAuthorization()
+        XCTAssertTrue(latch.admits(different))
+    }
+
+    func testHeldRepeatAuthorizationCanReopenOnlyTheLostSeedGate() {
+        var gate = SpatialTrackerSeedGate()
+        let card = pokemon(223)
+        gate.markLost(card)
+        XCTAssertFalse(gate.canSeed(card))
+
+        gate.allowAuthorizedReseed(for: card.suppressionKey)
+        XCTAssertTrue(gate.canSeed(card))
+    }
+
+    func testHeldRepeatAuthorizationExpiryIsFakeClockable() {
+        let authorization = HeldRepeatAuthorization(
+            expectedSuppressionKey: pokemon(223).suppressionKey,
+            expiresAt: 2.0
+        )
+
+        XCTAssertFalse(authorization.isExpired(at: 1.999))
+        XCTAssertTrue(authorization.isExpired(at: 2.0))
+    }
+
+    func testScanRequestCarriesHeldRepeatAuthorizationThroughResolution() {
+        let authorizationID = UUID()
+        let request = ScanRequest(
+            identifier: pokemon(223),
+            purpose: .collection,
+            generation: 7,
+            heldRepeatAuthorizationID: authorizationID
+        )
+
+        XCTAssertEqual(request.heldRepeatAuthorizationID, authorizationID)
+    }
+
     func testSpatialConfigurationUsesStrictExperimentalDefaults() {
         let configuration = SpatialTrackingConfiguration.experimental
 

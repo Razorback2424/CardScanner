@@ -289,6 +289,14 @@ struct SpatialTrackerSeedGate: Equatable, Sendable {
         lostIdentity = nil
         return true
     }
+
+    /// A held-card tap is an explicit authorization for one fresh presentation.
+    /// It does not claim that the old tracker exited; it only clears the lost
+    /// marker for the expected next seed.
+    mutating func allowAuthorizedReseed(for key: ScanSuppressionKey) {
+        guard lostIdentity == key else { return }
+        lostIdentity = nil
+    }
 }
 
 /// The camera output may arrive faster or slower than either Vision workload.
@@ -354,6 +362,36 @@ struct SpatialResetProof: Identifiable, Equatable, Sendable {
         self.encounterID = encounterID
         self.presentationToken = presentationToken
     }
+}
+
+struct HeldRepeatAuthorization: Equatable, Sendable {
+    let id: UUID
+    let expectedSuppressionKey: ScanSuppressionKey
+    let expiresAt: CFAbsoluteTime
+
+    init(
+        id: UUID = UUID(),
+        expectedSuppressionKey: ScanSuppressionKey,
+        expiresAt: CFAbsoluteTime
+    ) {
+        self.id = id
+        self.expectedSuppressionKey = expectedSuppressionKey
+        self.expiresAt = expiresAt
+    }
+
+    func isExpired(at now: CFAbsoluteTime) -> Bool {
+        now >= expiresAt
+    }
+}
+
+enum HeldRepeatAuthorizationRejection: Equatable, Sendable {
+    case cardChanged
+    case expired
+}
+
+enum HeldRepeatAuthorizationResult: Equatable, Sendable {
+    case accepted
+    case rejected(HeldRepeatAuthorizationRejection)
 }
 
 enum SpatialTrackerLifecycle: Equatable, Sendable {
@@ -570,7 +608,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// latch as a new physical presentation.
     /// The encounter id is created at the exact frame that confirms the OCR
     /// encounter, before the event crosses to the view model.
-    var onConfirmedCandidate: ((UUID, ScanIdentifier) -> Void)?
+    var onConfirmedCandidate: ((UUID, ScanIdentifier, UUID?) -> Void)?
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
@@ -604,6 +642,7 @@ final class CardScanner: NSObject, ObservableObject {
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var latch = CardLatch()
     private var didAnnounceLatchHold = false
+    private var activeHeldRepeatAuthorization: HeldRepeatAuthorization?
     private var lastAnnouncedPlausible: ScanIdentifier?
     private var profile: RecognitionProfile = .pokemonOnly
     private var historicalAttempt: HistoricalEvidenceRequest?
@@ -626,6 +665,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// Consecutive readings of an already-consumed card before the UI mentions it.
     /// Long enough that simply finishing a movement never triggers it.
     private static let latchHoldHintMatches = 8
+
+#if DEBUG
+    private var diagnosticEvents: [String] = []
+#endif
 
     override convenience init() {
         self.init(spatialTrackingConfiguration: .experimental)
@@ -732,17 +775,87 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    /// Verifies a held-card offer against the latch on the vision queue. A
+    /// successful tap is an explicit permit for one next confirmation, not a
+    /// claim that the old presentation physically exited.
+    func authorizeHeldRepeat(
+        _ authorization: HeldRepeatAuthorization,
+        completion: @escaping (HeldRepeatAuthorizationResult) -> Void
+    ) {
+        visionQueue.async { [weak self] in
+            guard let self else {
+                DispatchQueue.main.async {
+                    completion(.rejected(.cardChanged))
+                }
+                return
+            }
+
+            let result: HeldRepeatAuthorizationResult
+            if authorization.isExpired(at: CFAbsoluteTimeGetCurrent()) {
+                self.cancelHeldRepeatAuthorizationOnVisionQueue()
+                self.recordDiagnostic("heldRepeatAuthorizationExpired")
+                result = .rejected(.expired)
+            } else if self.activeHeldRepeatAuthorization != nil ||
+                        self.latch.latched?.suppressionKey != authorization.expectedSuppressionKey {
+                self.cancelHeldRepeatAuthorizationOnVisionQueue()
+                self.recordDiagnostic("heldRepeatAuthorizationRejected")
+                result = .rejected(.cardChanged)
+            } else {
+                // A lost tracker is not converted into exit evidence. The
+                // authorization only opens the gate for this user's next
+                // presentation, which may receive a fresh tracker seed.
+                self.terminateTrackerWithoutSpatialProof()
+                self.trackerSeedGate.allowAuthorizedReseed(
+                    for: authorization.expectedSuppressionKey
+                )
+                self.latch.authorizeHeldRepeat(for: authorization.expectedSuppressionKey)
+                self.confirmationWindow.reset()
+                self.historicalAttempt = nil
+                self.lastAnnouncedPlausible = nil
+                self.didAnnounceLatchHold = false
+                self.activeHeldRepeatAuthorization = authorization
+                self.recordDiagnostic("heldRepeatAuthorizationAccepted")
+                result = .accepted
+            }
+
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+    }
+
+    /// Invalidates a pending held-repeat tap at a lifecycle boundary.
+    func cancelHeldRepeatAuthorization() {
+        visionQueue.async { [weak self] in
+            self?.cancelHeldRepeatAuthorizationOnVisionQueue()
+        }
+    }
+
+    /// Persistence failure leaves the visible card consumed but not added. Keep
+    /// that latch state and reset only OCR confirmation so the offer can be
+    /// restored by the ViewModel without inventing a new tracker lineage.
+    func restoreHeldRepeatAfterFailure() {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.activeHeldRepeatAuthorization = nil
+            self.latch.cancelHeldRepeatAuthorization()
+            self.confirmationWindow.reset()
+            self.didAnnounceLatchHold = false
+            self.lastAnnouncedPlausible = nil
+        }
+    }
+
     /// Recognition invalidation is allowed to clear OCR evidence, but it must
     /// not turn an active tracker into an exit proof. Used for mode changes,
     /// backgrounding, and camera interruptions.
     func invalidateSpatialContinuity() {
         visionQueue.async { [weak self] in
             guard let self else { return }
+            self.cancelHeldRepeatAuthorizationOnVisionQueue()
             self.markTrackerContinuityLost()
             self.confirmationWindow.reset()
             self.historicalAttempt = nil
             self.lastAnnouncedPlausible = nil
-            self.didAnnounceLatchHold = false
         }
     }
 
@@ -1071,6 +1184,7 @@ final class CardScanner: NSObject, ObservableObject {
         trackerLifecycle = .provisional(encounterID: encounterID)
         spatialExitAccumulator.reset()
         cadence.markRan(.tracking, at: now)
+        recordDiagnostic("trackerSeeded")
 
         // Establish the sequence on the same pixel buffer that confirmed the
         // encounter. If Vision does not return a result for this seed, retain
@@ -1143,6 +1257,7 @@ final class CardScanner: NSObject, ObservableObject {
                 if let identifier {
                     latch.confirmSpatialExit(for: identifier)
                 }
+                recordDiagnostic("spatialProof")
                 DispatchQueue.main.async { [weak self] in
                     self?.onSpatialResetProof?(proof)
                 }
@@ -1189,6 +1304,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// request and records that this presentation can no longer authorize a
     /// duplicate prompt.
     private func markTrackerContinuityLost() {
+        let hadTracker = trackerRequest != nil || trackerSeedIdentifier != nil
         // Preserve an earlier lost marker when a later lifecycle invalidation
         // arrives after the request has already been released. Passing nil to
         // the gate would accidentally reopen same-identity reseeding.
@@ -1203,6 +1319,31 @@ final class CardScanner: NSObject, ObservableObject {
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .continuityLost
+        if hadTracker {
+            recordDiagnostic("trackerLost")
+        }
+    }
+
+    /// Ends a tracker because the user explicitly authorized a new physical
+    /// presentation. Unlike `markTrackerContinuityLost`, this does not set the
+    /// same-identity lost gate and cannot emit a spatial proof.
+    private func terminateTrackerWithoutSpatialProof() {
+        trackerRequest?.isLastFrame = true
+        trackerRequest = nil
+        trackerObservation = nil
+        trackerEncounterID = nil
+        trackerSeedIdentifier = nil
+        trackerPresentationToken = nil
+        spatialExitAccumulator.reset()
+        trackerLifecycle = .idle
+    }
+
+    private func cancelHeldRepeatAuthorizationOnVisionQueue() {
+        if activeHeldRepeatAuthorization != nil {
+            recordDiagnostic("heldRepeatAuthorizationCancelled")
+        }
+        activeHeldRepeatAuthorization = nil
+        latch.cancelHeldRepeatAuthorization()
     }
 
     /// The whole acceptance pipeline, in order. Everything above this line is
@@ -1258,8 +1399,26 @@ final class CardScanner: NSObject, ObservableObject {
 
             guard let confirmed = confirmationWindow.observe(observation) else { return }
 
+            var consumedAuthorizationID: UUID?
+            if let authorization = activeHeldRepeatAuthorization {
+                if authorization.isExpired(at: now) {
+                    activeHeldRepeatAuthorization = nil
+                    latch.cancelHeldRepeatAuthorization()
+                    recordDiagnostic("heldRepeatAuthorizationExpired")
+                } else if confirmed.suppressionKey == authorization.expectedSuppressionKey,
+                          latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) {
+                    consumedAuthorizationID = authorization.id
+                    activeHeldRepeatAuthorization = nil
+                    recordDiagnostic("heldRepeatAuthorizationConsumed")
+                } else {
+                    activeHeldRepeatAuthorization = nil
+                    latch.cancelHeldRepeatAuthorization()
+                    recordDiagnostic("heldRepeatAuthorizationRejected")
+                }
+            }
+
             // Confirmed, but the same physical card may simply never have left.
-            guard latch.admits(confirmed) else {
+            guard consumedAuthorizationID != nil || latch.admits(confirmed) else {
                 confirmationWindow.reset()
                 return
             }
@@ -1278,7 +1437,7 @@ final class CardScanner: NSObject, ObservableObject {
                 )
             }
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedCandidate?(encounterID, confirmed)
+                self?.onConfirmedCandidate?(encounterID, confirmed, consumedAuthorizationID)
             }
         }
     }
@@ -1366,6 +1525,7 @@ final class CardScanner: NSObject, ObservableObject {
               let latched = latch.latched else { return }
 
         didAnnounceLatchHold = true
+        recordDiagnostic("heldDuplicateOffer")
         DispatchQueue.main.async { [weak self] in
             self?.onLatchHolding?(latched)
         }
@@ -1375,9 +1535,19 @@ final class CardScanner: NSObject, ObservableObject {
     private func resetObservationState() {
         confirmationWindow.reset()
         latch.releaseAndForget()
+        activeHeldRepeatAuthorization = nil
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
         historicalAttempt = nil
+    }
+
+    private func recordDiagnostic(_ event: String) {
+#if DEBUG
+        diagnosticEvents.append(event)
+        if diagnosticEvents.count > 64 {
+            diagnosticEvents.removeFirst(diagnosticEvents.count - 64)
+        }
+#endif
     }
 
     private func setCameraIssue(_ issue: CameraIssue?) {

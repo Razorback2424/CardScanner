@@ -37,6 +37,7 @@ struct ScanEncounter: Identifiable, Equatable, Sendable {
     let encounterID: UUID
     let identifier: ScanIdentifier
     let generation: Int
+    let heldRepeatAuthorizationID: UUID?
 
     var id: UUID { encounterID }
 }
@@ -49,19 +50,22 @@ struct ScanRequest: Identifiable, Equatable {
     let purpose: ScanPurpose
     let generation: Int
     let encounterID: UUID
+    let heldRepeatAuthorizationID: UUID?
 
     init(
         id: UUID = UUID(),
         identifier: ScanIdentifier,
         purpose: ScanPurpose,
         generation: Int,
-        encounterID: UUID = UUID()
+        encounterID: UUID = UUID(),
+        heldRepeatAuthorizationID: UUID? = nil
     ) {
         self.id = id
         self.identifier = identifier
         self.purpose = purpose
         self.generation = generation
         self.encounterID = encounterID
+        self.heldRepeatAuthorizationID = heldRepeatAuthorizationID
     }
 }
 
@@ -85,6 +89,7 @@ struct CollectionCommitCandidate {
     let options: [PhysicalVariant]
     let price: PriceLookup
     let encounterID: UUID
+    let heldRepeatAuthorizationID: UUID?
 
     init(resolvedScan: ResolvedScan) {
         requestID = resolvedScan.request.id
@@ -99,10 +104,47 @@ struct CollectionCommitCandidate {
             pokemonPrintRun: resolvedScan.pokemonPrintRun
         )
         encounterID = resolvedScan.request.encounterID
+        heldRepeatAuthorizationID = resolvedScan.request.heldRepeatAuthorizationID
     }
 
     var identity: ConsecutiveScanIdentity {
         ConsecutiveScanIdentity(card: card)
+    }
+
+    func withoutHeldRepeatAuthorization() -> CollectionCommitCandidate {
+        CollectionCommitCandidate(
+            requestID: requestID,
+            identifier: identifier,
+            card: card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            options: options,
+            price: price,
+            encounterID: encounterID,
+            heldRepeatAuthorizationID: nil
+        )
+    }
+
+    private init(
+        requestID: UUID,
+        identifier: ScanIdentifier,
+        card: IdentifiedCard,
+        resolved: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        options: [PhysicalVariant],
+        price: PriceLookup,
+        encounterID: UUID,
+        heldRepeatAuthorizationID: UUID?
+    ) {
+        self.requestID = requestID
+        self.identifier = identifier
+        self.card = card
+        self.resolved = resolved
+        self.pokemonPrintRun = pokemonPrintRun
+        self.options = options
+        self.price = price
+        self.encounterID = encounterID
+        self.heldRepeatAuthorizationID = heldRepeatAuthorizationID
     }
 }
 
@@ -158,6 +200,34 @@ struct CommittedSessionScan: Identifiable, Equatable, Sendable {
     let identity: ConsecutiveScanIdentity
     let presentationToken: UUID
     let encounterID: UUID
+}
+
+struct HeldDuplicateOffer: Identifiable, Equatable, Sendable {
+    let offerID: UUID
+    let previousScanID: RecentScan.ID
+    let previousPresentationToken: UUID
+    let identity: ConsecutiveScanIdentity
+    let suppressionKey: ScanSuppressionKey
+    let cardName: String
+    let printedIdentifier: String
+
+    var id: UUID { offerID }
+}
+
+private struct HeldRepeatAuthorizationState: Equatable {
+    let authorization: HeldRepeatAuthorization
+    let offer: HeldDuplicateOffer
+    let wasConsumedByEncounter: Bool
+
+    init(
+        authorization: HeldRepeatAuthorization,
+        offer: HeldDuplicateOffer,
+        wasConsumedByEncounter: Bool = false
+    ) {
+        self.authorization = authorization
+        self.offer = offer
+        self.wasConsumedByEncounter = wasConsumedByEncounter
+    }
 }
 
 struct PendingDuplicateConfirmation: Identifiable, Equatable {
@@ -433,6 +503,7 @@ final class ScannerViewModel: ObservableObject {
     @Published private(set) var pendingPrintRunChoice: PendingPrintRunChoice?
     @Published private(set) var pendingIdentityChoice: PendingIdentityChoice?
     @Published private(set) var pendingDuplicateConfirmation: PendingDuplicateConfirmation?
+    @Published private(set) var heldDuplicateOffer: HeldDuplicateOffer?
     @Published private(set) var receipt: ScanReceipt?
     @Published private(set) var recent: [RecentScan] = []
     /// Authoritative consecutive-scan history. `recent` is only the visual rail;
@@ -494,6 +565,11 @@ final class ScannerViewModel: ObservableObject {
     /// Enough to take back the most recent add, including the question that was
     /// asked at the time so undo can re-ask it.
     private var lastAdd: RecentScan?
+    private var heldRepeatAuthorizationState: HeldRepeatAuthorizationState?
+    private var heldRepeatExpiryTask: Task<Void, Never>?
+#if DEBUG
+    private var diagnosticEvents: [String] = []
+#endif
 
     /// The receipt is an undo affordance, not a fleeting toast. It remains
     /// available through the next card's recognition until a new add replaces
@@ -509,10 +585,38 @@ final class ScannerViewModel: ObservableObject {
             Task { await self.catalog.prefetch(identifier) }
         }
 
-        scanner.onConfirmedCandidate = { [weak self] encounterID, identifier in
+        scanner.onConfirmedCandidate = { [weak self] encounterID, identifier, authorizationID in
             guard let self else { return }
             Task { @MainActor in
-                self.enqueueIdentification(identifier, encounterID: encounterID)
+                if let state = self.heldRepeatAuthorizationState,
+                   authorizationID == Optional(state.authorization.id) {
+                    // The scanner has consumed the one-shot permit. Keep its
+                    // identity attached through print-run/finish resolution,
+                    // but stop the tap-time expiry clock now that the expected
+                    // encounter exists.
+                    self.heldRepeatAuthorizationState = HeldRepeatAuthorizationState(
+                        authorization: state.authorization,
+                        offer: state.offer,
+                        wasConsumedByEncounter: true
+                    )
+                    self.heldRepeatExpiryTask?.cancel()
+                    self.heldRepeatExpiryTask = nil
+                } else if self.heldRepeatAuthorizationState != nil {
+                    // Another confirmed card dismisses the old offer and any
+                    // still-pending tap. The scanner has already cancelled its
+                    // permit before emitting this encounter.
+                    self.clearHeldRepeatState()
+                }
+                if let offer = self.heldDuplicateOffer,
+                   offer.suppressionKey != identifier.suppressionKey {
+                    self.heldDuplicateOffer = nil
+                    self.diagnostic("heldDuplicateOfferDismissedByDifferentCard")
+                }
+                self.enqueueIdentification(
+                    identifier,
+                    encounterID: encounterID,
+                    heldRepeatAuthorizationID: authorizationID
+                )
             }
         }
 
@@ -533,9 +637,9 @@ final class ScannerViewModel: ObservableObject {
             }
         }
 
-        scanner.onLatchHolding = { [weak self] _ in
+        scanner.onLatchHolding = { [weak self] identifier in
             Task { @MainActor in
-                self?.show(ScanNote(text: "Already added — lift the card for the next one", tone: .info))
+                self?.offerHeldDuplicate(for: identifier)
             }
         }
     }
@@ -624,6 +728,7 @@ final class ScannerViewModel: ObservableObject {
         pendingIdentityChoice = nil
         pendingDuplicateConfirmation = nil
         spatialResetProofs.removeAll()
+        clearHeldRepeatState()
         receiptTask?.cancel()
         receipt = nil
         noteTask?.cancel()
@@ -634,6 +739,13 @@ final class ScannerViewModel: ObservableObject {
 
     private func receiveSpatialResetProof(_ proof: SpatialResetProof) {
         guard !spatialResetProofs.contains(where: { $0.id == proof.id }) else { return }
+
+        // Spatial proof is the stronger, one-shot duplicate path. A held-card
+        // offer cannot remain actionable once that proof takes over. Keep an
+        // already-tapped authorization alive: the proof may have been queued
+        // by the old tracker just before the tap, or may belong to the newly
+        // authorized encounter while catalog choices are still pending.
+        heldDuplicateOffer = nil
 
         // A tracker can exit while its catalog resolution is still in flight.
         // Once that resolution has committed, attach the already-observed proof
@@ -652,6 +764,57 @@ final class ScannerViewModel: ObservableObject {
             )
         } else {
             spatialResetProofs.append(proof)
+        }
+    }
+
+    /// Turns the latch's one-time held signal into a nonblocking offer only
+    /// when it still describes the last successfully committed presentation.
+    /// The offer is a UI affordance; it does not itself change scanner state or
+    /// collection quantity.
+    private func offerHeldDuplicate(for identifier: ScanIdentifier) {
+        guard purpose == .collection,
+              heldDuplicateOffer == nil,
+              heldRepeatAuthorizationState == nil,
+              pendingChoice == nil,
+              pendingPrintRunChoice == nil,
+              pendingIdentityChoice == nil,
+              pendingDuplicateConfirmation == nil,
+              let previous = committedSessionHistory.last,
+              let previousScan = recent.first(where: { $0.id == previous.id }),
+              previousScan.identifier.suppressionKey == identifier.suppressionKey else {
+            return
+        }
+
+        heldDuplicateOffer = HeldDuplicateOffer(
+            offerID: UUID(),
+            previousScanID: previous.id,
+            previousPresentationToken: previous.presentationToken,
+            identity: previous.identity,
+            suppressionKey: identifier.suppressionKey,
+            cardName: previousScan.card.name,
+            printedIdentifier: previousScan.identifier.scannerDisplayIdentifier(for: previousScan.card)
+        )
+        diagnostic("heldDuplicateOfferPublished")
+    }
+
+    private func clearHeldRepeatState() {
+        heldRepeatExpiryTask?.cancel()
+        heldRepeatExpiryTask = nil
+        heldRepeatAuthorizationState = nil
+        heldDuplicateOffer = nil
+        scanner.cancelHeldRepeatAuthorization()
+    }
+
+    private func scheduleHeldRepeatExpiry(for authorization: HeldRepeatAuthorization) {
+        heldRepeatExpiryTask?.cancel()
+        let remaining = max(0, authorization.expiresAt - CFAbsoluteTimeGetCurrent())
+        heldRepeatExpiryTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(remaining))
+            guard !Task.isCancelled, let self,
+                  self.heldRepeatAuthorizationState?.authorization.id == authorization.id else { return }
+            self.scanner.cancelHeldRepeatAuthorization()
+            self.heldRepeatAuthorizationState = nil
+            self.diagnostic("heldRepeatAuthorizationExpired")
         }
     }
 
@@ -700,6 +863,49 @@ final class ScannerViewModel: ObservableObject {
         // outstanding proof is no longer useful. The candidate's own proof is
         // carried by its tracker and may arrive after the commit.
         spatialResetProofs.removeAll { $0.encounterID != pending.encounterID }
+    }
+
+    /// Creates one short-lived, scanner-verified permit for the card that is
+    /// still held. The offer is hidden immediately so a second tap cannot make
+    /// another permit while the first verification is in flight.
+    func addAnotherHeldCopy() {
+        guard purpose == .collection,
+              let offer = heldDuplicateOffer,
+              heldRepeatAuthorizationState == nil else { return }
+
+        let authorization = HeldRepeatAuthorization(
+            expectedSuppressionKey: offer.suppressionKey,
+            expiresAt: CFAbsoluteTimeGetCurrent() + 2.0
+        )
+        heldRepeatAuthorizationState = HeldRepeatAuthorizationState(
+            authorization: authorization,
+            offer: offer
+        )
+        heldDuplicateOffer = nil
+        diagnostic("heldRepeatTapCreated")
+
+        scheduleHeldRepeatExpiry(for: authorization)
+
+        scanner.authorizeHeldRepeat(authorization) { [weak self] result in
+            Task { @MainActor in
+                guard let self,
+                      self.heldRepeatAuthorizationState?.authorization.id == authorization.id else { return }
+                switch result {
+                case .accepted:
+                    self.diagnostic("heldRepeatAuthorizationAccepted")
+                case .rejected(.expired):
+                    self.heldRepeatAuthorizationState = nil
+                    self.heldRepeatExpiryTask?.cancel()
+                    self.show(ScanNote(text: "Card changed — try again", tone: .info))
+                    self.feedback.problem()
+                case .rejected(.cardChanged):
+                    self.heldRepeatAuthorizationState = nil
+                    self.heldRepeatExpiryTask?.cancel()
+                    self.show(ScanNote(text: "Card changed — try again", tone: .info))
+                    self.feedback.problem()
+                }
+            }
+        }
     }
 
     /// Explicitly ends the scanner session. The app-level view model normally
@@ -838,6 +1044,10 @@ final class ScannerViewModel: ObservableObject {
         }
         recent.removeAll { $0.id == lastAdd.id }
         removeCommittedHistory(for: lastAdd.id)
+        if heldDuplicateOffer?.previousScanID == lastAdd.id ||
+            heldRepeatAuthorizationState?.offer.previousScanID == lastAdd.id {
+            clearHeldRepeatState()
+        }
         receipt = nil
         receiptTask?.cancel()
         feedback.undone()
@@ -898,6 +1108,10 @@ final class ScannerViewModel: ObservableObject {
 
         recent.removeAll { $0.id == scan.id }
         removeCommittedHistory(for: scan.id)
+        if heldDuplicateOffer?.previousScanID == scan.id ||
+            heldRepeatAuthorizationState?.offer.previousScanID == scan.id {
+            clearHeldRepeatState()
+        }
         if pendingDuplicateConfirmation?.previousScanID == scan.id {
             invalidatePendingScan()
         }
@@ -1018,17 +1232,23 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Identification
 
-    private func enqueueIdentification(_ identifier: ScanIdentifier, encounterID: UUID) {
+    private func enqueueIdentification(
+        _ identifier: ScanIdentifier,
+        encounterID: UUID,
+        heldRepeatAuthorizationID: UUID? = nil
+    ) {
         let encounter = ScanEncounter(
             encounterID: encounterID,
             identifier: identifier,
-            generation: scanGeneration
+            generation: scanGeneration,
+            heldRepeatAuthorizationID: heldRepeatAuthorizationID
         )
         let request = ScanRequest(
             identifier: encounter.identifier,
             purpose: purpose,
             generation: encounter.generation,
-            encounterID: encounter.encounterID
+            encounterID: encounter.encounterID,
+            heldRepeatAuthorizationID: encounter.heldRepeatAuthorizationID
         )
         // Price Check is intentionally a one-card transaction. The confidence
         // threshold is unchanged; only after that threshold do we stop feeding
@@ -1273,12 +1493,18 @@ final class ScannerViewModel: ObservableObject {
     enum CollectionCommitAuthorization {
         case automatic
         case addAnother
+        case heldRepeat
     }
 
     /// Collection routing is identity-first. A matching identity can reach a
     /// prompt only with a one-shot proof tied to the previous presentation.
     /// No proof means suppression, never a reseed or collection mutation.
     private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) {
+        if let authorizationID = candidate.heldRepeatAuthorizationID {
+            routeHeldRepeatCandidate(candidate, authorizationID: authorizationID)
+            return
+        }
+
         let decision = CollectionCandidateRoutingPolicy.decision(
             for: candidate.identity,
             previous: committedSessionHistory.last,
@@ -1287,15 +1513,18 @@ final class ScannerViewModel: ObservableObject {
 
         switch decision {
         case .automatic:
+            diagnostic("routingAutomatic")
             guard commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
             // A candidate may have exited before its successful commit. Keep
             // only that candidate's proof and discard evidence belonging to
             // older or unrelated presentations.
             spatialResetProofs.removeAll { $0.encounterID != candidate.encounterID }
         case .suppress:
+            diagnostic("routingSuppressed")
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
             spatialResetProofs.removeAll()
         case .duplicate(let proof):
+            diagnostic("routingSpatialDuplicatePrompt")
             guard let previous = committedSessionHistory.last,
                   let proofIndex = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
                 scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
@@ -1318,6 +1547,56 @@ final class ScannerViewModel: ObservableObject {
             scanner.pauseRecognition()
             feedback.needsChoice()
         }
+    }
+
+    /// Held-repeat candidates bypass duplicate interception only after the
+    /// detached authorization is matched to the exact previous committed
+    /// presentation and the resolved canonical identity.
+    private func routeHeldRepeatCandidate(
+        _ candidate: CollectionCommitCandidate,
+        authorizationID: UUID
+    ) {
+        guard let state = heldRepeatAuthorizationState,
+              state.authorization.id == authorizationID,
+              state.wasConsumedByEncounter,
+              candidate.identifier.suppressionKey == state.offer.suppressionKey,
+              let previous = committedSessionHistory.last,
+              previous.id == state.offer.previousScanID,
+              previous.presentationToken == state.offer.previousPresentationToken else {
+            clearHeldRepeatState()
+            routeCollectionCandidate(candidate.withoutHeldRepeatAuthorization())
+            return
+        }
+
+        guard candidate.identity == state.offer.identity else {
+            // The user's permit was for a different resolved card. It cannot
+            // authorize this candidate, but this candidate still follows the
+            // ordinary identity-first rules.
+            clearHeldRepeatState()
+            routeCollectionCandidate(candidate.withoutHeldRepeatAuthorization())
+            return
+        }
+
+        heldRepeatExpiryTask?.cancel()
+        heldRepeatExpiryTask = nil
+        heldRepeatAuthorizationState = nil
+        heldDuplicateOffer = nil
+
+        guard commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
+            // No successful mutation means the authorization remains available
+            // for an explicit retry, with the visible card still latched.
+            if state.authorization.isExpired(at: CFAbsoluteTimeGetCurrent()) {
+                clearHeldRepeatState()
+            } else {
+                heldRepeatAuthorizationState = state
+                heldDuplicateOffer = state.offer
+                scheduleHeldRepeatExpiry(for: state.authorization)
+                scanner.restoreHeldRepeatAfterFailure()
+            }
+            diagnostic("routingHeldRepeatSaveFailed")
+            return
+        }
+        diagnostic("routingHeldRepeatCommitted")
     }
 
     /// Takes a detached pending value before persistence starts. The caller for
@@ -1362,7 +1641,7 @@ final class ScannerViewModel: ObservableObject {
         }
         appendCommittedScan(candidate, mutation: mutation)
         resumeRecognitionIfPossible()
-        _ = authorization
+        diagnostic("collectionCommit")
         return true
     }
 
@@ -1489,6 +1768,15 @@ final class ScannerViewModel: ObservableObject {
                 self?.note = nil
             }
         }
+    }
+
+    private func diagnostic(_ event: String) {
+#if DEBUG
+        diagnosticEvents.append(event)
+        if diagnosticEvents.count > 64 {
+            diagnosticEvents.removeFirst(diagnosticEvents.count - 64)
+        }
+#endif
     }
 
     // MARK: - Magic set directory
