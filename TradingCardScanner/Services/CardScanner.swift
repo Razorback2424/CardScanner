@@ -185,6 +185,190 @@ enum CardFramingRegion {
     }
 }
 
+/// Experimental calibration values for the one piece of scanner evidence that
+/// may authorize a duplicate question. These values are deliberately kept in
+/// one place so device tuning cannot accidentally change the trust boundary:
+/// only positively observed motion can produce a reset proof.
+struct SpatialTrackingConfiguration: Equatable, Sendable {
+    let trackingRate: Double
+    let seedInsetFraction: CGFloat
+    let minimumConfidence: Float
+    let requiredExitObservations: Int
+    let maximumGuideOverlap: CGFloat
+
+    static let experimental = SpatialTrackingConfiguration(
+        trackingRate: 12,
+        seedInsetFraction: 0.06,
+        minimumConfidence: 0.50,
+        requiredExitObservations: 2,
+        maximumGuideOverlap: 0.25
+    )
+
+    init(
+        trackingRate: Double = 12,
+        seedInsetFraction: CGFloat = 0.06,
+        minimumConfidence: Float = 0.50,
+        requiredExitObservations: Int = 2,
+        maximumGuideOverlap: CGFloat = 0.25
+    ) {
+        self.trackingRate = max(1, trackingRate)
+        self.seedInsetFraction = min(max(0, seedInsetFraction), 0.49)
+        self.minimumConfidence = min(max(0, minimumConfidence), 1)
+        self.requiredExitObservations = max(1, requiredExitObservations)
+        self.maximumGuideOverlap = min(max(0, maximumGuideOverlap), 1)
+    }
+
+    var seedRect: CGRect {
+        let guide = CardFramingRegion.cardVisionRect
+        return guide.insetBy(
+            dx: guide.width * seedInsetFraction,
+            dy: guide.height * seedInsetFraction
+        )
+    }
+
+    func isQualifyingExit(box: CGRect, confidence: Float) -> Bool {
+        guard confidence >= minimumConfidence, box.width > 0, box.height > 0 else {
+            return false
+        }
+
+        let center = CGPoint(x: box.midX, y: box.midY)
+        guard !CardFramingRegion.cardVisionRect.contains(center) else { return false }
+
+        let intersection = box.intersection(CardFramingRegion.cardVisionRect)
+        let intersectionArea = intersection.isNull
+            ? 0
+            : intersection.width * intersection.height
+        let trackedArea = box.width * box.height
+        return intersectionArea / trackedArea <= maximumGuideOverlap
+    }
+}
+
+/// Strict spatial evidence accumulator. OCR loss, tracker loss, timeouts, and
+/// empty-footer observations never call this type, so they cannot become a
+/// `SpatialResetProof` by accident.
+struct SpatialExitObservationAccumulator: Equatable, Sendable {
+    let configuration: SpatialTrackingConfiguration
+    private(set) var consecutiveQualifiedObservations = 0
+
+    init(configuration: SpatialTrackingConfiguration = .experimental) {
+        self.configuration = configuration
+    }
+
+    /// Returns true exactly when the configured run is completed. A
+    /// non-qualifying observation breaks the run, and observations after the
+    /// completion do not create another event if a caller has not yet torn down
+    /// its tracker.
+    mutating func observe(box: CGRect, confidence: Float) -> Bool {
+        guard configuration.isQualifyingExit(box: box, confidence: confidence) else {
+            consecutiveQualifiedObservations = 0
+            return false
+        }
+        consecutiveQualifiedObservations += 1
+        return consecutiveQualifiedObservations == configuration.requiredExitObservations
+    }
+
+    mutating func reset() {
+        consecutiveQualifiedObservations = 0
+    }
+}
+
+/// A lost tracker is a hard lineage boundary. OCR may continue to identify the
+/// same canonical card, but it cannot recreate the presentation that was lost.
+/// A different suppression key is allowed to begin a new encounter and clears
+/// the old marker.
+struct SpatialTrackerSeedGate: Equatable, Sendable {
+    private(set) var lostIdentity: ScanSuppressionKey?
+
+    mutating func markLost(_ identifier: ScanIdentifier?) {
+        guard let identifier else { return }
+        lostIdentity = identifier.suppressionKey
+    }
+
+    mutating func canSeed(_ identifier: ScanIdentifier) -> Bool {
+        guard lostIdentity != identifier.suppressionKey else { return false }
+        lostIdentity = nil
+        return true
+    }
+}
+
+/// The camera output may arrive faster or slower than either Vision workload.
+/// Keeping both last-run timestamps here makes the 12 Hz tracker and 0.24 s OCR
+/// throttle independently fake-clockable.
+enum ScanCadenceKind: Equatable, Sendable {
+    case tracking
+    case ocr
+}
+
+struct ScanCadenceScheduler: Equatable, Sendable {
+    let trackingInterval: CFAbsoluteTime
+    let ocrInterval: CFAbsoluteTime
+    private(set) var lastTrackingAt: CFAbsoluteTime?
+    private(set) var lastOCRAt: CFAbsoluteTime?
+
+    init(trackingRate: Double = 12, ocrInterval: CFAbsoluteTime = 0.24) {
+        trackingInterval = 1.0 / max(1, trackingRate)
+        self.ocrInterval = max(0, ocrInterval)
+    }
+
+    mutating func shouldRun(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) -> Bool {
+        switch kind {
+        case .tracking:
+            guard lastTrackingAt == nil || now - lastTrackingAt! >= trackingInterval else {
+                return false
+            }
+            lastTrackingAt = now
+            return true
+        case .ocr:
+            guard lastOCRAt == nil || now - lastOCRAt! >= ocrInterval else {
+                return false
+            }
+            lastOCRAt = now
+            return true
+        }
+    }
+
+    mutating func markRan(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) {
+        switch kind {
+        case .tracking:
+            lastTrackingAt = now
+        case .ocr:
+            lastOCRAt = now
+        }
+    }
+}
+
+struct SpatialResetProof: Identifiable, Equatable, Sendable {
+    let id: UUID
+    let encounterID: UUID
+    /// Present when the tracker had already been accepted before it exited.
+    /// A provisional proof is matched to history by `encounterID` after the
+    /// asynchronous collection commit succeeds.
+    let presentationToken: UUID?
+
+    init(
+        id: UUID = UUID(),
+        encounterID: UUID,
+        presentationToken: UUID? = nil
+    ) {
+        self.id = id
+        self.encounterID = encounterID
+        self.presentationToken = presentationToken
+    }
+}
+
+enum SpatialTrackerLifecycle: Equatable, Sendable {
+    case idle
+    case provisional(encounterID: UUID)
+    case accepted(presentationToken: UUID, encounterID: UUID)
+    case exited(proof: SpatialResetProof)
+    case continuityLost
+}
+
+// Visual tracking follows image appearance, not physical identity. With a
+// stack of identical cards it can stay attached to, or jump to, the lower copy;
+// unless the strict exit rule is positively satisfied, that ambiguity remains
+// continuity loss and cannot authorize a duplicate question.
+
 /// Compatibility name for parser/debug code written before the whole-card guide.
 typealias ScanRegion = CardFramingRegion
 
@@ -384,7 +568,16 @@ final class CardScanner: NSObject, ObservableObject {
     var onPlausibleCandidate: ((ScanIdentifier) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
-    var onConfirmedCandidate: ((ScanIdentifier) -> Void)?
+    /// The encounter id is created at the exact frame that confirms the OCR
+    /// encounter, before the event crosses to the view model.
+    var onConfirmedCandidate: ((UUID, ScanIdentifier) -> Void)?
+    /// Positive spatial exit evidence. This is intentionally separate from OCR
+    /// and from the latch's weak timeout/absence signals.
+    var onSpatialResetProof: ((SpatialResetProof) -> Void)?
+    /// Camera lifecycle is a scanner-session boundary. The view model dismisses
+    /// pending candidates/proofs, but keeps committed session history.
+    var onCameraInterruption: (() -> Void)?
+    var onCameraInterruptionEnded: (() -> Void)?
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
@@ -399,13 +592,15 @@ final class CardScanner: NSObject, ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
+    private let trackingSequenceHandler = VNSequenceRequestHandler()
 
     private var isConfigured = false
     private var isPaused = false
     private var videoInput: AVCaptureDeviceInput?
+    private var interruptionObserver: NSObjectProtocol?
+    private var interruptionEndedObserver: NSObjectProtocol?
     /// Written on `sessionQueue`; `lens` is the main-thread mirror for the UI.
     private var currentLens: CameraLens = .standard
-    private var lastVisionTime: CFAbsoluteTime = 0
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var latch = CardLatch()
     private var didAnnounceLatchHold = false
@@ -413,6 +608,17 @@ final class CardScanner: NSObject, ObservableObject {
     private var profile: RecognitionProfile = .pokemonOnly
     private var historicalAttempt: HistoricalEvidenceRequest?
     private var assistanceMonitor = CaptureAssistanceMonitor()
+    private let spatialTrackingConfiguration: SpatialTrackingConfiguration
+    private var trackerRequest: VNTrackObjectRequest?
+    private var trackerObservation: VNDetectedObjectObservation?
+    private var trackerEncounterID: UUID?
+    private var trackerPresentationToken: UUID?
+    private var trackerLifecycle: SpatialTrackerLifecycle = .idle
+    /// A lost chain cannot be reconstructed by later OCR for the same identity.
+    /// A different identity may start a fresh chain and clears this marker.
+    private var trackerSeedGate = SpatialTrackerSeedGate()
+    private var spatialExitAccumulator: SpatialExitObservationAccumulator
+    private var cadence: ScanCadenceScheduler
     private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
     private static let historicalAttemptLimit = 6
 
@@ -421,13 +627,40 @@ final class CardScanner: NSObject, ObservableObject {
     /// Long enough that simply finishing a movement never triggers it.
     private static let latchHoldHintMatches = 8
 
-    // This is a ceiling of about 4 OCR starts/sec. Actual throughput is whichever
-    // is slower: this interval or Vision's synchronous .accurate processing time.
-    private let minimumVisionInterval: CFAbsoluteTime = 0.24
+    override convenience init() {
+        self.init(spatialTrackingConfiguration: .experimental)
+    }
 
-    override init() {
+    init(spatialTrackingConfiguration: SpatialTrackingConfiguration) {
+        self.spatialTrackingConfiguration = spatialTrackingConfiguration
+        spatialExitAccumulator = SpatialExitObservationAccumulator(
+            configuration: spatialTrackingConfiguration
+        )
+        cadence = ScanCadenceScheduler(
+            trackingRate: spatialTrackingConfiguration.trackingRate,
+            ocrInterval: 0.24
+        )
         super.init()
         configureTextRequest()
+
+        interruptionObserver = NotificationCenter.default.addObserver(
+            forName: AVCaptureSession.wasInterruptedNotification,
+            object: session,
+            queue: nil
+        ) { [weak self] _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.onCameraInterruption?()
+            }
+        }
+        interruptionEndedObserver = NotificationCenter.default.addObserver(
+            forName: AVCaptureSession.interruptionEndedNotification,
+            object: session,
+            queue: nil
+        ) { [weak self] _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.onCameraInterruptionEnded?()
+            }
+        }
 
         // Resolved from the cached hardware probe rather than queried per launch.
         let lenses: [CameraLens] = CameraCapabilities.hasMacroLens() ? [.standard, .macro] : [.standard]
@@ -439,6 +672,15 @@ final class CardScanner: NSObject, ObservableObject {
         let preferred = lenses.contains(.macro) ? CameraLens.macro : .standard
         lens = preferred
         currentLens = preferred
+    }
+
+    deinit {
+        if let interruptionObserver {
+            NotificationCenter.default.removeObserver(interruptionObserver)
+        }
+        if let interruptionEndedObserver {
+            NotificationCenter.default.removeObserver(interruptionEndedObserver)
+        }
     }
 
     func start() {
@@ -487,6 +729,76 @@ final class CardScanner: NSObject, ObservableObject {
             guard let self else { return }
             self.confirmationWindow.reset()
             self.isPaused = false
+        }
+    }
+
+    /// Recognition invalidation is allowed to clear OCR evidence, but it must
+    /// not turn an active tracker into an exit proof. Used for mode changes,
+    /// backgrounding, and camera interruptions.
+    func invalidateSpatialContinuity() {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.markTrackerContinuityLost()
+            self.confirmationWindow.reset()
+            self.historicalAttempt = nil
+            self.lastAnnouncedPlausible = nil
+            self.didAnnounceLatchHold = false
+        }
+    }
+
+    /// Promotes the tracker that was seeded by this exact encounter. If it has
+    /// already exited or been lost, no new tracker is created.
+    func acceptedPresentation(encounterID: UUID, presentationToken: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  self.trackerEncounterID == encounterID,
+                  case .provisional = self.trackerLifecycle,
+                  self.trackerRequest != nil else { return }
+            self.trackerPresentationToken = presentationToken
+            self.trackerLifecycle = .accepted(
+                presentationToken: presentationToken,
+                encounterID: encounterID
+            )
+        }
+    }
+
+    /// Keeps a suppressed candidate from becoming a new continuity chain. The
+    /// latch remains engaged, so repeated OCR for the same visible card stays
+    /// suppressed without any persistence knowledge in `CardScanner`.
+    func keepPresentationSuppressed(encounterID: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  self.trackerEncounterID == encounterID,
+                  case .provisional = self.trackerLifecycle else { return }
+            self.markTrackerContinuityLost()
+        }
+    }
+
+    /// Rebinds an already continuous provisional candidate to the committed
+    /// presentation when the user answers "Same card". This never reseeds.
+    func rebindProvisionalPresentation(encounterID: UUID, presentationToken: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  self.trackerEncounterID == encounterID,
+                  self.trackerRequest != nil,
+                  case .provisional = self.trackerLifecycle else { return }
+            self.trackerPresentationToken = presentationToken
+            self.trackerLifecycle = .accepted(
+                presentationToken: presentationToken,
+                encounterID: encounterID
+            )
+        }
+    }
+
+    /// Undo/delete can restore a prior committed record, but its old visual
+    /// continuity is not recoverable. Mark the currently matching tracker lost;
+    /// do not fabricate a new seed from the restored record.
+    func restoreAcceptedPresentation(presentationToken: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  case let .accepted(token, _) = self.trackerLifecycle,
+                  token == presentationToken else { return }
+            self.markTrackerContinuityLost()
         }
     }
 
@@ -599,7 +911,10 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
 
-            self.visionQueue.async { self.resetObservationState() }
+            self.visionQueue.async {
+                self.markTrackerContinuityLost()
+                self.resetObservationState()
+            }
         }
     }
 
@@ -723,6 +1038,173 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    // MARK: - Spatial continuity
+
+    /// Creates the only tracker for a confirmed encounter. The seed is the
+    /// exact frame that produced the OCR confirmation, not a later frame or a
+    /// later OCR result.
+    private func seedTracker(
+        encounterID: UUID,
+        identifier: ScanIdentifier,
+        pixelBuffer: CVPixelBuffer,
+        orientation: CGImagePropertyOrientation,
+        at now: CFAbsoluteTime
+    ) {
+        guard trackerRequest == nil else { return }
+        guard trackerSeedGate.canSeed(identifier) else {
+            // Later OCR is not a spatial reset. Keep the identity consumed and
+            // let the view model suppress it without creating a new lineage.
+            return
+        }
+
+        let seedObservation = VNDetectedObjectObservation(
+            boundingBox: spatialTrackingConfiguration.seedRect
+        )
+        let request = VNTrackObjectRequest(detectedObjectObservation: seedObservation)
+        request.trackingLevel = .fast
+
+        trackerEncounterID = encounterID
+        trackerSeedIdentifier = identifier
+        trackerPresentationToken = nil
+        trackerRequest = request
+        trackerObservation = seedObservation
+        trackerLifecycle = .provisional(encounterID: encounterID)
+        spatialExitAccumulator.reset()
+        cadence.markRan(.tracking, at: now)
+
+        // Establish the sequence on the same pixel buffer that confirmed the
+        // encounter. If Vision does not return a result for this seed, retain
+        // the known presentation box and let the next frame prove continuity.
+        do {
+            try trackingSequenceHandler.perform(
+                [request],
+                on: pixelBuffer,
+                orientation: orientation
+            )
+            if let observation = request.results?.first as? VNDetectedObjectObservation {
+                feedForwardTrackerObservation(observation, into: request)
+            }
+        } catch {
+            markTrackerContinuityLost()
+        }
+    }
+
+    /// Runs independently of OCR at the configured maximum rate. This method
+    /// is called before the OCR pause/due checks, so a pending user choice does
+    /// not stop the tracker that owns its encounter.
+    private func trackIfDue(
+        pixelBuffer: CVPixelBuffer,
+        orientation: CGImagePropertyOrientation,
+        at now: CFAbsoluteTime
+    ) {
+        guard let request = trackerRequest else { return }
+        guard cadence.shouldRun(.tracking, at: now) else { return }
+
+        do {
+            try trackingSequenceHandler.perform(
+                [request],
+                on: pixelBuffer,
+                orientation: orientation
+            )
+            guard let observation = request.results?.first as? VNDetectedObjectObservation else {
+                markTrackerContinuityLost()
+                return
+            }
+
+            feedForwardTrackerObservation(observation, into: request)
+            guard observation.confidence >= spatialTrackingConfiguration.minimumConfidence else {
+                markTrackerContinuityLost()
+                return
+            }
+            guard !spatialExitAccumulator.observe(
+                box: observation.boundingBox,
+                confidence: observation.confidence
+            ) else {
+                guard let encounterID = trackerEncounterID else {
+                    markTrackerContinuityLost()
+                    return
+                }
+                let proof = SpatialResetProof(
+                    encounterID: encounterID,
+                    presentationToken: trackerPresentationToken
+                )
+                let identifier = trackerIdentifierForExit
+                request.isLastFrame = true
+                trackerRequest = nil
+                trackerObservation = nil
+                trackerEncounterID = nil
+                trackerSeedIdentifier = nil
+                trackerPresentationToken = nil
+                trackerLifecycle = .exited(proof: proof)
+                spatialExitAccumulator.reset()
+
+                // Make the latch's consumed identity eligible again, but only
+                // because the independent tracker produced positive exit proof.
+                if let identifier {
+                    latch.confirmSpatialExit(for: identifier)
+                }
+                DispatchQueue.main.async { [weak self] in
+                    self?.onSpatialResetProof?(proof)
+                }
+                return
+            }
+        } catch {
+            markTrackerContinuityLost()
+        }
+    }
+
+    /// The identifier is retained only to authorize the local latch release;
+    /// persistence and duplicate decisions remain in the view model.
+    private var trackerIdentifierForExit: ScanIdentifier? {
+        switch trackerLifecycle {
+        case .provisional, .accepted:
+            return trackerSeedIdentifier
+        case .idle, .exited, .continuityLost:
+            return nil
+        }
+    }
+
+    private var trackerSeedIdentifier: ScanIdentifier?
+
+    /// Vision tracking is sequential: the observation returned for this frame
+    /// must become the request's input for the next frame. Keep this assignment
+    /// beside the cached observation update so a future lifecycle change cannot
+    /// accidentally preserve only the stale seed.
+    static func feedForwardTrackerObservation(
+        _ observation: VNDetectedObjectObservation,
+        into request: VNTrackObjectRequest
+    ) {
+        request.inputObservation = observation
+    }
+
+    private func feedForwardTrackerObservation(
+        _ observation: VNDetectedObjectObservation,
+        into request: VNTrackObjectRequest
+    ) {
+        trackerObservation = observation
+        Self.feedForwardTrackerObservation(observation, into: request)
+    }
+
+    /// Tracker loss is never exit evidence. It only releases the Vision
+    /// request and records that this presentation can no longer authorize a
+    /// duplicate prompt.
+    private func markTrackerContinuityLost() {
+        // Preserve an earlier lost marker when a later lifecycle invalidation
+        // arrives after the request has already been released. Passing nil to
+        // the gate would accidentally reopen same-identity reseeding.
+        if let trackerSeedIdentifier {
+            trackerSeedGate.markLost(trackerSeedIdentifier)
+        }
+        trackerRequest?.isLastFrame = true
+        trackerRequest = nil
+        trackerObservation = nil
+        trackerEncounterID = nil
+        trackerSeedIdentifier = nil
+        trackerPresentationToken = nil
+        spatialExitAccumulator.reset()
+        trackerLifecycle = .continuityLost
+    }
+
     /// The whole acceptance pipeline, in order. Everything above this line is
     /// evidence gathering; nothing below it is allowed to guess.
     ///
@@ -736,7 +1218,8 @@ final class CardScanner: NSObject, ObservableObject {
         _ outcome: RecognitionOutcome,
         footerLines: [RecognizedLine],
         historicalIdentifier: ScanIdentifier?,
-        at now: CFAbsoluteTime
+        at now: CFAbsoluteTime,
+        pixelBuffer: CVPixelBuffer?
     ) {
         // Vision's line grouping is preserved into the parsers, which is what
         // keeps a set code paired with its own collector number when more than
@@ -784,8 +1267,18 @@ final class CardScanner: NSObject, ObservableObject {
             latch.engage(on: confirmed, at: now)
             didAnnounceLatchHold = false
             historicalAttempt = nil
+            let encounterID = UUID()
+            if let pixelBuffer {
+                seedTracker(
+                    encounterID: encounterID,
+                    identifier: confirmed,
+                    pixelBuffer: pixelBuffer,
+                    orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotation.currentAngle),
+                    at: now
+                )
+            }
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedCandidate?(confirmed)
+                self?.onConfirmedCandidate?(encounterID, confirmed)
             }
         }
     }
@@ -1015,18 +1508,21 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard !isPaused else { return }
-
         let now = CFAbsoluteTimeGetCurrent()
-        guard now - lastVisionTime >= minimumVisionInterval else { return }
-        lastVisionTime = now
-
         let rotationAngle = rotation.currentAngle
+        let orientation = CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle)
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        // Tracking is intentionally first and independent from OCR throttling or
+        // recognition pauses for finish/duplicate choices.
+        trackIfDue(pixelBuffer: pixelBuffer, orientation: orientation, at: now)
+        guard !isPaused else { return }
+        guard cadence.shouldRun(.ocr, at: now) else { return }
 
         do {
             let handler = VNImageRequestHandler(
                 cmSampleBuffer: sampleBuffer,
-                orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle),
+                orientation: orientation,
                 options: [:]
             )
             try handler.perform([footerRequest])
@@ -1072,7 +1568,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 outcome,
                 footerLines: lines,
                 historicalIdentifier: historical,
-                at: now
+                at: now,
+                pixelBuffer: pixelBuffer
             )
         } catch {
 #if DEBUG
@@ -1088,7 +1585,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 .nothing,
                 footerLines: [],
                 historicalIdentifier: nil,
-                at: now
+                at: now,
+                pixelBuffer: nil
             )
         }
     }
