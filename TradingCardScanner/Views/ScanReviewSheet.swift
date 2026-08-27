@@ -10,16 +10,17 @@ struct ScanReviewSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     let scan: RecentScan
-    let onCorrect: (PhysicalVariant) -> Void
+    let onCorrect: (PhysicalVariant) -> ScanCorrectionOutcome
     let onDelete: () -> Void
 
     @State private var variant: PhysicalVariant?
     @State private var resolution: VariantResolution
     @State private var isConfirmingDelete = false
+    @State private var correctionFailure: String?
 
     init(
         scan: RecentScan,
-        onCorrect: @escaping (PhysicalVariant) -> Void,
+        onCorrect: @escaping (PhysicalVariant) -> ScanCorrectionOutcome,
         onDelete: @escaping () -> Void
     ) {
         self.scan = scan
@@ -49,6 +50,14 @@ struct ScanReviewSheet: View {
 
                     identity
                     variantSection
+
+                    if let correctionFailure {
+                        Label(correctionFailure, systemImage: "exclamationmark.triangle.fill")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(.orange)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .accessibilityLabel("Correction error: \(correctionFailure)")
+                    }
 
                     if !scan.card.marketPrices.isEmpty {
                         prices
@@ -125,13 +134,18 @@ struct ScanReviewSheet: View {
             }
 
             if scan.options.count > 1 {
-                Picker("Finish", selection: Binding(
+                Picker("Finish", selection: Binding<PhysicalVariant?>(
                     get: { variant },
                     set: { newValue in
                         guard let newValue, newValue != variant else { return }
+                        let outcome = onCorrect(newValue)
+                        guard case .saved = outcome else {
+                            correctionFailure = outcome.failureMessage
+                            return
+                        }
+                        correctionFailure = nil
                         variant = newValue
                         resolution = .userConfirmed
-                        onCorrect(newValue)
                     }
                 )) {
                     ForEach(scan.options) { option in
