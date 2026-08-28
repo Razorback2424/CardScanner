@@ -122,6 +122,8 @@
 		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
 		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
+		A00100C0 /* PokemonChecklistSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C0 /* PokemonChecklistSnapshot.swift */; };
+		A00100C1 /* PokemonChecklistSnapshot in Resources */ = {isa = PBXBuildFile; fileRef = B00100C1 /* PokemonChecklistSnapshot */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
 		A0010074 /* AppleAccountCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010074 /* AppleAccountCredentials.swift */; };
 		A00100B0 /* ReferenceQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B0 /* ReferenceQuote.swift */; };
@@ -262,6 +264,8 @@
 		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
 		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
+		B00100C0 /* PokemonChecklistSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonChecklistSnapshot.swift; sourceTree = "<group>"; };
+		B00100C1 /* PokemonChecklistSnapshot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PokemonChecklistSnapshot; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
 		B0010074 /* AppleAccountCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAccountCredentials.swift; sourceTree = "<group>"; };
@@ -322,6 +326,7 @@
 				B0010073 /* TradingCardScanner.entitlements */,
 				B00100A0 /* TradingCardScanner-Local.entitlements */,
 				B0010015 /* Info.plist */,
+				B00100C1 /* PokemonChecklistSnapshot */,
 			);
 			path = TradingCardScanner;
 			sourceTree = "<group>";
@@ -364,6 +369,7 @@
 			isa = PBXGroup;
 			children = (
 				B0010051 /* BrowseCatalog.swift */,
+				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B0010004 /* SetCodeMap.swift */,
 				B0010005 /* ScanParser.swift */,
 				B0010006 /* TCGdexService.swift */,
@@ -572,6 +578,7 @@
 			files = (
 				A0010045 /* Assets.xcassets in Resources */,
 				A0010072 /* PrivacyInfo.xcprivacy in Resources */,
+				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -680,6 +687,7 @@
 				A0010051 /* BrowseCatalog.swift in Sources */,
 				A0010052 /* BrowseView.swift in Sources */,
 				A0010053 /* CatalogCardDetailView.swift in Sources */,
+				A00100C0 /* PokemonChecklistSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

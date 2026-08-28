@@ -132,7 +132,8 @@ final class BrowseViewModel: ObservableObject {
 struct BrowseView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var ownedCards: [CollectedCard]
-    @StateObject private var model = BrowseViewModel()
+    let catalog: any BrowseCatalogProviding
+    @StateObject private var model: BrowseViewModel
     @State private var showsSetFilter = false
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
@@ -140,6 +141,11 @@ struct BrowseView: View {
     enum BrowseScope: Hashable { case cards, sealed }
     @State private var browseScope: BrowseScope = .cards
     @StateObject private var sealedModel = SealedBrowseModel(transport: JustTCGTransport())
+
+    init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
+        self.catalog = catalog
+        _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog))
+    }
 
     /// Sealed browse is per game, using the vendor's own set directory. Each
     /// game's directory costs one request, and only when opened.
@@ -514,14 +520,8 @@ private struct CatalogSetCardsView: View {
             if cards.isEmpty && isLoading {
                 VStack(spacing: 12) {
                     ProgressView()
-                    Text(set.game == .pokemon ? "Building the master-set checklist…" : "Loading cards…")
+                    Text("Loading cards…")
                         .font(.headline)
-                    if set.game == .pokemon {
-                        Text("Checking the physical variations published for each card.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
                 }
                 .padding(.horizontal, 32)
                 .padding(.top, 80)

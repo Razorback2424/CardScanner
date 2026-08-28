@@ -20,6 +20,10 @@ struct ContentView: View {
     @State private var selectedTab: Tab
     @StateObject private var portfolio = PortfolioEngine()
     @StateObject private var refresh = PriceRefreshController()
+    /// One catalog actor is shared by every Collection/Browse route in this
+    /// app session. Its protected checklist and in-memory caches therefore do
+    /// not reset when the user pushes into a set and returns.
+    @State private var browseCatalog: BrowseCatalog
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var collectionSort: CollectionSort = .priceHighToLow
     @State private var hasCheckedForStalePrices = false
@@ -33,6 +37,7 @@ struct ContentView: View {
 #endif
 
     init() {
+        _browseCatalog = State(initialValue: BrowseCatalog())
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")
@@ -68,6 +73,7 @@ struct ContentView: View {
                 .tag(Tab.portfolio)
 
             CollectionView(
+                catalog: browseCatalog,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
                 onRefresh: refreshAllPrices,
@@ -121,6 +127,13 @@ struct ContentView: View {
             await refreshStalePricesIfNeeded()
         }
         .task { await recomputeAtDayRollover() }
+        .task(id: scenePhase) {
+            if scenePhase == .active {
+                await browseCatalog.prepareCatalog()
+            } else {
+                await browseCatalog.suspendCatalogRefresh()
+            }
+        }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
             portfolio.recompute(context: modelContext)

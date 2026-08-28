@@ -10,6 +10,7 @@ struct CollectionView: View {
     private var cards: [CollectedCard]
 
     @Query private var priceRecords: [PriceRecord]
+    let catalog: any BrowseCatalogProviding
     let opensBrowseOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
@@ -45,6 +46,20 @@ struct CollectionView: View {
     private enum Destination: Hashable {
         case browse
         case card(String)
+    }
+
+    init(
+        catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        opensBrowseOnLaunch: Bool,
+        onOpenScanner: @escaping @MainActor () -> Void,
+        onRefresh: @escaping @MainActor () async -> Void,
+        sort: Binding<CollectionSort>
+    ) {
+        self.catalog = catalog
+        self.opensBrowseOnLaunch = opensBrowseOnLaunch
+        self.onOpenScanner = onOpenScanner
+        self.onRefresh = onRefresh
+        self._sort = sort
     }
 
     /// Adaptive rather than a fixed pair of columns: the same minimum tile width
@@ -155,7 +170,7 @@ struct CollectionView: View {
     private func destinationView(_ destination: Destination, in snapshot: Snapshot) -> some View {
         switch destination {
         case .browse:
-            BrowseView()
+            BrowseView(catalog: catalog)
         case let .card(id):
             if let entry = snapshot.entries.first(where: { $0.id == id }) {
                 CollectionCardDetailView(

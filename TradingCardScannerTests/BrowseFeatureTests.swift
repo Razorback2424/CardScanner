@@ -3,6 +3,25 @@ import XCTest
 @testable import TradingCardScanner
 
 final class BrowseFeatureTests: XCTestCase {
+#if DEBUG
+    /// Developer-only release step. Set POKEMON_SNAPSHOT_OUTPUT to a checkout
+    /// directory before running this test; normal unit-test runs are a no-op.
+    func testGeneratePokemonChecklistSnapshotWhenRequested() async throws {
+        guard let path = ProcessInfo.processInfo.environment["POKEMON_SNAPSHOT_OUTPUT"],
+              !path.isEmpty else { return }
+        let output = URL(fileURLWithPath: path, isDirectory: true)
+        try await PokemonChecklistSnapshotGenerator.generate(
+            transport: TCGdexBrowseTransport(),
+            outputDirectory: output
+        )
+
+        let store = PokemonChecklistStore(root: output, bundle: nil)
+        let snapshot = await store.downloadedSnapshot()
+        XCTAssertNotNil(snapshot)
+        XCTAssertFalse(snapshot?.manifest.entries.isEmpty == true)
+    }
+#endif
+
     func testCatalogIDsAreNamespacedByGame() {
         XCTAssertNotEqual(
             CatalogSetID(game: .pokemon, providerID: "abc").id,
@@ -675,5 +694,332 @@ final class BrowseCollectionTests: XCTestCase {
             releaseDate: nil,
             sortRank: 1
         )
+    }
+}
+
+final class PokemonChecklistBrowseTests: XCTestCase {
+    func testBundledChecklistOpensOfflineWithoutCatalogRequests() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundledRoot = root.appendingPathComponent("bundled", isDirectory: true)
+        let downloadedRoot = root.appendingPathComponent("downloaded", isDirectory: true)
+        let set = sampleSet(id: "sv08.5", name: "Prismatic Evolutions")
+        let card = sampleSummary(set: set, name: "Eevee")
+        try await writeSnapshot([set: [card]], to: bundledRoot)
+
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(
+            root: downloadedRoot,
+            bundle: nil,
+            bundledRoot: bundledRoot
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: store
+        )
+
+        let sets = try await catalog.sets(for: .pokemon)
+        let page = try await catalog.cards(in: try XCTUnwrap(sets.first), cursor: nil)
+
+        XCTAssertEqual(sets, [set])
+        XCTAssertEqual(page.items, [card])
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.directory, 0)
+        XCTAssertEqual(counts.set, 0)
+        XCTAssertEqual(counts.card, 0)
+    }
+
+    func testDownloadedChecklistOverridesBundledAndSurvivesNewCatalogInstance() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundledRoot = root.appendingPathComponent("bundled", isDirectory: true)
+        let downloadedRoot = root.appendingPathComponent("downloaded", isDirectory: true)
+        let bundledSet = sampleSet(id: "sv08.5", name: "Bundled Name")
+        let downloadedSet = sampleSet(id: "sv08.5", name: "Refreshed Name")
+        try await writeSnapshot(
+            [bundledSet: [sampleSummary(set: bundledSet, name: "Bundled Card")]],
+            to: bundledRoot
+        )
+        try await writeSnapshot(
+            [downloadedSet: [sampleSummary(set: downloadedSet, name: "Refreshed Card")]],
+            to: downloadedRoot
+        )
+
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: downloadedRoot, bundle: nil, bundledRoot: bundledRoot)
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: store
+        )
+        let sets = try await catalog.sets(for: .pokemon)
+        let page = try await catalog.cards(in: try XCTUnwrap(sets.first), cursor: nil)
+
+        XCTAssertEqual(sets.first?.name, "Refreshed Name")
+        XCTAssertEqual(page.items.first?.name, "Refreshed Card")
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.directory, 0)
+
+        let secondStore = PokemonChecklistStore(root: downloadedRoot, bundle: nil, bundledRoot: bundledRoot)
+        let secondCatalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages-2")),
+            pokemonTransport: transport,
+            checklistStore: secondStore
+        )
+        let secondSets = try await secondCatalog.sets(for: .pokemon)
+        XCTAssertEqual(secondSets.first?.name, "Refreshed Name")
+    }
+
+    func testOneProviderCardFetchFeedsEveryVirtualPrintRun() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"base1","name":"Base Set","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"base1","name":"Base Set","cards":[{"id":"base1-001","localId":"001","name":"Alakazam","image":null}],"cardCount":{"total":1,"official":1,"normal":1,"reverse":0,"holo":0,"firstEd":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {"id":"base1-001","localId":"001","name":"Alakazam","image":null,"set":{"id":"base1","name":"Base Set","cardCount":{"total":1,"official":1}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false,"wPromo":false}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["base1": provider],
+            cards: ["base1-001": detail]
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+        )
+
+        let sets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(sets.count, 3)
+        for set in sets { _ = try await catalog.cards(in: set, cursor: nil) }
+
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set, 1)
+        XCTAssertEqual(counts.card, 1)
+    }
+
+    func testBuilderPreservesStandardAndExpandedVariantSlots() throws {
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {
+          "id":"sv08.5","name":"Prismatic Evolutions",
+          "cards":[{"id":"sv08.5-001","localId":"001","name":"Eevee","image":null}],
+          "cardCount":{"total":1,"official":1,"normal":1,"reverse":1,"holo":0,"firstEd":0}
+        }
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {
+          "id":"sv08.5-001","localId":"001","name":"Eevee","image":null,
+          "set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":1,"official":1}},
+          "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true,"wPromo":false},
+          "variants_detailed":[
+            {"type":"normal","size":"standard","languages":["en"]},
+            {"type":"reverse","foil":"pokeball","size":"standard","languages":["en"]},
+            {"type":"reverse","foil":"masterball","size":"standard","languages":["en"]}
+          ]
+        }
+        """)
+
+        let built = try XCTUnwrap(
+            try PokemonMasterSetChecklistBuilder.build(
+                providerSet: provider,
+                baseSet: sampleSet(id: "sv08.5", name: "Prismatic Evolutions"),
+                cardDetails: [detail.id: detail]
+            ).first
+        )
+
+        XCTAssertEqual(built.cards.filter { !$0.isExpandedMasterSetVariant }.count, 2)
+        XCTAssertEqual(built.cards.filter(\.isExpandedMasterSetVariant).count, 2)
+        XCTAssertEqual(Set(built.cards.compactMap { $0.masterSetVariant?.id }), Set([
+            PhysicalVariant.normal.id,
+            PhysicalVariant.reverse.id,
+            PhysicalVariant.pokemonFoilPattern("pokeball").id,
+            PhysicalVariant.pokemonFoilPattern("masterball").id
+        ]))
+    }
+
+    func testSuccessfulRefreshPublishesCompleteChecklistBeforeBrowseUsesIt() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"base1","name":"Base Set","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"base1","name":"Base Set","cards":[{"id":"base1-001","localId":"001","name":"Alakazam","image":null}],"cardCount":{"total":1,"official":1,"normal":1,"reverse":0,"holo":0,"firstEd":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {"id":"base1-001","localId":"001","name":"Alakazam","image":null,"set":{"id":"base1","name":"Base Set","cardCount":{"total":1,"official":1}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false,"wPromo":false}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["base1": provider],
+            cards: ["base1-001": detail]
+        )
+        let checklistRoot = root.appendingPathComponent("checklists")
+        let store = PokemonChecklistStore(root: checklistRoot, bundle: nil)
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: store
+        )
+
+        await catalog.refreshCatalogNow()
+        let sets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(sets.count, 3)
+        for set in sets {
+            let page = try await catalog.cards(in: set, cursor: nil)
+            XCTAssertFalse(page.items.isEmpty)
+        }
+
+        let downloaded = await store.downloadedSnapshot()
+        XCTAssertEqual(downloaded?.manifest.entries.count, 3)
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set, 1)
+        XCTAssertEqual(counts.card, 1)
+    }
+
+    func testFailedRefreshLeavesLastCompleteChecklistVisible() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundledRoot = root.appendingPathComponent("bundled", isDirectory: true)
+        let set = sampleSet(id: "sv08.5", name: "Prismatic Evolutions")
+        let card = sampleSummary(set: set, name: "Eevee")
+        try await writeSnapshot([set: [card]], to: bundledRoot)
+
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":1,"official":1}}
+        """)
+        let transport = FakePokemonBrowseTransport(rows: [row], setError: TestError.failed)
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("downloaded"),
+                bundle: nil,
+                bundledRoot: bundledRoot
+            )
+        )
+
+        await catalog.refreshCatalogNow()
+        let page = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(page.items, [card])
+        let sets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(sets.first?.name, "Prismatic Evolutions")
+    }
+
+    private func writeSnapshot(
+        _ values: [CatalogSet: [CatalogCardSummary]],
+        to root: URL
+    ) async throws {
+        let entries = values.keys.sorted { $0.id < $1.id }.map { set in
+            PokemonChecklistSnapshotEntry(
+                set: set,
+                providerID: set.providerID,
+                providerFingerprint: "fixture-\(set.providerID)",
+                resource: "sets/\(StableCatalogFingerprint.string(set.id)).json"
+            )
+        }
+        let manifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+            generatedAt: .now,
+            directoryFingerprint: "fixture",
+            entries: entries
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: manifest,
+            checklists: Dictionary(uniqueKeysWithValues: values.map { ($0.key.id, $0.value) })
+        )
+        try await PokemonChecklistStore(root: root, bundle: nil).publish(snapshot)
+    }
+
+    private func sampleSet(id: String, name: String) -> CatalogSet {
+        CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: id),
+            name: name,
+            code: "FIX",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 1
+        )
+    }
+
+    private func sampleSummary(set: CatalogSet, name: String) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: .pokemon,
+            providerID: "\(set.providerID)-001",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: name,
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isExpandedMasterSetVariant: false,
+            isSoleSlotForCard: true
+        )
+    }
+
+    private func decode<Value: Decodable>(_ type: Value.Type, from string: String) throws -> Value {
+        try JSONDecoder().decode(type, from: Data(string.utf8))
+    }
+
+    private func temporaryDirectory() throws -> URL {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        return root
+    }
+}
+
+private enum TestError: Error { case failed }
+
+private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
+    private let rows: [TCGdexBrowseSet]
+    private let setValues: [String: TCGdexSetCatalog]
+    private let cardValues: [String: TCGdexCard]
+    private let setError: Error?
+    private var directoryRequests = 0
+    private var setRequests = 0
+    private var cardRequests = 0
+
+    init(
+        rows: [TCGdexBrowseSet] = [],
+        sets: [String: TCGdexSetCatalog] = [:],
+        cards: [String: TCGdexCard] = [:],
+        setError: Error? = nil
+    ) {
+        self.rows = rows
+        self.setValues = sets
+        self.cardValues = cards
+        self.setError = setError
+    }
+
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
+        directoryRequests += 1
+        return rows
+    }
+
+    func fetchPocketSetIDs() async throws -> Set<String> { [] }
+
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog {
+        setRequests += 1
+        if let setError { throw setError }
+        return try XCTUnwrap(setValues[id.lowercased()])
+    }
+
+    func fetchCard(id: String) async throws -> TCGdexCard {
+        cardRequests += 1
+        return try XCTUnwrap(cardValues[id])
+    }
+
+    func requestCounts() -> (directory: Int, set: Int, card: Int) {
+        (directoryRequests, setRequests, cardRequests)
     }
 }
