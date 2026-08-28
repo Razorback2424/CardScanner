@@ -1684,7 +1684,11 @@ final class ScannerViewModel: ObservableObject {
 
     /// Held-repeat candidates bypass duplicate interception only after the
     /// detached authorization is matched to the exact previous committed
-    /// presentation and the resolved canonical identity.
+    /// presentation and the resolved canonical identity. This deliberately
+    /// resolves by stable scan ID rather than `committedSessionHistory.last`:
+    /// the publication policy may authorize a safe same-key fallback against a
+    /// non-newest presentation, while foreign confirmations still terminate
+    /// the permit before this guard can authorize anything.
     private func routeHeldRepeatCandidate(
         _ candidate: CollectionCommitCandidate,
         authorizationID: UUID
