@@ -259,7 +259,14 @@ private struct ScannerChrome: View {
 
     private var bottomStack: some View {
         VStack(spacing: 9) {
-            if let choice = model.pendingIdentityChoice {
+            if let confirmation = model.pendingDuplicateConfirmation {
+                DuplicateConfirmationBar(
+                    confirmation: confirmation,
+                    onSameCard: model.chooseSameCard,
+                    onAddAnother: model.addAnother
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if let choice = model.pendingIdentityChoice {
                 IdentityChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
