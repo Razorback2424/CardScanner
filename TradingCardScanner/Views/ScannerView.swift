@@ -69,8 +69,9 @@ struct ScannerView: View {
                             model.correct(scanID: scan.id, to: variant)
                         },
                         onDelete: {
-                            model.deleteRecentScan(scan)
-                            reviewing = nil
+                            if model.undoScan(scanID: scan.id) {
+                                reviewing = nil
+                            }
                         }
                     )
         }
@@ -282,7 +283,7 @@ private struct ScannerChrome: View {
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
-                    onUndo: model.undoLastAdd,
+                    onUndo: { model.undoScan(scanID: receipt.scanID) },
                     onOpen: {
                         guard let scan = model.recent.first(where: { $0.id == receipt.scanID }) else { return }
                         openReview(scan)
@@ -296,7 +297,7 @@ private struct ScannerChrome: View {
                     RecentScanRail(
                         scans: model.recent,
                         onSelect: openReview,
-                        onDelete: model.deleteRecentScan
+                        onDelete: { model.undoScan(scanID: $0.id) }
                     )
                         .frame(maxWidth: .infinity)
                 }

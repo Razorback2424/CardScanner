@@ -266,6 +266,134 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertTrue(corrected.collectionKey.hasSuffix("@firstEdition"))
     }
 
+    func testVariantCorrectionWithMissingSourceDoesNotCreateAnUnbalancedPosition() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+
+        let mutation = try store.recordVariantCorrection(
+            for: card,
+            from: .normal,
+            to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed)
+        )
+
+        XCTAssertNil(mutation)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+    }
+
+    func testIncrementUndoRemovesExactlyOneCopyAndItsActivity() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        _ = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+        let second = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+
+        try store.undo(second)
+
+        XCTAssertEqual(store.card(forKey: second.collectionKey)?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[second.collectionKey], 1)
+    }
+
+    func testMultipleCorrectionsUndoTheFullLineageToZero() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        let acquired = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+        let firstCorrection = try XCTUnwrap(
+            try store.recordVariantCorrection(
+                for: card,
+                from: .normal,
+                to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+                previousLedgerOperationIDs: acquired.ledgerOperationIDs
+            )
+        )
+        let secondCorrection = try XCTUnwrap(
+            try store.recordVariantCorrection(
+                for: card,
+                from: .reverse,
+                to: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
+                previousCollectionKey: firstCorrection.collectionKey,
+                previousLedgerOperationIDs: firstCorrection.ledgerOperationIDs
+            )
+        )
+
+        XCTAssertEqual(secondCorrection.ledgerOperationIDs.count, 3)
+        try store.undo(secondCorrection)
+
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertTrue(InventoryLedger.quantities(from: events).isEmpty)
+    }
+
+    func testCorrectionIntoExistingDestinationUndoPreservesOtherCopy() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        let original = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+        _ = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+            source: .scan
+        )
+        let corrected = try XCTUnwrap(
+            try store.recordVariantCorrection(
+                for: card,
+                from: .normal,
+                to: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+                previousLedgerOperationIDs: original.ledgerOperationIDs
+            )
+        )
+
+        try store.undo(corrected)
+
+        XCTAssertNil(store.card(forKey: original.collectionKey))
+        XCTAssertEqual(store.card(forKey: corrected.collectionKey)?.quantity, 1)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[corrected.collectionKey], 1)
+    }
+
+    func testUndoWithMissingLineageDoesNotPartiallyMutateCollection() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        let mutation = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+        let badMutation = CollectionMutation(
+            collectionKey: mutation.collectionKey,
+            activityID: mutation.activityID,
+            didInsert: mutation.didInsert,
+            ledgerOperationIDs: [UUID()]
+        )
+
+        XCTAssertThrowsError(try store.undo(badMutation))
+        XCTAssertEqual(store.card(forKey: mutation.collectionKey)?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+    }
+
     func testPrintRunScanAggregatesLegacyUnqualifiedRow() throws {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "BASE1")
@@ -398,7 +526,7 @@ final class BrowseCollectionTests: XCTestCase {
 
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
-            for: CollectedCard.self, PriceRecord.self, CollectionActivity.self,
+            for: CollectedCard.self, PriceRecord.self, CollectionActivity.self, InventoryEvent.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         self.container = container

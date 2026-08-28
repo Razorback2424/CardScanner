@@ -1125,98 +1125,44 @@ final class ScannerViewModel: ObservableObject {
         processNextIdentificationIfPossible()
     }
 
-    func undoLastAdd() {
-        guard let store, let lastAdd else { return }
-        let removedHistoryEntry = committedSessionHistory.first { $0.id == lastAdd.id }
-
-        guard store.card(forKey: lastAdd.mutation.collectionKey) != nil else {
-            show(ScanNote(text: "Undo could not find the saved card", tone: .problem))
+    /// One guarded undo path for the receipt, rail, and review sheet. The
+    /// stable scan ID is resolved at tap time, so a corrected scan cannot undo
+    /// an older value still held by a view.
+    @discardableResult
+    func undoScan(scanID: RecentScan.ID) -> Bool {
+        guard let store else { return false }
+        guard let scan = recent.first(where: { $0.id == scanID }) else {
+            show(ScanNote(text: "Undo could not find that scan", tone: .problem))
             feedback.problem()
-            return
+            return false
         }
-
-        do {
-            try store.undo(lastAdd.mutation)
-        } catch {
-            show(ScanNote(text: "Undo could not be saved", tone: .problem))
-            feedback.problem()
-            return
-        }
-        recent.removeAll { $0.id == lastAdd.id }
-        removeCommittedHistory(for: lastAdd.id)
-        if heldDuplicateOffer?.previousScanID == lastAdd.id ||
-            heldRepeatAuthorizationState?.offer.previousScanID == lastAdd.id {
-            clearHeldRepeatState()
-        }
-        receipt = nil
-        receiptTask?.cancel()
-        feedback.undone()
-        self.lastAdd = nil
-        if let removedHistoryEntry {
-            scanner.restoreAcceptedPresentation(presentationToken: removedHistoryEntry.presentationToken)
-        }
-
-        // "That wasn't Master Ball" is the actual reason people reach for undo,
-        // so put the question back rather than making them re-present the card.
-        let printRuns = PokemonMasterSetDefinition.printRuns(
-            forSetProviderID: lastAdd.card.variantEvidence.setID
-        )
-        if !printRuns.isEmpty {
-            pendingPrintRunChoice = PendingPrintRunChoice(
-                request: ScanRequest(
-                    identifier: lastAdd.identifier,
-                    purpose: .collection,
-                    generation: scanGeneration
-                ),
-                card: lastAdd.card,
-                options: printRuns
-            )
-            scanner.pauseRecognition()
-        } else if lastAdd.options.count > 1 {
-            pendingChoice = PendingVariantChoice(
-                request: ScanRequest(
-                    identifier: lastAdd.identifier,
-                    purpose: .collection,
-                    generation: scanGeneration
-                ),
-                card: lastAdd.card,
-                options: lastAdd.options,
-                pokemonPrintRun: nil,
-                lockDidNotApply: nil
-            )
-            scanner.pauseRecognition()
-        }
-    }
-
-    func deleteRecentScan(_ scan: RecentScan) {
-        guard let store else { return }
-        let removedHistoryEntry = committedSessionHistory.first { $0.id == scan.id }
-
-        guard store.card(forKey: scan.mutation.collectionKey) != nil else {
-            show(ScanNote(text: "Delete could not find the saved card", tone: .problem))
-            feedback.problem()
-            return
-        }
+        let removedHistoryEntry = committedSessionHistory.first { $0.id == scanID }
 
         do {
             try store.undo(scan.mutation)
         } catch {
-            show(ScanNote(text: "Delete could not be saved", tone: .problem))
+            // Keep the receipt/review state intact so the person can retry after
+            // a transient save or synchronization failure.
+            show(ScanNote(text: "Undo could not be saved", tone: .problem))
             feedback.problem()
-            return
+            return false
         }
 
-        recent.removeAll { $0.id == scan.id }
-        removeCommittedHistory(for: scan.id)
-        if heldDuplicateOffer?.previousScanID == scan.id ||
-            heldRepeatAuthorizationState?.offer.previousScanID == scan.id {
+        recent.removeAll { $0.id == scanID }
+        removeCommittedHistory(for: scanID)
+        spatialResetProofs.removeAll { $0.encounterID == removedHistoryEntry?.encounterID }
+
+        if heldDuplicateOffer?.previousScanID == scanID ||
+            heldRepeatAuthorizationState?.offer.previousScanID == scanID {
             clearHeldRepeatState()
         }
-        if pendingDuplicateConfirmation?.previousScanID == scan.id {
-            invalidatePendingScan()
+        if pendingDuplicateConfirmation?.previousScanID == scanID {
+            pendingDuplicateConfirmation = nil
         }
-        if lastAdd?.id == scan.id {
+        if lastAdd?.id == scanID {
             lastAdd = nil
+        }
+        if receipt?.scanID == scanID {
             receipt = nil
             receiptTask?.cancel()
         }
@@ -1224,6 +1170,17 @@ final class ScannerViewModel: ObservableObject {
             scanner.restoreAcceptedPresentation(presentationToken: removedHistoryEntry.presentationToken)
         }
         feedback.undone()
+        resumeRecognitionIfPossible()
+        return true
+    }
+
+    func undoLastAdd() {
+        guard let scanID = receipt?.scanID ?? lastAdd?.id else { return }
+        undoScan(scanID: scanID)
+    }
+
+    func deleteRecentScan(_ scan: RecentScan) {
+        undoScan(scanID: scan.id)
     }
 
     private func removeCommittedHistory(for scanID: RecentScan.ID) {
@@ -1259,7 +1216,8 @@ final class ScannerViewModel: ObservableObject {
                 from: scan.resolved.variant,
                 to: corrected,
                 pokemonPrintRun: scan.pokemonPrintRun,
-                previousCollectionKey: scan.mutation.collectionKey
+                previousCollectionKey: scan.mutation.collectionKey,
+                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs
             )
         } catch {
             show(ScanNote(text: "Correction could not be saved", tone: .problem))

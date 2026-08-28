@@ -8,9 +8,31 @@ struct CollectionMutation: Equatable, Sendable {
     /// Whether the change created the row or incremented an existing one, which
     /// is the difference between deleting it and counting back down.
     let didInsert: Bool
-    /// The ledger operation this mutation wrote. Undo inverts the whole
-    /// operation through this, so a correction can never be half-taken-back.
-    var operationID: UUID?
+    /// The ordered ledger lineage for this session-only mutation. A scan starts
+    /// with its acquisition operation; each correction appends another
+    /// operation without discarding what came before it.
+    let ledgerOperationIDs: [UUID]
+
+    init(
+        collectionKey: String,
+        activityID: UUID?,
+        didInsert: Bool,
+        ledgerOperationIDs: [UUID] = []
+    ) {
+        self.collectionKey = collectionKey
+        self.activityID = activityID
+        self.didInsert = didInsert
+        self.ledgerOperationIDs = ledgerOperationIDs
+    }
+}
+
+enum CollectionStoreError: Error, Equatable {
+    case missingDestinationRow(String)
+    case missingActivity(UUID)
+    case missingLedgerOperation(UUID)
+    case invalidLedgerOperation(UUID)
+    case ledgerConflict(String)
+    case staleQuantityDefect(String)
 }
 
 /// Every write to the collection goes through here.
@@ -139,7 +161,7 @@ struct CollectionStore {
                 collectionKey: key,
                 activityID: activity.id,
                 didInsert: false,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
         }
 
@@ -195,7 +217,7 @@ struct CollectionStore {
             collectionKey: key,
             activityID: activity.id,
             didInsert: true,
-            operationID: operationID
+            ledgerOperationIDs: [operationID]
         )
     }
 
@@ -240,7 +262,7 @@ struct CollectionStore {
                 collectionKey: key,
                 activityID: activity.id,
                 didInsert: false,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
         }
 
@@ -288,7 +310,7 @@ struct CollectionStore {
             collectionKey: key,
             activityID: activity.id,
             didInsert: true,
-            operationID: operationID
+            ledgerOperationIDs: [operationID]
         )
     }
 
@@ -418,7 +440,7 @@ struct CollectionStore {
             collectionKey: mutation.collectionKey,
             activityID: activity.id,
             didInsert: mutation.didInsert,
-            operationID: operationID
+            ledgerOperationIDs: operationID.map { [$0] } ?? []
         )
     }
 
@@ -440,37 +462,102 @@ struct CollectionStore {
         }
     }
 
+    /// Reverses exactly one scan mutation. Every precondition is checked before
+    /// the first inverse is staged, and one save commits the ledger, collection
+    /// row, and activity together. This is intentionally strict: a stale UI
+    /// value must fail and remain retryable, never become a partial undo.
     func undo(_ mutation: CollectionMutation) throws {
-        guard let row = card(forKey: mutation.collectionKey) else { return }
+        do {
+            let collectionKey = mutation.collectionKey
+            let rowDescriptor = FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey }
+            )
+            let rows = try context.fetch(rowDescriptor)
+            guard rows.count == 1, let row = rows.first else {
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
+            }
 
-        // The ledger is taken back by inverting every leg of the operation,
-        // never by deleting rows. A history that can be edited away is not a
-        // record, and inverting the whole operation is what keeps a two-leg
-        // correction from being half-undone.
-        if let operationID = mutation.operationID {
-            ledger.reverseOperation(operationID)
-        }
-
-        if mutation.didInsert || row.quantity <= 1 {
-            context.delete(row)
-        } else {
-            row.quantity -= 1
-        }
-
-        // `CollectionActivity` keeps its existing delete-on-undo behaviour. It
-        // is a presentation log with its own UI and backfill path, and becomes
-        // a projection over `InventoryEvent` in a later phase rather than being
-        // rewritten underneath a shipping feature.
-        if let activityID = mutation.activityID {
-            let descriptor = FetchDescriptor<CollectionActivity>(
+            guard let activityID = mutation.activityID else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+            let activityDescriptor = FetchDescriptor<CollectionActivity>(
                 predicate: #Predicate { $0.id == activityID }
             )
-            if let activity = try? context.fetch(descriptor).first {
-                context.delete(activity)
+            let activities = try context.fetch(activityDescriptor)
+            guard activities.count == 1, let activity = activities.first,
+                  activity.collectionKey == collectionKey else {
+                throw CollectionStoreError.missingActivity(activityID)
             }
-        }
 
-        try commit()
+            guard !mutation.ledgerOperationIDs.isEmpty else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+
+            // Preflight the complete lineage before changing the context. A
+            // correction must still have both legs, and any earlier inverse
+            // makes this mutation stale rather than safe to apply twice.
+            let lineage = try mutation.ledgerOperationIDs.map { operationID in
+                let events = try ledger.events(forOperationID: operationID)
+                guard !events.isEmpty else {
+                    throw CollectionStoreError.missingLedgerOperation(operationID)
+                }
+
+                let correctionLegs = Set(events.compactMap { $0.leg })
+                if events.contains(where: { $0.kind == .correction }) {
+                    guard events.count == 2,
+                          events.allSatisfy({ $0.kind == .correction }),
+                          correctionLegs == Set([.from, .to]) else {
+                        throw CollectionStoreError.invalidLedgerOperation(operationID)
+                    }
+                } else {
+                    guard events.count == 1, correctionLegs.isEmpty else {
+                        throw CollectionStoreError.invalidLedgerOperation(operationID)
+                    }
+                }
+
+                for event in events {
+                    guard try ledger.reversalEvents(forEventID: event.eventID).isEmpty else {
+                        throw CollectionStoreError.ledgerConflict(
+                            "\(operationID.uuidString) was already reversed"
+                        )
+                    }
+                }
+                return (operationID, events)
+            }
+
+            // Newest correction first, then the acquisition it retargeted.
+            for (operationID, events) in lineage.reversed() {
+                let outcomes = ledger.reverseOperation(operationID)
+                guard outcomes.count == events.count else {
+                    throw CollectionStoreError.missingLedgerOperation(operationID)
+                }
+                for outcome in outcomes {
+                    switch outcome {
+                    case .appended:
+                        break
+                    case .duplicate:
+                        throw CollectionStoreError.ledgerConflict(
+                            "\(operationID.uuidString) inverse already exists"
+                        )
+                    case let .conflict(defect):
+                        throw CollectionStoreError.ledgerConflict(defect.detail)
+                    }
+                }
+            }
+
+            // Undo removes one physical copy, regardless of whether this scan
+            // originally inserted the row or incremented an existing row.
+            if row.quantity <= 1 {
+                context.delete(row)
+            } else {
+                row.quantity -= 1
+            }
+            context.delete(activity)
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     /// Removes every owned card while leaving catalog and price data alone.
@@ -574,10 +661,12 @@ struct CollectionStore {
         from current: PhysicalVariant?,
         to corrected: ResolvedVariant,
         pokemonPrintRun: PokemonPrintRun? = nil,
-        previousCollectionKey: String? = nil
+        previousCollectionKey: String? = nil,
+        previousLedgerOperationIDs: [UUID] = []
     ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
 
+        do {
         let previousBaseKey = card.collectionKey(variant: current)
         let previousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
@@ -595,7 +684,7 @@ struct CollectionStore {
         )
         // The scan being corrected is the newest acquisition for this row. Its
         // event moves with the copy; a correction is not a second acquisition.
-        let activityToRetarget = try? context.fetch(activityDescriptor)
+        let activityToRetarget = try context.fetch(activityDescriptor)
             .max(by: { $0.occurredAt < $1.occurredAt })
 
         // Read the outgoing side's price key before the row is decremented or
@@ -620,14 +709,24 @@ struct CollectionStore {
         // one. Later price movement then follows the corrected identity by
         // itself, and the pair is what makes undo a group inversion.
         let correctionOperationID = UUID()
-        if let correctedRow = self.card(forKey: mutation.collectionKey) {
-            ledger.recordCorrection(
-                fromCollectionKey: previousKey,
-                fromPriceStorageKey: previousPriceStorageKey
-                    ?? ledger.priceStorageKey(for: correctedRow),
-                toCard: correctedRow,
-                operationID: correctionOperationID
-            )
+        guard let correctedRow = self.card(forKey: mutation.collectionKey) else {
+            throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
+        }
+        let correction = ledger.recordCorrection(
+            fromCollectionKey: previousKey,
+            fromPriceStorageKey: previousPriceStorageKey,
+            toCard: correctedRow,
+            operationID: correctionOperationID
+        )
+        for outcome in [correction.from, correction.to] {
+            switch outcome {
+            case .appended:
+                break
+            case .duplicate:
+                throw CollectionStoreError.ledgerConflict("correction leg already exists")
+            case let .conflict(defect):
+                throw CollectionStoreError.ledgerConflict(defect.detail)
+            }
         }
 
         guard let activityToRetarget,
@@ -637,7 +736,7 @@ struct CollectionStore {
                 collectionKey: mutation.collectionKey,
                 activityID: mutation.activityID,
                 didInsert: mutation.didInsert,
-                operationID: correctionOperationID
+                ledgerOperationIDs: previousLedgerOperationIDs + [correctionOperationID]
             )
         }
 
@@ -667,8 +766,12 @@ struct CollectionStore {
             collectionKey: mutation.collectionKey,
             activityID: activityToRetarget.id,
             didInsert: mutation.didInsert,
-            operationID: correctionOperationID
+            ledgerOperationIDs: previousLedgerOperationIDs + [correctionOperationID]
         )
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 }
 

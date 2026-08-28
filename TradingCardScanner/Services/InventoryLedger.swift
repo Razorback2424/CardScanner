@@ -135,6 +135,31 @@ struct InventoryLedger {
     /// accounting from them.
     func allEvents() -> [InventoryEvent] { read().events }
 
+    func allEventsThrowing() throws -> [InventoryEvent] {
+        try context.fetch(FetchDescriptor<InventoryEvent>())
+    }
+
+    /// Strict event lookup for transactional operations. The presentation
+    /// reader intentionally tolerates an unreadable store; undo cannot, since
+    /// treating a missing operation as an empty operation would create a
+    /// collection change with no ledger inverse.
+    func events(forOperationID operationID: UUID) throws -> [InventoryEvent] {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate { $0.operationID == operationID }
+        )
+        return try context.fetch(descriptor)
+    }
+
+    /// Whether an event has already been inverted. A fresh inverse operation ID
+    /// is deliberately used for every undo, so idempotency alone cannot detect
+    /// a stale second tap.
+    func reversalEvents(forEventID eventID: UUID) throws -> [InventoryEvent] {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate { $0.reversesEventID == eventID }
+        )
+        return try context.fetch(descriptor)
+    }
+
     func read() -> LedgerReadResult {
         let descriptor = FetchDescriptor<InventoryEvent>(
             sortBy: [SortDescriptor(\.occurredAt, order: .forward)]
