@@ -100,9 +100,6 @@ final class PortfolioEngine: ObservableObject {
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
-#if DEBUG
-        try? CollectionStore.repairKnownQuantityMismatches(in: context)
-#endif
         do {
             try PortfolioEpoch.establishIfNeeded(context: context, at: now)
         } catch {

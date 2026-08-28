@@ -84,33 +84,85 @@ struct CollectionStore {
         try commit()
     }
 
-#if DEBUG
-    /// One-time development repair for the seven quantity edits made before
-    /// the detail view routed ownership changes through this store.
-    static func repairKnownQuantityMismatches(in context: ModelContext) throws {
-        let repairs: [(String, Int, UUID)] = [
-            ("me02.5-216#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000216")!),
-            ("me04-049#normal", -2, UUID(uuidString: "00000000-0000-0000-0000-000000000417")!),
-            ("sv07-072#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000072")!),
-            ("sv08.5-077#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000077")!),
-            ("sv08.5-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000086")!),
-            ("sv09-026#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000026")!),
-            ("sv09-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000986")!)
-        ]
-        let store = CollectionStore(context: context)
-        for (key, delta, operationID) in repairs {
-            guard let card = store.card(forKey: key) else { continue }
-            InventoryLedger(context: context).record(
-                card,
-                kind: .quantityAdjust,
-                source: .correction,
-                deltaQuantity: delta,
-                operationID: operationID
+    /// Repairs only persisted quantity mismatches. The caller must have already
+    /// established that the active defect set contains no conflict, orphaned
+    /// correction, or pricing defect; this method repeats that guard so it is
+    /// safe to call outside the view as well.
+    static func repairQuantityMismatches(
+        _ defects: [LedgerIntegrityDefect],
+        in context: ModelContext
+    ) throws {
+        guard !defects.isEmpty,
+              defects.allSatisfy({ $0.reason == .quantityMismatch }) else {
+            throw CollectionStoreError.ledgerConflict(
+                "quantity repair is not valid for the active defect set"
             )
         }
-        try context.save()
+
+        do {
+            let ledger = InventoryLedger(context: context)
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+            let reading = ledger.read()
+            let events = reading.events
+            let activeDefects = reading.defects
+                + projection.defects
+                + PortfolioEngine.reconcile(
+                    projection: projection,
+                    events: events.map(PortfolioEngine.entry(from:))
+                )
+            guard !activeDefects.isEmpty,
+                  activeDefects.allSatisfy({ $0.reason == .quantityMismatch }),
+                  Set(activeDefects.map { $0.collectionKey }) == Set(defects.map { $0.collectionKey }) else {
+                throw CollectionStoreError.ledgerConflict(
+                    "active integrity defects changed; quantity repair was not applied"
+                )
+            }
+            let ledgerQuantities = events.reduce(into: [String: Int]()) { quantities, event in
+                quantities[event.collectionKey, default: 0] += event.deltaQuantity
+            }
+            let eventPriceKeys = Dictionary(grouping: events, by: { $0.collectionKey })
+                .compactMapValues { events in
+                    events.map { $0.priceStorageKey }.first(where: { !$0.isEmpty })
+                }
+            let keys = Set(defects.map { $0.collectionKey })
+
+            for key in keys {
+                let collectionQuantity = projection.quantities[key] ?? 0
+                let ledgerQuantity = ledgerQuantities[key] ?? 0
+                let delta = collectionQuantity - ledgerQuantity
+                guard delta != 0 else {
+                    throw CollectionStoreError.staleQuantityDefect(key)
+                }
+
+                let priceKey = projection.byKey[key]?.priceStorageKey
+                    ?? eventPriceKeys[key] ?? key
+                let outcome = ledger.record(
+                    collectionKey: key,
+                    priceStorageKey: priceKey,
+                    valuation: ledger.valuation(forPriceKey: priceKey),
+                    kind: .quantityAdjust,
+                    source: .correction,
+                    deltaQuantity: delta,
+                    operationID: UUID()
+                )
+                switch outcome {
+                case .appended:
+                    break
+                case .duplicate:
+                    throw CollectionStoreError.ledgerConflict(
+                        "quantity repair operation unexpectedly duplicated"
+                    )
+                case let .conflict(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                }
+            }
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
-#endif
 
     // MARK: - Graded and sealed
     //

@@ -587,6 +587,81 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
     }
 
+    func testQuantityRepairAppendsOneAdjustmentPerMismatchedPosition() throws {
+        let context = try makeContext()
+        let first = card(key: "repair-one", quantity: 3)
+        let second = card(key: "repair-two", quantity: 2)
+        context.insert(first)
+        context.insert(second)
+        let ledger = InventoryLedger(context: context)
+        _ = ledger.record(
+            first,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            operationID: UUID()
+        )
+        _ = ledger.record(
+            second,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            operationID: UUID()
+        )
+        try context.save()
+
+        let defects = [first, second].map {
+            LedgerIntegrityDefect(
+                reason: .quantityMismatch,
+                collectionKey: $0.collectionKey,
+                detail: "ledger 1, collection \($0.quantity)"
+            )
+        }
+        try CollectionStore.repairQuantityMismatches(defects, in: context)
+
+        let events = try ledger.allEventsThrowing()
+        let adjustments = events.filter { $0.kind == .quantityAdjust }
+        XCTAssertEqual(adjustments.count, 2)
+        XCTAssertEqual(Set(adjustments.map(\.operationID)).count, 2)
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[first.collectionKey], 3)
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[second.collectionKey], 2)
+        XCTAssertEqual(first.quantity, 3)
+        XCTAssertEqual(second.quantity, 2)
+    }
+
+    func testQuantityRepairRejectsMixedDefectsWithoutMutation() throws {
+        let context = try makeContext()
+        let owned = card(key: "repair-mixed", quantity: 2)
+        context.insert(owned)
+        let ledger = InventoryLedger(context: context)
+        _ = ledger.record(
+            owned,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            operationID: UUID()
+        )
+        try context.save()
+        let defects = [
+            LedgerIntegrityDefect(
+                reason: .quantityMismatch,
+                collectionKey: owned.collectionKey,
+                detail: "ledger 1, collection 2"
+            ),
+            LedgerIntegrityDefect(
+                reason: .orphanedCorrectionLeg,
+                collectionKey: owned.collectionKey,
+                detail: "missing correction leg"
+            )
+        ]
+
+        XCTAssertThrowsError(
+            try CollectionStore.repairQuantityMismatches(defects, in: context)
+        )
+        XCTAssertEqual(try ledger.allEventsThrowing().count, 1)
+        XCTAssertEqual(owned.quantity, 2)
+    }
+
     func testEquivalentBaselineDuplicatesCanonicalizeToEarliestOwnershipTime() throws {
         let context = try makeContext()
         let operationID = PortfolioEpoch.baselineOperationID(collectionKey: "position")

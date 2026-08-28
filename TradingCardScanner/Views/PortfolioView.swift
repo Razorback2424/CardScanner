@@ -38,6 +38,8 @@ struct PortfolioView: View {
     @State private var contributorContext: PortfolioContributorContext?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var historyResult: PortfolioHistoryResult?
+    @State private var isShowingQuantityRepairConfirmation = false
+    @State private var quantityRepairError: String?
     @AppStorage("portfolioHistoryMode") private var historyModeRaw = PortfolioHistoryMode.performance.rawValue
     @AppStorage("portfolioHistoryRange") private var historyRangeRaw = PortfolioHistoryRange.oneMonth.rawValue
 
@@ -192,6 +194,29 @@ struct PortfolioView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
+        .confirmationDialog(
+            "Reconcile with Collection",
+            isPresented: $isShowingQuantityRepairConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Reconcile") {
+                repairQuantityMismatches()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your collection contents will remain unchanged. Append-only quantity correction events will be recorded for the mismatched positions.")
+        }
+        .alert(
+            "Reconciliation failed",
+            isPresented: Binding(
+                get: { quantityRepairError != nil },
+                set: { if !$0 { quantityRepairError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) { quantityRepairError = nil }
+        } message: {
+            Text(quantityRepairError ?? "Try again.")
+        }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
                 removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
@@ -212,6 +237,11 @@ struct PortfolioView: View {
             return result.providerUnreachable || result.failed > 0
         }
         return false
+    }
+
+    private var canRepairQuantityDefects: Bool {
+        guard let defects = portfolio.summary?.defects, !defects.isEmpty else { return false }
+        return defects.allSatisfy { $0.reason == .quantityMismatch }
     }
 
     private var periodControl: some View {
@@ -289,20 +319,42 @@ struct PortfolioView: View {
     }
 
     private func integrityWarning(_ summary: PortfolioSummary) -> some View {
-        Label(
-            summary.defects.isEmpty
-                ? "Performance is paused while portfolio data reconciles."
-                : "Performance is paused until the collection records reconcile.",
-            systemImage: "exclamationmark.triangle.fill"
-        )
-        .font(.subheadline.weight(.semibold))
-        .foregroundStyle(PortfolioPalette.attention)
+        VStack(alignment: .leading, spacing: 10) {
+            Label(
+                summary.defects.isEmpty
+                    ? "Performance is paused while portfolio data reconciles."
+                    : "Performance is paused until the collection records reconcile.",
+                systemImage: "exclamationmark.triangle.fill"
+            )
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(PortfolioPalette.attention)
+
+            if canRepairQuantityDefects {
+                Button("Reconcile with Collection") {
+                    isShowingQuantityRepairConfirmation = true
+                }
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.borderedProminent)
+                .tint(PortfolioPalette.attention)
+                .accessibilityHint("Records append-only quantity corrections without changing collection contents")
+            }
+        }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(
             PortfolioPalette.attention.opacity(0.12),
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
+    }
+
+    private func repairQuantityMismatches() {
+        guard let defects = portfolio.summary?.defects else { return }
+        do {
+            try CollectionStore.repairQuantityMismatches(defects, in: modelContext)
+            portfolio.recompute(context: modelContext)
+        } catch {
+            quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
+        }
     }
 
     @ViewBuilder
