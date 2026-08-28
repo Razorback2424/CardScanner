@@ -533,6 +533,61 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
+    func testHeldOfferDefersUntilItsEncounterIsCommitted() {
+        let card = pokemon(223)
+        let encounterID = UUID()
+        let olderCard = heldPublicationEntry(
+            identity: "pokemon:pal-204",
+            suppressionKey: pokemon(204, code: "PAL").suppressionKey
+        )
+
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: encounterID,
+                history: [olderCard]
+            ),
+            .deferUntilCommit
+        )
+
+        let acknowledged = heldPublicationEntry(
+            identity: "pokemon:obf-223",
+            suppressionKey: card.suppressionKey,
+            encounterID: encounterID
+        )
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: encounterID,
+                history: [olderCard, acknowledged]
+            ),
+            .publish(previous: acknowledged)
+        )
+    }
+
+    func testHeldOfferUsesOlderSameKeyPresentationWhenSpatialExitWasLost() {
+        let card = pokemon(223)
+        let olderPresentation = heldPublicationEntry(
+            identity: "pokemon:obf-223",
+            suppressionKey: card.suppressionKey,
+            encounterID: UUID()
+        )
+        let unrelatedLatest = heldPublicationEntry(
+            identity: "pokemon:pal-204",
+            suppressionKey: pokemon(204, code: "PAL").suppressionKey,
+            encounterID: UUID()
+        )
+
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: UUID(),
+                history: [olderPresentation, unrelatedLatest]
+            ),
+            .publish(previous: olderPresentation)
+        )
+    }
+
     func testFinishAndPokemonPrintRunDifferencesStillUseSameDuplicateIdentity() {
         let prior = committedSessionScan(identity: "pokemon:obf-223")
         let proof = SpatialResetProof(
@@ -600,6 +655,22 @@ final class CardLatchTests: XCTestCase {
             identity: ConsecutiveScanIdentity(canonicalID: identity),
             presentationToken: UUID(),
             encounterID: UUID()
+        )
+    }
+
+    private func heldPublicationEntry(
+        identity: String,
+        suppressionKey: ScanSuppressionKey,
+        encounterID: UUID = UUID()
+    ) -> HeldDuplicatePublicationHistoryEntry {
+        HeldDuplicatePublicationHistoryEntry(
+            committed: CommittedSessionScan(
+                id: UUID(),
+                identity: ConsecutiveScanIdentity(canonicalID: identity),
+                presentationToken: UUID(),
+                encounterID: encounterID
+            ),
+            suppressionKey: suppressionKey
         )
     }
 }

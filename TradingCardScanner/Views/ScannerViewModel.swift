@@ -179,6 +179,45 @@ enum CollectionCandidateRoutingPolicy {
     }
 }
 
+/// The held-card offer is allowed to name a previously committed presentation,
+/// but it may not become actionable for an encounter that has not committed yet
+/// unless that encounter is a re-encounter of the same suppression key. The
+/// latter is the intentional fallback for identical cards whose spatial exit
+/// evidence was lost between presentations.
+struct HeldDuplicatePublicationHistoryEntry: Equatable, Sendable {
+    let committed: CommittedSessionScan
+    let suppressionKey: ScanSuppressionKey
+}
+
+enum HeldDuplicateOfferPublicationDecision: Equatable {
+    case deferUntilCommit
+    case publish(previous: HeldDuplicatePublicationHistoryEntry)
+    case suppress
+}
+
+/// Pure publication policy for the latch's nonblocking duplicate affordance.
+/// Persistence acknowledgement is represented by an entry for the current
+/// encounter; the caller still owns the UI offer and the actual commit.
+enum HeldDuplicateOfferPublicationPolicy {
+    static func decision(
+        for suppressionKey: ScanSuppressionKey,
+        encounterID: UUID,
+        history: [HeldDuplicatePublicationHistoryEntry]
+    ) -> HeldDuplicateOfferPublicationDecision {
+        if let current = history.last(where: { $0.committed.encounterID == encounterID }) {
+            return current.suppressionKey == suppressionKey
+                ? .publish(previous: current)
+                : .suppress
+        }
+
+        if let prior = history.last(where: { $0.suppressionKey == suppressionKey }) {
+            return .publish(previous: prior)
+        }
+
+        return .deferUntilCommit
+    }
+}
+
 /// Session-only committed history. It is separate from `recent` because recent
 /// is a display rail and can be edited or replaced during review.
 struct CommittedSessionScan: Identifiable, Equatable, Sendable {
@@ -845,7 +884,8 @@ final class ScannerViewModel: ObservableObject {
     }
 
     /// Turns the latch's one-time held signal into a nonblocking offer only
-    /// when it still describes the last successfully committed presentation.
+    /// after the current encounter is acknowledged, or when it is a safe
+    /// same-key re-encounter fallback against an older committed presentation.
     /// The offer is a UI affordance; it does not itself change scanner state or
     /// collection quantity.
     private func offerHeldDuplicate(for identifier: ScanIdentifier, encounterID: UUID?) {
@@ -858,8 +898,20 @@ final class ScannerViewModel: ObservableObject {
               pendingDuplicateConfirmation == nil,
               let encounterID else { return }
 
-        guard let previous = committedSessionHistory.last,
-              let previousScan = recent.first(where: { $0.id == previous.id }) else {
+        let history = committedSessionHistory.compactMap { committed -> HeldDuplicatePublicationHistoryEntry? in
+            guard let scan = recent.first(where: { $0.id == committed.id }) else { return nil }
+            return HeldDuplicatePublicationHistoryEntry(
+                committed: committed,
+                suppressionKey: scan.identifier.suppressionKey
+            )
+        }
+
+        switch HeldDuplicateOfferPublicationPolicy.decision(
+            for: identifier.suppressionKey,
+            encounterID: encounterID,
+            history: history
+        ) {
+        case .deferUntilCommit:
             // The latch can announce while its newly confirmed encounter is
             // still resolving. Hold the signal until the same encounter has a
             // successful persistence acknowledgment; an offer for an
@@ -868,20 +920,20 @@ final class ScannerViewModel: ObservableObject {
                 identifier: identifier,
                 encounterID: encounterID
             )
+        case .suppress:
             return
+        case .publish(let selected):
+            guard let previousScan = recent.first(where: { $0.id == selected.committed.id }),
+                  previousScan.identifier.suppressionKey == identifier.suppressionKey else {
+                return
+            }
+            publishHeldDuplicateOffer(
+                for: identifier,
+                encounterID: encounterID,
+                previous: selected.committed,
+                previousScan: previousScan
+            )
         }
-
-        guard previous.encounterID == encounterID,
-              previousScan.identifier.suppressionKey == identifier.suppressionKey else {
-            return
-        }
-
-        publishHeldDuplicateOffer(
-            for: identifier,
-            encounterID: encounterID,
-            previous: previous,
-            previousScan: previousScan
-        )
     }
 
     private func publishHeldDuplicateOffer(
@@ -1641,8 +1693,9 @@ final class ScannerViewModel: ObservableObject {
               state.authorization.id == authorizationID,
               state.wasConsumedByEncounter,
               candidate.identifier.suppressionKey == state.offer.suppressionKey,
-              let previous = committedSessionHistory.last,
-              previous.id == state.offer.previousScanID,
+              let previous = committedSessionHistory.first(where: {
+                  $0.id == state.offer.previousScanID
+              }),
               previous.presentationToken == state.offer.previousPresentationToken else {
             clearHeldRepeatState()
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
