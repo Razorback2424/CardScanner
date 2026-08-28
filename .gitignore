@@ -5,6 +5,7 @@
 DerivedData/
 .codex_build/
 .codex_build_device/
+.codex_build_test_device/
 .codex_ui_build/
 artifacts/
 *.zip
