@@ -8,6 +8,7 @@ struct ContentView: View {
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
     @Query private var inventoryEvents: [InventoryEvent]
+    @Query private var collectionActivities: [CollectionActivity]
     @Query private var priceRecords: [PriceRecord]
 
     private enum Tab: Hashable {
@@ -108,11 +109,13 @@ struct ContentView: View {
             default:
                 break
             }
+            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #else
         .task {
+            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
@@ -167,8 +170,19 @@ struct ContentView: View {
             hasher.combine(event.reversesEventID)
         }
 
+        for activity in collectionActivities {
+            hasher.combine(activity.id)
+            hasher.combine(activity.kindRaw)
+            hasher.combine(activity.collectionKey)
+            hasher.combine(activity.deltaQuantity)
+            hasher.combine(activity.quantity)
+            hasher.combine(activity.resolvedQuantity)
+            hasher.combine(activity.ledgerOperationIDs)
+        }
+
         hasher.combine(cards.count)
         hasher.combine(inventoryEvents.count)
+        hasher.combine(collectionActivities.count)
         return hasher.finalize()
     }
 

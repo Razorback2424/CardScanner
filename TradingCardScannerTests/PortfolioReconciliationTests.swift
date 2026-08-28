@@ -579,9 +579,10 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         guard let summary = engine.summary else { return XCTFail("no summary") }
         XCTAssertFalse(summary.isAuthoritative)
-        XCTAssertEqual(
-            summary.defects.first { $0.reason == .quantityMismatch }?.detail,
-            "ledger 1, collection 3"
+        XCTAssertTrue(
+            summary.defects.contains {
+                $0.reason == .quantityMismatch && $0.detail == "ledger 1, collection 3"
+            }
         )
         XCTAssertNil(summary.attribution)
         XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
@@ -594,19 +595,37 @@ final class PortfolioReconciliationTests: XCTestCase {
         context.insert(first)
         context.insert(second)
         let ledger = InventoryLedger(context: context)
+        let firstOperationID = UUID()
         _ = ledger.record(
             first,
             kind: .acquire,
             source: .scan,
             deltaQuantity: 1,
-            operationID: UUID()
+            operationID: firstOperationID
         )
+        let secondOperationID = UUID()
         _ = ledger.record(
             second,
             kind: .acquire,
             source: .scan,
             deltaQuantity: 1,
-            operationID: UUID()
+            operationID: secondOperationID
+        )
+        context.insert(
+            CollectionActivity(
+                card: first,
+                source: .scan,
+                quantity: 1,
+                ledgerOperationIDs: [firstOperationID]
+            )
+        )
+        context.insert(
+            CollectionActivity(
+                card: second,
+                source: .scan,
+                quantity: 1,
+                ledgerOperationIDs: [secondOperationID]
+            )
         )
         try context.save()
 

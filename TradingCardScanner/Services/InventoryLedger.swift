@@ -44,6 +44,10 @@ struct LedgerIntegrityDefect: Identifiable, Equatable, Sendable {
     /// Short, concrete, and safe to put on screen — "ledger 3, collection 2".
     var detail: String
     var detectedAt: Date = .now
+    /// Activity/ledger projection disagreements are diagnostic-only. The
+    /// quantity repair action can correct the collection against the ledger,
+    /// but it cannot safely reconstruct a missing or altered history row.
+    var canRepairQuantity: Bool = true
 }
 
 /// Where integrity defects accumulate for display.
@@ -473,12 +477,17 @@ struct InventoryLedger {
     /// Inverts every leg of an operation together, so a correction can never be
     /// half-undone.
     @discardableResult
-    func reverseOperation(_ operationID: UUID, at date: Date = .now) -> [WriteOutcome] {
+    func reverseOperation(
+        _ operationID: UUID,
+        at date: Date = .now,
+        inverseOperationID: UUID = UUID()
+    ) -> [WriteOutcome] {
         let descriptor = FetchDescriptor<InventoryEvent>(
             predicate: #Predicate { $0.operationID == operationID }
         )
         let legs = (try? context.fetch(descriptor)) ?? []
-        let inverseOperation = UUID()
-        return legs.map { reverse($0, occurredAt: date, operationID: inverseOperation) }
+        return legs.map {
+            reverse($0, occurredAt: date, operationID: inverseOperationID)
+        }
     }
 }

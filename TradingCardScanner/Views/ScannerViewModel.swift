@@ -1269,7 +1269,9 @@ final class ScannerViewModel: ObservableObject {
                 to: corrected,
                 pokemonPrintRun: scan.pokemonPrintRun,
                 previousCollectionKey: scan.mutation.collectionKey,
-                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs
+                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
+                activityID: scan.mutation.activityID,
+                quantity: 1
             )
         } catch {
             show(ScanNote(text: "Correction could not be saved", tone: .problem))

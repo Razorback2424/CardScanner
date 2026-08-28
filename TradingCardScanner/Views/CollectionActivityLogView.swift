@@ -6,37 +6,145 @@ struct CollectionActivityLogView: View {
     @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
     private var activities: [CollectionActivity]
     @Query private var cards: [CollectedCard]
+    @Query private var inventoryEvents: [InventoryEvent]
+    @State private var selectedKind: CollectionActivityKind?
+    @State private var pendingRemovalID: UUID?
+    @State private var errorMessage: String?
 
     var body: some View {
         Group {
-            if activities.isEmpty {
+            if visibleActivities.isEmpty {
                 ContentUnavailableView(
                     "No Activity Yet",
                     systemImage: "clock.arrow.circlepath",
-                    description: Text("New scans, imports, and catalog additions will appear here.")
+                    description: Text(
+                        selectedKind == nil
+                            ? "New scans, imports, and collection changes will appear here."
+                            : "No \(selectedKind?.label.lowercased() ?? "matching") history yet."
+                    )
                 )
             } else {
-                List(activities) { activity in
-                    NavigationLink {
-                        CollectionActivityEditor(activity: activity)
-                    } label: {
-                        activityRow(activity)
+                List {
+                    ForEach(visibleActivities) { activity in
+                        HStack(spacing: 8) {
+                            NavigationLink {
+                                CollectionActivityEditor(activity: activity)
+                            } label: {
+                                activityRow(activity)
+                            }
+                            activityActions(for: activity)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            if canRemove(activity) {
+                                Button("Remove", role: .destructive) {
+                                    pendingRemovalID = activity.id
+                                }
+                            }
+                            if canRestore(activity) {
+                                Button("Restore") {
+                                    restore(activity)
+                                }
+                                .tint(.green)
+                            }
+                        }
                     }
                 }
             }
         }
         .navigationTitle("Collection Activity")
         .navigationBarTitleDisplayMode(.inline)
-        .task { backfillExistingCollectionIfNeeded() }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                kindFilter
+            }
+        }
+        .task { try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded() }
+        .confirmationDialog(
+            "Remove \(pendingRemoval?.name ?? "copies")?",
+            isPresented: removalDialogBinding,
+            titleVisibility: .visible
+        ) {
+            Button("Remove", role: .destructive) {
+                if let pendingRemoval { remove(pendingRemoval) }
+            }
+            Button("Cancel", role: .cancel) { pendingRemovalID = nil }
+        } message: {
+            Text("Only the copies claimed by this history entry will be removed.")
+        }
+        .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "Please try again.")
+        }
+    }
+
+    private var visibleActivities: [CollectionActivity] {
+        guard let selectedKind else { return activities }
+        return activities.filter { $0.kind == selectedKind }
+    }
+
+    private var pendingRemoval: CollectionActivity? {
+        guard let pendingRemovalID else { return nil }
+        return activities.first { $0.id == pendingRemovalID }
+    }
+
+    private var removalDialogBinding: Binding<Bool> {
+        Binding(
+            get: { pendingRemovalID != nil },
+            set: { if !$0 { pendingRemovalID = nil } }
+        )
+    }
+
+    private var errorBinding: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )
+    }
+
+    private var kindFilter: some View {
+        Menu {
+            Button {
+                selectedKind = nil
+            } label: {
+                filterLabel("All", selected: selectedKind == nil)
+            }
+            ForEach(CollectionActivityKind.allCases) { kind in
+                Button {
+                    selectedKind = kind
+                } label: {
+                    filterLabel(kind.label, selected: selectedKind == kind)
+                }
+            }
+        } label: {
+            Image(systemName: selectedKind == nil
+                  ? "line.3.horizontal.decrease.circle"
+                  : "line.3.horizontal.decrease.circle.fill")
+        }
+        .accessibilityLabel(
+            selectedKind.map { "Filter history: \($0.label)" } ?? "Filter history"
+        )
+    }
+
+    @ViewBuilder
+    private func filterLabel(_ label: String, selected: Bool) -> some View {
+        if selected {
+            Label(label, systemImage: "checkmark")
+        } else {
+            Text(label)
+        }
     }
 
     private func activityRow(_ activity: CollectionActivity) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: activity.source.symbolName)
-                .foregroundStyle(Color.accentColor)
+            Image(systemName: activity.kind.symbolName)
+                .foregroundStyle(color(for: activity.kind))
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 3) {
+                Text(activity.kind.label)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(color(for: activity.kind))
                 Text(activity.name)
                     .font(.headline)
                     .lineLimit(1)
@@ -51,13 +159,55 @@ struct CollectionActivityLogView: View {
 
             Spacer()
 
-            if activity.quantity > 1 {
-                Text("×\(activity.quantity)")
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
+            Text(signedQuantity(activity.signedQuantity))
+                .font(.subheadline.monospacedDigit().weight(.semibold))
+                .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private func activityActions(for activity: CollectionActivity) -> some View {
+        Menu {
+            if canCorrect(activity) {
+                NavigationLink {
+                    CollectionActivityEditor(activity: activity)
+                } label: {
+                    Label("Correct finish…", systemImage: "pencil")
+                }
+            } else {
+                Button("Correct finish…", systemImage: "pencil") {}
+                    .disabled(true)
+                Text(actionReason(for: activity, action: .correct))
+                    .font(.caption)
+            }
+
+            if canRemove(activity) {
+                Button("Remove copies…", systemImage: "minus.circle") {
+                    pendingRemovalID = activity.id
+                }
+            } else {
+                Button("Remove copies…", systemImage: "minus.circle") {}
+                    .disabled(true)
+                Text(actionReason(for: activity, action: .remove))
+                    .font(.caption)
+            }
+
+            if canRestore(activity) {
+                Button("Restore", systemImage: "arrow.uturn.backward") {
+                    restore(activity)
+                }
+            } else if activity.kind == .removed {
+                Button("Restore", systemImage: "arrow.uturn.backward") {}
+                    .disabled(true)
+                Text(actionReason(for: activity, action: .restore))
+                    .font(.caption)
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.title3)
+        }
+        .accessibilityLabel("Actions for \(activity.name)")
     }
 
     private func metadataLine(_ activity: CollectionActivity) -> String {
@@ -74,76 +224,183 @@ struct CollectionActivityLogView: View {
             .joined(separator: " · ")
     }
 
-    /// Older stores predate the audit entity. Preserve what can be known from
-    /// the collection row without inventing individual scan times: one event at
-    /// the row's recorded add date, carrying its full current quantity.
-    @MainActor
-    private func backfillExistingCollectionIfNeeded() {
-        let loggedKeys = Set(activities.map(\.collectionKey))
-        var inserted = false
-        for card in cards where !loggedKeys.contains(card.collectionKey) {
-            let source: CollectionActivitySource
-            switch card.itemKind {
-            case .sealedProduct: source = .sealedCatalog
-            case .gradedCard: source = .gradedCatalog
-            case .rawCard:
-                switch card.identityResolution {
-                case .imported: source = .csvImport
-                case .printedIdentifier: source = .scan
-                case .catalogSelected, .userCorrected, .none: source = .catalog
-                }
-            }
-            modelContext.insert(
-                CollectionActivity(
-                    card: card,
-                    source: source,
-                    quantity: card.quantity,
-                    occurredAt: card.dateAdded
-                )
+    private enum Action {
+        case correct
+        case remove
+        case restore
+    }
+
+    private func canCorrect(_ activity: CollectionActivity) -> Bool {
+        activity.kind.hasQuantityClaim
+            && activity.signedQuantity > 0
+            && activity.itemKind == .rawCard
+            && activity.remainingQuantity > 0
+            && activity.variantID != nil
+            && card(for: activity).map { $0.quantity >= activity.remainingQuantity } == true
+            && CollectionStore(context: modelContext).hasValidLineage(
+                activity.ledgerOperationIDs,
+                for: activity.collectionKey,
+                quantity: activity.claimedQuantity
             )
-            inserted = true
+    }
+
+    private func canRemove(_ activity: CollectionActivity) -> Bool {
+        activity.kind.hasQuantityClaim
+            && activity.signedQuantity > 0
+            && activity.remainingQuantity > 0
+            && CollectionStore(context: modelContext).hasValidLineage(
+                activity.ledgerOperationIDs,
+                for: activity.collectionKey,
+                quantity: activity.claimedQuantity
+            )
+            && (card(for: activity)?.quantity ?? 0) >= activity.remainingQuantity
+    }
+
+    private func canRestore(_ activity: CollectionActivity) -> Bool {
+        guard activity.kind == .removed,
+              activity.remainingQuantity > 0,
+              activity.removalSnapshotData != nil,
+              Date.now.timeIntervalSince(activity.occurredAt) <= CollectionActivity.restoreWindow,
+              CollectionStore(context: modelContext).hasValidRemovalLineage(activity)
+        else { return false }
+
+        guard card(for: activity) != nil else { return true }
+        return !positionWasReacquired(activity)
+    }
+
+    private func actionReason(_ activity: CollectionActivity, action: Action) -> String {
+        switch action {
+        case .correct:
+            if activity.kind != .added && activity.kind != .restored {
+                return "Only entries that claim owned copies can be corrected."
+            }
+            if activity.signedQuantity <= 0 { return "This entry does not claim added copies." }
+            if activity.remainingQuantity == 0 { return "This entry has already been acted on." }
+            if activity.itemKind != .rawCard { return "Only raw card finishes can be corrected." }
+            if activity.variantID == nil { return "This entry has no known finish." }
+            if (card(for: activity)?.quantity ?? 0) < activity.remainingQuantity {
+                return "The current collection quantity is too small."
+            }
+            if !CollectionStore(context: modelContext).hasValidLineage(
+                activity.ledgerOperationIDs,
+                for: activity.collectionKey,
+                quantity: activity.claimedQuantity
+            ) {
+                return "The ledger lineage is missing, incomplete, or already reversed."
+            }
+            return "The collection row is no longer available."
+        case .remove:
+            if !activity.kind.hasQuantityClaim { return "This entry does not claim removable copies." }
+            if activity.signedQuantity <= 0 { return "This entry does not claim added copies." }
+            if activity.remainingQuantity == 0 { return "This entry has already been acted on." }
+            if !CollectionStore(context: modelContext).hasValidLineage(
+                activity.ledgerOperationIDs,
+                for: activity.collectionKey,
+                quantity: activity.claimedQuantity
+            ) {
+                return "The ledger lineage is missing, incomplete, or already reversed."
+            }
+            return "The current collection quantity is too small or unavailable."
+        case .restore:
+            if activity.removalSnapshotData == nil { return "This removal has no restore snapshot." }
+            if activity.remainingQuantity == 0 { return "This removal has already been restored." }
+            if !CollectionStore(context: modelContext).hasValidRemovalLineage(activity) {
+                return "The removal ledger lineage is missing, incomplete, or already reversed."
+            }
+            if positionWasReacquired(activity) { return "The position was acquired again." }
+            if Date.now.timeIntervalSince(activity.occurredAt) > CollectionActivity.restoreWindow {
+                return "This removal is outside the restore window."
+            }
+            return "This removal has already been restored."
         }
-        if inserted { try? modelContext.save() }
+    }
+
+    private func card(for activity: CollectionActivity) -> CollectedCard? {
+        cards.first { $0.collectionKey == activity.collectionKey }
+    }
+
+    /// A surviving row is not automatically a re-acquisition: a per-entry
+    /// removal can leave sibling copies in that same quantity row. The disposal
+    /// event and the absence of a later positive event are the proof the store
+    /// uses before allowing that merge.
+    private func positionWasReacquired(_ activity: CollectionActivity) -> Bool {
+        guard card(for: activity) != nil else { return false }
+        guard let data = activity.removalSnapshotData,
+              let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
+              let operationID = snapshot.operationID else { return true }
+        let removalRecordedAt = inventoryEvents
+            .filter { $0.operationID == operationID }
+            .map(\.recordedAt)
+            .max()
+        guard let removalRecordedAt else { return true }
+        return inventoryEvents.contains {
+            $0.collectionKey == activity.collectionKey
+                && $0.recordedAt >= removalRecordedAt
+                && $0.deltaQuantity > 0
+        }
+    }
+
+    private func remove(_ activity: CollectionActivity) {
+        pendingRemovalID = nil
+        do {
+            _ = try CollectionStore(context: modelContext).remove(activity)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func restore(_ activity: CollectionActivity) {
+        do {
+            try CollectionStore(context: modelContext).restore(activity)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func signedQuantity(_ quantity: Int) -> String {
+        if quantity > 0 { return "+\(quantity)" }
+        if quantity < 0 { return "−\(-quantity)" }
+        return "—"
+    }
+
+    private func color(for kind: CollectionActivityKind) -> Color {
+        switch kind {
+        case .added: return .green
+        case .removed: return .red
+        case .restored: return .mint
+        case .corrected: return .orange
+        case .quantityAdjusted: return .blue
+        case .undone: return .purple
+        }
     }
 }
 
-private struct CollectionActivityEditor: View {
+struct CollectionActivityEditor: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Bindable var activity: CollectionActivity
 
-    @State private var name: String
-    @State private var setName: String
-    @State private var setCode: String
-    @State private var cardNumber: String
     @State private var variantID: String?
-    @State private var pokemonPrintRunRaw: String?
     @State private var errorMessage: String?
-    @State private var isConfirmingIdentityChange = false
 
     init(activity: CollectionActivity) {
         self.activity = activity
-        _name = State(initialValue: activity.name)
-        _setName = State(initialValue: activity.setName)
-        _setCode = State(initialValue: activity.setCode)
-        _cardNumber = State(initialValue: activity.cardNumber)
         _variantID = State(initialValue: activity.variantID)
-        _pokemonPrintRunRaw = State(initialValue: activity.pokemonPrintRunRaw)
     }
 
     var body: some View {
         Form {
             Section("Recorded") {
+                LabeledContent("Action", value: activity.kind.label)
                 LabeledContent("Source", value: activity.source.label)
                 LabeledContent(
-                    "Added",
+                    "When",
                     value: activity.occurredAt.formatted(date: .abbreviated, time: .shortened)
                 )
                 LabeledContent("Game", value: activity.game.label)
                 LabeledContent("Item Type", value: activity.itemKind.label)
-                if activity.quantity > 1 {
-                    LabeledContent("Quantity", value: "\(activity.quantity)")
-                }
+                LabeledContent("Quantity", value: signedQuantity(activity.signedQuantity))
+                LabeledContent("Entry status", value: activity.isResolved ? "Resolved" : "Open")
                 if let correctedAt = activity.correctedAt {
                     LabeledContent(
                         "Last Corrected",
@@ -152,79 +409,53 @@ private struct CollectionActivityEditor: View {
                 }
             }
 
-            Section {
-                TextField("Name", text: $name)
-                TextField("Set Name", text: $setName)
-                TextField("Set Code", text: $setCode)
-                    .textInputAutocapitalization(.characters)
-                TextField("Card Number", text: $cardNumber)
-
-                if activity.itemKind == .rawCard {
-                    if activity.game == .pokemon {
-                        Picker("Print Run", selection: $pokemonPrintRunRaw) {
-                            Text("Standard / Not Applicable").tag(nil as String?)
-                            Text(PokemonPrintRun.firstEdition.label)
-                                .tag(PokemonPrintRun.firstEdition.rawValue as String?)
-                            Text(PokemonPrintRun.shadowless.label)
-                                .tag(PokemonPrintRun.shadowless.rawValue as String?)
-                            Text(PokemonPrintRun.unlimited.label)
-                                .tag(PokemonPrintRun.unlimited.rawValue as String?)
-                        }
-                    }
+            if activity.kind.hasQuantityClaim, activity.itemKind == .rawCard {
+                Section {
                     Picker("Finish", selection: $variantID) {
-                        Text("Unknown").tag(nil as String?)
                         ForEach(PhysicalVariant.selectable(for: activity.game)) { variant in
                             Text(variant.label).tag(variant.id as String?)
                         }
                     }
+                } header: {
+                    Text("Correct Finish")
+                } footer: {
+                    Text("The correction applies to the copies claimed by this entry and is recorded in the ledger.")
                 }
-            } header: {
-                Text("Metadata")
-            } footer: {
-                Text("Changing identity metadata removes the old catalog artwork and price link so information from the previous product cannot remain attached.")
+                .disabled(!canSave)
+            } else {
+                Section {
+                    Text("This history entry records a completed collection action. It cannot be corrected again.")
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .navigationTitle("Review Entry")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") { prepareSave() }
-                    .disabled(!hasChanges || name.trimmed.isEmpty)
+                Button("Save") { save() }
+                    .disabled(!canSave)
             }
         }
-        .confirmationDialog(
-            "Change card identity?",
-            isPresented: $isConfirmingIdentityChange,
-            titleVisibility: .visible
-        ) {
-            Button("Save and Clear Old Catalog Link", role: .destructive) {
-                save(identityChanged: true)
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("The old artwork and linked price may belong to a different printing. They will be removed from this collection entry.")
-        }
-        .alert("Correction Couldn’t Be Saved", isPresented: errorBinding) {
+        .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "Please try again.")
         }
     }
 
-    private var hasChanges: Bool {
-        name.trimmed != activity.name
-            || setName.trimmed != activity.setName
-            || setCode.trimmed != activity.setCode
-            || cardNumber.trimmed != activity.cardNumber
-            || variantID != activity.variantID
-            || pokemonPrintRunRaw != activity.pokemonPrintRunRaw
-    }
-
-    private var identityChanged: Bool {
-        name.trimmed != activity.name
-            || setName.trimmed != activity.setName
-            || setCode.trimmed != activity.setCode
-            || cardNumber.trimmed != activity.cardNumber
+    private var canSave: Bool {
+        activity.kind.hasQuantityClaim
+            && activity.itemKind == .rawCard
+            && activity.remainingQuantity > 0
+            && variantID != nil
+            && variantID != activity.variantID
+            && collectionCard.map { $0.quantity >= activity.remainingQuantity } == true
+            && CollectionStore(context: modelContext).hasValidLineage(
+                activity.ledgerOperationIDs,
+                for: activity.collectionKey,
+                quantity: activity.claimedQuantity
+            )
     }
 
     private var errorBinding: Binding<Bool> {
@@ -234,116 +465,41 @@ private struct CollectionActivityEditor: View {
         )
     }
 
-    private func prepareSave() {
-        if identityChanged {
-            isConfirmingIdentityChange = true
-        } else {
-            save(identityChanged: false)
-        }
+    private var collectionCard: CollectedCard? {
+        var descriptor = FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.collectionKey == activity.collectionKey }
+        )
+        descriptor.fetchLimit = 1
+        return try? modelContext.fetch(descriptor).first
     }
 
-    private func save(identityChanged: Bool) {
-        let oldKey = activity.collectionKey
-        guard let card = collectionCard(key: oldKey) else {
-            errorMessage = "The corresponding collection entry no longer exists."
+    private func save() {
+        guard let card = collectionCard,
+              let variantID else {
+            errorMessage = "The collection entry is no longer available."
             return
         }
-
-        let providerID: String
-        if identityChanged {
-            providerID = "corrected:\(UUID().uuidString.lowercased())"
-        } else {
-            providerID = card.providerID
-        }
-        let baseKey = identityChanged
-            ? providerID
-            : card.collectionKey
-                .split(separator: "@", maxSplits: 1).first.map(String.init)?
-                .split(separator: "#", maxSplits: 1).first.map(String.init) ?? card.providerID
-        let finishKey = variantID.map { "\(baseKey)#\($0)" } ?? baseKey
-        let newKey = pokemonPrintRunRaw.map { "\(finishKey)@\($0)" } ?? finishKey
-
-        if newKey != oldKey, collectionCard(key: newKey) != nil {
-            errorMessage = "A collection entry with this identity and finish already exists."
-            return
-        }
-
-        // Captured before the row is rewritten: afterwards the old identity is
-        // gone and the outgoing leg has nothing to value itself against.
-        let ledger = InventoryLedger(context: modelContext)
-        let previousPriceStorageKey = ledger.priceStorageKey(for: card)
-        let movedQuantity = card.quantity
-
-        card.collectionKey = newKey
-        card.name = name.trimmed
-        card.setName = setName.trimmed
-        card.setCode = setCode.trimmed.uppercased()
-        card.cardNumber = cardNumber.trimmed
-        card.variantID = variantID
-        card.variantLabel = variantID.map { PhysicalVariant.resolving($0).label }
-        card.pokemonPrintRunRaw = pokemonPrintRunRaw
-        card.variantResolutionRaw = VariantResolution.userConfirmed.rawValue
-
-        if identityChanged {
-            card.providerID = providerID
-            card.catalogProviderID = nil
-            card.catalogMetadataCheckedAt = nil
-            card.catalogMetadataVersion = 0
-            card.imageURL = nil
-            card.thumbnailURL = nil
-            card.tcgplayerURL = nil
-            card.justTCGCardID = nil
-            card.justTCGVariantID = nil
-            card.justTCGAPIVersion = nil
-            card.identityResolutionRaw = IdentityResolution.userCorrected.rawValue
-        }
-
-        let descriptor = FetchDescriptor<CollectionActivity>(
-            predicate: #Predicate { $0.collectionKey == oldKey }
-        )
-        let related = (try? modelContext.fetch(descriptor)) ?? [activity]
-        for event in related {
-            event.collectionKey = newKey
-            event.name = card.name
-            event.setName = card.setName
-            event.setCode = card.setCode
-            event.cardNumber = card.cardNumber
-            event.variantID = card.variantID
-            event.variantLabel = card.variantLabel
-            event.pokemonPrintRunRaw = card.pokemonPrintRunRaw
-            event.correctedAt = .now
-        }
-
-        // A correction, never an acquisition. Correcting a variant from $8 to
-        // $74 is +$66 of corrections; showing it as a market gain would be
-        // precisely the thing this feature exists to stop.
-        let newPriceStorageKey = ledger.priceStorageKey(for: card)
-        if newKey != oldKey || newPriceStorageKey != previousPriceStorageKey {
-            ledger.recordCorrection(
-                fromCollectionKey: oldKey,
-                fromPriceStorageKey: previousPriceStorageKey,
-                toCard: card,
-                quantity: movedQuantity
-            )
-        }
+        let variant = PhysicalVariant.resolving(variantID)
 
         do {
-            try modelContext.save()
+            guard try CollectionStore(context: modelContext).recordVariantCorrection(
+                for: card,
+                to: ResolvedVariant(variant: variant, resolution: .userConfirmed),
+                activityID: activity.id,
+                quantity: activity.remainingQuantity
+            ) != nil else {
+                errorMessage = "This entry could not be corrected."
+                return
+            }
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    private func collectionCard(key: String) -> CollectedCard? {
-        var descriptor = FetchDescriptor<CollectedCard>(
-            predicate: #Predicate { $0.collectionKey == key }
-        )
-        descriptor.fetchLimit = 1
-        return try? modelContext.fetch(descriptor).first
+    private func signedQuantity(_ quantity: Int) -> String {
+        if quantity > 0 { return "+\(quantity)" }
+        if quantity < 0 { return "−\(-quantity)" }
+        return "—"
     }
-}
-
-private extension String {
-    var trimmed: String { trimmingCharacters(in: .whitespacesAndNewlines) }
 }

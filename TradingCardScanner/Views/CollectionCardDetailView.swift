@@ -7,6 +7,8 @@ struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Bindable var card: CollectedCard
+    @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
+    private var collectionActivities: [CollectionActivity]
     let price: PriceDisplay
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
@@ -14,6 +16,7 @@ struct CollectionCardDetailView: View {
 
     @State private var isConfirmingRemoval = false
     @State private var selectedArtwork: PhotosPickerItem?
+    @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
@@ -45,6 +48,11 @@ struct CollectionCardDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
+        }
+        .alert("Collection Change Couldn’t Be Saved", isPresented: errorBinding) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "Please try again.")
         }
     }
 
@@ -102,16 +110,21 @@ struct CollectionCardDetailView: View {
             pricing
             finish
             marketplaceLinks
+            history
 
             Stepper(
                 "Quantity: \(card.quantity)",
                 value: Binding(
                     get: { card.quantity },
                     set: { newQuantity in
-                        try? CollectionStore(context: modelContext).setQuantity(
-                            newQuantity,
-                            for: card
-                        )
+                        do {
+                            try CollectionStore(context: modelContext).setQuantity(
+                                newQuantity,
+                                for: card
+                            )
+                        } catch {
+                            errorMessage = error.localizedDescription
+                        }
                     }
                 ),
                 in: 1...999
@@ -206,9 +219,20 @@ struct CollectionCardDetailView: View {
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
-        guard let snapshot = try? CollectionStore(context: modelContext).remove(card) else { return }
-        onRemoved(snapshot)
-        dismiss()
+        do {
+            let snapshot = try CollectionStore(context: modelContext).remove(card)
+            onRemoved(snapshot)
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private var errorBinding: Binding<Bool> {
+        Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )
     }
 
     /// Straight from the number to the market it came from.
@@ -283,6 +307,67 @@ struct CollectionCardDetailView: View {
         .font(.subheadline)
         .padding(14)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var history: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("History")
+                .font(.headline)
+
+            if cardHistory.isEmpty {
+                Text("No history recorded for this collection entry.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(cardHistory) { activity in
+                    NavigationLink {
+                        CollectionActivityEditor(activity: activity)
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: activity.kind.symbolName)
+                                .foregroundStyle(historyColor(for: activity.kind))
+                                .frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(activity.kind.label)
+                                    .font(.subheadline.weight(.semibold))
+                                Text(activity.occurredAt, format: .dateTime.month().day().year().hour().minute())
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Text(signedQuantity(activity.signedQuantity))
+                                .font(.subheadline.monospacedDigit().weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(minHeight: 44)
+                    }
+                }
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var cardHistory: [CollectionActivity] {
+        collectionActivities.filter { $0.collectionKey == card.collectionKey }
+    }
+
+    private func signedQuantity(_ quantity: Int) -> String {
+        if quantity > 0 { return "+\(quantity)" }
+        if quantity < 0 { return "−\(-quantity)" }
+        return "—"
+    }
+
+    private func historyColor(for kind: CollectionActivityKind) -> Color {
+        switch kind {
+        case .added: return .green
+        case .removed: return .red
+        case .restored: return .mint
+        case .corrected: return .orange
+        case .quantityAdjusted: return .blue
+        case .undone: return .purple
+        }
     }
 
     @ViewBuilder

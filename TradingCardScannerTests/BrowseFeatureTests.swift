@@ -254,11 +254,15 @@ final class BrowseCollectionTests: XCTestCase {
         )
         let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
 
-        XCTAssertEqual(activities.count, 1, "a correction is not another acquisition")
-        XCTAssertEqual(activities.first?.source, .scan)
-        XCTAssertEqual(activities.first?.collectionKey, mutation.collectionKey)
-        XCTAssertEqual(activities.first?.variantID, PhysicalVariant.reverse.id)
-        XCTAssertNotNil(activities.first?.correctedAt)
+        XCTAssertEqual(activities.count, 2, "a correction is not another acquisition")
+        let retargeted = try XCTUnwrap(activities.first { $0.kind == .added })
+        let correction = try XCTUnwrap(activities.first { $0.kind == .corrected })
+        XCTAssertEqual(retargeted.source, .scan)
+        XCTAssertEqual(retargeted.collectionKey, mutation.collectionKey)
+        XCTAssertEqual(retargeted.variantID, PhysicalVariant.reverse.id)
+        XCTAssertNotNil(retargeted.correctedAt)
+        XCTAssertEqual(correction.deltaQuantity, 0)
+        XCTAssertEqual(correction.collectionKey, mutation.collectionKey)
     }
 
     func testVariantCorrectionPreservesPokemonPrintRunIdentity() throws {
@@ -301,7 +305,7 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertTrue(try context.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
     }
 
-    func testIncrementUndoRemovesExactlyOneCopyAndItsActivity() throws {
+    func testIncrementUndoRemovesExactlyOneCopyAndRecordsUndoActivity() throws {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
         let store = CollectionStore(context: context)
@@ -319,7 +323,14 @@ final class BrowseCollectionTests: XCTestCase {
         try store.undo(second)
 
         XCTAssertEqual(store.card(forKey: second.collectionKey)?.quantity, 1)
-        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.count, 3)
+        let undone = try XCTUnwrap(activities.first { $0.kind == .undone })
+        XCTAssertEqual(undone.deltaQuantity, -1)
+        XCTAssertEqual(
+            activities.filter { $0.kind == .added && $0.id == second.activityID }.first?.resolvedQuantity,
+            1
+        )
         let events = try context.fetch(FetchDescriptor<InventoryEvent>())
         XCTAssertEqual(InventoryLedger.quantities(from: events)[second.collectionKey], 1)
     }
@@ -355,7 +366,12 @@ final class BrowseCollectionTests: XCTestCase {
         try store.undo(secondCorrection)
 
         XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
-        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.count, 4)
+        XCTAssertEqual(activities.filter { $0.kind == .added }.count, 1)
+        XCTAssertEqual(activities.filter { $0.kind == .corrected }.count, 2)
+        XCTAssertEqual(activities.filter { $0.kind == .undone }.count, 1)
+        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, 0)
         let events = try context.fetch(FetchDescriptor<InventoryEvent>())
         XCTAssertTrue(InventoryLedger.quantities(from: events).isEmpty)
     }

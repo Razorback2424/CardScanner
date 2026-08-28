@@ -146,6 +146,7 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
+        .animation(.easeOut(duration: 0.2), value: model.finishLocks)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.note)
         .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
@@ -203,6 +204,8 @@ private struct ScannerChrome: View {
         HStack(spacing: 8) {
             purposeControl
 
+            finishLockControl
+
             if model.isSlowIdentifying {
                 ProgressView()
                     .tint(.white)
@@ -212,34 +215,73 @@ private struct ScannerChrome: View {
 
             Spacer(minLength: 0)
 
-            // Finish Lock is configured in Settings, but a lock silently
-            // resolving finishes is exactly the kind of thing that must never be
-            // invisible. This says one is on and goes straight to where it lives.
-            if !model.activeFinishLocks.isEmpty {
-                finishLockIndicator
-            }
-
             settingsButton
         }
         .animation(.easeOut(duration: 0.2), value: model.isSlowIdentifying)
     }
 
-    private var finishLockIndicator: some View {
-        Button(action: openSettings) {
-            HStack(spacing: 5) {
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 11, weight: .semibold))
-                Text(model.activeFinishLocks.map { $0.variant.label }.joined(separator: " · "))
-                    .font(.footnote.weight(.semibold))
-                    .lineLimit(1)
+    private var finishLockControl: some View {
+        let locks = model.activeFinishLocks
+        let summary = locks.isEmpty
+            ? "Auto"
+            : locks.map { $0.variant.label }.joined(separator: " · ")
+
+        return Menu {
+            Section("Finish Lock") {
+                ForEach(CardGame.allCases) { game in
+                    Menu(game.label) {
+                        Button {
+                            model.setFinishLock(nil, for: game)
+                        } label: {
+                            Text("Auto")
+                            if model.finishLock(for: game) == nil {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+
+                        ForEach(PhysicalVariant.selectable(for: game)) { variant in
+                            Button {
+                                model.setFinishLock(variant, for: game)
+                            } label: {
+                                Text(variant.label)
+                                if model.finishLock(for: game) == variant {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            .foregroundStyle(.black)
-            .padding(.horizontal, 11)
-            .padding(.vertical, 7)
-            .background(Color.yellow, in: Capsule())
+        } label: {
+            finishLockPill(summary: summary, isLocked: !locks.isEmpty)
         }
+        .menuStyle(.button)
         .buttonStyle(.plain)
-        .accessibilityLabel("Finish lock active: \(model.activeFinishLocks.map { $0.variant.label }.joined(separator: ", ")). Opens settings.")
+        .accessibilityLabel("Finish lock: \(summary)")
+        .accessibilityHint("A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
+    }
+
+    @ViewBuilder
+    private func finishLockPill(summary: String, isLocked: Bool) -> some View {
+        let pill = HStack(spacing: 6) {
+            Image(systemName: isLocked ? "lock.fill" : "lock.open")
+                .font(.system(size: 13, weight: .semibold))
+            Text(summary)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+            Image(systemName: "chevron.down")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(.white.opacity(0.7))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 12)
+        .frame(height: 34)
+
+        if isLocked {
+            pill.background(Color.red, in: Capsule())
+        } else {
+            pill.scannerGlass(cornerRadius: 17)
+        }
     }
 
     private var settingsButton: some View {
