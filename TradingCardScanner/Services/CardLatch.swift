@@ -26,6 +26,11 @@ struct CardLatch: Equatable {
     enum Decision: Equatable {
         /// Hand this observation to the confirmation window.
         case forward(ScanIdentifier?)
+        /// Hand this matching observation to the confirmation window under a
+        /// user-authorized, one-shot permit. This is deliberately distinct
+        /// from ordinary forwarding so admission cannot fall through to
+        /// `admits` after the permit is consumed.
+        case forwardAuthorized(ScanIdentifier)
         /// Same physical presentation as the one already consumed. Ignore it.
         case holdingLatch
     }
@@ -121,6 +126,16 @@ struct CardLatch: Equatable {
 
         guard latched != nil else { return .forward(observation) }
 
+        if let authorizedKey = heldRepeatAuthorizationKey,
+           authorizedKey == latched?.suppressionKey,
+           let observation,
+           observation.suppressionKey == authorizedKey {
+            // Keep forwarding the matching confirmation frames while the
+            // permit is armed. The scanner consumes the permit only once the
+            // normal two-match confirmation window succeeds.
+            return .forwardAuthorized(observation)
+        }
+
         if observation?.suppressionKey == latched?.suppressionKey {
             heldMatchCount += 1
             return .holdingLatch
@@ -197,8 +212,10 @@ struct CardLatch: Equatable {
     /// owns the authorization token and lifetime; the latch only owns this
     /// small, one-shot admission fact.
     mutating func authorizeHeldRepeat(for key: ScanSuppressionKey) {
+        guard latched?.suppressionKey == key else { return }
         heldRepeatAuthorizationKey = key
-        release()
+        heldMatchCount = 0
+        consecutiveAbsences = 0
     }
 
     mutating func consumeHeldRepeatAuthorization(for key: ScanSuppressionKey) -> Bool {
@@ -209,6 +226,7 @@ struct CardLatch: Equatable {
 
     mutating func cancelHeldRepeatAuthorization() {
         heldRepeatAuthorizationKey = nil
+        heldMatchCount = 0
     }
 
     /// Moves a printing to the front of the memory, forgetting what was known
@@ -227,6 +245,7 @@ struct CardLatch: Equatable {
     /// and re-adding it instantly would be the opposite of an undo.
     mutating func release() {
         latched = nil
+        heldRepeatAuthorizationKey = nil
         heldMatchCount = 0
         consecutiveAbsences = 0
     }

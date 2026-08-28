@@ -143,6 +143,8 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.note)
         .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)

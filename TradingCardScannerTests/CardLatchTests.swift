@@ -391,13 +391,32 @@ final class CardLatchTests: XCTestCase {
         latch.engage(on: card, at: 0)
 
         latch.authorizeHeldRepeat(for: card.suppressionKey)
-        XCTAssertNil(latch.latched)
+        XCTAssertEqual(latch.latched, card)
         XCTAssertFalse(latch.admits(card), "authorization is not spatial exit evidence")
+        XCTAssertEqual(latch.observe(card, at: 0.25), .forwardAuthorized(card))
+        XCTAssertEqual(latch.heldMatchCount, 0, "the authorized frame is not a held presentation")
         XCTAssertTrue(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
         XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
 
+        XCTAssertEqual(latch.observe(card, at: 0.5), .holdingLatch)
+
         latch.engage(on: card, at: 1)
         XCTAssertFalse(latch.admits(card), "the newly authorized copy remains suppressed after its one use")
+    }
+
+    func testCancellingHeldRepeatRequiresFreshHeldObservationsBeforeAnotherOffer() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+        latch.authorizeHeldRepeat(for: card.suppressionKey)
+        latch.cancelHeldRepeatAuthorization()
+
+        for pass in 1..<8 {
+            XCTAssertEqual(latch.observe(card, at: Double(pass) * 0.25), .holdingLatch)
+        }
+        XCTAssertEqual(latch.heldMatchCount, 7)
+        XCTAssertEqual(latch.observe(card, at: 2.0), .holdingLatch)
+        XCTAssertEqual(latch.heldMatchCount, 8)
     }
 
     func testHeldRepeatAuthorizationDoesNotAdmitAnotherIdentity() {

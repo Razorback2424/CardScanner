@@ -387,11 +387,19 @@ struct HeldRepeatAuthorization: Equatable, Sendable {
 enum HeldRepeatAuthorizationRejection: Equatable, Sendable {
     case cardChanged
     case expired
+    case recognitionPaused
 }
 
 enum HeldRepeatAuthorizationResult: Equatable, Sendable {
     case accepted
     case rejected(HeldRepeatAuthorizationRejection)
+}
+
+enum HeldRepeatAuthorizationTerminalOutcome: Equatable, Sendable {
+    case consumed
+    case expired
+    case rejected
+    case cancelled
 }
 
 enum SpatialTrackerLifecycle: Equatable, Sendable {
@@ -604,6 +612,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// allowed to touch the collection — this exists so a catalog request can be
     /// in flight while Vision is still looking for its second matching pass.
     var onPlausibleCandidate: ((ScanIdentifier) -> Void)?
+    /// Every parsed frame, including frames suppressed by the latch. This is
+    /// used only for local evidence policies that must count fresh observations
+    /// without starting another catalog request.
+    var onObservedCandidate: ((ScanIdentifier) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
     /// The encounter id is created at the exact frame that confirms the OCR
@@ -619,7 +631,15 @@ final class CardScanner: NSObject, ObservableObject {
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
-    var onLatchHolding: ((ScanIdentifier) -> Void)?
+    var onLatchHolding: ((ScanIdentifier, UUID?) -> Void)?
+    /// The latch released a consumed presentation. The encounter id is kept
+    /// when the scanner still owns that continuity; the suppression key is
+    /// always present so the view model can clear a stale offer safely.
+    var onLatchReleased: ((UUID?, ScanSuppressionKey) -> Void)?
+    /// Terminal state for the scanner-owned held-repeat permit. In particular,
+    /// expiry is emitted by the Vision queue's clock rather than inferred by a
+    /// frame arriving late.
+    var onHeldRepeatAuthorizationTerminated: ((UUID, HeldRepeatAuthorizationTerminalOutcome) -> Void)?
 
     /// Which way the sensor is currently held. Read by the preview layer and by
     /// every Vision pass, so overlays and recognition share one answer.
@@ -643,6 +663,8 @@ final class CardScanner: NSObject, ObservableObject {
     private var latch = CardLatch()
     private var didAnnounceLatchHold = false
     private var activeHeldRepeatAuthorization: HeldRepeatAuthorization?
+    private var heldRepeatExpiryWorkItem: DispatchWorkItem?
+    private var latchEncounterID: UUID?
     private var lastAnnouncedPlausible: ScanIdentifier?
     private var profile: RecognitionProfile = .pokemonOnly
     private var historicalAttempt: HistoricalEvidenceRequest?
@@ -755,6 +777,9 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     func stop() {
+        visionQueue.async { [weak self] in
+            self?.cancelHeldRepeatAuthorizationOnVisionQueue()
+        }
         sessionQueue.async { [weak self] in
             guard let self, self.session.isRunning else { return }
             self.session.stopRunning()
@@ -763,7 +788,9 @@ final class CardScanner: NSObject, ObservableObject {
 
     func pauseRecognition() {
         visionQueue.async { [weak self] in
-            self?.isPaused = true
+            guard let self else { return }
+            self.isPaused = true
+            self.cancelHeldRepeatAuthorizationOnVisionQueue()
         }
     }
 
@@ -792,12 +819,16 @@ final class CardScanner: NSObject, ObservableObject {
 
             let result: HeldRepeatAuthorizationResult
             if authorization.isExpired(at: CFAbsoluteTimeGetCurrent()) {
-                self.cancelHeldRepeatAuthorizationOnVisionQueue()
+                if self.activeHeldRepeatAuthorization?.id == authorization.id {
+                    self.terminateHeldRepeatAuthorization(outcome: .expired)
+                }
                 self.recordDiagnostic("heldRepeatAuthorizationExpired")
                 result = .rejected(.expired)
+            } else if self.isPaused {
+                self.recordDiagnostic("heldRepeatAuthorizationRejectedWhilePaused")
+                result = .rejected(.recognitionPaused)
             } else if self.activeHeldRepeatAuthorization != nil ||
                         self.latch.latched?.suppressionKey != authorization.expectedSuppressionKey {
-                self.cancelHeldRepeatAuthorizationOnVisionQueue()
                 self.recordDiagnostic("heldRepeatAuthorizationRejected")
                 result = .rejected(.cardChanged)
             } else {
@@ -815,6 +846,7 @@ final class CardScanner: NSObject, ObservableObject {
                 self.didAnnounceLatchHold = false
                 self.activeHeldRepeatAuthorization = authorization
                 self.recordDiagnostic("heldRepeatAuthorizationAccepted")
+                self.scheduleHeldRepeatExpiryOnVisionQueue(for: authorization)
                 result = .accepted
             }
 
@@ -838,6 +870,8 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self else { return }
             self.activeHeldRepeatAuthorization = nil
+            self.heldRepeatExpiryWorkItem?.cancel()
+            self.heldRepeatExpiryWorkItem = nil
             self.latch.cancelHeldRepeatAuthorization()
             self.confirmationWindow.reset()
             self.didAnnounceLatchHold = false
@@ -912,21 +946,6 @@ final class CardScanner: NSObject, ObservableObject {
                   case let .accepted(token, _) = self.trackerLifecycle,
                   token == presentationToken else { return }
             self.markTrackerContinuityLost()
-        }
-    }
-
-    /// Discards only evidence for the card currently being considered.
-    ///
-    /// Mode changes must require a fresh observation, but they must not erase
-    /// the duplicate suppression memory for a card that was already consumed.
-    func discardCurrentObservation() {
-        visionQueue.async { [weak self] in
-            guard let self else { return }
-            self.confirmationWindow.reset()
-            self.historicalAttempt = nil
-            self.lastAnnouncedPlausible = nil
-            self.didAnnounceLatchHold = false
-            self.isPaused = false
         }
     }
 
@@ -1255,7 +1274,19 @@ final class CardScanner: NSObject, ObservableObject {
                 // Make the latch's consumed identity eligible again, but only
                 // because the independent tracker produced positive exit proof.
                 if let identifier {
+                    let latchWasEngaged = latch.latched
+                    let latchEncounterID = self.latchEncounterID
                     latch.confirmSpatialExit(for: identifier)
+                    if let latchWasEngaged, latch.latched == nil {
+                        self.latchEncounterID = nil
+                        if self.activeHeldRepeatAuthorization != nil {
+                            self.terminateHeldRepeatAuthorization(outcome: .cancelled)
+                        }
+                        self.emitLatchRelease(
+                            encounterID: latchEncounterID,
+                            suppressionKey: latchWasEngaged.suppressionKey
+                        )
+                    }
                 }
                 recordDiagnostic("spatialProof")
                 DispatchQueue.main.async { [weak self] in
@@ -1338,12 +1369,72 @@ final class CardScanner: NSObject, ObservableObject {
         trackerLifecycle = .idle
     }
 
+    /// Must be called on `visionQueue`. The work item is the authoritative
+    /// deadline for a held-repeat permit; frame processing only handles the
+    /// other terminal races (consumption, rejection, or lifecycle cancel).
+    private func scheduleHeldRepeatExpiryOnVisionQueue(
+        for authorization: HeldRepeatAuthorization
+    ) {
+        heldRepeatExpiryWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  self.activeHeldRepeatAuthorization?.id == authorization.id else { return }
+
+            self.activeHeldRepeatAuthorization = nil
+            self.heldRepeatExpiryWorkItem = nil
+            self.latch.cancelHeldRepeatAuthorization()
+            self.confirmationWindow.reset()
+            self.didAnnounceLatchHold = false
+            self.lastAnnouncedPlausible = nil
+            self.recordDiagnostic("heldRepeatAuthorizationExpired")
+            self.emitHeldRepeatAuthorizationTermination(
+                id: authorization.id,
+                outcome: .expired
+            )
+        }
+        heldRepeatExpiryWorkItem = workItem
+        let remaining = max(0, authorization.expiresAt - CFAbsoluteTimeGetCurrent())
+        visionQueue.asyncAfter(deadline: .now() + remaining, execute: workItem)
+    }
+
+    /// Must be called on `visionQueue`. Every path clears the deadline before
+    /// publishing its terminal outcome, making later queued work harmless.
+    private func terminateHeldRepeatAuthorization(
+        outcome: HeldRepeatAuthorizationTerminalOutcome
+    ) {
+        guard let authorization = activeHeldRepeatAuthorization else {
+            heldRepeatExpiryWorkItem?.cancel()
+            heldRepeatExpiryWorkItem = nil
+            latch.cancelHeldRepeatAuthorization()
+            return
+        }
+
+        activeHeldRepeatAuthorization = nil
+        heldRepeatExpiryWorkItem?.cancel()
+        heldRepeatExpiryWorkItem = nil
+        latch.cancelHeldRepeatAuthorization()
+        emitHeldRepeatAuthorizationTermination(id: authorization.id, outcome: outcome)
+    }
+
+    private func emitHeldRepeatAuthorizationTermination(
+        id: UUID,
+        outcome: HeldRepeatAuthorizationTerminalOutcome
+    ) {
+        DispatchQueue.main.async { [weak self] in
+            self?.onHeldRepeatAuthorizationTerminated?(id, outcome)
+        }
+    }
+
     private func cancelHeldRepeatAuthorizationOnVisionQueue() {
         if activeHeldRepeatAuthorization != nil {
             recordDiagnostic("heldRepeatAuthorizationCancelled")
+            terminateHeldRepeatAuthorization(outcome: .cancelled)
+        } else {
+            heldRepeatExpiryWorkItem?.cancel()
+            heldRepeatExpiryWorkItem = nil
+            latch.cancelHeldRepeatAuthorization()
         }
-        activeHeldRepeatAuthorization = nil
-        latch.cancelHeldRepeatAuthorization()
     }
 
     /// The whole acceptance pipeline, in order. Everything above this line is
@@ -1390,7 +1481,26 @@ final class CardScanner: NSObject, ObservableObject {
         // whether this frame produced an identifier. A card being moved is
         // legible-but-unparseable for most of the movement, and the latch must
         // not read that as the card having left.
-        switch latch.observe(parsed, cardPresent: !footerLines.isEmpty, at: now) {
+        let latchedBeforeObservation = latch.latched
+        let decision = latch.observe(parsed, cardPresent: !footerLines.isEmpty, at: now)
+        if let parsed {
+            DispatchQueue.main.async { [weak self] in
+                self?.onObservedCandidate?(parsed)
+            }
+        }
+        if let latchedBeforeObservation, latch.latched == nil {
+            let encounterID = latchEncounterID
+            latchEncounterID = nil
+            if activeHeldRepeatAuthorization != nil {
+                terminateHeldRepeatAuthorization(outcome: .cancelled)
+            }
+            emitLatchRelease(
+                encounterID: encounterID,
+                suppressionKey: latchedBeforeObservation.suppressionKey
+            )
+        }
+
+        switch decision {
         case .holdingLatch:
             announceLatchHoldIfNeeded()
 
@@ -1399,34 +1509,31 @@ final class CardScanner: NSObject, ObservableObject {
 
             guard let confirmed = confirmationWindow.observe(observation) else { return }
 
-            var consumedAuthorizationID: UUID?
             if let authorization = activeHeldRepeatAuthorization {
                 if authorization.isExpired(at: now) {
-                    activeHeldRepeatAuthorization = nil
-                    latch.cancelHeldRepeatAuthorization()
+                    terminateHeldRepeatAuthorization(outcome: .expired)
                     recordDiagnostic("heldRepeatAuthorizationExpired")
-                } else if confirmed.suppressionKey == authorization.expectedSuppressionKey,
-                          latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) {
-                    consumedAuthorizationID = authorization.id
-                    activeHeldRepeatAuthorization = nil
-                    recordDiagnostic("heldRepeatAuthorizationConsumed")
                 } else {
-                    activeHeldRepeatAuthorization = nil
-                    latch.cancelHeldRepeatAuthorization()
+                    // A different identity became authoritative before the
+                    // held repeat did. Reject the permit, then let this new
+                    // identity take the ordinary path.
+                    terminateHeldRepeatAuthorization(outcome: .rejected)
                     recordDiagnostic("heldRepeatAuthorizationRejected")
                 }
             }
 
             // Confirmed, but the same physical card may simply never have left.
-            guard consumedAuthorizationID != nil || latch.admits(confirmed) else {
+            guard latch.admits(confirmed) else {
                 confirmationWindow.reset()
                 return
             }
 
             latch.engage(on: confirmed, at: now)
+            latchEncounterID = nil
             didAnnounceLatchHold = false
             historicalAttempt = nil
             let encounterID = UUID()
+            latchEncounterID = encounterID
             if let pixelBuffer {
                 seedTracker(
                     encounterID: encounterID,
@@ -1437,7 +1544,41 @@ final class CardScanner: NSObject, ObservableObject {
                 )
             }
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedCandidate?(encounterID, confirmed, consumedAuthorizationID)
+                self?.onConfirmedCandidate?(encounterID, confirmed, nil)
+            }
+
+        case let .forwardAuthorized(observation):
+            announcePlausible(observation)
+
+            guard let confirmed = confirmationWindow.observe(observation) else { return }
+            guard let authorization = activeHeldRepeatAuthorization,
+                  confirmed.suppressionKey == authorization.expectedSuppressionKey,
+                  latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) else {
+                // A dedicated decision is never allowed to fall through into
+                // ordinary admission if its one-shot token disappeared.
+                confirmationWindow.reset()
+                return
+            }
+
+            let authorizationID = authorization.id
+            terminateHeldRepeatAuthorization(outcome: .consumed)
+            recordDiagnostic("heldRepeatAuthorizationConsumed")
+            latch.engage(on: confirmed, at: now)
+            didAnnounceLatchHold = false
+            historicalAttempt = nil
+            let encounterID = UUID()
+            latchEncounterID = encounterID
+            if let pixelBuffer {
+                seedTracker(
+                    encounterID: encounterID,
+                    identifier: confirmed,
+                    pixelBuffer: pixelBuffer,
+                    orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotation.currentAngle),
+                    at: now
+                )
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.onConfirmedCandidate?(encounterID, confirmed, authorizationID)
             }
         }
     }
@@ -1526,8 +1667,18 @@ final class CardScanner: NSObject, ObservableObject {
 
         didAnnounceLatchHold = true
         recordDiagnostic("heldDuplicateOffer")
+        let encounterID = latchEncounterID
         DispatchQueue.main.async { [weak self] in
-            self?.onLatchHolding?(latched)
+            self?.onLatchHolding?(latched, encounterID)
+        }
+    }
+
+    private func emitLatchRelease(
+        encounterID: UUID?,
+        suppressionKey: ScanSuppressionKey
+    ) {
+        DispatchQueue.main.async { [weak self] in
+            self?.onLatchReleased?(encounterID, suppressionKey)
         }
     }
 
@@ -1535,7 +1686,8 @@ final class CardScanner: NSObject, ObservableObject {
     private func resetObservationState() {
         confirmationWindow.reset()
         latch.releaseAndForget()
-        activeHeldRepeatAuthorization = nil
+        cancelHeldRepeatAuthorizationOnVisionQueue()
+        latchEncounterID = nil
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
         historicalAttempt = nil
