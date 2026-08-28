@@ -1,9 +1,25 @@
+import Vision
 import XCTest
 @testable import TradingCardScanner
 
 /// The latch is the reason automatic collection entry is defensible, so these
 /// cases are written as the physical situations they stand for.
 final class CardLatchTests: XCTestCase {
+    func testTrackerFeedsLatestObservationIntoTheNextRequest() {
+        let seed = VNDetectedObjectObservation(
+            boundingBox: CGRect(x: 0.2, y: 0.2, width: 0.4, height: 0.4)
+        )
+        let latest = VNDetectedObjectObservation(
+            boundingBox: CGRect(x: 0.3, y: 0.25, width: 0.35, height: 0.4)
+        )
+        let request = VNTrackObjectRequest(detectedObjectObservation: seed)
+
+        XCTAssertEqual(request.inputObservation.boundingBox, seed.boundingBox)
+        CardScanner.feedForwardTrackerObservation(latest, into: request)
+
+        XCTAssertEqual(request.inputObservation.boundingBox, latest.boundingBox)
+    }
+
     private func pokemon(_ number: Int, code: String = "OBF") -> ScanIdentifier {
         let definition = SetCodeMap.definitions[code]!
         return .pokemon(
@@ -304,5 +320,357 @@ final class CardLatchTests: XCTestCase {
 
         latch.engage(on: card, at: 2)
         XCTAssertEqual(latch.heldMatchCount, 0)
+    }
+
+    func testTrackingAndOCRCadencesAreIndependent() {
+        var scheduler = ScanCadenceScheduler()
+
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0))
+        XCTAssertTrue(scheduler.shouldRun(.ocr, at: 0))
+        XCTAssertFalse(scheduler.shouldRun(.tracking, at: 0.05))
+        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.05))
+
+        // Tracking continues at roughly 12 Hz while OCR is still inside its
+        // 0.24-second window.
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.084))
+        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.084))
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.168))
+        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.168))
+        XCTAssertTrue(scheduler.shouldRun(.ocr, at: 0.24))
+
+        // An OCR start does not postpone the next tracking start.
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.252))
+    }
+
+    func testQualifyingExitCompletesOnceAfterTwoObservations() {
+        var accumulator = SpatialExitObservationAccumulator()
+        let outsideGuide = CGRect(x: 0.01, y: 0.01, width: 0.05, height: 0.05)
+
+        XCTAssertFalse(accumulator.observe(box: outsideGuide, confidence: 0.9))
+        XCTAssertTrue(accumulator.observe(box: outsideGuide, confidence: 0.9))
+        XCTAssertFalse(
+            accumulator.observe(box: outsideGuide, confidence: 0.9),
+            "the tracker is torn down at the threshold, so no second proof event is possible"
+        )
+    }
+
+    func testInsideObservationOrTrackerLossCannotCompleteSpatialExit() {
+        var accumulator = SpatialExitObservationAccumulator()
+        let insideGuide = CardFramingRegion.cardVisionRect.insetBy(dx: 0.01, dy: 0.01)
+        let outsideGuide = CGRect(x: 0.01, y: 0.01, width: 0.05, height: 0.05)
+
+        XCTAssertFalse(accumulator.observe(box: insideGuide, confidence: 0.9))
+        XCTAssertFalse(
+            accumulator.observe(box: outsideGuide, confidence: 0.49),
+            "low confidence is not exit evidence"
+        )
+        // No observation is supplied for a tracker-loss event; it cannot move
+        // the proof counter forward.
+        XCTAssertEqual(accumulator.consecutiveQualifiedObservations, 0)
+    }
+
+    func testSpatialTrackerSeedGateRejectsSameIdentityAfterLoss() {
+        var gate = SpatialTrackerSeedGate()
+        let first = pokemon(223)
+        let different = pokemon(204, code: "PAL")
+
+        gate.markLost(first)
+        XCTAssertFalse(gate.canSeed(first))
+        gate.markLost(nil)
+        XCTAssertFalse(gate.canSeed(first), "a repeated invalidation cannot clear a lost lineage")
+        XCTAssertTrue(gate.canSeed(different))
+        XCTAssertTrue(
+            gate.canSeed(first),
+            "a different encounter may establish a new lineage and clear the old marker"
+        )
+    }
+
+    func testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+
+        latch.authorizeHeldRepeat(for: card.suppressionKey)
+        XCTAssertEqual(latch.latched, card)
+        XCTAssertFalse(latch.admits(card), "authorization is not spatial exit evidence")
+        XCTAssertEqual(latch.observe(card, at: 0.25), .forwardAuthorized(card))
+        XCTAssertEqual(latch.heldMatchCount, 0, "the authorized frame is not a held presentation")
+        XCTAssertTrue(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
+        XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
+
+        XCTAssertEqual(latch.observe(card, at: 0.5), .holdingLatch)
+
+        latch.engage(on: card, at: 1)
+        XCTAssertFalse(latch.admits(card), "the newly authorized copy remains suppressed after its one use")
+    }
+
+    func testCancellingHeldRepeatRequiresFreshHeldObservationsBeforeAnotherOffer() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+        latch.authorizeHeldRepeat(for: card.suppressionKey)
+        latch.cancelHeldRepeatAuthorization()
+
+        for pass in 1..<8 {
+            XCTAssertEqual(latch.observe(card, at: Double(pass) * 0.25), .holdingLatch)
+        }
+        XCTAssertEqual(latch.heldMatchCount, 7)
+        XCTAssertEqual(latch.observe(card, at: 2.0), .holdingLatch)
+        XCTAssertEqual(latch.heldMatchCount, 8)
+    }
+
+    func testHeldRepeatAuthorizationDoesNotAdmitAnotherIdentity() {
+        var latch = CardLatch()
+        let first = pokemon(223)
+        let different = pokemon(204, code: "PAL")
+        latch.engage(on: first, at: 0)
+        latch.authorizeHeldRepeat(for: first.suppressionKey)
+
+        XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: different.suppressionKey))
+        latch.cancelHeldRepeatAuthorization()
+        XCTAssertTrue(latch.admits(different))
+    }
+
+    func testHeldRepeatAuthorizationCanReopenOnlyTheLostSeedGate() {
+        var gate = SpatialTrackerSeedGate()
+        let card = pokemon(223)
+        gate.markLost(card)
+        XCTAssertFalse(gate.canSeed(card))
+
+        gate.allowAuthorizedReseed(for: card.suppressionKey)
+        XCTAssertTrue(gate.canSeed(card))
+    }
+
+    func testHeldRepeatAuthorizationExpiryIsFakeClockable() {
+        let authorization = HeldRepeatAuthorization(
+            expectedSuppressionKey: pokemon(223).suppressionKey,
+            expiresAt: 2.0
+        )
+
+        XCTAssertFalse(authorization.isExpired(at: 1.999))
+        XCTAssertTrue(authorization.isExpired(at: 2.0))
+    }
+
+    func testScanRequestCarriesHeldRepeatAuthorizationThroughResolution() {
+        let authorizationID = UUID()
+        let request = ScanRequest(
+            identifier: pokemon(223),
+            purpose: .collection,
+            generation: 7,
+            heldRepeatAuthorizationID: authorizationID
+        )
+
+        XCTAssertEqual(request.heldRepeatAuthorizationID, authorizationID)
+    }
+
+    func testSpatialConfigurationUsesStrictExperimentalDefaults() {
+        let configuration = SpatialTrackingConfiguration.experimental
+
+        XCTAssertEqual(configuration.trackingRate, 12)
+        XCTAssertEqual(configuration.seedInsetFraction, 0.06)
+        XCTAssertEqual(configuration.minimumConfidence, 0.50)
+        XCTAssertEqual(configuration.requiredExitObservations, 2)
+        XCTAssertEqual(configuration.maximumGuideOverlap, 0.25)
+    }
+
+    func testOnlyPositiveSpatialExitMakesAConsumedPrintingReadmit() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+
+        XCTAssertFalse(latch.admits(card))
+        latch.confirmSpatialExit(for: card)
+        XCTAssertTrue(latch.admits(card))
+    }
+
+    func testExitRequiresLowGuideOverlapEvenWhenCenterIsOutside() {
+        let configuration = SpatialTrackingConfiguration.experimental
+        let guide = CardFramingRegion.cardVisionRect
+        let mostlyOverlappingBox = CGRect(
+            x: guide.maxX - guide.width * 0.20,
+            y: guide.minY,
+            width: guide.width * 0.50,
+            height: guide.height * 0.50
+        )
+
+        XCTAssertFalse(
+            configuration.isQualifyingExit(box: mostlyOverlappingBox, confidence: 0.9)
+        )
+    }
+
+    func testCollectionRoutingUsesProofAndLastCommittedIdentityOnly() {
+        let prior = committedSessionScan(identity: "pokemon:obf-223")
+        let proof = SpatialResetProof(
+            encounterID: prior.encounterID,
+            presentationToken: prior.presentationToken
+        )
+        let sameIdentity = ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223")
+        let differentIdentity = ConsecutiveScanIdentity(canonicalID: "pokemon:pal-204")
+
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameIdentity,
+                previous: prior,
+                proofs: []
+            ),
+            .suppress
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameIdentity,
+                previous: prior,
+                proofs: [proof]
+            ),
+            .duplicate(proof)
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: differentIdentity,
+                previous: prior,
+                proofs: []
+            ),
+            .automatic
+        )
+    }
+
+    func testHeldOfferDefersUntilItsEncounterIsCommitted() {
+        let card = pokemon(223)
+        let encounterID = UUID()
+        let olderCard = heldPublicationEntry(
+            identity: "pokemon:pal-204",
+            suppressionKey: pokemon(204, code: "PAL").suppressionKey
+        )
+
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: encounterID,
+                history: [olderCard]
+            ),
+            .deferUntilCommit
+        )
+
+        let acknowledged = heldPublicationEntry(
+            identity: "pokemon:obf-223",
+            suppressionKey: card.suppressionKey,
+            encounterID: encounterID
+        )
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: encounterID,
+                history: [olderCard, acknowledged]
+            ),
+            .publish(previous: acknowledged)
+        )
+    }
+
+    func testHeldOfferUsesOlderSameKeyPresentationWhenSpatialExitWasLost() {
+        let card = pokemon(223)
+        let olderPresentation = heldPublicationEntry(
+            identity: "pokemon:obf-223",
+            suppressionKey: card.suppressionKey,
+            encounterID: UUID()
+        )
+        let unrelatedLatest = heldPublicationEntry(
+            identity: "pokemon:pal-204",
+            suppressionKey: pokemon(204, code: "PAL").suppressionKey,
+            encounterID: UUID()
+        )
+
+        XCTAssertEqual(
+            HeldDuplicateOfferPublicationPolicy.decision(
+                for: card.suppressionKey,
+                encounterID: UUID(),
+                history: [olderPresentation, unrelatedLatest]
+            ),
+            .publish(previous: olderPresentation)
+        )
+    }
+
+    func testFinishAndPokemonPrintRunDifferencesStillUseSameDuplicateIdentity() {
+        let prior = committedSessionScan(identity: "pokemon:obf-223")
+        let proof = SpatialResetProof(
+            encounterID: prior.encounterID,
+            presentationToken: prior.presentationToken
+        )
+
+        // Finish and Pokémon print-run live on the candidate, not on the
+        // canonical IdentifiedCard.id key. The same key therefore still takes
+        // the duplicate-confirmation route after full resolution.
+        let alternateResolvedPhysicalObject = ConsecutiveScanIdentity(
+            canonicalID: "pokemon:obf-223"
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: alternateResolvedPhysicalObject,
+                previous: prior,
+                proofs: [proof]
+            ),
+            .duplicate(proof)
+        )
+    }
+
+    func testStrayResolutionDoesNotChangeCommittedHistory() {
+        let first = committedSessionScan(identity: "pokemon:obf-223")
+        let stray = ConsecutiveScanIdentity(canonicalID: "pokemon:pal-204")
+        let proof = SpatialResetProof(
+            encounterID: first.encounterID,
+            presentationToken: first.presentationToken
+        )
+
+        // A stray B that never commits leaves A as the previous committed
+        // identity. A is consequently still protected by its proof.
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: stray,
+                previous: first,
+                proofs: []
+            ),
+            .automatic
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223"),
+                previous: first,
+                proofs: [proof]
+            ),
+            .duplicate(proof)
+        )
+
+        let committedB = committedSessionScan(identity: "pokemon:pal-204")
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223"),
+                previous: committedB,
+                proofs: []
+            ),
+            .automatic
+        )
+    }
+
+    private func committedSessionScan(identity: String) -> CommittedSessionScan {
+        CommittedSessionScan(
+            id: UUID(),
+            identity: ConsecutiveScanIdentity(canonicalID: identity),
+            presentationToken: UUID(),
+            encounterID: UUID()
+        )
+    }
+
+    private func heldPublicationEntry(
+        identity: String,
+        suppressionKey: ScanSuppressionKey,
+        encounterID: UUID = UUID()
+    ) -> HeldDuplicatePublicationHistoryEntry {
+        HeldDuplicatePublicationHistoryEntry(
+            committed: CommittedSessionScan(
+                id: UUID(),
+                identity: ConsecutiveScanIdentity(canonicalID: identity),
+                presentationToken: UUID(),
+                encounterID: encounterID
+            ),
+            suppressionKey: suppressionKey
+        )
     }
 }

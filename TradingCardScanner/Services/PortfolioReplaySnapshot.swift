@@ -127,8 +127,13 @@ enum PortfolioReplaySnapshotBuilder {
         let ledger = InventoryLedger(context: context)
         let reading = ledger.read()
         let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        let activities = (try? context.fetch(FetchDescriptor<CollectionActivity>())) ?? []
 
         let events = reading.events.map(PortfolioEngine.entry(from:))
+        let activityDefects = CollectionActivity.integrityDefects(
+            activities: activities,
+            events: reading.events
+        )
 
         // One materialisation of each table, reused. Fetching the observation
         // log twice — once to replay and once to value the collection — doubled
@@ -169,8 +174,10 @@ enum PortfolioReplaySnapshotBuilder {
             ),
             valuations: valuations,
             otherCurrencyInstruments: otherCurrencyInstruments,
-            isAuthoritative: reading.isAuthoritative && projection.defects.isEmpty,
-            defects: reading.defects + projection.defects,
+            isAuthoritative: reading.isAuthoritative
+                && projection.defects.isEmpty
+                && activityDefects.isEmpty,
+            defects: reading.defects + projection.defects + activityDefects,
             projection: projection
         )
     }

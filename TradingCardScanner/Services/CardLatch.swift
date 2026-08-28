@@ -15,17 +15,22 @@ import Foundation
 /// releasing the latch would let the card that is still sitting there be added a
 /// second time.
 ///
-/// Two identical copies back to back are deliberately not solved optically. The
-/// first copy has to leave before the second is accepted, which is exactly what
-/// happens when a hand moves through a stack, and which cannot produce a phantom
-/// duplicate. That trade is intentional: a missed card costs one more pass, a
-/// phantom duplicate quietly corrupts a five thousand card collection.
+/// Two identical copies back to back are deliberately not inferred optically.
+/// The first copy has to leave before the second is automatically accepted; a
+/// held-card offer is the separate, explicit fallback when a person chooses to
+/// authorize one more copy. That trade is intentional: a missed card costs one
+/// more pass, a phantom duplicate quietly corrupts a five thousand card collection.
 ///
 /// Time is passed in rather than read so the whole thing is testable.
 struct CardLatch: Equatable {
     enum Decision: Equatable {
         /// Hand this observation to the confirmation window.
         case forward(ScanIdentifier?)
+        /// Hand this matching observation to the confirmation window under a
+        /// user-authorized, one-shot permit. This is deliberately distinct
+        /// from ordinary forwarding so admission cannot fall through to
+        /// `admits` after the permit is consumed.
+        case forwardAuthorized(ScanIdentifier)
         /// Same physical presentation as the one already consumed. Ignore it.
         case holdingLatch
     }
@@ -69,6 +74,10 @@ struct CardLatch: Equatable {
 
     private var consecutiveAbsences = 0
     private var consumed: [ConsumedPrinting] = []
+    /// A user-authorized repeat is deliberately separate from `hasLeft`. It
+    /// permits one expected confirmation without teaching the latch that the
+    /// physical presentation exited.
+    private var heldRepeatAuthorizationKey: ScanSuppressionKey?
 
     /// One printing that has already been counted, and what is known about
     /// whether it is still in front of the camera.
@@ -117,7 +126,17 @@ struct CardLatch: Equatable {
 
         guard latched != nil else { return .forward(observation) }
 
-        if observation == latched {
+        if let authorizedKey = heldRepeatAuthorizationKey,
+           authorizedKey == latched?.suppressionKey,
+           let observation,
+           observation.suppressionKey == authorizedKey {
+            // Keep forwarding the matching confirmation frames while the
+            // permit is armed. The scanner consumes the permit only once the
+            // normal two-match confirmation window succeeds.
+            return .forwardAuthorized(observation)
+        }
+
+        if observation?.suppressionKey == latched?.suppressionKey {
             heldMatchCount += 1
             return .holdingLatch
         }
@@ -181,10 +200,33 @@ struct CardLatch: Equatable {
     }
 
     mutating func engage(on identifier: ScanIdentifier, at now: CFAbsoluteTime) {
+        heldRepeatAuthorizationKey = nil
         latched = identifier
         heldMatchCount = 0
         consecutiveAbsences = 0
         remember(identifier, at: now)
+    }
+
+    /// Releases the current latch while retaining consumed-card memory, then
+    /// permits one confirmation for this exact suppression key. The scanner
+    /// owns the authorization token and lifetime; the latch only owns this
+    /// small, one-shot admission fact.
+    mutating func authorizeHeldRepeat(for key: ScanSuppressionKey) {
+        guard latched?.suppressionKey == key else { return }
+        heldRepeatAuthorizationKey = key
+        heldMatchCount = 0
+        consecutiveAbsences = 0
+    }
+
+    mutating func consumeHeldRepeatAuthorization(for key: ScanSuppressionKey) -> Bool {
+        guard heldRepeatAuthorizationKey == key else { return false }
+        heldRepeatAuthorizationKey = nil
+        return true
+    }
+
+    mutating func cancelHeldRepeatAuthorization() {
+        heldRepeatAuthorizationKey = nil
+        heldMatchCount = 0
     }
 
     /// Moves a printing to the front of the memory, forgetting what was known
@@ -203,8 +245,24 @@ struct CardLatch: Equatable {
     /// and re-adding it instantly would be the opposite of an undo.
     mutating func release() {
         latched = nil
+        heldRepeatAuthorizationKey = nil
         heldMatchCount = 0
         consecutiveAbsences = 0
+    }
+
+    /// Marks a consumed printing as having physically left based on independent
+    /// Vision tracking evidence. This is the only non-OCR path that can make an
+    /// identical reading admissible; the view model still requires the matching
+    /// `SpatialResetProof` before any duplicate mutation.
+    /// The latch still owns only suppression state; it does not know why a
+    /// collection mutation might happen.
+    mutating func confirmSpatialExit(for identifier: ScanIdentifier) {
+        let key = identifier.suppressionKey
+        guard let index = consumed.firstIndex(where: { $0.key == key }) else { return }
+        consumed[index].hasLeft = true
+        if latched?.suppressionKey == key {
+            release()
+        }
     }
 
     /// Release *and* forget every consumed printing, so the very next
@@ -213,5 +271,6 @@ struct CardLatch: Equatable {
     mutating func releaseAndForget() {
         release()
         consumed.removeAll()
+        heldRepeatAuthorizationKey = nil
     }
 }

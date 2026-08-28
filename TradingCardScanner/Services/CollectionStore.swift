@@ -8,9 +8,65 @@ struct CollectionMutation: Equatable, Sendable {
     /// Whether the change created the row or incremented an existing one, which
     /// is the difference between deleting it and counting back down.
     let didInsert: Bool
-    /// The ledger operation this mutation wrote. Undo inverts the whole
-    /// operation through this, so a correction can never be half-taken-back.
-    var operationID: UUID?
+    /// The ordered ledger lineage for this session-only mutation. A scan starts
+    /// with its acquisition operation; each correction appends another
+    /// operation without discarding what came before it.
+    let ledgerOperationIDs: [UUID]
+
+    init(
+        collectionKey: String,
+        activityID: UUID?,
+        didInsert: Bool,
+        ledgerOperationIDs: [UUID] = []
+    ) {
+        self.collectionKey = collectionKey
+        self.activityID = activityID
+        self.didInsert = didInsert
+        self.ledgerOperationIDs = ledgerOperationIDs
+    }
+}
+
+enum CollectionStoreError: Error, Equatable {
+    case missingDestinationRow(String)
+    case missingActivity(UUID)
+    case invalidActivity(UUID)
+    case activityAlreadyResolved(UUID)
+    case missingRemovalSnapshot(UUID)
+    case missingLedgerOperation(UUID)
+    case invalidLedgerOperation(UUID)
+    case ledgerConflict(String)
+    case insufficientQuantity(String)
+    case restoreConflict(String)
+    case staleQuantityDefect(String)
+}
+
+extension CollectionStoreError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case let .missingDestinationRow(key):
+            return "The collection position \(key) is no longer available."
+        case let .missingActivity(id):
+            return "That history entry \(id.uuidString) is no longer available."
+        case let .invalidActivity(id):
+            return "That history entry \(id.uuidString) cannot be changed."
+        case let .activityAlreadyResolved(id):
+            return "That history entry has already been acted on."
+        case let .missingRemovalSnapshot(id):
+            return "The removal snapshot for history entry \(id.uuidString) is missing."
+        case let .missingLedgerOperation(id):
+            return "The ledger operation \(id.uuidString) is missing."
+        case let .invalidLedgerOperation(id):
+            return "The ledger operation \(id.uuidString) is incomplete."
+        case let .ledgerConflict(detail):
+            return "The ledger could not be changed: \(detail)"
+        case let .insufficientQuantity(key):
+            return "The current quantity for \(key) is too small for this action."
+        case let .restoreConflict(detail):
+            return "This removal cannot be restored: \(detail)."
+        case let .staleQuantityDefect(key):
+            return "The quantity mismatch for \(key) is no longer current."
+        }
+    }
 }
 
 /// Every write to the collection goes through here.
@@ -36,12 +92,269 @@ struct CollectionStore {
         source == .csvImport ? .recordExisting : .acquire
     }
 
+    /// Appends history without saving. Callers can therefore stage the activity,
+    /// ledger and collection row in one transaction. This is internal rather
+    /// than private because CSV import is a service-level write that shares the
+    /// store's context and must use the same history path.
+    @discardableResult
+    func appendActivity(
+        _ card: CollectedCard,
+        source: CollectionActivitySource,
+        kind: CollectionActivityKind,
+        deltaQuantity: Int,
+        ledgerOperationIDs: [UUID] = [],
+        occurredAt: Date = .now,
+        removalSnapshot: RemovedCardSnapshot? = nil,
+        resolvedQuantity: Int = 0
+    ) throws -> CollectionActivity {
+        let snapshotData = try removalSnapshot.map { try JSONEncoder().encode($0) }
+        let activity = CollectionActivity(
+            card: card,
+            source: source,
+            quantity: abs(deltaQuantity),
+            occurredAt: occurredAt,
+            kind: kind,
+            deltaQuantity: deltaQuantity,
+            ledgerOperationIDs: ledgerOperationIDs,
+            removalSnapshotData: snapshotData,
+            resolvedQuantity: resolvedQuantity
+        )
+        context.insert(activity)
+        return activity
+    }
+
+    /// Brings acquisition-only activity rows and collections from older builds
+    /// into the history vocabulary. This is intentionally idempotent and saves
+    /// once, so opening the history screen cannot create one transaction per row.
+    func backfillExistingCollectionIfNeeded() throws {
+        do {
+            let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            var didChange = false
+
+            for activity in existingActivities {
+                if activity.kindRaw.isEmpty {
+                    activity.kindRaw = CollectionActivityKind.added.rawValue
+                    didChange = true
+                }
+                if activity.kind == .added, activity.deltaQuantity == 0 {
+                    activity.deltaQuantity = activity.quantity
+                    didChange = true
+                }
+            }
+
+            let loggedKeys = Set(existingActivities.map(\.collectionKey))
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            for card in cards where !loggedKeys.contains(card.collectionKey) {
+                let source: CollectionActivitySource
+                switch card.itemKind {
+                case .sealedProduct:
+                    source = .sealedCatalog
+                case .gradedCard:
+                    source = .gradedCatalog
+                case .rawCard:
+                    switch card.identityResolution {
+                    case .imported: source = .csvImport
+                    case .printedIdentifier: source = .scan
+                    case .catalogSelected, .userCorrected, .none: source = .catalog
+                    }
+                }
+                _ = try appendActivity(
+                    card,
+                    source: source,
+                    kind: .added,
+                    deltaQuantity: card.quantity,
+                    occurredAt: card.dateAdded
+                )
+                didChange = true
+            }
+
+            if didChange { try commit() }
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
     func card(forKey key: String) -> CollectedCard? {
         var descriptor = FetchDescriptor<CollectedCard>(
             predicate: #Predicate { $0.collectionKey == key }
         )
         descriptor.fetchLimit = 1
         return try? context.fetch(descriptor).first
+    }
+
+    private func cards(forKey key: String) throws -> [CollectedCard] {
+        try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == key }
+            )
+        )
+    }
+
+    private func activities(forKey key: String) throws -> [CollectionActivity] {
+        try context.fetch(
+            FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.collectionKey == key }
+            )
+        )
+    }
+
+    private func activity(id: UUID) throws -> CollectionActivity {
+        let descriptor = FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate { $0.id == id }
+        )
+        let matches = try context.fetch(descriptor)
+        guard matches.count == 1, let match = matches.first else {
+            throw CollectionStoreError.missingActivity(id)
+        }
+        return match
+    }
+
+    /// Checks a complete lineage before any collection or activity mutation is
+    /// staged. Corrections must have both legs and an operation may not already
+    /// have an inverse.
+    private func preflightLineage(
+        _ operationIDs: [UUID],
+        expectedCollectionKey: String? = nil,
+        expectedQuantity: Int? = nil
+    ) throws -> [(UUID, [InventoryEvent])] {
+        guard !operationIDs.isEmpty, Set(operationIDs).count == operationIDs.count else {
+            throw CollectionStoreError.invalidLedgerOperation(UUID())
+        }
+
+        let lineage = try operationIDs.map { operationID in
+            let events = try ledger.events(forOperationID: operationID)
+            guard !events.isEmpty else {
+                throw CollectionStoreError.missingLedgerOperation(operationID)
+            }
+            guard events.allSatisfy({ $0.kind != .initialBalance }) else {
+                throw CollectionStoreError.invalidLedgerOperation(operationID)
+            }
+
+            let correctionLegs = Set(events.compactMap { $0.leg })
+            if events.contains(where: { $0.kind == .correction }) {
+                guard events.count == 2,
+                      events.allSatisfy({ $0.kind == .correction }),
+                      correctionLegs == Set([.from, .to]) else {
+                    throw CollectionStoreError.invalidLedgerOperation(operationID)
+                }
+            } else {
+                guard events.count == 1, correctionLegs.isEmpty else {
+                    throw CollectionStoreError.invalidLedgerOperation(operationID)
+                }
+            }
+
+            for event in events {
+                guard try ledger.reversalEvents(forEventID: event.eventID).isEmpty else {
+                    throw CollectionStoreError.ledgerConflict(
+                        "\(operationID.uuidString) was already reversed"
+                    )
+                }
+            }
+            return (operationID, events)
+        }
+
+        if let expectedCollectionKey, let expectedQuantity {
+            guard expectedQuantity > 0 else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+            let net = lineage.reduce(into: [String: Int]()) { result, item in
+                for event in item.1 {
+                    result[event.collectionKey, default: 0] += event.deltaQuantity
+                }
+            }
+            guard net[expectedCollectionKey, default: 0] == expectedQuantity,
+                  net.allSatisfy({ key, quantity in
+                      key == expectedCollectionKey ? quantity == expectedQuantity : quantity == 0
+                  }) else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+        }
+
+        return lineage
+    }
+
+    /// Read-only form of the mutation preflight for history controls. Views can
+    /// use the exact same validation without reaching into the private write
+    /// path or duplicating its reversal checks.
+    func hasValidLineage(
+        _ operationIDs: [UUID],
+        for collectionKey: String,
+        quantity: Int
+    ) -> Bool {
+        (try? preflightLineage(
+            operationIDs,
+            expectedCollectionKey: collectionKey,
+            expectedQuantity: quantity
+        )) != nil
+    }
+
+    /// Removal activities point at their disposal operation, whose sign is the
+    /// inverse of an acquisition lineage. Keep this check beside the store's
+    /// restore preflight so the disabled reason in the history UI is truthful.
+    func hasValidRemovalLineage(_ activity: CollectionActivity) -> Bool {
+        guard activity.kind == .removed,
+              let data = activity.removalSnapshotData,
+              let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data),
+              snapshot.collectionKey == activity.collectionKey,
+              snapshot.quantity > 0,
+              let operationID = snapshot.operationID,
+              activity.ledgerOperationIDs == [operationID] else {
+            return false
+        }
+
+        guard let lineage = try? preflightLineage([operationID]),
+              lineage.count == 1,
+              lineage[0].1.count == 1 else {
+            return false
+        }
+        let event = lineage[0].1[0]
+        return event.kind == .dispose
+            && event.collectionKey == activity.collectionKey
+            && event.deltaQuantity == -snapshot.quantity
+    }
+
+    private func reverseLineage(
+        _ lineage: [(UUID, [InventoryEvent])],
+        at date: Date = .now
+    ) throws -> [UUID] {
+        var inverseOperationIDs: [UUID] = []
+        for (operationID, events) in lineage.reversed() {
+            let inverseOperationID = UUID()
+            let outcomes = ledger.reverseOperation(
+                operationID,
+                at: date,
+                inverseOperationID: inverseOperationID
+            )
+            guard outcomes.count == events.count else {
+                throw CollectionStoreError.missingLedgerOperation(operationID)
+            }
+            for outcome in outcomes {
+                switch outcome {
+                case .appended:
+                    break
+                case .duplicate:
+                    throw CollectionStoreError.ledgerConflict(
+                        "\(operationID.uuidString) inverse already exists"
+                    )
+                case let .conflict(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                }
+            }
+            inverseOperationIDs.append(inverseOperationID)
+        }
+        return inverseOperationIDs
+    }
+
+    private func requireAppended(_ outcome: InventoryLedger.WriteOutcome) throws {
+        switch outcome {
+        case .appended:
+            break
+        case .duplicate:
+            throw CollectionStoreError.ledgerConflict("ledger operation already exists")
+        case let .conflict(defect):
+            throw CollectionStoreError.ledgerConflict(defect.detail)
+        }
     }
 
     /// Changes a position's quantity while recording the matching ownership
@@ -52,43 +365,129 @@ struct CollectionStore {
         let delta = newQuantity - card.quantity
         guard delta != 0 else { return }
 
-        ledger.record(
-            card,
-            kind: .quantityAdjust,
-            source: .correction,
-            deltaQuantity: delta
-        )
-        card.quantity = newQuantity
-        try commit()
+        do {
+            let operationID = UUID()
+            try requireAppended(
+                ledger.record(
+                    card,
+                    kind: .quantityAdjust,
+                    source: .correction,
+                    deltaQuantity: delta,
+                    operationID: operationID
+                )
+            )
+            _ = try appendActivity(
+                card,
+                source: .correction,
+                kind: .quantityAdjusted,
+                deltaQuantity: delta,
+                ledgerOperationIDs: [operationID]
+            )
+            card.quantity = newQuantity
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
-#if DEBUG
-    /// One-time development repair for the seven quantity edits made before
-    /// the detail view routed ownership changes through this store.
-    static func repairKnownQuantityMismatches(in context: ModelContext) throws {
-        let repairs: [(String, Int, UUID)] = [
-            ("me02.5-216#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000216")!),
-            ("me04-049#normal", -2, UUID(uuidString: "00000000-0000-0000-0000-000000000417")!),
-            ("sv07-072#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000072")!),
-            ("sv08.5-077#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000077")!),
-            ("sv08.5-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000086")!),
-            ("sv09-026#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000026")!),
-            ("sv09-086#normal", -1, UUID(uuidString: "00000000-0000-0000-0000-000000000986")!)
-        ]
-        let store = CollectionStore(context: context)
-        for (key, delta, operationID) in repairs {
-            guard let card = store.card(forKey: key) else { continue }
-            InventoryLedger(context: context).record(
-                card,
-                kind: .quantityAdjust,
-                source: .correction,
-                deltaQuantity: delta,
-                operationID: operationID
+    /// Repairs only persisted quantity mismatches. The caller must have already
+    /// established that the active defect set contains only collection/ledger
+    /// quantity mismatches; activity-projection disagreements are diagnostic
+    /// only because this repair cannot reconstruct their missing history.
+    /// This method repeats that guard so it is safe to call outside the view as
+    /// well.
+    static func repairQuantityMismatches(
+        _ defects: [LedgerIntegrityDefect],
+        in context: ModelContext
+    ) throws {
+        guard !defects.isEmpty,
+              defects.allSatisfy({ $0.reason == .quantityMismatch && $0.canRepairQuantity }) else {
+            throw CollectionStoreError.ledgerConflict(
+                "quantity repair is not valid for the active defect set"
             )
         }
-        try context.save()
+
+        do {
+            let ledger = InventoryLedger(context: context)
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+            let reading = ledger.read()
+            let events = reading.events
+            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            let activityDefects = CollectionActivity.integrityDefects(
+                activities: activities,
+                events: events
+            )
+            let activeDefects = reading.defects
+                + projection.defects
+                + PortfolioEngine.reconcile(
+                    projection: projection,
+                    events: events.map(PortfolioEngine.entry(from:))
+                )
+                + activityDefects
+            guard !activeDefects.isEmpty,
+                  activeDefects.allSatisfy({ $0.reason == .quantityMismatch && $0.canRepairQuantity }),
+                  Set(activeDefects.map { $0.collectionKey }) == Set(defects.map { $0.collectionKey }) else {
+                throw CollectionStoreError.ledgerConflict(
+                    "active integrity defects changed; quantity repair was not applied"
+                )
+            }
+            let ledgerQuantities = events.reduce(into: [String: Int]()) { quantities, event in
+                quantities[event.collectionKey, default: 0] += event.deltaQuantity
+            }
+            let eventPriceKeys = Dictionary(grouping: events, by: { $0.collectionKey })
+                .compactMapValues { events in
+                    events.map { $0.priceStorageKey }.first(where: { !$0.isEmpty })
+                }
+            let keys = Set(defects.map { $0.collectionKey })
+
+            for key in keys {
+                let collectionQuantity = projection.quantities[key] ?? 0
+                let ledgerQuantity = ledgerQuantities[key] ?? 0
+                let delta = collectionQuantity - ledgerQuantity
+                guard delta != 0 else {
+                    throw CollectionStoreError.staleQuantityDefect(key)
+                }
+
+                let priceKey = projection.byKey[key]?.priceStorageKey
+                    ?? eventPriceKeys[key] ?? key
+                guard let card = projection.byKey[key]?.representative else {
+                    throw CollectionStoreError.missingDestinationRow(key)
+                }
+                let operationID = UUID()
+                let outcome = ledger.record(
+                    collectionKey: key,
+                    priceStorageKey: priceKey,
+                    valuation: ledger.valuation(forPriceKey: priceKey),
+                    kind: .quantityAdjust,
+                    source: .correction,
+                    deltaQuantity: delta,
+                    operationID: operationID
+                )
+                switch outcome {
+                case .appended:
+                    _ = try CollectionStore(context: context).appendActivity(
+                        card,
+                        source: .correction,
+                        kind: .quantityAdjusted,
+                        deltaQuantity: delta,
+                        ledgerOperationIDs: [operationID]
+                    )
+                case .duplicate:
+                    throw CollectionStoreError.ledgerConflict(
+                        "quantity repair operation unexpectedly duplicated"
+                    )
+                case let .conflict(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                }
+            }
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
-#endif
 
     // MARK: - Graded and sealed
     //
@@ -109,14 +508,15 @@ struct CollectionStore {
         certificationNumber: String?,
         setReleaseOrder: Int? = nil
     ) throws -> CollectionMutation {
-        let key = CollectedCard.gradedCollectionKey(
-            game: card.game,
-            underlyingPrintingID: card.providerID,
-            variantUUID: variant.id,
-            certificationNumber: certificationNumber
-        )
+        do {
+            let key = CollectedCard.gradedCollectionKey(
+                game: card.game,
+                underlyingPrintingID: card.providerID,
+                variantUUID: variant.id,
+                certificationNumber: certificationNumber
+            )
 
-        if certificationNumber == nil, let existing = self.card(forKey: key) {
+            if certificationNumber == nil, let existing = self.card(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
             storeMarketPrice(
@@ -125,25 +525,33 @@ struct CollectionStore {
                 marketVariantID: variant.id,
                 for: existing
             )
-            let activity = record(existing, source: .gradedCatalog)
             let operationID = UUID()
-            ledger.record(
+            try requireAppended(
+                ledger.record(
+                    existing,
+                    kind: inventoryKind(for: .gradedCatalog),
+                    source: .gradedCatalog,
+                    deltaQuantity: 1,
+                    operationID: operationID
+                )
+            )
+            let activity = try appendActivity(
                 existing,
-                kind: inventoryKind(for: .gradedCatalog),
                 source: .gradedCatalog,
+                kind: .added,
                 deltaQuantity: 1,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
             try commit()
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
                 didInsert: false,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
         }
 
-        let row = CollectedCard(
+            let row = CollectedCard(
             collectionKey: key,
             game: card.game,
             providerID: key,
@@ -181,22 +589,34 @@ struct CollectionStore {
             marketVariantID: variant.id,
             for: row
         )
-        let activity = record(row, source: .gradedCatalog)
         let operationID = UUID()
-        ledger.record(
+        try requireAppended(
+            ledger.record(
+                row,
+                kind: inventoryKind(for: .gradedCatalog),
+                source: .gradedCatalog,
+                deltaQuantity: 1,
+                operationID: operationID
+            )
+        )
+        let activity = try appendActivity(
             row,
-            kind: inventoryKind(for: .gradedCatalog),
             source: .gradedCatalog,
+            kind: .added,
             deltaQuantity: 1,
-            operationID: operationID
+            ledgerOperationIDs: [operationID]
         )
         try commit()
-        return CollectionMutation(
-            collectionKey: key,
-            activityID: activity.id,
-            didInsert: true,
-            operationID: operationID
-        )
+            return CollectionMutation(
+                collectionKey: key,
+                activityID: activity.id,
+                didInsert: true,
+                ledgerOperationIDs: [operationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     /// Add one sealed product. These aggregate normally — three identical
@@ -206,14 +626,15 @@ struct CollectionStore {
         _ product: SealedProductSummary,
         game: CardGame
     ) throws -> CollectionMutation {
-        let variantUUID = product.variantID ?? product.id
-        let key = CollectedCard.sealedCollectionKey(
-            game: game,
-            productUUID: product.id,
-            variantUUID: variantUUID
-        )
+        do {
+            let variantUUID = product.variantID ?? product.id
+            let key = CollectedCard.sealedCollectionKey(
+                game: game,
+                productUUID: product.id,
+                variantUUID: variantUUID
+            )
 
-        if let existing = self.card(forKey: key) {
+            if let existing = self.card(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
             // Re-adding also heals rows saved before sealed artwork support.
@@ -226,25 +647,33 @@ struct CollectionStore {
                 marketVariantID: product.variantID,
                 for: existing
             )
-            let activity = record(existing, source: .sealedCatalog)
             let operationID = UUID()
-            ledger.record(
+            try requireAppended(
+                ledger.record(
+                    existing,
+                    kind: inventoryKind(for: .sealedCatalog),
+                    source: .sealedCatalog,
+                    deltaQuantity: 1,
+                    operationID: operationID
+                )
+            )
+            let activity = try appendActivity(
                 existing,
-                kind: inventoryKind(for: .sealedCatalog),
                 source: .sealedCatalog,
+                kind: .added,
                 deltaQuantity: 1,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
             try commit()
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
                 didInsert: false,
-                operationID: operationID
+                ledgerOperationIDs: [operationID]
             )
         }
 
-        let row = CollectedCard(
+            let row = CollectedCard(
             collectionKey: key,
             game: game,
             providerID: key,
@@ -274,22 +703,34 @@ struct CollectionStore {
             marketVariantID: product.variantID,
             for: row
         )
-        let activity = record(row, source: .sealedCatalog)
         let operationID = UUID()
-        ledger.record(
+        try requireAppended(
+            ledger.record(
+                row,
+                kind: inventoryKind(for: .sealedCatalog),
+                source: .sealedCatalog,
+                deltaQuantity: 1,
+                operationID: operationID
+            )
+        )
+        let activity = try appendActivity(
             row,
-            kind: inventoryKind(for: .sealedCatalog),
             source: .sealedCatalog,
+            kind: .added,
             deltaQuantity: 1,
-            operationID: operationID
+            ledgerOperationIDs: [operationID]
         )
         try commit()
-        return CollectionMutation(
-            collectionKey: key,
-            activityID: activity.id,
-            didInsert: true,
-            operationID: operationID
-        )
+            return CollectionMutation(
+                collectionKey: key,
+                activityID: activity.id,
+                didInsert: true,
+                ledgerOperationIDs: [operationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     private func imageURL(for card: IdentifiedCard) -> String? {
@@ -339,6 +780,7 @@ struct CollectionStore {
         identityResolution: IdentityResolution = .printedIdentifier,
         setReleaseOrder: Int? = nil,
         matchCatalogAliases: Bool = false,
+        quantity: Int = 1,
         /// Off only for `recordVariantCorrection`, which writes a two-leg
         /// correction group of its own. A correction is a copy moving between
         /// identities, not an acquisition, and recording it as one would put a
@@ -348,78 +790,95 @@ struct CollectionStore {
         /// The caller then writes every event and performs the single save.
         savesChanges: Bool = true
     ) throws -> CollectionMutation {
-        let baseKey = card.collectionKey(variant: resolved.variant)
-        let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
-        let mutation: CollectionMutation
-        let stored: CollectedCard
+        guard quantity > 0 else {
+            throw CollectionStoreError.insufficientQuantity(card.providerID)
+        }
+        do {
+            let baseKey = card.collectionKey(variant: resolved.variant)
+            let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
+            let mutation: CollectionMutation
+            let stored: CollectedCard
 
-        let existing = self.card(forKey: key) ?? (matchCatalogAliases
-            ? catalogAliasCard(
+            let existing = self.card(forKey: key) ?? (matchCatalogAliases
+                ? catalogAliasCard(
+                    providerID: card.providerID,
+                    variantID: resolved.variant?.id,
+                    pokemonPrintRun: pokemonPrintRun
+                )
+                : nil)
+
+            if let existing {
+                existing.quantity += quantity
+                existing.dateAdded = .now
+                mutation = CollectionMutation(
+                    collectionKey: existing.collectionKey,
+                    activityID: nil,
+                    didInsert: false
+                )
+                stored = existing
+            } else {
+                let inserted = CollectedCard(
+                    card: card,
+                    resolved: resolved,
+                    identityResolution: identityResolution,
+                    setReleaseOrder: setReleaseOrder
+                )
+                // `CollectedCard` can derive the finish-qualified base key, but the
+                // independent Pokémon print run is known only at this layer.
+                inserted.collectionKey = key
+                inserted.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+                inserted.quantity = quantity
+                context.insert(inserted)
+                mutation = CollectionMutation(collectionKey: key, activityID: nil, didInsert: true)
+                stored = inserted
+            }
+
+            if let stamped = PokemonStampedReleaseCatalog.entry(
                 providerID: card.providerID,
-                variantID: resolved.variant?.id,
-                pokemonPrintRun: pokemonPrintRun
-            )
-            : nil)
+                variantID: resolved.variant?.id
+            ) {
+                // The catalog identity still points at the source artwork/number,
+                // while the owned object belongs to the separate stamped release.
+                // Display and artwork must describe what is physically held.
+                stored.setName = "Trick or Trade \(stamped.year)"
+                stored.setCode = "TOT\(String(stamped.year).suffix(2))"
+                let artwork = JustTCGV1Client.productImageURL(
+                    tcgplayerID: stamped.tcgplayerProductID
+                )?.absoluteString
+                stored.imageURL = artwork
+                stored.thumbnailURL = artwork
+            }
 
-        if let existing {
-            existing.quantity += 1
-            existing.dateAdded = .now
-            mutation = CollectionMutation(
-                collectionKey: existing.collectionKey,
-                activityID: nil,
-                didInsert: false
-            )
-            stored = existing
-        } else {
-            let inserted = CollectedCard(
-                card: card,
-                resolved: resolved,
-                identityResolution: identityResolution,
-                setReleaseOrder: setReleaseOrder
-            )
-            // `CollectedCard` can derive the finish-qualified base key, but the
-            // independent Pokémon print run is known only at this layer.
-            inserted.collectionKey = key
-            inserted.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
-            context.insert(inserted)
-            mutation = CollectionMutation(collectionKey: key, activityID: nil, didInsert: true)
-            stored = inserted
-        }
-
-        if let stamped = PokemonStampedReleaseCatalog.entry(
-            providerID: card.providerID,
-            variantID: resolved.variant?.id
-        ) {
-            // The catalog identity still points at the source artwork/number,
-            // while the owned object belongs to the separate stamped release.
-            // Display and artwork must describe what is physically held.
-            stored.setName = "Trick or Trade \(stamped.year)"
-            stored.setCode = "TOT\(String(stamped.year).suffix(2))"
-            let artwork = JustTCGV1Client.productImageURL(
-                tcgplayerID: stamped.tcgplayerProductID
-            )?.absoluteString
-            stored.imageURL = artwork
-            stored.thumbnailURL = artwork
-        }
-
-        let activity = record(stored, source: source)
-        let operationID = writesInventoryEvent ? UUID() : nil
-        if let operationID {
-            ledger.record(
+            let operationID = writesInventoryEvent ? UUID() : nil
+            if let operationID {
+                try requireAppended(
+                    ledger.record(
+                        stored,
+                        kind: inventoryKind(for: source),
+                        source: source,
+                        deltaQuantity: quantity,
+                        operationID: operationID
+                    )
+                )
+            }
+            let activity = try appendActivity(
                 stored,
-                kind: inventoryKind(for: source),
                 source: source,
-                deltaQuantity: 1,
-                operationID: operationID
+                kind: writesInventoryEvent ? .added : .corrected,
+                deltaQuantity: writesInventoryEvent ? quantity : 0,
+                ledgerOperationIDs: operationID.map { [$0] } ?? []
             )
+            if savesChanges { try commit() }
+            return CollectionMutation(
+                collectionKey: mutation.collectionKey,
+                activityID: activity.id,
+                didInsert: mutation.didInsert,
+                ledgerOperationIDs: operationID.map { [$0] } ?? []
+            )
+        } catch {
+            context.rollback()
+            throw error
         }
-        if savesChanges { try commit() }
-        return CollectionMutation(
-            collectionKey: mutation.collectionKey,
-            activityID: activity.id,
-            didInsert: mutation.didInsert,
-            operationID: operationID
-        )
     }
 
     /// Imported entries retain a synthetic storage key after catalog
@@ -440,116 +899,389 @@ struct CollectionStore {
         }
     }
 
+    /// Reverses exactly one scan mutation. Every precondition is checked before
+    /// the first inverse is staged, and one save commits the ledger, collection
+    /// row, and activity together. This is intentionally strict: a stale UI
+    /// value must fail and remain retryable, never become a partial undo.
     func undo(_ mutation: CollectionMutation) throws {
-        guard let row = card(forKey: mutation.collectionKey) else { return }
-
-        // The ledger is taken back by inverting every leg of the operation,
-        // never by deleting rows. A history that can be edited away is not a
-        // record, and inverting the whole operation is what keeps a two-leg
-        // correction from being half-undone.
-        if let operationID = mutation.operationID {
-            ledger.reverseOperation(operationID)
-        }
-
-        if mutation.didInsert || row.quantity <= 1 {
-            context.delete(row)
-        } else {
-            row.quantity -= 1
-        }
-
-        // `CollectionActivity` keeps its existing delete-on-undo behaviour. It
-        // is a presentation log with its own UI and backfill path, and becomes
-        // a projection over `InventoryEvent` in a later phase rather than being
-        // rewritten underneath a shipping feature.
-        if let activityID = mutation.activityID {
-            let descriptor = FetchDescriptor<CollectionActivity>(
-                predicate: #Predicate { $0.id == activityID }
-            )
-            if let activity = try? context.fetch(descriptor).first {
-                context.delete(activity)
+        do {
+            let collectionKey = mutation.collectionKey
+            let rows = try cards(forKey: collectionKey)
+            guard rows.count == 1, let row = rows.first else {
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
             }
-        }
 
-        try commit()
+            guard let activityID = mutation.activityID else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+            let activity = try activity(id: activityID)
+            guard activity.collectionKey == collectionKey else {
+                throw CollectionStoreError.missingActivity(activityID)
+            }
+            guard activity.remainingQuantity >= 1 else {
+                throw CollectionStoreError.activityAlreadyResolved(activityID)
+            }
+            guard row.quantity >= 1 else {
+                throw CollectionStoreError.insufficientQuantity(collectionKey)
+            }
+
+            let operationIDs = mutation.ledgerOperationIDs
+            guard activity.ledgerOperationIDs.isEmpty
+                    || activity.ledgerOperationIDs == operationIDs else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+            let lineage = try preflightLineage(
+                operationIDs,
+                expectedCollectionKey: collectionKey,
+                expectedQuantity: 1
+            )
+            guard lineage.allSatisfy({ _, events in
+                events.allSatisfy { abs($0.deltaQuantity) == 1 }
+            }) else {
+                throw CollectionStoreError.invalidLedgerOperation(UUID())
+            }
+            let inverseOperationIDs = try reverseLineage(lineage)
+
+            activity.resolvedQuantity += 1
+            let undone = try appendActivity(
+                row,
+                source: activity.source,
+                kind: .undone,
+                deltaQuantity: -1,
+                ledgerOperationIDs: inverseOperationIDs
+            )
+            _ = undone
+
+            if activity.ledgerOperationIDs.isEmpty {
+                activity.ledgerOperationIDs = operationIDs
+            }
+
+            if row.quantity <= 1 {
+                context.delete(row)
+            } else {
+                row.quantity -= 1
+            }
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Removes only the copies represented by one history entry. It is separate
+    /// from removing a collection position, which intentionally removes all of
+    /// that position.
+    @discardableResult
+    func remove(
+        _ activity: CollectionActivity,
+        quantity requestedQuantity: Int? = nil
+    ) throws -> RemovedCardSnapshot {
+        do {
+            let selectedActivity = try self.activity(id: activity.id)
+            guard selectedActivity.kind.hasQuantityClaim,
+                  selectedActivity.signedQuantity > 0,
+                  selectedActivity.claimedQuantity > 0 else {
+                throw CollectionStoreError.invalidActivity(selectedActivity.id)
+            }
+            let quantity = requestedQuantity ?? selectedActivity.remainingQuantity
+            guard quantity > 0, quantity == selectedActivity.remainingQuantity else {
+                throw CollectionStoreError.activityAlreadyResolved(selectedActivity.id)
+            }
+            guard let row = try uniqueCard(forKey: selectedActivity.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(selectedActivity.collectionKey)
+            }
+            guard row.quantity >= quantity else {
+                throw CollectionStoreError.insufficientQuantity(selectedActivity.collectionKey)
+            }
+            _ = try preflightLineage(
+                selectedActivity.ledgerOperationIDs,
+                expectedCollectionKey: selectedActivity.collectionKey,
+                expectedQuantity: selectedActivity.claimedQuantity
+            )
+
+            var snapshot = RemovedCardSnapshot(card: row, quantity: quantity)
+            let operationID = UUID()
+            try requireAppended(
+                ledger.record(
+                    row,
+                    kind: .dispose,
+                    source: .correction,
+                    deltaQuantity: -quantity,
+                    operationID: operationID
+                )
+            )
+            snapshot.operationID = operationID
+            let removed = try appendActivity(
+                row,
+                source: .correction,
+                kind: .removed,
+                deltaQuantity: -quantity,
+                ledgerOperationIDs: [operationID],
+                removalSnapshot: snapshot
+            )
+            _ = removed
+            selectedActivity.resolvedQuantity += quantity
+
+            if row.quantity == quantity {
+                context.delete(row)
+            } else {
+                row.quantity -= quantity
+            }
+            try commit()
+            return snapshot
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Removes an entire position, preserving the previous snapshot and the
+    /// activity rows that explain how each copy entered it.
+    func remove(_ card: CollectedCard) throws -> RemovedCardSnapshot {
+        do {
+            guard let row = try uniqueCard(forKey: card.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+            }
+            let quantity = row.quantity
+            var snapshot = RemovedCardSnapshot(card: row)
+            let operationID = UUID()
+            try requireAppended(
+                ledger.record(
+                    row,
+                    kind: .dispose,
+                    source: .correction,
+                    deltaQuantity: -quantity,
+                    operationID: operationID
+                )
+            )
+            snapshot.operationID = operationID
+            _ = try appendActivity(
+                row,
+                source: .correction,
+                kind: .removed,
+                deltaQuantity: -quantity,
+                ledgerOperationIDs: [operationID],
+                removalSnapshot: snapshot
+            )
+
+            for activity in try activities(forKey: row.collectionKey)
+                where activity.kind.hasQuantityClaim && activity.remainingQuantity > 0 {
+                activity.resolvedQuantity = activity.claimedQuantity
+            }
+            context.delete(row)
+            try commit()
+            return snapshot
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Restores a removal activity when its snapshot is still current. A row
+    /// may remain when sibling copies survived a per-entry removal; the ledger
+    /// proves that case safe. A later positive event for the same key is a
+    /// re-acquisition and is rejected so restore cannot double the collection.
+    func restore(_ activity: CollectionActivity) throws {
+        let selectedActivity = try self.activity(id: activity.id)
+        guard selectedActivity.kind == .removed else {
+            throw CollectionStoreError.invalidActivity(selectedActivity.id)
+        }
+        guard let data = selectedActivity.removalSnapshotData,
+              let snapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data) else {
+            throw CollectionStoreError.missingRemovalSnapshot(selectedActivity.id)
+        }
+        try restore(snapshot, removalActivity: selectedActivity)
+    }
+
+    /// Compatibility entry point used by the recent-removal banner. Current
+    /// snapshots are also represented by a removal activity, so the same
+    /// preflight and history append path is used.
+    func restore(_ snapshot: RemovedCardSnapshot) throws {
+        let removalActivity = try context.fetch(FetchDescriptor<CollectionActivity>())
+            .first { activity in
+                guard activity.kind == .removed,
+                      let data = activity.removalSnapshotData,
+                      let stored = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data)
+                else { return false }
+                return stored.id == snapshot.id
+                    || (snapshot.operationID != nil && stored.operationID == snapshot.operationID)
+            }
+        if let removalActivity {
+            guard let data = removalActivity.removalSnapshotData,
+                  let storedSnapshot = try? JSONDecoder().decode(RemovedCardSnapshot.self, from: data) else {
+                throw CollectionStoreError.missingRemovalSnapshot(removalActivity.id)
+            }
+            try restore(storedSnapshot, removalActivity: removalActivity)
+        } else {
+            try restore(snapshot, removalActivity: nil)
+        }
+    }
+
+    private func restore(
+        _ snapshot: RemovedCardSnapshot,
+        removalActivity: CollectionActivity?
+    ) throws {
+        do {
+            let existing = try uniqueCard(forKey: snapshot.collectionKey)
+            guard snapshot.quantity > 0 else {
+                throw CollectionStoreError.restoreConflict("snapshot has no copies")
+            }
+            if existing != nil, removalActivity == nil {
+                // A legacy snapshot has no disposal event with which to prove
+                // that an existing row is merely a surviving sibling copy.
+                // Treat it conservatively as a re-acquisition.
+                throw CollectionStoreError.restoreConflict(
+                    "\(snapshot.collectionKey) was acquired again"
+                )
+            }
+            if let removalActivity, existing != nil {
+                // A row can still exist because this removal took only the
+                // copies claimed by one entry while sibling copies remained.
+                // That is safe to merge back into. A positive ledger event
+                // recorded after the disposal, however, proves the position
+                // was acquired again and restoring would double it.
+                guard let operationID = snapshot.operationID else {
+                    throw CollectionStoreError.restoreConflict(
+                        "\(snapshot.collectionKey) was acquired again"
+                    )
+                }
+                let removalEvents = try ledger.events(forOperationID: operationID)
+                let removalRecordedAt = removalEvents.map(\.recordedAt).max() ?? .distantPast
+                let wasReacquired = ledger.events(collectionKey: snapshot.collectionKey).contains {
+                    $0.recordedAt >= removalRecordedAt && $0.deltaQuantity > 0
+                }
+                guard !wasReacquired else {
+                    throw CollectionStoreError.restoreConflict(
+                        "\(snapshot.collectionKey) was acquired again"
+                    )
+                }
+            }
+            if let removalActivity, let operationID = snapshot.operationID {
+                guard removalActivity.ledgerOperationIDs == [operationID] else {
+                    throw CollectionStoreError.invalidLedgerOperation(operationID)
+                }
+            }
+            if let removalActivity {
+                guard removalActivity.remainingQuantity == removalActivity.claimedQuantity else {
+                    throw CollectionStoreError.activityAlreadyResolved(removalActivity.id)
+                }
+                guard Date.now.timeIntervalSince(removalActivity.occurredAt)
+                    <= CollectionActivity.restoreWindow else {
+                    throw CollectionStoreError.restoreConflict("removal is outside the restore window")
+                }
+            } else if let operationID = snapshot.operationID {
+                let removalEvents = try ledger.events(forOperationID: operationID)
+                let removalRecordedAt = removalEvents.map(\.recordedAt).max() ?? .distantPast
+                guard Date.now.timeIntervalSince(removalRecordedAt)
+                    <= CollectionActivity.restoreWindow else {
+                    throw CollectionStoreError.restoreConflict("removal is outside the restore window")
+                }
+            }
+
+            var restoredLineage: [UUID] = []
+            if let operationID = snapshot.operationID {
+                let lineage = try preflightLineage([operationID])
+                guard lineage.count == 1,
+                      lineage[0].1.count == 1,
+                      lineage[0].1[0].kind == .dispose,
+                      lineage[0].1[0].collectionKey == snapshot.collectionKey,
+                      abs(lineage[0].1[0].deltaQuantity) == snapshot.quantity else {
+                    throw CollectionStoreError.invalidLedgerOperation(operationID)
+                }
+                restoredLineage = try reverseLineage(lineage)
+            } else {
+                let restoredOperationID = UUID()
+                try snapshot.reinsert(in: context)
+                guard let row = card(forKey: snapshot.collectionKey) else {
+                    throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
+                }
+                try requireAppended(
+                    ledger.record(
+                        row,
+                        kind: .recordExisting,
+                        source: .correction,
+                        deltaQuantity: snapshot.quantity,
+                        operationID: restoredOperationID
+                    )
+                )
+                restoredLineage = [restoredOperationID]
+            }
+
+            if snapshot.operationID != nil {
+                try snapshot.reinsert(in: context)
+            }
+            guard let restoredCard = card(forKey: snapshot.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
+            }
+            _ = try appendActivity(
+                restoredCard,
+                source: .correction,
+                kind: .restored,
+                deltaQuantity: snapshot.quantity,
+                ledgerOperationIDs: restoredLineage
+            )
+            if let removalActivity {
+                removalActivity.resolvedQuantity = removalActivity.claimedQuantity
+            }
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    private func uniqueCard(forKey key: String) throws -> CollectedCard? {
+        let rows = try cards(forKey: key)
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict(
+                "more than one collection row claims \(key)"
+            )
+        }
+        return rows.first
     }
 
     /// Removes every owned card while leaving catalog and price data alone.
-    /// This is intentionally explicit and throwing because the settings screen
-    /// confirms the destructive action and reports a persistence failure.
+    /// Each position gets its own snapshot and history row, while the whole
+    /// destructive action still commits once.
     func deleteAll() throws {
-        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
-        let occurredAt = Date.now
-        for card in cards {
-            // Every copy leaving is a disposal, valued at the price in force
-            // now. Without these the whole collection's value would vanish into
-            // Unexplained rather than into "Removed".
-            ledger.record(
-                card,
-                kind: .dispose,
-                source: .correction,
-                deltaQuantity: -card.quantity,
-                occurredAt: occurredAt
-            )
-            context.delete(card)
+        do {
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let occurredAt = Date.now
+            for card in cards {
+                let quantity = card.quantity
+                var snapshot = RemovedCardSnapshot(card: card)
+                let operationID = UUID()
+                try requireAppended(
+                    ledger.record(
+                        card,
+                        kind: .dispose,
+                        source: .correction,
+                        deltaQuantity: -quantity,
+                        operationID: operationID,
+                        occurredAt: occurredAt
+                    )
+                )
+                snapshot.operationID = operationID
+                _ = try appendActivity(
+                    card,
+                    source: .correction,
+                    kind: .removed,
+                    deltaQuantity: -quantity,
+                    ledgerOperationIDs: [operationID],
+                    occurredAt: occurredAt,
+                    removalSnapshot: snapshot
+                )
+                for activity in try activities(forKey: card.collectionKey)
+                    where activity.kind.hasQuantityClaim && activity.remainingQuantity > 0 {
+                    activity.resolvedQuantity = activity.claimedQuantity
+                }
+                context.delete(card)
+            }
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
         }
-        try commit()
-    }
-
-    // MARK: - Removal
-    //
-    // Removal lives here rather than in the detail view. A view writing
-    // straight to the context is how removals became invisible to history in
-    // the first place; there is no second place that knows how to take a copy
-    // out of the collection.
-
-    /// Removes every copy of one position, returning what is needed to put it
-    /// back.
-    func remove(_ card: CollectedCard) throws -> RemovedCardSnapshot {
-        let snapshot = RemovedCardSnapshot(card: card)
-        let operationID = UUID()
-        ledger.record(
-            card,
-            kind: .dispose,
-            source: .correction,
-            deltaQuantity: -card.quantity,
-            operationID: operationID
-        )
-        context.delete(card)
-        try commit()
-        var stamped = snapshot
-        stamped.operationID = operationID
-        return stamped
-    }
-
-    /// Puts a removed position back, as the inverse of the disposal rather than
-    /// as a new acquisition — undoing a removal is not buying the card again.
-    func restore(_ snapshot: RemovedCardSnapshot) throws {
-        snapshot.reinsert(in: context)
-        if let operationID = snapshot.operationID {
-            ledger.reverseOperation(operationID)
-        } else if let restored = card(forKey: snapshot.collectionKey) {
-            // A snapshot taken before the ledger existed. Recording the copies
-            // as arriving now is the only honest option: there is no operation
-            // to invert.
-            ledger.record(
-                restored,
-                kind: .recordExisting,
-                source: .correction,
-                deltaQuantity: snapshot.quantity
-            )
-        }
-        try commit()
-    }
-
-    @discardableResult
-    private func record(
-        _ card: CollectedCard,
-        source: CollectionActivitySource,
-        quantity: Int = 1
-    ) -> CollectionActivity {
-        let activity = CollectionActivity(card: card, source: source, quantity: quantity)
-        context.insert(activity)
-        return activity
     }
 
     /// SwiftData commits the ownership mutation, ledger rows, activity, and
@@ -574,32 +1306,83 @@ struct CollectionStore {
         from current: PhysicalVariant?,
         to corrected: ResolvedVariant,
         pokemonPrintRun: PokemonPrintRun? = nil,
-        previousCollectionKey: String? = nil
+        previousCollectionKey: String? = nil,
+        previousLedgerOperationIDs: [UUID] = [],
+        activityID: UUID? = nil,
+        quantity: Int = 1
     ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
+        guard quantity > 0 else {
+            throw CollectionStoreError.insufficientQuantity(card.providerID)
+        }
 
+        do {
         let previousBaseKey = card.collectionKey(variant: current)
         let previousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
-        let activityDescriptor = FetchDescriptor<CollectionActivity>(
-            predicate: #Predicate { $0.collectionKey == previousKey }
+        // A stale scanner entry can outlive the collection row it was created
+        // from (for example, the row may have been removed on another screen or
+        // device). Do not manufacture the destination row and then record a
+        // `-1` correction for a source that is no longer present: that leaves
+        // the ledger permanently ahead of the collection and triggers the
+        // reconciliation warning on the next portfolio pass.
+        guard let previous = try uniqueCard(forKey: previousKey) else { return nil }
+
+        let candidates = try activities(forKey: previousKey)
+            .filter {
+                $0.kind.hasQuantityClaim
+                    && $0.signedQuantity > 0
+                    && $0.remainingQuantity >= quantity
+            }
+        let activityToRetarget: CollectionActivity?
+        if let activityID {
+            let selected = try activity(id: activityID)
+            guard selected.collectionKey == previousKey else {
+                throw CollectionStoreError.missingActivity(activityID)
+            }
+            guard selected.kind.hasQuantityClaim, selected.signedQuantity > 0 else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            guard previousLedgerOperationIDs.isEmpty
+                    || selected.ledgerOperationIDs.isEmpty
+                    || selected.ledgerOperationIDs == previousLedgerOperationIDs else {
+                throw CollectionStoreError.invalidLedgerOperation(activityID)
+            }
+            activityToRetarget = selected
+        } else if !previousLedgerOperationIDs.isEmpty {
+            activityToRetarget = candidates.first {
+                $0.ledgerOperationIDs == previousLedgerOperationIDs
+            }
+        } else {
+            activityToRetarget = candidates.max(by: { $0.occurredAt < $1.occurredAt })
+        }
+        guard let activityToRetarget else { return nil }
+        guard activityToRetarget.collectionKey == previousKey else {
+            throw CollectionStoreError.missingActivity(activityToRetarget.id)
+        }
+        guard activityToRetarget.remainingQuantity == quantity else {
+            throw CollectionStoreError.insufficientQuantity(previousKey)
+        }
+        guard previous.quantity >= quantity else {
+            throw CollectionStoreError.insufficientQuantity(previousKey)
+        }
+        let operationIDs = activityToRetarget.ledgerOperationIDs.isEmpty
+            ? previousLedgerOperationIDs
+            : activityToRetarget.ledgerOperationIDs
+        _ = try preflightLineage(
+            operationIDs,
+            expectedCollectionKey: previousKey,
+            expectedQuantity: quantity
         )
-        // The scan being corrected is the newest acquisition for this row. Its
-        // event moves with the copy; a correction is not a second acquisition.
-        let activityToRetarget = try? context.fetch(activityDescriptor)
-            .max(by: { $0.occurredAt < $1.occurredAt })
 
         // Read the outgoing side's price key before the row is decremented or
         // deleted — afterwards there is nothing left to ask.
-        var previousPriceStorageKey: String?
-        if let previous = self.card(forKey: previousKey) {
-            previousPriceStorageKey = ledger.priceStorageKey(for: previous)
-            if previous.quantity <= 1 {
-                context.delete(previous)
-            } else {
-                previous.quantity -= 1
-            }
+        let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+        if previous.quantity == quantity {
+            context.delete(previous)
+        } else {
+            previous.quantity -= quantity
         }
 
         let mutation = try add(
@@ -607,6 +1390,7 @@ struct CollectionStore {
             resolved: corrected,
             source: .correction,
             pokemonPrintRun: pokemonPrintRun,
+            quantity: quantity,
             writesInventoryEvent: false,
             savesChanges: false
         )
@@ -615,25 +1399,29 @@ struct CollectionStore {
         // one. Later price movement then follows the corrected identity by
         // itself, and the pair is what makes undo a group inversion.
         let correctionOperationID = UUID()
-        if let correctedRow = self.card(forKey: mutation.collectionKey) {
-            ledger.recordCorrection(
-                fromCollectionKey: previousKey,
-                fromPriceStorageKey: previousPriceStorageKey
-                    ?? ledger.priceStorageKey(for: correctedRow),
-                toCard: correctedRow,
-                operationID: correctionOperationID
-            )
+        guard let correctedRow = self.card(forKey: mutation.collectionKey) else {
+            throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
+        }
+        let correction = ledger.recordCorrection(
+            fromCollectionKey: previousKey,
+            fromPriceStorageKey: previousPriceStorageKey,
+            toCard: correctedRow,
+            quantity: quantity,
+            operationID: correctionOperationID
+        )
+        for outcome in [correction.from, correction.to] {
+            switch outcome {
+            case .appended:
+                break
+            case .duplicate:
+                throw CollectionStoreError.ledgerConflict("correction leg already exists")
+            case let .conflict(defect):
+                throw CollectionStoreError.ledgerConflict(defect.detail)
+            }
         }
 
-        guard let activityToRetarget,
-              let correctedCard = self.card(forKey: mutation.collectionKey) else {
-            try commit()
-            return CollectionMutation(
-                collectionKey: mutation.collectionKey,
-                activityID: mutation.activityID,
-                didInsert: mutation.didInsert,
-                operationID: correctionOperationID
-            )
+        guard let correctedCard = self.card(forKey: mutation.collectionKey) else {
+            throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
         }
 
         // Remove the provisional correction event created by `add`, then move
@@ -643,7 +1431,7 @@ struct CollectionStore {
             let descriptor = FetchDescriptor<CollectionActivity>(
                 predicate: #Predicate { $0.id == provisionalID }
             )
-            if let provisional = try? context.fetch(descriptor).first {
+            if let provisional = try context.fetch(descriptor).first {
                 context.delete(provisional)
             }
         }
@@ -656,14 +1444,170 @@ struct CollectionStore {
         activityToRetarget.variantLabel = correctedCard.variantLabel
         activityToRetarget.pokemonPrintRunRaw = correctedCard.pokemonPrintRunRaw
         activityToRetarget.correctedAt = .now
+        activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
+        _ = try appendActivity(
+            correctedCard,
+            source: .correction,
+            kind: .corrected,
+            deltaQuantity: 0,
+            ledgerOperationIDs: [correctionOperationID]
+        )
         try commit()
 
         return CollectionMutation(
             collectionKey: mutation.collectionKey,
             activityID: activityToRetarget.id,
             didInsert: mutation.didInsert,
-            operationID: correctionOperationID
+            ledgerOperationIDs: operationIDs + [correctionOperationID]
         )
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// History-screen variant correction. The stored row already contains the
+    /// catalog metadata, so this overload shares the same preflight and
+    /// transaction rules without reconstructing a provider response in a view.
+    @discardableResult
+    func recordVariantCorrection(
+        for card: CollectedCard,
+        to corrected: ResolvedVariant,
+        activityID: UUID,
+        quantity: Int
+    ) throws -> CollectionMutation? {
+        guard quantity > 0, corrected.variant != card.variant else { return nil }
+
+        do {
+            let activityToRetarget = try activity(id: activityID)
+            guard activityToRetarget.collectionKey == card.collectionKey,
+                  activityToRetarget.kind.hasQuantityClaim,
+                  activityToRetarget.signedQuantity > 0 else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            guard activityToRetarget.remainingQuantity == quantity else {
+                throw CollectionStoreError.insufficientQuantity(card.collectionKey)
+            }
+            let operationIDs = activityToRetarget.ledgerOperationIDs
+            _ = try preflightLineage(
+                operationIDs,
+                expectedCollectionKey: card.collectionKey,
+                expectedQuantity: quantity
+            )
+            guard let previous = try uniqueCard(forKey: card.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+            }
+            guard previous.quantity >= quantity else {
+                throw CollectionStoreError.insufficientQuantity(card.collectionKey)
+            }
+
+            let parts = previous.collectionKey.split(separator: "@", maxSplits: 1)
+            let base = parts.first.map(String.init) ?? previous.collectionKey
+            let runSuffix = parts.dropFirst().first.map { "@\($0)" } ?? ""
+            let identityBase = base.split(separator: "#", maxSplits: 1).first.map(String.init) ?? base
+            let destinationKey = "\(identityBase)#\(corrected.variant?.id ?? "")\(runSuffix)"
+            guard destinationKey != previous.collectionKey else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            if try cards(forKey: destinationKey).count > 1 {
+                throw CollectionStoreError.ledgerConflict(
+                    "more than one collection row claims \(destinationKey)"
+                )
+            }
+
+            let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+            let previousSnapshot = RemovedCardSnapshot(card: previous, quantity: quantity)
+            if previous.quantity == quantity {
+                context.delete(previous)
+            } else {
+                previous.quantity -= quantity
+            }
+
+            let correctedRow: CollectedCard
+            if let existing = try uniqueCard(forKey: destinationKey) {
+                existing.quantity += quantity
+                existing.dateAdded = .now
+                correctedRow = existing
+            } else {
+                let inserted = CollectedCard(
+                    collectionKey: destinationKey,
+                    game: previousSnapshot.game,
+                    providerID: previousSnapshot.providerID,
+                    name: previousSnapshot.name,
+                    setName: previousSnapshot.setName,
+                    setCode: previousSnapshot.setCode,
+                    cardNumber: previousSnapshot.cardNumber,
+                    rarity: previousSnapshot.rarity,
+                    imageURL: previousSnapshot.imageURL,
+                    thumbnailURL: previousSnapshot.thumbnailURL,
+                    variant: corrected.variant,
+                    variantResolution: corrected.resolution,
+                    identityResolution: previousSnapshot.identityResolution,
+                    setReleaseOrder: previousSnapshot.setReleaseOrder,
+                    quantity: quantity
+                )
+                inserted.catalogProviderID = previousSnapshot.catalogProviderID
+                inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
+                inserted.tcgplayerProductID = previousSnapshot.tcgplayerProductID
+                inserted.tcgplayerSKUID = previousSnapshot.tcgplayerSKUID
+                inserted.userArtworkFilename = previousSnapshot.userArtworkFilename
+                inserted.itemKindRaw = previousSnapshot.itemKindRaw
+                inserted.justTCGCardID = previousSnapshot.justTCGCardID
+                inserted.justTCGVariantID = previousSnapshot.justTCGVariantID
+                inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
+                inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw
+                inserted.catalogMetadataCheckedAt = previousSnapshot.catalogMetadataCheckedAt
+                inserted.catalogMetadataVersion = previousSnapshot.catalogMetadataVersion
+                inserted.gradingCompanyRaw = previousSnapshot.gradingCompanyRaw
+                inserted.gradeRaw = previousSnapshot.gradeRaw
+                inserted.gradeLabel = previousSnapshot.gradeLabel
+                inserted.gradingQualifier = previousSnapshot.gradingQualifier
+                inserted.certificationNumber = previousSnapshot.certificationNumber
+                inserted.marketRegionRaw = previousSnapshot.marketRegionRaw
+                context.insert(inserted)
+                correctedRow = inserted
+            }
+
+            let correctionOperationID = UUID()
+            let correction = ledger.recordCorrection(
+                fromCollectionKey: previousSnapshot.collectionKey,
+                fromPriceStorageKey: previousPriceStorageKey,
+                toCard: correctedRow,
+                quantity: quantity,
+                operationID: correctionOperationID
+            )
+            try requireAppended(correction.from)
+            try requireAppended(correction.to)
+
+            activityToRetarget.collectionKey = correctedRow.collectionKey
+            activityToRetarget.name = correctedRow.name
+            activityToRetarget.setName = correctedRow.setName
+            activityToRetarget.setCode = correctedRow.setCode
+            activityToRetarget.cardNumber = correctedRow.cardNumber
+            activityToRetarget.variantID = correctedRow.variantID
+            activityToRetarget.variantLabel = correctedRow.variantLabel
+            activityToRetarget.pokemonPrintRunRaw = correctedRow.pokemonPrintRunRaw
+            activityToRetarget.correctedAt = .now
+            activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
+            _ = try appendActivity(
+                correctedRow,
+                source: .correction,
+                kind: .corrected,
+                deltaQuantity: 0,
+                ledgerOperationIDs: [correctionOperationID]
+            )
+            try commit()
+
+            return CollectionMutation(
+                collectionKey: correctedRow.collectionKey,
+                activityID: activityToRetarget.id,
+                didInsert: false,
+                ledgerOperationIDs: operationIDs + [correctionOperationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 }
 
@@ -672,8 +1616,8 @@ struct CollectionStore {
 /// Lives beside `CollectionStore` because restoring is an ownership change, not
 /// a view concern: it has to invert a ledger event, and only the store knows
 /// how.
-struct RemovedCardSnapshot: Identifiable {
-    let id = UUID()
+struct RemovedCardSnapshot: Identifiable, Codable {
+    var id = UUID()
     /// The ledger operation that recorded the disposal, so restoring can invert
     /// exactly that rather than recording a fresh acquisition. `nil` only for a
     /// snapshot taken before the ledger existed.
@@ -692,8 +1636,20 @@ struct RemovedCardSnapshot: Identifiable {
     let userArtworkFilename: String?
     let pokemonPrintRunRaw: String?
     let tcgplayerURL: String?
+    let tcgplayerProductID: String?
+    let tcgplayerSKUID: String?
     let catalogMetadataCheckedAt: Date?
     let catalogMetadataVersion: Int
+    let itemKindRaw: String
+    let justTCGCardID: String?
+    let justTCGVariantID: String?
+    let justTCGAPIVersion: String?
+    let gradingCompanyRaw: String?
+    let gradeRaw: String?
+    let gradeLabel: String?
+    let gradingQualifier: String?
+    let certificationNumber: String?
+    let marketRegionRaw: String?
     let quantity: Int
     let dateAdded: Date
     let variant: PhysicalVariant?
@@ -701,7 +1657,7 @@ struct RemovedCardSnapshot: Identifiable {
     let identityResolution: IdentityResolution
     let setReleaseOrder: Int
 
-    init(card: CollectedCard) {
+    init(card: CollectedCard, quantity: Int? = nil) {
         collectionKey = card.collectionKey
         game = card.cardGame
         providerID = card.providerID
@@ -716,9 +1672,21 @@ struct RemovedCardSnapshot: Identifiable {
         userArtworkFilename = card.userArtworkFilename
         pokemonPrintRunRaw = card.pokemonPrintRunRaw
         tcgplayerURL = card.tcgplayerURL
+        tcgplayerProductID = card.tcgplayerProductID
+        tcgplayerSKUID = card.tcgplayerSKUID
         catalogMetadataCheckedAt = card.catalogMetadataCheckedAt
         catalogMetadataVersion = card.catalogMetadataVersion
-        quantity = card.quantity
+        itemKindRaw = card.itemKindRaw
+        justTCGCardID = card.justTCGCardID
+        justTCGVariantID = card.justTCGVariantID
+        justTCGAPIVersion = card.justTCGAPIVersion
+        gradingCompanyRaw = card.gradingCompanyRaw
+        gradeRaw = card.gradeRaw
+        gradeLabel = card.gradeLabel
+        gradingQualifier = card.gradingQualifier
+        certificationNumber = card.certificationNumber
+        marketRegionRaw = card.marketRegionRaw
+        self.quantity = quantity ?? card.quantity
         dateAdded = card.dateAdded
         variant = card.variant
         variantResolution = card.variantResolution ?? .catalogSilent
@@ -729,14 +1697,20 @@ struct RemovedCardSnapshot: Identifiable {
     /// Re-materialises the collection row. Ownership accounting is
     /// `CollectionStore.restore(_:)`'s job, not this type's.
     @MainActor
-    func reinsert(in context: ModelContext) {
+    func reinsert(in context: ModelContext) throws {
         let key = collectionKey
-        var descriptor = FetchDescriptor<CollectedCard>(
-            predicate: #Predicate { $0.collectionKey == key }
+        let rows = try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == key }
+            )
         )
-        descriptor.fetchLimit = 1
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict(
+                "more than one collection row claims \(collectionKey)"
+            )
+        }
 
-        if let existing = try? context.fetch(descriptor).first {
+        if let existing = rows.first {
             existing.quantity += quantity
             existing.dateAdded = max(existing.dateAdded, dateAdded)
         } else {
@@ -759,11 +1733,23 @@ struct RemovedCardSnapshot: Identifiable {
                 dateAdded: dateAdded
             )
             restored.tcgplayerURL = tcgplayerURL
+            restored.tcgplayerProductID = tcgplayerProductID
+            restored.tcgplayerSKUID = tcgplayerSKUID
             restored.userArtworkFilename = userArtworkFilename
             restored.pokemonPrintRunRaw = pokemonPrintRunRaw
             restored.catalogProviderID = catalogProviderID
             restored.catalogMetadataCheckedAt = catalogMetadataCheckedAt
             restored.catalogMetadataVersion = catalogMetadataVersion
+            restored.itemKindRaw = itemKindRaw
+            restored.justTCGCardID = justTCGCardID
+            restored.justTCGVariantID = justTCGVariantID
+            restored.justTCGAPIVersion = justTCGAPIVersion
+            restored.gradingCompanyRaw = gradingCompanyRaw
+            restored.gradeRaw = gradeRaw
+            restored.gradeLabel = gradeLabel
+            restored.gradingQualifier = gradingQualifier
+            restored.certificationNumber = certificationNumber
+            restored.marketRegionRaw = marketRegionRaw
             context.insert(restored)
         }
 

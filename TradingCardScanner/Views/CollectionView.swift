@@ -10,6 +10,7 @@ struct CollectionView: View {
     private var cards: [CollectedCard]
 
     @Query private var priceRecords: [PriceRecord]
+    let catalog: any BrowseCatalogProviding
     let opensBrowseOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
@@ -28,6 +29,7 @@ struct CollectionView: View {
     @State private var isShowingFilters = false
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
+    @State private var removalErrorMessage: String?
     /// The detail column's stack. Selection lives here rather than in a closure
     /// destination so it survives the window shrinking to one column and widening
     /// back out — resizing must never throw away where the user was.
@@ -44,7 +46,22 @@ struct CollectionView: View {
     /// resolving, which is how the detail column falls back to its placeholder.
     private enum Destination: Hashable {
         case browse
+        case history
         case card(String)
+    }
+
+    init(
+        catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        opensBrowseOnLaunch: Bool,
+        onOpenScanner: @escaping @MainActor () -> Void,
+        onRefresh: @escaping @MainActor () async -> Void,
+        sort: Binding<CollectionSort>
+    ) {
+        self.catalog = catalog
+        self.opensBrowseOnLaunch = opensBrowseOnLaunch
+        self.onOpenScanner = onOpenScanner
+        self.onRefresh = onRefresh
+        self._sort = sort
     }
 
     /// Adaptive rather than a fixed pair of columns: the same minimum tile width
@@ -95,6 +112,14 @@ struct CollectionView: View {
                     }
                     .labelStyle(.iconOnly)
                     .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
+
+                    Button {
+                        select(.history)
+                    } label: {
+                        Label("Collection history", systemImage: "clock.arrow.circlepath")
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Collection history")
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -142,6 +167,11 @@ struct CollectionView: View {
                 removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
             }
         }
+        .alert("Removal Couldn’t Be Restored", isPresented: removalErrorBinding) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(removalErrorMessage ?? "Please try again.")
+        }
     }
 
     /// Replaces whatever the detail column is showing. Replacing rather than
@@ -155,7 +185,9 @@ struct CollectionView: View {
     private func destinationView(_ destination: Destination, in snapshot: Snapshot) -> some View {
         switch destination {
         case .browse:
-            BrowseView()
+            BrowseView(catalog: catalog)
+        case .history:
+            CollectionActivityLogView()
         case let .card(id):
             if let entry = snapshot.entries.first(where: { $0.id == id }) {
                 CollectionCardDetailView(
@@ -289,9 +321,19 @@ struct CollectionView: View {
     }
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
-        if (try? CollectionStore(context: modelContext).restore(removed)) != nil {
+        do {
+            try CollectionStore(context: modelContext).restore(removed)
             pendingRemoval = nil
+        } catch {
+            removalErrorMessage = error.localizedDescription
         }
+    }
+
+    private var removalErrorBinding: Binding<Bool> {
+        Binding(
+            get: { removalErrorMessage != nil },
+            set: { if !$0 { removalErrorMessage = nil } }
+        )
     }
 
     private func removalUndoBanner(_ removed: RemovedCardSnapshot) -> some View {

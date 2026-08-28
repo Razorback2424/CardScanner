@@ -396,4 +396,11 @@ protocol BrowseCatalogProviding: Sendable {
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
     func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double]
+    /// Starts an opportunistic local-snapshot refresh. Existing test doubles
+    /// and non-Pokémon catalog implementations do not need to participate.
+    func prepareCatalog() async
+}
+
+extension BrowseCatalogProviding {
+    func prepareCatalog() async {}
 }

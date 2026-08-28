@@ -37,7 +37,6 @@ struct SettingsView: View {
                 Section {
                     NavigationLink {
                         SettingsCategoryView("Scanning") {
-                            finishLockSection
                             cameraSection
                         }
                     } label: {
@@ -264,30 +263,6 @@ struct SettingsView: View {
         return message
     }
 
-    /// Contextual evidence the user already has: a stack of reverses really is a
-    /// stack of reverses. Set here rather than on the camera because it is a
-    /// property of the pile being worked through, not of the card in frame.
-    ///
-    /// One lock per game. The scanner no longer knows which game is coming next,
-    /// so a single shared lock would either be wrong half the time or would have
-    /// to be re-set every time the pile changed game.
-    private var finishLockSection: some View {
-        Section {
-            ForEach(CardGame.allCases) { game in
-                Picker(game.label, selection: lockBinding(for: game)) {
-                    Text("Auto").tag(PhysicalVariant?.none)
-                    ForEach(PhysicalVariant.selectable(for: game)) { variant in
-                        Text(variant.label).tag(PhysicalVariant?.some(variant))
-                    }
-                }
-            }
-        } header: {
-            Text("Finish Lock")
-        } footer: {
-            Text("On Auto, a card whose finish cannot be determined asks for one tap. A lock answers that question in advance — but only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
-        }
-    }
-
     @ViewBuilder
     private var cameraSection: some View {
         Section {
@@ -310,13 +285,6 @@ struct SettingsView: View {
                 Text("This device has no ultra wide camera that can focus close, so only the standard lens is available.")
             }
         }
-    }
-
-    private func lockBinding(for game: CardGame) -> Binding<PhysicalVariant?> {
-        Binding(
-            get: { scannerModel.finishLock(for: game) },
-            set: { scannerModel.setFinishLock($0, for: game) }
-        )
     }
 
     /// `scanner.lens` is `private(set)` and only changes once the capture session has

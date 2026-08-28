@@ -36,6 +36,98 @@ struct ScanAssistanceView: View {
     }
 }
 
+/// A nonblocking fallback for an identical card that never produces reliable
+/// spatial exit evidence. Its button is secondary because ignoring it remains
+/// the safe default and a different card may continue through the scanner.
+struct HeldDuplicateOfferView: View {
+    let offer: HeldDuplicateOffer
+    let onAddAnother: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Already added")
+                .font(.subheadline.weight(.bold))
+                .accessibilitySortPriority(3)
+
+            Text(offer.cardName + " — " + offer.printedIdentifier)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.78))
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilitySortPriority(2)
+
+            Button(action: onAddAnother) {
+                Text("Add another copy")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.bordered)
+            .tint(.white)
+            .accessibilityLabel("Add another copy")
+            .accessibilityHint("Authorizes one additional copy of this card.")
+            .accessibilitySortPriority(1)
+        }
+        .foregroundStyle(.white)
+        .padding(12)
+        .scannerGlass(cornerRadius: 14)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+/// Confirmation required before a resolved card with the same printing identity
+/// can change collection quantity. The safer no-mutation answer is first and
+/// remains the visually safer default over Add another.
+struct DuplicateConfirmationBar: View {
+    let confirmation: PendingDuplicateConfirmation
+    let onSameCard: () -> Void
+    let onAddAnother: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Another copy?")
+                .font(.title3.bold())
+                .accessibilitySortPriority(3)
+
+            Text("\(confirmation.candidate.card.name) — \(confirmation.candidate.identifier.scannerDisplayIdentifier(for: confirmation.candidate.card)) was just scanned.")
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.78))
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilitySortPriority(2)
+
+            VStack(spacing: 10) {
+                Button(action: onSameCard) {
+                    Text("Same card")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(minHeight: 48)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+                .accessibilityLabel("Same card")
+                .accessibilityHint("Dismisses this question without changing your collection.")
+                .accessibilitySortPriority(1)
+
+                Button(action: onAddAnother) {
+                    Text("Add another")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(minHeight: 48)
+                }
+                .buttonStyle(.bordered)
+                .tint(.white)
+                .accessibilityLabel("Add another copy")
+                .accessibilityHint("Adds one copy to your collection.")
+                .accessibilitySortPriority(0)
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .scannerGlass()
+        .accessibilityElement(children: .contain)
+    }
+}
+
 /// The one-tap fork.
 ///
 /// This appears only when two or more variants are genuinely possible and the

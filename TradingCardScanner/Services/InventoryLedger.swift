@@ -44,6 +44,10 @@ struct LedgerIntegrityDefect: Identifiable, Equatable, Sendable {
     /// Short, concrete, and safe to put on screen — "ledger 3, collection 2".
     var detail: String
     var detectedAt: Date = .now
+    /// Activity/ledger projection disagreements are diagnostic-only. The
+    /// quantity repair action can correct the collection against the ledger,
+    /// but it cannot safely reconstruct a missing or altered history row.
+    var canRepairQuantity: Bool = true
 }
 
 /// Where integrity defects accumulate for display.
@@ -134,6 +138,31 @@ struct InventoryLedger {
     /// Convenience for callers that only need the rows and do not publish
     /// accounting from them.
     func allEvents() -> [InventoryEvent] { read().events }
+
+    func allEventsThrowing() throws -> [InventoryEvent] {
+        try context.fetch(FetchDescriptor<InventoryEvent>())
+    }
+
+    /// Strict event lookup for transactional operations. The presentation
+    /// reader intentionally tolerates an unreadable store; undo cannot, since
+    /// treating a missing operation as an empty operation would create a
+    /// collection change with no ledger inverse.
+    func events(forOperationID operationID: UUID) throws -> [InventoryEvent] {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate { $0.operationID == operationID }
+        )
+        return try context.fetch(descriptor)
+    }
+
+    /// Whether an event has already been inverted. A fresh inverse operation ID
+    /// is deliberately used for every undo, so idempotency alone cannot detect
+    /// a stale second tap.
+    func reversalEvents(forEventID eventID: UUID) throws -> [InventoryEvent] {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate { $0.reversesEventID == eventID }
+        )
+        return try context.fetch(descriptor)
+    }
 
     func read() -> LedgerReadResult {
         let descriptor = FetchDescriptor<InventoryEvent>(
@@ -448,12 +477,17 @@ struct InventoryLedger {
     /// Inverts every leg of an operation together, so a correction can never be
     /// half-undone.
     @discardableResult
-    func reverseOperation(_ operationID: UUID, at date: Date = .now) -> [WriteOutcome] {
+    func reverseOperation(
+        _ operationID: UUID,
+        at date: Date = .now,
+        inverseOperationID: UUID = UUID()
+    ) -> [WriteOutcome] {
         let descriptor = FetchDescriptor<InventoryEvent>(
             predicate: #Predicate { $0.operationID == operationID }
         )
         let legs = (try? context.fetch(descriptor)) ?? []
-        let inverseOperation = UUID()
-        return legs.map { reverse($0, occurredAt: date, operationID: inverseOperation) }
+        return legs.map {
+            reverse($0, occurredAt: date, operationID: inverseOperationID)
+        }
     }
 }

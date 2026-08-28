@@ -388,120 +388,134 @@ enum CollectionCSV {
 
     @MainActor
     static func apply(_ plan: CollectionCSVImportPlan, to context: ModelContext) throws -> CollectionCSVImportResult {
-        let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
-        let priceStore = PriceStore(context: context)
-        let ledger = InventoryLedger(context: context)
-        // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, and a
-        // duplicate `collectionKey` is a state CloudKit produces on its own —
-        // so importing a CSV into a collection that had ever synced a duplicate
-        // crashed. Merging into the projection's representative row adds the
-        // imported copies to the position exactly once.
-        var cardsByKey = LogicalCollection.project(cards: storedCards, ledger: ledger)
-            .byKey
-            .mapValues(\.representative)
-        // One instant for the whole import, so every row lands on the same side
-        // of a day boundary no matter how long the import takes.
-        let recordedAt = Date.now
-        var inserted = 0
-        var merged = 0
+        do {
+            let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let priceStore = PriceStore(context: context)
+            let ledger = InventoryLedger(context: context)
+            // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, and a
+            // duplicate `collectionKey` is a state CloudKit produces on its own —
+            // so importing a CSV into a collection that had ever synced a duplicate
+            // crashed. Merging into the projection's representative row adds the
+            // imported copies to the position exactly once.
+            var cardsByKey = LogicalCollection.project(cards: storedCards, ledger: ledger)
+                .byKey
+                .mapValues(\.representative)
+            // One instant for the whole import, so every row lands on the same side
+            // of a day boundary no matter how long the import takes.
+            let recordedAt = Date.now
+            var inserted = 0
+            var merged = 0
 
-        for entry in plan.entries {
-            let storedCard: CollectedCard
-            if let existing = cardsByKey[entry.collectionKey] {
-                existing.quantity += entry.quantity
-                existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
-                if existing.imageURL == nil { existing.imageURL = entry.imageURL }
-                if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
-                if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
-                if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
-                if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
-                storedCard = existing
-                merged += 1
-            } else {
-                let card = CollectedCard(
-                    collectionKey: entry.collectionKey,
-                    game: entry.game,
-                    providerID: entry.providerID,
-                    name: entry.name,
-                    setName: entry.setName,
-                    setCode: entry.setCode,
-                    cardNumber: entry.cardNumber,
-                    rarity: entry.rarity,
-                    imageURL: entry.imageURL,
-                    thumbnailURL: entry.thumbnailURL,
-                    variant: entry.variant,
-                    variantResolution: .imported,
-                    identityResolution: .imported,
-                    quantity: entry.quantity,
-                    dateAdded: entry.dateAdded
-                )
-                // What kind of object this is, and — for a slab — the grade the
-                // export stated. The vendor's variant UUID is not known from a
-                // CSV and is adopted later, when pricing resolves it.
-                card.itemKindRaw = entry.itemKind.rawValue
-                card.gradingCompanyRaw = entry.gradingCompany?.rawValue
-                card.gradeRaw = entry.grade?.value
-                card.gradeLabel = entry.grade?.label
-                card.gradingQualifier = entry.grade?.qualifier
-                card.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
-                card.justTCGCardID = entry.justTCGCardID
-                card.justTCGVariantID = entry.justTCGVariantID
-                card.justTCGAPIVersion = entry.justTCGAPIVersion
-                card.certificationNumber = entry.certificationNumber
-                card.marketRegionRaw = entry.marketRegionRaw
-                context.insert(card)
-                cardsByKey[entry.collectionKey] = card
-                storedCard = card
-                inserted += 1
-            }
+            for entry in plan.entries {
+                let storedCard: CollectedCard
+                if let existing = cardsByKey[entry.collectionKey] {
+                    existing.quantity += entry.quantity
+                    existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
+                    if existing.imageURL == nil { existing.imageURL = entry.imageURL }
+                    if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
+                    if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
+                    if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
+                    if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
+                    storedCard = existing
+                    merged += 1
+                } else {
+                    let card = CollectedCard(
+                        collectionKey: entry.collectionKey,
+                        game: entry.game,
+                        providerID: entry.providerID,
+                        name: entry.name,
+                        setName: entry.setName,
+                        setCode: entry.setCode,
+                        cardNumber: entry.cardNumber,
+                        rarity: entry.rarity,
+                        imageURL: entry.imageURL,
+                        thumbnailURL: entry.thumbnailURL,
+                        variant: entry.variant,
+                        variantResolution: .imported,
+                        identityResolution: .imported,
+                        quantity: entry.quantity,
+                        dateAdded: entry.dateAdded
+                    )
+                    // What kind of object this is, and — for a slab — the grade the
+                    // export stated. The vendor's variant UUID is not known from a
+                    // CSV and is adopted later, when pricing resolves it.
+                    card.itemKindRaw = entry.itemKind.rawValue
+                    card.gradingCompanyRaw = entry.gradingCompany?.rawValue
+                    card.gradeRaw = entry.grade?.value
+                    card.gradeLabel = entry.grade?.label
+                    card.gradingQualifier = entry.grade?.qualifier
+                    card.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
+                    card.justTCGCardID = entry.justTCGCardID
+                    card.justTCGVariantID = entry.justTCGVariantID
+                    card.justTCGAPIVersion = entry.justTCGAPIVersion
+                    card.certificationNumber = entry.certificationNumber
+                    card.marketRegionRaw = entry.marketRegionRaw
+                    context.insert(card)
+                    cardsByKey[entry.collectionKey] = card
+                    storedCard = card
+                    inserted += 1
+                }
 
-            context.insert(
-                CollectionActivity(
-                    card: storedCard,
+                if let amount = entry.importedMarketPriceUSD {
+                    priceStore.storeImported(
+                        amount: amount,
+                        sourceUpdatedAt: entry.importedPriceAsOf,
+                        game: entry.game,
+                        printingID: storedCard.priceStorageID,
+                        variantID: storedCard.variantID,
+                        at: recordedAt
+                    )
+                }
+
+                // After the price, so the event is stamped with the value the
+                // import just established rather than with nothing.
+                //
+                // `recordExisting`, not `initialBalance`: a CSV describes a
+                // collection the person already had, but it is new to the app
+                // today, so it belongs in today's reconciliation. Left out, a
+                // seven-thousand-dollar import would surface as Unexplained — a
+                // lie about what the system knows. The CSV's own acquisition date
+                // is kept as `acquiredAt`; recorded and acquired are not the same
+                // fact.
+                let operationID = UUID()
+                let outcome = ledger.record(
+                    storedCard,
+                    kind: .recordExisting,
                     source: .csvImport,
-                    quantity: entry.quantity,
-                    occurredAt: .now
+                    deltaQuantity: entry.quantity,
+                    operationID: operationID,
+                    occurredAt: recordedAt,
+                    acquiredAt: entry.dateAdded
                 )
-            )
-
-            if let amount = entry.importedMarketPriceUSD {
-                priceStore.storeImported(
-                    amount: amount,
-                    sourceUpdatedAt: entry.importedPriceAsOf,
-                    game: entry.game,
-                    printingID: storedCard.priceStorageID,
-                    variantID: storedCard.variantID,
-                    at: recordedAt
+                switch outcome {
+                case .appended:
+                    break
+                case .duplicate:
+                    throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
+                case let .conflict(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                }
+                _ = try CollectionStore(context: context).appendActivity(
+                    storedCard,
+                    source: .csvImport,
+                    kind: .added,
+                    deltaQuantity: entry.quantity,
+                    ledgerOperationIDs: [operationID],
+                    occurredAt: recordedAt
                 )
             }
 
-            // After the price, so the event is stamped with the value the
-            // import just established rather than with nothing.
-            //
-            // `recordExisting`, not `initialBalance`: a CSV describes a
-            // collection the person already had, but it is new to the app
-            // today, so it belongs in today's reconciliation. Left out, a
-            // seven-thousand-dollar import would surface as Unexplained — a
-            // lie about what the system knows. The CSV's own acquisition date
-            // is kept as `acquiredAt`; recorded and acquired are not the same
-            // fact.
-            ledger.record(
-                storedCard,
-                kind: .recordExisting,
-                source: .csvImport,
-                deltaQuantity: entry.quantity,
-                occurredAt: recordedAt,
-                acquiredAt: entry.dateAdded
+            try context.save()
+            return CollectionCSVImportResult(
+                insertedEntries: inserted,
+                mergedEntries: merged,
+                totalQuantity: plan.totalQuantity,
+                skippedRows: plan.skippedRows
             )
+        } catch {
+            context.rollback()
+            throw error
         }
-
-        try context.save()
-        return CollectionCSVImportResult(
-            insertedEntries: inserted,
-            mergedEntries: merged,
-            totalQuantity: plan.totalQuantity,
-            skippedRows: plan.skippedRows
-        )
     }
 
     private static func entries(from row: [String: String]) -> [CollectionCSVEntry] {

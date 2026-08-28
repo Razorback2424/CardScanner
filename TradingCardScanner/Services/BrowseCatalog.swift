@@ -38,27 +38,49 @@ enum BrowseRequestBuilder {
 }
 
 actor BrowseCatalog: BrowseCatalogProviding {
-    private let tcgdex = TCGdexService()
     private let scryfall = ScryfallService()
     private let cache: CatalogCacheStore
+    private let pokemonTransport: any PokemonBrowseTransport
+    private let checklistStore: PokemonChecklistStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
-    /// Expanding one Pokémon set costs a card request per numbered card, and the
-    /// same expansion is asked for again every time the set is reopened, by each
-    /// virtual print run of a WotC set, and by an in-set search. Keyed by the
-    /// full catalog ID because print run changes which cards are excluded.
+    private var pokemonSetCardDetails: [String: [String: TCGdexCard]] = [:]
+    /// Runtime-derived checklists are keyed by the full catalog id because a
+    /// WotC provider set has one checklist per virtual print run. The provider
+    /// card details that feed all of those projections live separately above.
     private var pokemonSetSummaries: [String: [CatalogCardSummary]] = [:]
+    private var pokemonSnapshot: PokemonChecklistSnapshot?
+    private var pokemonSnapshotLoaded = false
+    private var refreshTask: Task<Void, Never>?
+    private var refreshToken = UUID()
     private var sortPriceCache: [String: Double] = [:]
     private var resolvedSortPrices: Set<String> = []
     private var refreshingSetDirectories: Set<CardGame> = []
 
-    init(cache: CatalogCacheStore = .shared) {
+    init(
+        cache: CatalogCacheStore = .shared,
+        pokemonTransport: any PokemonBrowseTransport = TCGdexBrowseTransport(),
+        checklistStore: PokemonChecklistStore = PokemonChecklistStore()
+    ) {
         self.cache = cache
+        self.pokemonTransport = pokemonTransport
+        self.checklistStore = checklistStore
     }
 
     func sets(for game: CardGame) async throws -> [CatalogSet] {
         if let cached = setCache[game] { return cached }
+
+        if game == .pokemon {
+            await loadPokemonSnapshotIfNeeded()
+            if let snapshot = pokemonSnapshot {
+                let sets = snapshot.sets
+                setCache[game] = sets
+                installPokemonReleaseOrder(from: sets, game: game)
+                return sets
+            }
+        }
+
         if let saved = await cache.sets(for: game) {
             setCache[game] = saved.value
             installPokemonReleaseOrder(from: saved.value, game: game)
@@ -66,6 +88,40 @@ actor BrowseCatalog: BrowseCatalogProviding {
             return saved.value
         }
         return try await loadSetDirectory(for: game)
+    }
+
+    /// Starts the active-session refresh without making Browse wait for it.
+    /// The snapshot is loaded synchronously first so the first Browse render
+    /// can use local data, while the network work remains low priority.
+    func prepareCatalog() async {
+        await loadPokemonSnapshotIfNeeded()
+        guard refreshTask == nil else { return }
+        let token = UUID()
+        refreshToken = token
+        refreshTask = Task(priority: .utility) { [weak self] in
+            guard let self else { return }
+            await self.refreshPokemonSnapshot()
+            await self.finishRefreshTask(token: token)
+        }
+    }
+
+    /// Test/support entry point for awaiting the same atomic operation that the
+    /// active-session task runs. A failed refresh intentionally has no throw:
+    /// the last complete snapshot remains the usable result.
+    func refreshCatalogNow() async {
+        await loadPokemonSnapshotIfNeeded()
+        await refreshPokemonSnapshot()
+    }
+
+    func suspendCatalogRefresh() {
+        refreshToken = UUID()
+        refreshTask?.cancel()
+        refreshTask = nil
+    }
+
+    private func finishRefreshTask(token: UUID) {
+        guard refreshToken == token else { return }
+        refreshTask = nil
     }
 
     private func loadSetDirectory(for game: CardGame) async throws -> [CatalogSet] {
@@ -93,30 +149,30 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
-        let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
-        if let saved = await cache.cardPage(for: cacheKey) { return saved }
-
         let page: CatalogPage<CatalogCardSummary>
         switch set.game {
         case .pokemon:
+            await loadPokemonSnapshotIfNeeded()
             if let cached = pokemonSetSummaries[set.id] {
                 return CatalogPage(items: cached, nextCursor: nil)
             }
-            let catalog = try await pokemonSet(id: set.providerID)
-            let resolvedSet = enriched(set, catalog: catalog)
-            let cards = catalog.cards.filter {
-                !PokemonMasterSetDefinition.excludes(
-                    card: $0,
-                    setProviderID: set.providerID,
-                    printRun: set.pokemonPrintRun
-                )
+            // Snapshot lookup deliberately precedes the ordinary page cache.
+            // A bundled or protected checklist is the authoritative offline
+            // source and must not be displaced by an older partial page.
+            if let local = pokemonSnapshot?.checklist(for: set.catalogID) {
+                pokemonSetSummaries[set.id] = local
+                return CatalogPage(items: local, nextCursor: nil)
             }
-            let summaries = try await pokemonMasterSetSummaries(cards, set: resolvedSet)
-            pokemonSetSummaries[set.id] = summaries
+            let summaries = try await livePokemonSummaries(for: set)
             page = CatalogPage(items: summaries, nextCursor: nil)
         case .magic:
+            let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
+            if let saved = await cache.cardPage(for: cacheKey) { return saved }
             page = try await magicCards(query: "e:\(set.providerID) lang:en game:paper", cursor: cursor)
+            await cache.storeCardPage(page, for: cacheKey)
+            return page
         }
+        let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
         await cache.storeCardPage(page, for: cacheKey)
         return page
     }
@@ -168,8 +224,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let directory = try await sets(for: .pokemon)
             let directorySet = directory.first { $0.catalogID == summary.setID }
             guard let directorySet else { throw BrowseCatalogError.unknownSet }
-            let set = enriched(directorySet, catalog: catalog)
-            let card = try await tcgdex.fetchCard(id: summary.providerID, locale: .en)
+            let set = PokemonMasterSetChecklistBuilder.enrichedSet(directorySet, providerSet: catalog)
+            let card = try await pokemonTransport.fetchCard(id: summary.providerID)
             details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set)
         case .magic:
             let card = try await scryfall.fetchCard(id: summary.providerID)
@@ -232,37 +288,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func pokemonSets() async throws -> [CatalogSet] {
-        guard let url = URL(string: "https://api.tcgdex.net/v2/en/sets?sort:field=releaseDate&sort:order=DESC") else {
-            throw BrowseCatalogError.invalidURL
-        }
-        let (data, response) = try await URLSession.shared.data(for: request(url))
-        try validate(response)
-        let rows = try JSONDecoder().decode([TCGdexBrowseSet].self, from: data)
-        let pocketIDs = (try? await pokemonPocketSetIDs()) ?? []
-        let baseSets = rows.enumerated().compactMap { pair -> CatalogSet? in
-            let index = pair.offset
-            let row = pair.element
-            guard !pocketIDs.contains(row.id.lowercased()),
-                  PokemonMasterSetDefinition.includesInSetDirectory(row) else { return nil }
-            return CatalogSet(
-                catalogID: CatalogSetID(game: .pokemon, providerID: row.id),
-                name: row.name,
-                code: row.tcgOnline?.uppercased()
-                    ?? SetCodeMap.printedCode(forTCGdexSetID: row.id)
-                    ?? row.id.uppercased(),
-                logoURL: assetURL(row.logo, suffix: ".png"),
-                symbolURL: assetURL(row.symbol, suffix: ".png"),
-                cardCount: row.cardCount.map {
-                    PokemonMasterSetDefinition.masterCount(
-                        cardCount: $0,
-                        setName: row.name,
-                        printRun: nil
-                    )
-                },
-                releaseDate: nil,
-                sortRank: rows.count - index
-            )
-        }
+        let rows = try await pokemonTransport.fetchSetDirectory()
+        let pocketIDs = (try? await pokemonTransport.fetchPocketSetIDs()) ?? []
+        let baseSets = PokemonMasterSetChecklistBuilder.baseSets(
+            from: rows,
+            excluding: pocketIDs
+        )
         let countsByID = Dictionary(uniqueKeysWithValues: rows.compactMap { row in
             row.cardCount.map { (row.id.lowercased(), $0) }
         })
@@ -283,15 +314,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             values[set.providerID.lowercased()] = set.sortRank
         }
         PokemonCatalogReleaseOrder.install(values)
-    }
-
-    private func pokemonPocketSetIDs() async throws -> Set<String> {
-        guard let url = URL(string: "https://api.tcgdex.net/v2/en/series/tcgp") else {
-            throw BrowseCatalogError.invalidURL
-        }
-        let (data, response) = try await URLSession.shared.data(for: request(url))
-        try validate(response)
-        return Set(try JSONDecoder().decode(TCGdexSeriesSets.self, from: data).sets.map { $0.id.lowercased() })
     }
 
     private func magicSets() async throws -> [CatalogSet] {
@@ -332,7 +354,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             return matching
                 .filter { $0.providerID == longestID }
-                .map { pokemonSummary(card, set: $0) }
+                .map { PokemonMasterSetChecklistBuilder.summary(card, set: $0) }
         }
         return CatalogPage(items: summaries, nextCursor: cards.count == 60 ? String(page + 1) : nil)
     }
@@ -378,94 +400,182 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func pokemonSet(id: String) async throws -> TCGdexSetCatalog {
-        if let cached = pokemonSetDetails[id] { return cached }
-        let loaded = try await tcgdex.fetchSet(id: id)
-        pokemonSetDetails[id] = loaded
+        let key = id.lowercased()
+        if let cached = pokemonSetDetails[key] { return cached }
+        let loaded = try await pokemonTransport.fetchSet(id: id)
+        pokemonSetDetails[key] = loaded
         return loaded
     }
 
-    private func enriched(_ set: CatalogSet, catalog: TCGdexSetCatalog) -> CatalogSet {
-        CatalogSet(
-            catalogID: set.catalogID,
-            name: set.name,
-            code: catalog.tcgOnline?.uppercased() ?? set.code,
-            logoURL: assetURL(catalog.logo, suffix: ".png") ?? set.logoURL,
-            symbolURL: assetURL(catalog.symbol, suffix: ".png") ?? set.symbolURL,
-            cardCount: catalog.cardCount.map {
-                PokemonMasterSetDefinition.masterCount(
-                    cardCount: $0,
-                    setName: catalog.name,
-                    printRun: set.pokemonPrintRun
+    private func livePokemonSummaries(for set: CatalogSet) async throws -> [CatalogCardSummary] {
+        let provider = try await pokemonSet(id: set.providerID)
+        let details = try await pokemonCardDetails(for: provider)
+        let built = try PokemonMasterSetChecklistBuilder.build(
+            providerSet: provider,
+            baseSet: set,
+            cardDetails: details
+        )
+        for value in built {
+            pokemonSetSummaries[value.set.id] = value.cards
+            for summary in value.cards {
+                guard let card = details[summary.providerID] else { continue }
+                detailCache[summary.id] = CatalogCardDetails(
+                    card: .pokemon(card, setCode: summary.setCode),
+                    set: value.set
                 )
-            } ?? set.cardCount,
-            releaseDate: catalog.releaseDate.flatMap(FlexibleDate.parse),
-            sortRank: set.sortRank
-        )
+            }
+        }
+        return built.first(where: { $0.set.id == set.id })?.cards ?? []
     }
 
-    private func pokemonSummary(_ card: TCGdexCardBrief, set: CatalogSet) -> CatalogCardSummary {
-        let base = card.image.flatMap { URL(string: $0) }
-        return CatalogCardSummary(
-            game: .pokemon,
-            providerID: card.id,
-            setID: set.catalogID,
-            setName: set.name,
-            setCode: set.code,
-            name: card.name,
-            collectorNumber: card.localId,
-            thumbnailURL: base.flatMap { URL(string: $0.absoluteString + "/low.png") },
-            imageURL: base.flatMap { URL(string: $0.absoluteString + "/high.png") }
-        )
-    }
+    private func pokemonCardDetails(
+        for provider: TCGdexSetCatalog
+    ) async throws -> [String: TCGdexCard] {
+        // A changed provider card list must never reuse details fetched for the
+        // previous list. This also lets an active refresh replace a stale card
+        // without requiring a new catalog instance.
+        let key = provider.id.lowercased()
+            + "|"
+            + PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
+        if let cached = pokemonSetCardDetails[key] { return cached }
 
-    /// Set responses intentionally contain only card briefs. Master-set slots
-    /// need the per-card variant flags from the card endpoint, so details are
-    /// loaded with a small bounded concurrency window and cached for the detail
-    /// screen. One failed card fails the page rather than silently publishing an
-    /// incomplete checklist as authoritative.
-    private func pokemonMasterSetSummaries(
-        _ cards: [TCGdexCardBrief],
-        set: CatalogSet
-    ) async throws -> [CatalogCardSummary] {
-        let service = tcgdex
-        var iterator = Array(cards.enumerated()).makeIterator()
-        var loaded: [(Int, TCGdexCardBrief, TCGdexCard)] = []
-        loaded.reserveCapacity(cards.count)
-
-        try await withThrowingTaskGroup(
-            of: (Int, TCGdexCardBrief, TCGdexCard).self
-        ) { group in
-            for _ in 0..<min(8, cards.count) {
-                guard let (index, brief) = iterator.next() else { break }
-                group.addTask {
-                    (index, brief, try await service.fetchCard(id: brief.id))
+        var iterator = provider.cards.makeIterator()
+        var details: [String: TCGdexCard] = [:]
+        try await withThrowingTaskGroup(of: (String, TCGdexCard).self) { group in
+            for _ in 0..<min(8, provider.cards.count) {
+                guard let brief = iterator.next() else { break }
+                group.addTask { (brief.id, try await self.pokemonTransport.fetchCard(id: brief.id)) }
+            }
+            while let value = try await group.next() {
+                details[value.0] = value.1
+                if let brief = iterator.next() {
+                    group.addTask { (brief.id, try await self.pokemonTransport.fetchCard(id: brief.id)) }
                 }
             }
+        }
+        guard details.count == provider.cards.count else {
+            throw PokemonChecklistError.incompleteProviderSet(provider.id)
+        }
+        pokemonSetCardDetails[key] = details
+        return details
+    }
 
-            while let result = try await group.next() {
-                loaded.append(result)
-                if let (index, brief) = iterator.next() {
-                    group.addTask {
-                        (index, brief, try await service.fetchCard(id: brief.id))
+    private func loadPokemonSnapshotIfNeeded() async {
+        guard !pokemonSnapshotLoaded else { return }
+        pokemonSnapshotLoaded = true
+        let bundled = await checklistStore.bundledSnapshot()
+        let downloaded = await checklistStore.downloadedSnapshot()
+        pokemonSnapshot = PokemonChecklistSnapshot.merged(
+            bundled: bundled,
+            downloaded: downloaded
+        )
+        if let snapshot = pokemonSnapshot {
+            let sets = snapshot.sets
+            setCache[.pokemon] = sets
+            installPokemonReleaseOrder(from: sets, game: .pokemon)
+        }
+    }
+
+    private func refreshPokemonSnapshot() async {
+        do {
+            let rows = try await pokemonTransport.fetchSetDirectory()
+            let pocketIDs = (try? await pokemonTransport.fetchPocketSetIDs()) ?? []
+            let baseSets = PokemonMasterSetChecklistBuilder.baseSets(
+                from: rows,
+                excluding: pocketIDs
+            )
+            let providers = try await fetchProviderSets(baseSets)
+            guard !Task.isCancelled else { return }
+
+            let existing = pokemonSnapshot
+            var entries: [PokemonChecklistSnapshotEntry] = []
+            var checklists: [String: [CatalogCardSummary]] = [:]
+            for (baseSet, provider) in providers {
+                pokemonSetDetails[provider.id.lowercased()] = provider
+                let fingerprint = PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
+                let priorEntries = existing?.manifest.entries.filter {
+                    $0.providerID.caseInsensitiveCompare(baseSet.providerID) == .orderedSame
+                        && $0.providerFingerprint == fingerprint
+                } ?? []
+                let providerSets: [PokemonMasterSetChecklistBuilder.BuiltSet]
+                let expectedSetCount = PokemonMasterSetDefinition.virtualSets(
+                    baseSet,
+                    cardCount: provider.cardCount
+                ).count
+                if priorEntries.count == expectedSetCount,
+                   priorEntries.allSatisfy({ existing?.checklist(for: $0.set.catalogID) != nil }) {
+                    for entry in priorEntries {
+                        guard let cards = existing?.checklist(for: entry.set.catalogID) else { continue }
+                        entries.append(entry)
+                        checklists[entry.set.id] = cards
                     }
+                    continue
+                }
+
+                let details = try await pokemonCardDetails(for: provider)
+                providerSets = try PokemonMasterSetChecklistBuilder.build(
+                    providerSet: provider,
+                    baseSet: baseSet,
+                    cardDetails: details
+                )
+                for value in providerSets {
+                    let resource = "sets/\(StableCatalogFingerprint.string(value.set.id + fingerprint)).json"
+                    let entry = PokemonChecklistSnapshotEntry(
+                        set: value.set,
+                        providerID: baseSet.providerID,
+                        providerFingerprint: fingerprint,
+                        resource: resource
+                    )
+                    entries.append(entry)
+                    checklists[value.set.id] = value.cards
+                }
+            }
+
+            guard !entries.isEmpty, !Task.isCancelled else { return }
+            let manifest = PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(entries),
+                entries: entries
+            )
+            let snapshot = PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
+            // This is the commit point. The store writes all checklist files
+            // before its manifest; only then do we expose the new directory.
+            try await checklistStore.publish(snapshot)
+            guard !Task.isCancelled else { return }
+            pokemonSnapshot = snapshot
+            setCache[.pokemon] = snapshot.sets
+            installPokemonReleaseOrder(from: snapshot.sets, game: .pokemon)
+        } catch is CancellationError {
+            return
+        } catch {
+            // A refresh is opportunistic. A failed build, malformed response,
+            // or timeout must leave the previous complete snapshot untouched.
+            return
+        }
+    }
+
+    private func fetchProviderSets(
+        _ baseSets: [CatalogSet]
+    ) async throws -> [(CatalogSet, TCGdexSetCatalog)] {
+        var iterator = baseSets.makeIterator()
+        var result: [(CatalogSet, TCGdexSetCatalog)] = []
+        try await withThrowingTaskGroup(of: (CatalogSet, TCGdexSetCatalog).self) { group in
+            // Three provider-set requests at a time keeps a refresh bounded
+            // even when the directory contains hundreds of expansions.
+            for _ in 0..<min(3, baseSets.count) {
+                guard let set = iterator.next() else { break }
+                group.addTask { (set, try await self.pokemonTransport.fetchSet(id: set.providerID)) }
+            }
+            while let value = try await group.next() {
+                result.append(value)
+                if let set = iterator.next() {
+                    group.addTask { (set, try await self.pokemonTransport.fetchSet(id: set.providerID)) }
                 }
             }
         }
-
-        return loaded.sorted { $0.0 < $1.0 }.flatMap { _, brief, card in
-            let base = pokemonSummary(brief, set: set)
-            let details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set)
-            return PokemonMasterSetDefinition.requiredVariants(
-                for: card
-            ).map { requirement in
-                var summary = base
-                summary.masterSetVariant = requirement.variant
-                summary.isExpandedMasterSetVariant = requirement.isExpanded
-                summary.isSoleSlotForCard = requirement.isSole
-                detailCache[summary.id] = details
-                return summary
-            }
-        }
+        return result.sorted { $0.0.sortRank > $1.0.sortRank }
     }
 
     private func request(_ url: URL, scryfall: Bool = false) -> URLRequest {
@@ -578,7 +688,7 @@ actor CatalogCacheStore {
     }
 
     static func cardPageKey(for set: CatalogSet, cursor: String?) -> String {
-        "cards|\(set.id)|\(cursor ?? "initial")"
+        "cards|schema:\(PokemonChecklistSnapshotVersion.schema)|rules:\(PokemonChecklistSnapshotVersion.masterSetRules)|\(set.id)|\(cursor ?? "initial")"
     }
 
     static func sealedPageKey(game: CardGame, setID: String?, query: String?, offset: Int) -> String {
