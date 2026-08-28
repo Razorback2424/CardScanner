@@ -439,14 +439,7 @@ struct UnresolvedScan: Identifiable, Equatable {
     /// unreadable card produced two evidence values and two rows in the list.
     /// The printed number is the stable part, and within a scanning session it
     /// is what identifies the card in the user's hand.
-    private var mergeKey: String {
-        switch identifier {
-        case let .pokemonHistorical(evidence):
-            return "historical:\(evidence.number.displayIdentifier)"
-        default:
-            return "identifier:\(identifier.displayIdentifier)"
-        }
-    }
+    private var mergeKey: ScanSuppressionKey { identifier.suppressionKey }
 
     /// Adds a failure to the list, folding it into an existing row for the same
     /// card and keeping every distinct reading so the user can see what it read.
@@ -609,7 +602,18 @@ final class ScannerViewModel: ObservableObject {
         scanner.onPlausibleCandidate = { [weak self] identifier in
             guard let self else { return }
             // Speculation only. Nothing downstream may act on this.
-            Task { await self.catalog.prefetch(identifier) }
+            Task { @MainActor in
+                guard self.catalogMissVerification?.suppressionKey != identifier.suppressionKey else {
+                    return
+                }
+                await self.catalog.prefetch(identifier)
+            }
+        }
+
+        scanner.onObservedCandidate = { [weak self] identifier in
+            Task { @MainActor in
+                self?.observeCatalogMissVerification(identifier)
+            }
         }
 
         scanner.onConfirmedCandidate = { [weak self] encounterID, identifier, authorizationID in
@@ -1386,6 +1390,9 @@ final class ScannerViewModel: ObservableObject {
         do {
             let card = try await catalog.card(for: request.identifier)
             guard !Task.isCancelled, isCurrent(request) else { return }
+            if catalogMissVerification?.suppressionKey == request.identifier.suppressionKey {
+                catalogMissVerification = nil
+            }
             // Undo can restore a finish question while this lookup is awaiting
             // the network. Put this already-cached result back at the front
             // instead of replacing the question the user is answering.
@@ -1822,6 +1829,24 @@ final class ScannerViewModel: ObservableObject {
         request.generation == scanGeneration
     }
 
+    private func observeCatalogMissVerification(_ identifier: ScanIdentifier) {
+        guard var verification = catalogMissVerification,
+              verification.suppressionKey == identifier.suppressionKey else { return }
+
+        guard !verification.window.observe(identifier) else {
+            catalogMissVerification = nil
+            unresolvedScans = UnresolvedScan.merging(unresolvedScans, with: identifier)
+            show(
+                ScanNote(
+                    text: "Still can't confirm \(identifier.displayIdentifier) — set it aside",
+                    tone: .problem
+                )
+            )
+            return
+        }
+        catalogMissVerification = verification
+    }
+
     private func handleLookupFailure(_ request: ScanRequest, _ error: Error) {
         let identifier = request.identifier
         feedback.problem()
@@ -1834,10 +1859,15 @@ final class ScannerViewModel: ObservableObject {
             show(ScanNote(text: "Lookup failed — keep the card in the box", tone: .problem))
 
         case .notInCatalog:
-            // Re-reading will fail identically. The latch holds, so this is asked
-            // once and the session keeps moving.
-            unresolvedScans = UnresolvedScan.merging(unresolvedScans, with: identifier)
-            show(ScanNote(text: "Can't confirm \(identifier.displayIdentifier) — set it aside", tone: .problem))
+            // The first deterministic miss is not enough to file a card: a
+            // transient OCR/catalog boundary can still have produced the same
+            // resolved identifier. The latch remains engaged while a fresh
+            // three-of-five suppression-key window verifies the physical card.
+            if catalogMissVerification?.suppressionKey != identifier.suppressionKey {
+                catalogMissVerification = CatalogMissVerification(
+                    suppressionKey: identifier.suppressionKey
+                )
+            }
         }
 
         // Price Check paused at confirmation to enforce its one-card contract;

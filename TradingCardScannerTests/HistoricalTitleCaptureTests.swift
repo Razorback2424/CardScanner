@@ -107,4 +107,42 @@ final class HistoricalTitleCaptureTests: XCTestCase {
 
         XCTAssertEqual(scans.count, 2)
     }
+
+    func testCatalogMissNeedsThreeFreshSuppressionKeyMatchesInFiveFrames() {
+        let first = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["first title"])
+        )
+        let titleVariant = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["second title"])
+        )
+        let different = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: PokemonPrintedNumberEvidence(
+                    localID: "91", denominator: 202, scheme: .officialSet
+                ),
+                titleCandidates: ["other"]
+            )
+        )
+        var window = SuppressionKeyVerificationWindow()
+
+        XCTAssertFalse(window.observe(first))
+        XCTAssertFalse(window.observe(different))
+        XCTAssertFalse(window.observe(titleVariant))
+        XCTAssertTrue(window.observe(first))
+    }
+
+    func testUnresolvedMergeUsesSuppressionKeyAcrossHistoricalTitleVariants() {
+        let first = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["one"])
+        )
+        let second = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["two"])
+        )
+
+        var scans = UnresolvedScan.merging([], with: first)
+        scans = UnresolvedScan.merging(scans, with: second)
+
+        XCTAssertEqual(scans.count, 1)
+        XCTAssertEqual(scans[0].titleCandidates.sorted(), ["one", "two"])
+    }
 }
