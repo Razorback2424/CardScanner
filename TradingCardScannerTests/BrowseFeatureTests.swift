@@ -103,6 +103,147 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(saved?.isFresh == true)
     }
 
+    func testGameLandingOrdersSetsNewestFirstByReleaseOrder() {
+        let older = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "older"),
+            name: "Older",
+            code: "OLD",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 10
+        )
+        let newer = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "newer"),
+            name: "Newer",
+            code: "NEW",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 20
+        )
+
+        XCTAssertEqual(
+            CatalogGameCardsOrdering.newestFirst([older, newer]).map(\.id),
+            [newer.id, older.id]
+        )
+    }
+
+    @MainActor
+    func testSealedSearchReadsCachedResultsWithoutCredentials() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let product = SealedProductSummary(
+            id: "cached-sealed-1",
+            name: "Cached Booster Box",
+            setName: "Example Set",
+            variantID: "sealed",
+            marketPriceUSD: 100,
+            updatedAt: .now,
+            imageURL: nil,
+            tcgplayerProductID: nil
+        )
+        let cache = CatalogCacheStore(root: root)
+        let key = CatalogCacheStore.sealedPageKey(
+            game: .pokemon,
+            setID: nil,
+            query: "box",
+            offset: 0
+        )
+        await cache.storeSealedProductPage(
+            CatalogPage(items: [product], nextCursor: nil),
+            for: key
+        )
+        let client = RecordingJustTCGProviding()
+        let model = SealedBrowseModel(
+            client: client,
+            cache: cache,
+            isConfigured: { false }
+        )
+
+        await model.search(query: "box")
+
+        XCTAssertEqual(model.searchLanes[.pokemon]?.products, [product])
+        let requestCount = await client.sealedSearchCount()
+        XCTAssertEqual(requestCount, 0)
+    }
+
+    @MainActor
+    func testSealedSearchPopulatesOneLanePerGameAndHonorsMinimumQueryLength() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pokemonProduct = SealedProductSummary(
+            id: "pokemon-sealed-1",
+            name: "Pokémon Booster Box",
+            setName: "Example Pokémon Set",
+            variantID: "sealed",
+            marketPriceUSD: 120,
+            updatedAt: nil,
+            imageURL: nil,
+            tcgplayerProductID: nil
+        )
+        let magicProduct = SealedProductSummary(
+            id: "magic-sealed-1",
+            name: "Magic Booster Box",
+            setName: "Example Magic Set",
+            variantID: "sealed",
+            marketPriceUSD: 90,
+            updatedAt: nil,
+            imageURL: nil,
+            tcgplayerProductID: nil
+        )
+        let client = RecordingJustTCGProviding(productsByGame: [
+            .pokemon: [pokemonProduct],
+            .magic: [magicProduct]
+        ])
+        let model = SealedBrowseModel(
+            client: client,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+
+        await model.search(query: "b")
+        XCTAssertTrue(model.searchLanes.isEmpty)
+        let shortQueryRequestCount = await client.sealedSearchCount()
+        XCTAssertEqual(shortQueryRequestCount, 0)
+
+        await model.search(query: "box")
+
+        XCTAssertEqual(model.searchLanes[.pokemon]?.products, [pokemonProduct])
+        XCTAssertEqual(model.searchLanes[.magic]?.products, [magicProduct])
+        let searchedGames = await client.sealedSearchGames()
+        XCTAssertEqual(Set(searchedGames), Set(CardGame.allCases))
+    }
+
+    @MainActor
+    func testBrowseSearchDebouncesBeforeStartingBothSearchLanes() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let sealedClient = RecordingJustTCGProviding()
+        let sealedModel = SealedBrowseModel(
+            client: sealedClient,
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { true }
+        )
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.searchText = "box"
+        try await Task.sleep(for: .milliseconds(150))
+        let earlyCardSearchCount = await catalog.searchCount()
+        let earlySealedSearchCount = await sealedClient.sealedSearchCount()
+        XCTAssertEqual(earlyCardSearchCount, 0)
+        XCTAssertEqual(earlySealedSearchCount, 0)
+
+        try await Task.sleep(for: .milliseconds(450))
+        let cardSearchCount = await catalog.searchCount()
+        let sealedSearchCount = await sealedClient.sealedSearchCount()
+        XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
+        XCTAssertEqual(sealedSearchCount, CardGame.allCases.count)
+    }
+
     private func makeTemporaryCacheDirectory() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -995,6 +1136,70 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 }
 
 private enum TestError: Error { case failed }
+
+private actor RecordingJustTCGProviding: SealedBrowseProviding {
+    private let productsByGame: [CardGame: [SealedProductSummary]]
+    private var sealedSearches = 0
+    private var searchedGames: [CardGame] = []
+
+    init(productsByGame: [CardGame: [SealedProductSummary]] = [:]) {
+        self.productsByGame = productsByGame
+    }
+
+    func searchSealedProducts(
+        game: CardGame,
+        setID: String?,
+        query: String?,
+        offset: Int
+    ) async throws -> MarketCatalogPage<SealedProductSummary> {
+        sealedSearches += 1
+        searchedGames.append(game)
+        let items = productsByGame[game] ?? []
+        return MarketCatalogPage(
+            items: items,
+            total: items.count,
+            offset: offset,
+            limit: JustTCGQuota.maximumPageSize,
+            hasMore: false
+        )
+    }
+
+    func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
+        throw TestError.failed
+    }
+
+    func sealedSearchCount() -> Int { sealedSearches }
+    func sealedSearchGames() -> [CardGame] { searchedGames }
+}
+
+private actor EmptyBrowseCatalog: BrowseCatalogProviding {
+    private var searches = 0
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
+
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [], nextCursor: nil)
+    }
+
+    func searchCards(
+        named query: String,
+        game: CardGame,
+        setIDs: Set<CatalogSetID>,
+        cursor: String?
+    ) async throws -> CatalogPage<CatalogCardSummary> {
+        searches += 1
+        return CatalogPage(items: [], nextCursor: nil)
+    }
+
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        throw TestError.failed
+    }
+
+    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    func prepareCatalog() async {}
+
+    func searchCount() -> Int { searches }
+}
 
 private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     private let rows: [TCGdexBrowseSet]

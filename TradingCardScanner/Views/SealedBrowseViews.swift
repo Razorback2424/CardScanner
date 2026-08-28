@@ -1,7 +1,8 @@
 import SwiftData
 import SwiftUI
 
-/// Loads sealed sets and products, one game at a time.
+/// Loads sealed directories and product pages one game at a time, while the
+/// top-level search keeps an independent lane for each game.
 ///
 /// Kept apart from the card catalogue because the two use different directories.
 /// The vendor groups sets its own way, and mapping those groupings onto TCGdex
@@ -10,28 +11,223 @@ import SwiftUI
 /// vendor's own grouping honestly.
 @MainActor
 final class SealedBrowseModel: ObservableObject {
+    struct Lane {
+        var products: [SealedProductSummary] = []
+        var nextOffset: Int?
+        var isLoading = false
+        var error: String?
+    }
+
     @Published private(set) var sets: [SealedSetSummary] = []
     @Published private(set) var products: [SealedProductSummary] = []
+    @Published private(set) var searchLanes: [CardGame: Lane] = [:]
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
     @Published private(set) var hasMore = false
 
-    private let client: JustTCGV1Client
+    private let client: any SealedBrowseProviding
     private let cache: CatalogCacheStore
+    private let credentialsAvailable: @Sendable () -> Bool
     private var offset = 0
     private var loadedGame: CardGame?
+    private var loadedProductKey: String?
+    private var searchQuery: String?
+    private var searchGeneration = UUID()
 
-    init(transport: JustTCGTransport, cache: CatalogCacheStore = .shared) {
+    init(
+        transport: JustTCGTransport,
+        cache: CatalogCacheStore = .shared,
+        isConfigured: @escaping @Sendable () -> Bool = { PriceVendorCredentials.hasKey }
+    ) {
         self.client = JustTCGV1Client(transport: transport)
         self.cache = cache
+        self.credentialsAvailable = isConfigured
     }
 
-    var isConfigured: Bool { PriceVendorCredentials.hasKey }
+    init(
+        client: any SealedBrowseProviding,
+        cache: CatalogCacheStore = .shared,
+        isConfigured: @escaping @Sendable () -> Bool = { PriceVendorCredentials.hasKey }
+    ) {
+        self.client = client
+        self.cache = cache
+        self.credentialsAvailable = isConfigured
+    }
+
+    var isConfigured: Bool { credentialsAvailable() }
+
+    func clearSearch() {
+        searchGeneration = UUID()
+        searchQuery = nil
+        searchLanes = [:]
+    }
+
+    /// Loads both sealed search lanes from the query that the browse model has
+    /// already debounced. Cached pages are usable without credentials; only a
+    /// stale or missing page with a configured account proceeds to the network.
+    func search(query: String) async {
+        let normalizedQuery = CardNameSearch.normalize(query)
+        guard normalizedQuery.count >= 2 else {
+            clearSearch()
+            return
+        }
+
+        let token = UUID()
+        searchGeneration = token
+        searchQuery = normalizedQuery
+        var lanes: [CardGame: Lane] = [:]
+        var gamesToFetch: [CardGame] = []
+
+        for game in CardGame.allCases {
+            let key = CatalogCacheStore.sealedPageKey(
+                game: game,
+                setID: nil,
+                query: normalizedQuery,
+                offset: 0
+            )
+            var lane = Lane(isLoading: isConfigured)
+            if let saved = await cache.sealedProductPage(for: key) {
+                lane.products = saved.value.items
+                lane.nextOffset = Int(saved.value.nextCursor ?? "")
+                if saved.isFresh || !isConfigured {
+                    lane.isLoading = false
+                } else {
+                    gamesToFetch.append(game)
+                }
+            } else if isConfigured {
+                gamesToFetch.append(game)
+            }
+            lanes[game] = lane
+        }
+
+        guard token == searchGeneration, !Task.isCancelled else { return }
+        searchLanes = lanes
+        guard isConfigured, !gamesToFetch.isEmpty else { return }
+
+        let client = client
+        let cache = cache
+        await withTaskGroup(of: (CardGame, Result<CatalogPage<SealedProductSummary>, Error>).self) { group in
+            for game in gamesToFetch {
+                group.addTask {
+                    do {
+                        let response = try await client.searchSealedProducts(
+                            game: game,
+                            setID: nil,
+                            query: normalizedQuery,
+                            offset: 0
+                        )
+                        let page = CatalogPage(
+                            items: response.items,
+                            nextCursor: response.hasMore
+                                ? String(response.offset + response.items.count)
+                                : nil
+                        )
+                        await cache.storeSealedProductPage(
+                            page,
+                            for: CatalogCacheStore.sealedPageKey(
+                                game: game,
+                                setID: nil,
+                                query: normalizedQuery,
+                                offset: 0
+                            )
+                        )
+                        return (game, .success(page))
+                    } catch {
+                        return (game, .failure(error))
+                    }
+                }
+            }
+
+            for await (game, result) in group {
+                guard token == searchGeneration, !Task.isCancelled,
+                      var lane = searchLanes[game] else { continue }
+                lane.isLoading = false
+                switch result {
+                case let .success(page):
+                    lane.products = page.items
+                    lane.nextOffset = Int(page.nextCursor ?? "")
+                    lane.error = nil
+                case let .failure(error):
+                    lane.error = Self.message(for: error)
+                }
+                searchLanes[game] = lane
+            }
+        }
+    }
+
+    func loadMoreSearch(game: CardGame, query: String) async {
+        let normalizedQuery = CardNameSearch.normalize(query)
+        guard normalizedQuery.count >= 2,
+              searchQuery == normalizedQuery,
+              var lane = searchLanes[game],
+              let requestedOffset = lane.nextOffset,
+              !lane.isLoading else { return }
+
+        let token = searchGeneration
+        lane.isLoading = true
+        searchLanes[game] = lane
+        let cacheKey = CatalogCacheStore.sealedPageKey(
+            game: game,
+            setID: nil,
+            query: normalizedQuery,
+            offset: requestedOffset
+        )
+        if let saved = await cache.sealedProductPage(for: cacheKey),
+           saved.isFresh || !isConfigured {
+            guard token == searchGeneration, !Task.isCancelled,
+                  var lane = searchLanes[game] else { return }
+            lane.products += saved.value.items
+            lane.nextOffset = Int(saved.value.nextCursor ?? "")
+            lane.isLoading = false
+            lane.error = nil
+            searchLanes[game] = lane
+            return
+        }
+
+        guard isConfigured else {
+            lane.isLoading = false
+            lane.nextOffset = nil
+            searchLanes[game] = lane
+            return
+        }
+
+        do {
+            let page = try await client.searchSealedProducts(
+                game: game,
+                setID: nil,
+                query: normalizedQuery,
+                offset: requestedOffset
+            )
+            let cachePage = CatalogPage(
+                items: page.items,
+                nextCursor: page.hasMore
+                    ? String(page.offset + page.items.count)
+                    : nil
+            )
+            await cache.storeSealedProductPage(cachePage, for: cacheKey)
+            guard token == searchGeneration, !Task.isCancelled,
+                  var lane = searchLanes[game] else { return }
+            lane.products += cachePage.items
+            lane.nextOffset = Int(cachePage.nextCursor ?? "")
+            lane.isLoading = false
+            lane.error = nil
+            searchLanes[game] = lane
+        } catch {
+            guard token == searchGeneration, var lane = searchLanes[game] else { return }
+            lane.isLoading = false
+            lane.error = Self.message(for: error)
+            searchLanes[game] = lane
+        }
+    }
 
     /// One request, and only when the directory is not already loaded for this
     /// game. Sealed browse is interactive, but it is still the user's quota.
     func loadSetsIfNeeded(game: CardGame) async {
-        guard isConfigured, (loadedGame != game || sets.isEmpty), !isLoading else { return }
+        guard (loadedGame != game || sets.isEmpty), !isLoading else { return }
+        if loadedGame != game {
+            sets = []
+            errorMessage = nil
+        }
         if let saved = await cache.sealedSets(for: game) {
             sets = saved.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             loadedGame = game
@@ -39,6 +235,10 @@ final class SealedBrowseModel: ObservableObject {
                 errorMessage = nil
                 return
             }
+        }
+        guard isConfigured else {
+            loadedGame = game
+            return
         }
         isLoading = true
         defer { isLoading = false }
@@ -56,15 +256,25 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
-        guard isConfigured, !isLoading else { return }
+        guard !isLoading else { return }
         offset = 0
         let cacheKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: offset)
+        if loadedProductKey != cacheKey {
+            products = []
+            hasMore = false
+            errorMessage = nil
+            loadedProductKey = cacheKey
+        }
         if let saved = await cache.sealedProductPage(for: cacheKey) {
             apply(saved.value, replacing: true)
-            if saved.isFresh {
+            if saved.isFresh || !isConfigured {
                 errorMessage = nil
                 return
             }
+        }
+        guard isConfigured else {
+            errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
+            return
         }
         isLoading = true
         defer { isLoading = false }
@@ -84,14 +294,21 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMore(game: CardGame, setID: String?, query: String? = nil) async {
-        guard isConfigured, hasMore, !isLoading else { return }
+        guard hasMore, !isLoading else { return }
         let requestedOffset = offset
         let cacheKey = CatalogCacheStore.sealedPageKey(
             game: game, setID: setID, query: query, offset: requestedOffset
         )
-        if let saved = await cache.sealedProductPage(for: cacheKey), saved.isFresh {
-            apply(saved.value, replacing: false)
-            errorMessage = nil
+        if let saved = await cache.sealedProductPage(for: cacheKey) {
+            if saved.isFresh || !isConfigured {
+                apply(saved.value, replacing: false)
+                errorMessage = nil
+                return
+            }
+        }
+        guard isConfigured else {
+            hasMore = false
+            errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             return
         }
         isLoading = true
@@ -251,6 +468,14 @@ struct SealedProductGridView: View {
         .overlay {
             if model.isLoading, model.products.isEmpty {
                 ProgressView("Loading products…")
+            } else if !model.isConfigured, model.products.isEmpty {
+                Label(
+                    "Add a pricing API key in Settings to browse sealed products.",
+                    systemImage: "key"
+                )
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding()
             }
         }
         .navigationTitle(set.name)
@@ -259,7 +484,7 @@ struct SealedProductGridView: View {
     }
 }
 
-private struct SealedProductTile: View {
+struct SealedProductTile: View {
     let product: SealedProductSummary
 
     var body: some View {

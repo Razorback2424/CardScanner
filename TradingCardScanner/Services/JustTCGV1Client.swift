@@ -28,12 +28,23 @@ protocol JustTCGProviding: Sendable {
     ) async throws -> [GradedVariant]
 }
 
+protocol SealedBrowseProviding: Sendable {
+    func searchSealedProducts(
+        game: CardGame,
+        setID: String?,
+        query: String?,
+        offset: Int
+    ) async throws -> MarketCatalogPage<SealedProductSummary>
+
+    func sealedSets(game: CardGame) async throws -> [SealedSetSummary]
+}
+
 /// The stable v1 API: raw singles, sealed products, and batch pricing.
 ///
 /// Sealed products are not a separate endpoint. They live in the same `/cards`
 /// dataset with `condition: "Sealed"`, which is why one batch path serves both
 /// and why a booster box refreshes through exactly the machinery a single does.
-struct JustTCGV1Client: Sendable {
+struct JustTCGV1Client: Sendable, SealedBrowseProviding {
     static let apiVersion = "v1"
 
     private let transport: JustTCGTransport
@@ -77,6 +88,21 @@ struct JustTCGV1Client: Sendable {
     }
 
     // MARK: - Sealed discovery
+
+    func searchSealedProducts(
+        game: CardGame,
+        setID: String?,
+        query: String?,
+        offset: Int
+    ) async throws -> MarketCatalogPage<SealedProductSummary> {
+        try await searchSealedProducts(
+            game: game,
+            setID: setID,
+            query: query,
+            offset: offset,
+            limit: JustTCGQuota.maximumPageSize
+        )
+    }
 
     /// Sets that actually contain sealed inventory.
     ///

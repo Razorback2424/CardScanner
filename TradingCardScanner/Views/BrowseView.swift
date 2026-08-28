@@ -1,3 +1,4 @@
+import Combine
 import SwiftData
 import SwiftUI
 import UIKit
@@ -19,11 +20,21 @@ final class BrowseViewModel: ObservableObject {
     @Published private(set) var lanes: [CardGame: Lane] = [:]
 
     let catalog: any BrowseCatalogProviding
+    let sealedModel: SealedBrowseModel
     private var searchTask: Task<Void, Never>?
     private var generation = UUID()
+    private var sealedModelCancellable: AnyCancellable? = nil
 
-    init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
+    init(
+        catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        sealedModel: SealedBrowseModel? = nil
+    ) {
         self.catalog = catalog
+        let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport())
+        self.sealedModel = sealedModel
+        self.sealedModelCancellable = sealedModel.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }
     }
 
     var normalizedQuery: String { CardNameSearch.normalize(searchText) }
@@ -80,10 +91,12 @@ final class BrowseViewModel: ObservableObject {
         let query = normalizedQuery
         guard !query.isEmpty else {
             lanes = [:]
+            sealedModel.clearSearch()
             return
         }
         guard query.count >= 2 else {
             lanes = [:]
+            sealedModel.clearSearch()
             return
         }
         searchTask = Task { [weak self] in
@@ -97,6 +110,8 @@ final class BrowseViewModel: ObservableObject {
         let games = selectedGame.map { [$0] } ?? CardGame.allCases
         for game in games { lanes[game] = Lane(isLoading: true) }
         for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
+
+        async let sealedSearch = sealedModel.search(query: query)
 
         await withTaskGroup(of: (CardGame, Result<CatalogPage<CatalogCardSummary>, Error>).self) { group in
             for game in games {
@@ -117,6 +132,8 @@ final class BrowseViewModel: ObservableObject {
                 }
             }
         }
+
+        await sealedSearch
     }
 
     private func effectiveSetIDs(for game: CardGame) -> Set<CatalogSetID> {
@@ -138,9 +155,8 @@ struct BrowseView: View {
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
 
-    enum BrowseScope: Hashable { case cards, sealed }
+    enum BrowseScope: Hashable { case all, cards, sealed }
     @State private var browseScope: BrowseScope = .cards
-    @StateObject private var sealedModel = SealedBrowseModel(transport: JustTCGTransport())
 
     init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
         self.catalog = catalog
@@ -153,7 +169,7 @@ struct BrowseView: View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(CardGame.allCases) { game in
                 NavigationLink {
-                    SealedSetDirectoryView(game: game, model: sealedModel)
+                    SealedSetDirectoryView(game: game, model: model.sealedModel)
                 } label: {
                     HStack {
                         Label(game.label, systemImage: "shippingbox")
@@ -182,21 +198,25 @@ struct BrowseView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 18) {
                 searchField
-                // An explicit scope rather than mixing cards and sealed
-                // products in one result list: they are different kinds of
-                // thing, from different catalogues, and a shared list would
-                // leave the user guessing which they were looking at.
+                // Search results stay sectioned by kind and game, so cards and
+                // sealed products can be searched together without pretending
+                // that they are interchangeable catalogue records.
                 Picker("Browse scope", selection: $browseScope) {
+                    if model.isSearching {
+                        Text("All").tag(BrowseScope.all)
+                    }
                     Text("Cards").tag(BrowseScope.cards)
                     Text("Sealed").tag(BrowseScope.sealed)
                 }
                 .pickerStyle(.segmented)
 
                 switch browseScope {
+                case .all:
+                    if model.isSearching { searchBody } else { gameChooser }
                 case .cards:
                     if model.isSearching { searchBody } else { gameChooser }
                 case .sealed:
-                    sealedChooser
+                    if model.isSearching { searchBody } else { sealedChooser }
                 }
             }
             .padding(16)
@@ -234,6 +254,13 @@ struct BrowseView: View {
                 selection: $model.selectedSets
             )
         }
+        .onChange(of: model.isSearching) { _, isSearching in
+            if isSearching {
+                browseScope = .all
+            } else if browseScope == .all {
+                browseScope = .cards
+            }
+        }
     }
 
     private func backfillPokemonReleaseOrder() {
@@ -270,7 +297,7 @@ struct BrowseView: View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                TextField("Search every card printing", text: $model.searchText)
+                TextField("Search cards and sealed products", text: $model.searchText)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .focused($searchFocused)
@@ -324,7 +351,7 @@ struct BrowseView: View {
         ForEach(CardGame.allCases) { game in
             if let sets = model.sets[game] {
                 NavigationLink {
-                    CatalogSetListView(game: game, sets: sets, catalog: model.catalog)
+                    CatalogGameCardsView(game: game, sets: sets, catalog: model.catalog)
                 } label: {
                     HStack(spacing: 16) {
                         Image(systemName: game == .pokemon ? "bolt.fill" : "wand.and.stars")
@@ -361,8 +388,19 @@ struct BrowseView: View {
         if model.normalizedQuery.count < 2 {
             ContentUnavailableView("Keep typing", systemImage: "text.cursor", description: Text("Enter at least two characters."))
         } else {
-            ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
-                searchSection(game)
+            if browseScope != .sealed {
+                Text("Cards")
+                    .font(.title2.bold())
+                ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
+                    searchSection(game)
+                }
+            }
+            if browseScope != .cards {
+                Text("Sealed")
+                    .font(.title2.bold())
+                ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
+                    sealedSearchSection(game)
+                }
             }
         }
     }
@@ -395,6 +433,328 @@ struct BrowseView: View {
         } header: {
             Text(game.label).font(.title3.bold())
         }
+    }
+
+    @ViewBuilder private func sealedSearchSection(_ game: CardGame) -> some View {
+        let lane = model.sealedModel.searchLanes[game] ?? .init(isLoading: true)
+        Section {
+            if lane.products.isEmpty && lane.isLoading {
+                HStack { ProgressView(); Text("Searching sealed products…") }
+                    .frame(minHeight: 80)
+            } else if lane.products.isEmpty, !model.sealedModel.isConfigured {
+                Text("Add a pricing API key in Settings to browse sealed products.")
+                    .foregroundStyle(.secondary)
+            } else if lane.products.isEmpty, let error = lane.error {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("\(game.label) sealed search failed").font(.headline)
+                    Text(error).font(.caption).foregroundStyle(.secondary)
+                    Button("Retry") { model.searchText = model.searchText }
+                }
+            } else if lane.products.isEmpty {
+                Text("No \(game.label) sealed products found")
+                    .foregroundStyle(.secondary)
+            } else {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
+                    ForEach(lane.products) { product in
+                        NavigationLink {
+                            SealedProductDetailView(game: game, product: product)
+                        } label: {
+                            SealedProductTile(product: product)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                if lane.nextOffset != nil {
+                    HStack { Spacer(); ProgressView(); Spacer() }
+                        .padding()
+                        .task {
+                            await model.sealedModel.loadMoreSearch(
+                                game: game,
+                                query: model.normalizedQuery
+                            )
+                        }
+                }
+            }
+        } header: {
+            Text(game.label).font(.title3.bold())
+        }
+    }
+}
+
+enum CatalogGameCardsOrdering {
+    static func newestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
+        sets.sorted {
+            if $0.releaseOrder != $1.releaseOrder {
+                return $0.releaseOrder > $1.releaseOrder
+            }
+            return $0.id < $1.id
+        }
+    }
+}
+
+private struct CatalogGameCardsView: View {
+    let game: CardGame
+    let sets: [CatalogSet]
+    let catalog: any BrowseCatalogProviding
+
+    @Query private var ownedCards: [CollectedCard]
+    @State private var cards: [CatalogCardSummary] = []
+    @State private var nextSetIndex = 0
+    @State private var activeSetIndex: Int?
+    @State private var cursor: String?
+    @State private var isLoading = false
+    @State private var error: String?
+    @State private var search = ""
+    @State private var searchCards: [CatalogCardSummary] = []
+    @State private var searchCursor: String?
+    @State private var searchIsLoading = false
+    @State private var searchError: String?
+    @State private var searchRevision = 0
+    @State private var searchRequestKey: String?
+
+    private var orderedSets: [CatalogSet] {
+        CatalogGameCardsOrdering.newestFirst(sets)
+    }
+
+    private var normalizedSearch: String {
+        CardNameSearch.normalize(search)
+    }
+
+    private var hasSearchText: Bool { !normalizedSearch.isEmpty }
+    private var isSearchQuery: Bool { normalizedSearch.count >= 2 }
+    private var hasMoreSets: Bool {
+        activeSetIndex != nil || nextSetIndex < orderedSets.count
+    }
+
+    var body: some View {
+        let owned = CatalogOwnershipIndex(ownedCards)
+        return ScrollView {
+            if hasSearchText {
+                searchContent(owned: owned)
+            } else {
+                defaultContent(owned: owned)
+            }
+        }
+        .navigationTitle("\(game.label) Cards")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $search, prompt: "Search \(game.label) cards")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    CatalogSetListView(game: game, sets: sets, catalog: catalog)
+                } label: {
+                    Label("Sets", systemImage: "square.stack.3d.up")
+                }
+                .accessibilityLabel("Browse \(game.label) sets")
+            }
+        }
+        .task {
+            await loadDefaultMore()
+        }
+        .task(id: "\(normalizedSearch)-\(searchRevision)") {
+            guard isSearchQuery else {
+                searchCards = []
+                searchCursor = nil
+                searchError = nil
+                searchIsLoading = false
+                searchRequestKey = nil
+                return
+            }
+            let requestKey = "\(normalizedSearch)-\(searchRevision)"
+            searchRequestKey = requestKey
+            searchCards = []
+            searchCursor = nil
+            searchError = nil
+            searchIsLoading = true
+            try? await Task.sleep(for: .milliseconds(400))
+            guard !Task.isCancelled else { return }
+            await loadSearch(query: normalizedSearch, requestKey: requestKey)
+        }
+    }
+
+    @ViewBuilder
+    private func defaultContent(owned: CatalogOwnershipIndex) -> some View {
+        if cards.isEmpty && isLoading {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Loading \(game.label) cards…")
+                    .font(.headline)
+            }
+            .padding(.horizontal, 32)
+            .padding(.top, 80)
+        } else if cards.isEmpty, let error {
+            ContentUnavailableView(
+                "Couldn't load \(game.label) cards",
+                systemImage: "wifi.exclamationmark",
+                description: Text(error)
+            )
+            Button("Retry") { Task { await loadDefaultMore() } }
+                .buttonStyle(.borderedProminent)
+        } else {
+            if let error, !cards.isEmpty {
+                Label(error, systemImage: "wifi.exclamationmark")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 16)
+            }
+            if cards.isEmpty {
+                ContentUnavailableView(
+                    "No cards found",
+                    systemImage: "rectangle.on.rectangle.slash",
+                    description: Text("This game has no cards in the catalogue.")
+                )
+            } else {
+                CatalogCardGrid(cards: cards, catalog: catalog, owned: owned)
+                    .padding(12)
+                    .contentWidthLimit(.wide)
+            }
+            if hasMoreSets {
+                ProgressView()
+                    .padding()
+                    .task { await loadDefaultMore() }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func searchContent(owned: CatalogOwnershipIndex) -> some View {
+        if !isSearchQuery {
+            ContentUnavailableView(
+                "Keep typing",
+                systemImage: "text.cursor",
+                description: Text("Enter at least two characters.")
+            )
+        } else if searchCards.isEmpty && searchIsLoading {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text("Searching…")
+                    .font(.headline)
+            }
+            .padding(.top, 80)
+        } else if searchCards.isEmpty, let searchError {
+            ContentUnavailableView(
+                "Search failed",
+                systemImage: "wifi.exclamationmark",
+                description: Text(searchError)
+            )
+            Button("Retry") { searchRevision += 1 }
+                .buttonStyle(.borderedProminent)
+        } else if searchCards.isEmpty {
+            ContentUnavailableView(
+                "No matching cards",
+                systemImage: "magnifyingglass",
+                description: Text("Try another card name.")
+            )
+        } else {
+            CatalogCardGrid(cards: searchCards, catalog: catalog, owned: owned)
+                .padding(12)
+                .contentWidthLimit(.wide)
+            if searchCursor != nil {
+                ProgressView()
+                    .padding()
+                    .task { await loadMoreSearch(query: normalizedSearch) }
+            }
+        }
+    }
+
+    private func loadDefaultMore() async {
+        guard !isLoading, !hasSearchText else { return }
+        guard activeSetIndex != nil || nextSetIndex < orderedSets.count else { return }
+        isLoading = true
+        error = nil
+        var startedNewSet = false
+        do {
+            let set: CatalogSet
+            let page: CatalogPage<CatalogCardSummary>
+            if let activeSetIndex, let cursor {
+                set = orderedSets[activeSetIndex]
+                page = try await catalog.cards(in: set, cursor: cursor)
+            } else {
+                let index = nextSetIndex
+                nextSetIndex += 1
+                activeSetIndex = index
+                cursor = nil
+                startedNewSet = true
+                set = orderedSets[index]
+                page = try await catalog.cards(in: set, cursor: nil)
+            }
+            cards = deduplicated(cards + page.items)
+            cursor = page.nextCursor
+            if page.nextCursor == nil {
+                activeSetIndex = nil
+            }
+        } catch {
+            if startedNewSet {
+                nextSetIndex = max(0, nextSetIndex - 1)
+                activeSetIndex = nil
+                cursor = nil
+            }
+            self.error = error.localizedDescription
+        }
+        isLoading = false
+    }
+
+    private func loadSearch(query: String, requestKey: String) async {
+        defer {
+            if searchRequestKey == requestKey {
+                searchIsLoading = false
+            }
+        }
+        do {
+            let page = try await catalog.searchCards(
+                named: query,
+                game: game,
+                setIDs: [],
+                cursor: nil
+            )
+            guard !Task.isCancelled,
+                  normalizedSearch == query,
+                  searchRequestKey == requestKey else { return }
+            searchCards = deduplicated(page.items)
+            searchCursor = page.nextCursor
+        } catch {
+            guard !Task.isCancelled,
+                  normalizedSearch == query,
+                  searchRequestKey == requestKey else { return }
+            searchError = error.localizedDescription
+        }
+    }
+
+    private func loadMoreSearch(query: String) async {
+        guard !searchIsLoading,
+              isSearchQuery,
+              normalizedSearch == query,
+              let cursor = searchCursor else { return }
+        guard let requestKey = searchRequestKey else { return }
+        searchIsLoading = true
+        defer {
+            if searchRequestKey == requestKey {
+                searchIsLoading = false
+            }
+        }
+        do {
+            let page = try await catalog.searchCards(
+                named: query,
+                game: game,
+                setIDs: [],
+                cursor: cursor
+            )
+            guard !Task.isCancelled,
+                  normalizedSearch == query,
+                  searchRequestKey == requestKey else { return }
+            searchCards = deduplicated(searchCards + page.items)
+            searchCursor = page.nextCursor
+        } catch {
+            guard !Task.isCancelled,
+                  normalizedSearch == query,
+                  searchRequestKey == requestKey else { return }
+            searchError = error.localizedDescription
+        }
+    }
+
+    private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        var seen: Set<String> = []
+        return values.filter { seen.insert($0.id).inserted }
     }
 }
 
