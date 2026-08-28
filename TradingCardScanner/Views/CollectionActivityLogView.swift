@@ -178,7 +178,7 @@ struct CollectionActivityLogView: View {
             } else {
                 Button("Correct finish…", systemImage: "pencil") {}
                     .disabled(true)
-                Text(actionReason(for: activity, action: .correct))
+                Text(actionReason(activity, action: .correct))
                     .font(.caption)
             }
 
@@ -189,7 +189,7 @@ struct CollectionActivityLogView: View {
             } else {
                 Button("Remove copies…", systemImage: "minus.circle") {}
                     .disabled(true)
-                Text(actionReason(for: activity, action: .remove))
+                Text(actionReason(activity, action: .remove))
                     .font(.caption)
             }
 
@@ -200,7 +200,7 @@ struct CollectionActivityLogView: View {
             } else if activity.kind == .removed {
                 Button("Restore", systemImage: "arrow.uturn.backward") {}
                     .disabled(true)
-                Text(actionReason(for: activity, action: .restore))
+                Text(actionReason(activity, action: .restore))
                     .font(.caption)
             }
         } label: {
@@ -466,8 +466,9 @@ struct CollectionActivityEditor: View {
     }
 
     private var collectionCard: CollectedCard? {
+        let key = activity.collectionKey
         var descriptor = FetchDescriptor<CollectedCard>(
-            predicate: #Predicate { $0.collectionKey == activity.collectionKey }
+            predicate: #Predicate { $0.collectionKey == key }
         )
         descriptor.fetchLimit = 1
         return try? modelContext.fetch(descriptor).first

@@ -158,21 +158,34 @@ final class CollectionActivityHistoryTests: XCTestCase {
     func testDeleteAllRecordsOneRemovalEntryPerPosition() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let first = makeCollectedCard(quantity: 2)
-        let second = makeCollectedCard(quantity: 1)
-        second.collectionKey = "sv08.5-075#normal"
-        second.providerID = "sv08.5-075"
-        second.name = "Pikachu"
-        context.insert(first)
-        context.insert(second)
-        try context.save()
+        let card = try identifiedCard()
+
+        // Seeded through the store rather than inserted directly: a position
+        // with no acquisition behind it leaves the ledger permanently negative
+        // once it is disposed of, which is a broken fixture rather than
+        // anything `deleteAll` did.
+        for _ in 0..<2 {
+            _ = try store.add(
+                card,
+                resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                source: .scan
+            )
+        }
+        _ = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+            source: .scan
+        )
 
         try store.deleteAll()
 
         XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
         XCTAssertEqual(activities.filter { $0.kind == .removed }.count, 2)
-        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, -3)
+        XCTAssertEqual(
+            activities.filter { $0.kind == .removed }.reduce(0) { $0 + $1.signedQuantity },
+            -3
+        )
         let events = try context.fetch(FetchDescriptor<InventoryEvent>())
         XCTAssertEqual(InventoryLedger.quantities(from: events), [:])
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)

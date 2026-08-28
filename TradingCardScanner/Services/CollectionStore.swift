@@ -943,14 +943,13 @@ struct CollectionStore {
             let inverseOperationIDs = try reverseLineage(lineage)
 
             activity.resolvedQuantity += 1
-            let undone = try appendActivity(
+            _ = try appendActivity(
                 row,
                 source: activity.source,
                 kind: .undone,
                 deltaQuantity: -1,
                 ledgerOperationIDs: inverseOperationIDs
             )
-            _ = undone
 
             if activity.ledgerOperationIDs.isEmpty {
                 activity.ledgerOperationIDs = operationIDs
