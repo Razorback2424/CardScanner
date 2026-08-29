@@ -56,9 +56,6 @@ actor CardCatalog {
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
         if let card = resolved[identifier] { return card }
         let task = inFlight[identifier] ?? start(identifier)
-        // Complete on the catalog actor before returning to the scanner. This
-        // is the original, proven prefetch-to-confirmation handoff: success is
-        // cached and the in-flight slot is cleared as one actor transaction.
         return try await complete(identifier, task: task).get()
     }
 

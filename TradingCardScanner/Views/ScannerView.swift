@@ -1,6 +1,5 @@
 import SwiftData
 import SwiftUI
-import UIKit
 
 /// One continuous session. The camera is the product surface and never goes
 /// away: there is no result screen, no confirm step, and no dismiss animation
@@ -70,11 +69,9 @@ struct ScannerView: View {
                             model.correct(scanID: scan.id, to: variant)
                         },
                         onDelete: {
-                            let didUndo = model.undoScan(scanID: scan.id)
-                            if didUndo {
+                            if model.undoScan(scanID: scan.id) {
                                 reviewing = nil
                             }
-                            return didUndo
                         }
                     )
         }
@@ -143,6 +140,16 @@ private struct ScannerChrome: View {
                 cameraIssueMessage(issue)
             }
         }
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
+        .animation(.easeOut(duration: 0.2), value: model.finishLocks)
+        .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
+        .animation(.easeOut(duration: 0.18), value: model.note)
+        .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
     }
 
     // MARK: - Top
@@ -181,19 +188,11 @@ private struct ScannerChrome: View {
             }
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
-            .frame(height: 44)
-            .background {
-                ZStack {
-                    Capsule()
-                        .fill(.black.opacity(0.62))
-                    Capsule()
-                        .stroke(.white.opacity(0.14), lineWidth: 1)
-                }
-                .padding(.vertical, 5)
-            }
-            .contentShape(Capsule())
+            .frame(height: 34)
+            .scannerGlass(cornerRadius: 17)
         }
         .menuStyle(.button)
+        .buttonStyle(.plain)
         .accessibilityLabel("Scan mode: \(model.purpose.title)")
         .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
     }
@@ -218,6 +217,7 @@ private struct ScannerChrome: View {
 
             settingsButton
         }
+        .animation(.easeOut(duration: 0.2), value: model.isSlowIdentifying)
     }
 
     private var finishLockControl: some View {
@@ -256,12 +256,14 @@ private struct ScannerChrome: View {
             finishLockPill(summary: summary, isLocked: !locks.isEmpty)
         }
         .menuStyle(.button)
+        .buttonStyle(.plain)
         .accessibilityLabel("Finish lock: \(summary)")
         .accessibilityHint("A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
     }
 
+    @ViewBuilder
     private func finishLockPill(summary: String, isLocked: Bool) -> some View {
-        HStack(spacing: 6) {
+        let pill = HStack(spacing: 6) {
             Image(systemName: isLocked ? "lock.fill" : "lock.open")
                 .font(.system(size: 13, weight: .semibold))
             Text(summary)
@@ -273,31 +275,23 @@ private struct ScannerChrome: View {
         }
         .foregroundStyle(.white)
         .padding(.horizontal, 12)
-        .frame(height: 44)
-        .background {
-            ZStack {
-                Capsule()
-                    .fill(isLocked ? Color.red : Color.black.opacity(0.62))
-                Capsule()
-                    .stroke(.white.opacity(isLocked ? 0 : 0.14), lineWidth: 1)
-            }
-            .padding(.vertical, 5)
+        .frame(height: 34)
+
+        if isLocked {
+            pill.background(Color.red, in: Capsule())
+        } else {
+            pill.scannerGlass(cornerRadius: 17)
         }
-        .contentShape(Capsule())
-        .animation(.easeOut(duration: 0.2), value: isLocked)
     }
 
     private var settingsButton: some View {
         Button(action: openSettings) {
-            ZStack {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-            }
-            .frame(width: 44, height: 44)
-            .background(.black.opacity(0.55), in: Circle().inset(by: 5))
-            .overlay(Circle().inset(by: 5).stroke(.white.opacity(0.18), lineWidth: 1))
-            .contentShape(Circle())
+            Image(systemName: "gearshape")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 34, height: 34)
+                .background(.black.opacity(0.55), in: Circle())
+                .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Settings")
@@ -375,7 +369,6 @@ private struct ScannerChrome: View {
                 .background(.orange.opacity(0.85), in: Capsule())
         }
         .buttonStyle(.plain)
-        .frame(minHeight: 44)
         .accessibilityHint("Shows what was read and why it was not added")
     }
 
@@ -385,13 +378,6 @@ private struct ScannerChrome: View {
                 .font(.largeTitle)
             Text(issue.message)
                 .multilineTextAlignment(.center)
-            if issue == .permissionDenied {
-                Button("Open Settings") {
-                    guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-                    UIApplication.shared.open(url)
-                }
-                .buttonStyle(.borderedProminent)
-            }
         }
         .padding(24)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
