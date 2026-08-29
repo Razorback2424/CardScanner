@@ -13,6 +13,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
     case quantityMismatch = "ledger_quantity_mismatch"
     case orphanedCorrectionLeg = "orphaned_correction_leg"
     case duplicatePositionPricingConflict = "duplicate_position_pricing_conflict"
+    case unreadableStore = "unreadable_store"
 
     var title: String {
         switch self {
@@ -20,6 +21,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
         case .quantityMismatch: return "Ledger and collection disagree"
         case .orphanedCorrectionLeg: return "Incomplete correction"
         case .duplicatePositionPricingConflict: return "Duplicate rows disagree"
+        case .unreadableStore: return "Stored data unavailable"
         }
     }
 
@@ -33,6 +35,8 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
             return "A correction recorded only one of its two halves. The two legs must be present together or the ledger does not balance."
         case .duplicatePositionPricingConflict:
             return "More than one stored row claims this position, and they are priced through different instruments. Which one is right decides the position's value, so neither was chosen."
+        case .unreadableStore:
+            return "The app could not read one of its stored data sets. The current portfolio is not authoritative until the data can be read again."
         }
     }
 }
@@ -104,11 +108,14 @@ struct InventoryLedger {
         /// The same leg identity, describing something different. Surfaced,
         /// never resolved by arbitrarily picking one.
         case conflict(LedgerIntegrityDefect)
+        /// The ledger could not be read far enough to decide whether this
+        /// operation already exists. Nothing is inserted in this case.
+        case unreadableStore(LedgerIntegrityDefect)
 
         var event: InventoryEvent? {
             switch self {
             case let .appended(event), let .duplicate(event): return event
-            case .conflict: return nil
+            case .conflict, .unreadableStore: return nil
             }
         }
     }
@@ -168,7 +175,22 @@ struct InventoryLedger {
         let descriptor = FetchDescriptor<InventoryEvent>(
             sortBy: [SortDescriptor(\.occurredAt, order: .forward)]
         )
-        let rows = (try? context.fetch(descriptor)) ?? []
+        let rows: [InventoryEvent]
+        do {
+            rows = try context.fetch(descriptor)
+        } catch {
+            return LedgerReadResult(
+                events: [],
+                defects: [
+                    LedgerIntegrityDefect(
+                        reason: .unreadableStore,
+                        collectionKey: "store:InventoryEvent",
+                        detail: "Inventory events could not be read: \(error)",
+                        canRepairQuantity: false
+                    )
+                ]
+            )
+        }
         var canonical: [InventoryEvent] = []
         var defects: [LedgerIntegrityDefect] = []
 
@@ -211,6 +233,32 @@ struct InventoryLedger {
             canonical.append(chosen)
         }
 
+        // Corrections are deliberately two rows with one operation id. CloudKit
+        // can deliver those rows independently, so never replay a partial
+        // operation as if it were a valid quantity change.
+        for (operationID, operationEvents) in Dictionary(grouping: canonical, by: \.operationID)
+        where operationEvents.contains(where: { $0.kind == .correction }) {
+            let corrections = operationEvents.filter { $0.kind == .correction }
+            let fromCount = corrections.filter { $0.leg == .from }.count
+            let toCount = corrections.filter { $0.leg == .to }.count
+            guard operationEvents.count == 2,
+                  corrections.count == 2,
+                  fromCount == 1,
+                  toCount == 1 else {
+                let key = operationEvents.first?.collectionKey ?? "store:correction"
+                defects.append(
+                    LedgerIntegrityDefect(
+                        reason: .orphanedCorrectionLeg,
+                        collectionKey: key,
+                        detail: "Correction operation \(operationID.uuidString) does not contain exactly one from leg and one to leg.",
+                        canRepairQuantity: false
+                    )
+                )
+                canonical.removeAll { $0.operationID == operationID }
+                continue
+            }
+        }
+
         return LedgerReadResult(
             events: canonical.sorted {
                 if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
@@ -220,22 +268,21 @@ struct InventoryLedger {
         )
     }
 
-    func events(collectionKey: String) -> [InventoryEvent] {
-        allEvents().filter { $0.collectionKey == collectionKey }
-    }
-
-    func event(idempotencyKey: String) -> InventoryEvent? {
-        var descriptor = FetchDescriptor<InventoryEvent>(
-            predicate: #Predicate { $0.idempotencyKey == idempotencyKey }
+    func events(collectionKey: String) throws -> [InventoryEvent] {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate { $0.collectionKey == collectionKey }
         )
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        return try context.fetch(descriptor)
     }
 
-    func hasAnyEvent() -> Bool {
+    /// Strict because this check controls whether portfolio bootstrap is
+    /// allowed to create a baseline. Treating an unreadable ledger as empty
+    /// would let the next launch establish a false epoch and make the
+    /// resulting history impossible to defend.
+    func hasAnyEvent() throws -> Bool {
         var descriptor = FetchDescriptor<InventoryEvent>()
         descriptor.fetchLimit = 1
-        return ((try? context.fetch(descriptor).first) != nil)
+        return (try context.fetch(descriptor).first) != nil
     }
 
     /// Quantity per position derived purely from the ledger.
@@ -263,37 +310,70 @@ struct InventoryLedger {
 
     /// The price evidence in force right now for one instrument.
     ///
-    /// Prefers the observation log, because its `receivedAt` is the exact
-    /// knowledge time the portfolio walk orders on. Falls back to the
-    /// `PriceRecord` for positions priced before the log existed.
+    /// Prefers the observation log when it provides a usable USD value,
+    /// because its `receivedAt` is the exact knowledge time the portfolio walk
+    /// orders on. Falls back to the `PriceRecord` when the newest observation
+    /// cannot be used for a USD total; an explicit invalidation is the one
+    /// observation that blocks that fallback.
     func valuation(forPriceKey key: String) -> InventoryValuation {
-        if let observation = PriceObservationLog(context: context)
-            .newestObservation(instrumentKey: key) {
+        Self.resolveValuation(
+            observation: PriceObservationLog(context: context)
+                .newestObservation(instrumentKey: key),
+            record: PriceStore(context: context).record(forKey: key)
+        )
+    }
+
+    /// Resolves one instrument's current evidence for both scalar reads and
+    /// bulk reads.
+    ///
+    /// An explicit invalidation is the only observation that blocks the
+    /// legacy record: it deliberately withdraws a value. A newer observation
+    /// in another currency cannot be used for a USD portfolio, so it falls
+    /// through to the older USD `PriceRecord` just as a malformed observation
+    /// does. Keeping that rule here prevents the scalar and bulk paths from
+    /// making different choices about the same evidence.
+    static func resolveValuation(
+        observation: PriceObservation?,
+        record: PriceRecord?
+    ) -> InventoryValuation {
+        if let observation {
             // An invalidation is authoritative. Falling through to the mutable
             // PriceRecord would resurrect exactly the price the log withdrew.
             if observation.kind == .explicitInvalidation { return .unpriced }
+            // CloudKit can deliver the observation and its mutable record in
+            // separate transactions. A valid observation newer than the
+            // record's watermark is therefore allowed to become authoritative;
+            // only evidence at or before the withdrawal remains blocked.
+            if let invalidatedAt = record?.invalidatedAt,
+               observation.receivedAt <= invalidatedAt {
+                return .unpriced
+            }
             if let amount = observation.amount,
                observation.currencyCode == "USD" {
-            return InventoryValuation(
-                unitPrice: amount,
-                source: observation.source,
-                effectiveAt: observation.effectiveAt,
-                receivedAt: observation.receivedAt,
-                observationID: observation.id
-            )
+                return InventoryValuation(
+                    unitPrice: amount,
+                    source: observation.source,
+                    effectiveAt: observation.effectiveAt,
+                    receivedAt: observation.receivedAt,
+                    observationID: observation.id
+                )
             }
         }
 
-        guard let record = PriceStore(context: context).record(forKey: key),
-              let amount = record.unitMarketPriceUSD,
-              record.currencyCode == "USD" else {
+        // With no newer usable observation, the synced watermark still blocks
+        // the legacy record from resurrecting a withdrawn amount.
+        if record?.isInvalidated == true { return .unpriced }
+
+        guard let record,
+              let amount = record.effectiveUnitMarketPriceUSD,
+              record.currencyCode == "USD",
+              let money = Money(rounding: amount) else {
             // Non-USD is unpriced *for portfolio purposes* on purpose: there is
             // no live exchange rate here, and the collection total already
             // excludes those copies and says so.
             return .unpriced
         }
 
-        guard let money = Money(rounding: amount) else { return .unpriced }
         return InventoryValuation(
             unitPrice: money,
             source: record.source,
@@ -370,7 +450,25 @@ struct InventoryLedger {
             reversesEventID: reversesEventID
         )
 
-        if let existing = event(idempotencyKey: idempotencyKey) {
+        let existing: InventoryEvent?
+        do {
+            existing = try context.fetch(
+                FetchDescriptor<InventoryEvent>(
+                    predicate: #Predicate { $0.idempotencyKey == idempotencyKey }
+                )
+            ).first
+        } catch {
+            return .unreadableStore(
+                LedgerIntegrityDefect(
+                    reason: .unreadableStore,
+                    collectionKey: collectionKey,
+                    detail: "Inventory event idempotency lookup failed: \(error)",
+                    canRepairQuantity: false
+                )
+            )
+        }
+
+        if let existing {
             let equivalent = kind == .initialBalance && existing.kind == .initialBalance
                 ? existing.collectionKey == collectionKey
                     && existing.priceStorageKey == priceStorageKey
@@ -481,11 +579,11 @@ struct InventoryLedger {
         _ operationID: UUID,
         at date: Date = .now,
         inverseOperationID: UUID = UUID()
-    ) -> [WriteOutcome] {
+    ) throws -> [WriteOutcome] {
         let descriptor = FetchDescriptor<InventoryEvent>(
             predicate: #Predicate { $0.operationID == operationID }
         )
-        let legs = (try? context.fetch(descriptor)) ?? []
+        let legs = try context.fetch(descriptor)
         return legs.map {
             reverse($0, occurredAt: date, operationID: inverseOperationID)
         }

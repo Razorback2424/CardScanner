@@ -137,6 +137,179 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(result.accountingInterval?.includedClosedDays, [dayTwo])
     }
 
+    func testPeriodChangeUsesTimeWeightedDollarsForPerformanceAndTotalForValue() throws {
+        let accounting = PortfolioHistoryAccounting(
+            anchorValue: money(100),
+            endValue: money(107),
+            market: money(-10),
+            netInventoryActivity: money(17),
+            corrections: .zero,
+            pricingAdjustments: .zero,
+            unexplained: .zero
+        )
+
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.periodChange(
+                for: .performance,
+                accounting: accounting,
+                performanceFactor: Decimal(string: "1.25")
+            ),
+            Optional(money(25))
+        )
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.periodChange(
+                for: .value,
+                accounting: accounting,
+                performanceFactor: nil
+            ),
+            Optional(money(7))
+        )
+
+        let initial = event(quantity: 1, at: date(1, hour: 1))
+        let inflow = event(quantity: 500, at: date(2, hour: 1))
+        let inflowResult = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100),
+                    close(2, value: 55_110, market: 5_010, flow: 50_000)
+                ],
+                events: [initial, inflow],
+                observations: [
+                    observation(100, at: date(1, hour: 2)),
+                    observation(110, at: date(2, hour: 2))
+                ],
+                currentValue: 55_110,
+                now: date(3, hour: 1)
+            ),
+            mode: .performance,
+            range: .all
+        )
+
+        XCTAssertEqual(inflowResult.accounting?.market, money(5_010))
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.periodChange(
+                for: .performance,
+                accounting: try XCTUnwrap(inflowResult.accounting),
+                performanceFactor: inflowResult.performanceFactor
+            ),
+            Optional(money(10))
+        )
+    }
+
+    func testPerformanceDollarsScaleFactorFromAnchorValue() {
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.performanceDollars(
+                factor: Decimal(string: "1.25"),
+                anchorValue: money(100)
+            ),
+            25
+        )
+    }
+
+    func testZeroAnchorOmitsPerformancePercentageAndDollarScaling() {
+        let accounting = PortfolioHistoryAccounting(
+            anchorValue: .zero,
+            endValue: money(10),
+            market: money(10),
+            netInventoryActivity: .zero,
+            corrections: .zero,
+            pricingAdjustments: .zero,
+            unexplained: .zero
+        )
+
+        XCTAssertNil(
+            PortfolioHistoryDisplay.periodChange(
+                for: .performance,
+                accounting: accounting,
+                performanceFactor: Decimal(string: "1.25")
+            )
+        )
+        XCTAssertNil(
+            PortfolioHistoryDisplay.percentChange(amount: money(10), anchor: .zero)
+        )
+        XCTAssertNil(
+            PortfolioHistoryDisplay.performanceDollars(
+                factor: Decimal(string: "1.25"),
+                anchorValue: .zero
+            )
+        )
+    }
+
+    func testUnavailablePerformanceFactorProducesNoPeriodChange() {
+        let accounting = PortfolioHistoryAccounting(
+            anchorValue: money(100),
+            endValue: money(100),
+            market: .zero,
+            netInventoryActivity: .zero,
+            corrections: .zero,
+            pricingAdjustments: .zero,
+            unexplained: .zero
+        )
+
+        XCTAssertNil(
+            PortfolioHistoryDisplay.periodChange(
+                for: .performance,
+                accounting: accounting,
+                performanceFactor: nil
+            )
+        )
+    }
+
+    func testBreakdownPolicyMatchesEveryDisclosureComponent() {
+        let zero = PortfolioHistoryAccounting(
+            anchorValue: money(100),
+            endValue: money(100),
+            market: .zero,
+            netInventoryActivity: .zero,
+            corrections: .zero,
+            pricingAdjustments: .zero,
+            unexplained: .zero
+        )
+        XCTAssertFalse(PortfolioHistoryDisplay.hasBreakdown(zero))
+
+        for component in [
+            PortfolioHistoryAccounting(
+                anchorValue: money(100), endValue: money(100), market: .zero,
+                netInventoryActivity: money(1), corrections: .zero,
+                pricingAdjustments: .zero, unexplained: .zero
+            ),
+            PortfolioHistoryAccounting(
+                anchorValue: money(100), endValue: money(100), market: .zero,
+                netInventoryActivity: .zero, corrections: money(1),
+                pricingAdjustments: .zero, unexplained: .zero
+            ),
+            PortfolioHistoryAccounting(
+                anchorValue: money(100), endValue: money(100), market: .zero,
+                netInventoryActivity: .zero, corrections: .zero,
+                pricingAdjustments: money(1), unexplained: .zero
+            ),
+            PortfolioHistoryAccounting(
+                anchorValue: money(100), endValue: money(100), market: .zero,
+                netInventoryActivity: .zero, corrections: .zero,
+                pricingAdjustments: .zero, unexplained: money(1)
+            )
+        ] {
+            XCTAssertTrue(PortfolioHistoryDisplay.hasBreakdown(component))
+        }
+    }
+
+    func testCurrencyAxisPrecisionFollowsDomainSpan() {
+        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 9.99), 2)
+        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 10), 0)
+        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 100), 0)
+    }
+
+    func testSignedDisplayLeavesZeroUnsigned() {
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.signedCurrency(.zero),
+            Money.zero.formatted()
+        )
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.signedPercent(0),
+            0.0.formatted(.percent.precision(.fractionLength(2)))
+        )
+    }
+
     private func zonedDay(_ year: Int, _ month: Int, _ day: Int, timeZoneID: String) -> Date {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: timeZoneID)!

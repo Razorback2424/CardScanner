@@ -10,13 +10,46 @@ struct CollectionCardDetailView: View {
     @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
     private var collectionActivities: [CollectionActivity]
     let price: PriceDisplay
+    @ObservedObject var history: PortfolioHistoryStore
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
     let onRemoved: (RemovedCardSnapshot) -> Void
+    /// When a route was opened from a logical projection, this is the quantity
+    /// users should see rather than the representative physical row's quantity.
+    let logicalQuantity: Int?
+    /// Duplicate synced rows cannot be edited safely through a single-row API.
+    let isLogicalConflict: Bool
 
     @State private var isConfirmingRemoval = false
     @State private var selectedArtwork: PhotosPickerItem?
     @State private var errorMessage: String?
+    @State private var artworkGeneration = 0
+    @State private var pendingArtwork: ArtworkRequest?
+
+    private struct ArtworkRequest: Identifiable {
+        let id: Int
+        let item: PhotosPickerItem
+    }
+
+    init(
+        card: CollectedCard,
+        price: PriceDisplay,
+        history: PortfolioHistoryStore,
+        unpricedReason: PricingDiagnosticReason?,
+        artworkReason: ArtworkDiagnosticReason?,
+        logicalQuantity: Int? = nil,
+        isLogicalConflict: Bool = false,
+        onRemoved: @escaping (RemovedCardSnapshot) -> Void
+    ) {
+        self._card = Bindable(card)
+        self.price = price
+        self.history = history
+        self.unpricedReason = unpricedReason
+        self.artworkReason = artworkReason
+        self.logicalQuantity = logicalQuantity
+        self.isLogicalConflict = isLogicalConflict
+        self.onRemoved = onRemoved
+    }
 
     var body: some View {
         ScrollView {
@@ -49,6 +82,20 @@ struct CollectionCardDetailView: View {
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
         }
+        .task(id: pendingArtwork?.id) {
+            guard let request = pendingArtwork else { return }
+            await saveSelectedArtwork(request.item, requestID: request.id)
+            if pendingArtwork?.id == request.id {
+                pendingArtwork = nil
+            }
+        }
+        .onDisappear {
+            // `.task` is cancelled automatically when this view disappears;
+            // advancing the generation also makes a completion that is already
+            // returning from PhotosUI unable to commit after dismissal.
+            artworkGeneration &+= 1
+            pendingArtwork = nil
+        }
         .alert("Collection Change Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -72,7 +119,8 @@ struct CollectionCardDetailView: View {
             .buttonStyle(.bordered)
             .onChange(of: selectedArtwork) { _, item in
                 guard let item else { return }
-                Task { await saveSelectedArtwork(item) }
+                artworkGeneration &+= 1
+                pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
             }
 
             if card.userArtworkFilename != nil {
@@ -108,44 +156,61 @@ struct CollectionCardDetailView: View {
             }
 
             pricing
+            movementSummary
             finish
             marketplaceLinks
-            history
+            activityHistory
 
-            Stepper(
-                "Quantity: \(card.quantity)",
-                value: Binding(
-                    get: { card.quantity },
-                    set: { newQuantity in
-                        do {
-                            try CollectionStore(context: modelContext).setQuantity(
-                                newQuantity,
-                                for: card
-                            )
-                        } catch {
-                            errorMessage = error.localizedDescription
-                        }
-                    }
-                ),
-                in: 1...999
-            )
-                .padding(.horizontal)
-
-            Button("Remove from Collection", role: .destructive) {
-                isConfirmingRemoval = true
-            }
-            .buttonStyle(.bordered)
-            .confirmationDialog(
-                "Remove \(card.name)?",
-                isPresented: $isConfirmingRemoval,
-                titleVisibility: .visible
-            ) {
-                Button("Remove", role: .destructive) {
-                    removeCard()
+            if isLogicalConflict {
+                VStack(alignment: .leading, spacing: 8) {
+                    LabeledContent("Quantity", value: "\(displayedQuantity)")
+                    Label(
+                        "This position has multiple synced rows. Reconcile it in Collection before editing.",
+                        systemImage: "exclamationmark.triangle"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.orange)
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text(removalMessage)
+                .font(.subheadline)
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+            } else {
+                Stepper(
+                    "Quantity: \(displayedQuantity)",
+                    value: Binding(
+                        get: { card.quantity },
+                        set: { newQuantity in
+                            do {
+                                try CollectionStore(context: modelContext).setQuantity(
+                                    newQuantity,
+                                    for: card
+                                )
+                            } catch {
+                                errorMessage = error.localizedDescription
+                            }
+                        }
+                    ),
+                    in: 1...999
+                )
+                    .padding(.horizontal)
+
+                Button("Remove from Collection", role: .destructive) {
+                    isConfirmingRemoval = true
+                }
+                .buttonStyle(.bordered)
+                .confirmationDialog(
+                    "Remove \(card.name)?",
+                    isPresented: $isConfirmingRemoval,
+                    titleVisibility: .visible
+                ) {
+                    Button("Remove", role: .destructive) {
+                        removeCard()
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text(removalMessage)
+                }
             }
         }
     }
@@ -191,31 +256,72 @@ struct CollectionCardDetailView: View {
     }
 
     @MainActor
-    private func saveSelectedArtwork(_ item: PhotosPickerItem) async {
+    private func saveSelectedArtwork(_ item: PhotosPickerItem, requestID: Int) async {
         guard let data = try? await item.loadTransferable(type: Data.self),
-              let filename = CollectionArtworkStore.save(
-                  data,
-                  replacing: card.userArtworkFilename
-              ) else { return }
+              requestID == artworkGeneration,
+              !Task.isCancelled else {
+            if requestID == artworkGeneration { selectedArtwork = nil }
+            return
+        }
+        guard let filename = CollectionArtworkStore.save(data) else {
+            // Clear the picker binding on a rejected/undecodable asset so the
+            // user can choose the same photo again after correcting the issue.
+            selectedArtwork = nil
+            return
+        }
+        guard requestID == artworkGeneration, !Task.isCancelled else {
+            CollectionArtworkStore.remove(filename: filename)
+            return
+        }
+        let oldFilename = card.userArtworkFilename
         card.userArtworkFilename = filename
-        selectedArtwork = nil
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            CollectionArtworkStore.remove(filename: oldFilename)
+            if requestID == artworkGeneration {
+                selectedArtwork = nil
+            }
+        } catch {
+            card.userArtworkFilename = oldFilename
+            CollectionArtworkStore.remove(filename: filename)
+            errorMessage = error.localizedDescription
+            if requestID == artworkGeneration { selectedArtwork = nil }
+        }
     }
 
     private func removeUserArtwork() {
-        CollectionArtworkStore.remove(filename: card.userArtworkFilename)
+        artworkGeneration &+= 1
+        let oldFilename = card.userArtworkFilename
         card.userArtworkFilename = nil
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            CollectionArtworkStore.remove(filename: oldFilename)
+        } catch {
+            card.userArtworkFilename = oldFilename
+            errorMessage = error.localizedDescription
+        }
     }
 
     private var removalMessage: String {
-        if card.quantity == 1 {
+        if displayedQuantity == 1 {
             return "This removes the card. You can undo it."
         }
-        return "This removes all \(card.quantity) copies. You can undo it."
+        return "This removes all \(displayedQuantity) copies. You can undo it."
+    }
+
+    private var displayedQuantity: Int {
+        // A logical conflict is read-only, so its projected quantity is the
+        // authoritative snapshot. For an editable single-row position, keep
+        // reading the live SwiftData value; otherwise the Stepper and holding
+        // value would remain stuck at the quantity from when the route opened.
+        isLogicalConflict ? (logicalQuantity ?? card.quantity) : card.quantity
     }
 
     private func removeCard() {
+        guard !isLogicalConflict else {
+            errorMessage = "This position has multiple synced rows. Reconcile it in Collection before removing it."
+            return
+        }
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
@@ -309,7 +415,28 @@ struct CollectionCardDetailView: View {
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private var history: some View {
+    /// The compact, route-independent disclosure surface. Its state comes from
+    /// the app-scoped history store rather than from the route that opened this
+    /// card, so Portfolio and Collection always make the same claim.
+    private var movementSummary: some View {
+        NavigationLink {
+            MovementDetailsView(
+                card: card,
+                price: price,
+                history: history,
+                quantity: displayedQuantity
+            )
+        } label: {
+            PortfolioMovementSummaryCard(
+                state: history.movementState(for: card.collectionKey),
+                range: history.range
+            )
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+    }
+
+    private var activityHistory: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("History")
                 .font(.headline)
@@ -436,6 +563,195 @@ struct CollectionCardDetailView: View {
     }
 }
 
+struct PortfolioMovementSummaryCard: View {
+    let state: PortfolioCardMovementState
+    let range: PortfolioHistoryRange
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Market movement · \(range.rawValue)")
+                    .font(.subheadline.weight(.semibold))
+
+                switch state {
+                case .historyRecording:
+                    Text("History is being recorded")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                case .noRecordedMarketMovement:
+                    Text("No recorded market movement")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                case let .recorded(detail):
+                    Text("\(signed(detail.totalImpact)) holding impact")
+                        .font(.headline.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(PortfolioPalette.direction(detail.totalImpact))
+                    if let secondaryText = secondaryText(for: detail) {
+                        Text(secondaryText)
+                            .font(.subheadline.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens Movement Details")
+    }
+
+    private func secondaryText(for detail: PortfolioContributionDetail) -> String? {
+        if detail.hasConsistentQuantity,
+           let quantity = detail.affectedQuantities.first,
+           !detail.cumulativeUnitMovement.isZero {
+            return "\(signed(detail.cumulativeUnitMovement)) per card × \(quantity)"
+        }
+        if detail.affectedQuantities.count > 1 {
+            return "Different quantities were affected"
+        }
+        return nil
+    }
+
+    private func signed(_ amount: Money) -> String {
+        PortfolioHistoryDisplay.signedCurrency(amount)
+    }
+}
+
+struct MovementDetailsView: View {
+    let card: CollectedCard
+    let price: PriceDisplay
+    @ObservedObject var history: PortfolioHistoryStore
+    let quantity: Int?
+
+    init(
+        card: CollectedCard,
+        price: PriceDisplay,
+        history: PortfolioHistoryStore,
+        quantity: Int? = nil
+    ) {
+        self.card = card
+        self.price = price
+        self.history = history
+        self.quantity = quantity
+    }
+
+    private var state: PortfolioCardMovementState {
+        history.movementState(for: card.collectionKey)
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(card.name)
+                        .font(.title2.bold())
+                    Text("Market movement · \(history.range.rawValue)")
+                        .foregroundStyle(.secondary)
+                }
+
+                positionSection
+                calculationSection
+                guidanceSection
+            }
+            .padding(20)
+            .contentWidthLimit(.standard)
+        }
+        .navigationTitle("Movement Details")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var positionSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Current position")
+                .font(.headline)
+            LabeledContent("Unit price", value: currentUnitPrice)
+            LabeledContent("Quantity", value: "\(displayedQuantity)")
+            LabeledContent("Holding value", value: currentHoldingValue)
+        }
+        .font(.subheadline)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    @ViewBuilder
+    private var calculationSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Selected period")
+                .font(.headline)
+
+            switch state {
+            case .historyRecording:
+                Text("History is being recorded. Movement details will appear after enough portfolio history is available.")
+                    .foregroundStyle(.secondary)
+            case .noRecordedMarketMovement:
+                Text("No recorded market movement for this card during \(history.range.rawValue).")
+                    .foregroundStyle(.secondary)
+            case let .recorded(detail):
+                LabeledContent("Holding impact", value: signed(detail.totalImpact))
+                if detail.hasConsistentQuantity,
+                   let quantity = detail.affectedQuantities.first {
+                    LabeledContent("Cumulative unit movement", value: signed(detail.cumulativeUnitMovement))
+                    LabeledContent("Affected quantity", value: "\(quantity)")
+                    Text("\(signed(detail.cumulativeUnitMovement)) per card × \(quantity) = \(signed(detail.totalImpact))")
+                        .font(.subheadline.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(PortfolioPalette.direction(detail.totalImpact))
+                } else if detail.affectedQuantities.count > 1 {
+                    Text("Different quantities were affected")
+                        .foregroundStyle(.secondary)
+                    LabeledContent("Cumulative unit movement", value: signed(detail.cumulativeUnitMovement))
+                } else {
+                    Text("The total is available, but an exact per-card calculation is not.")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .font(.subheadline)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private var guidanceSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Included movement", systemImage: "checkmark.circle")
+                .font(.headline)
+            Text("Price changes recorded while this card was owned are included. Additions, removals, corrections, newly priced cards, and re-sourced values are excluded.")
+                .foregroundStyle(.secondary)
+            Text("Per-card figures cover locally observed updates while owned; they do not claim price history from before tracking began.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .font(.subheadline)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private var currentUnitPrice: String {
+        guard let amount = price.amount else { return "Unavailable" }
+        return amount.formatted(.currency(code: price.currencyCode))
+    }
+
+    private var currentHoldingValue: String {
+        guard let amount = price.amount else { return "Unavailable" }
+        return (amount * Double(displayedQuantity)).formatted(.currency(code: price.currencyCode))
+    }
+
+    private var displayedQuantity: Int {
+        quantity ?? card.quantity
+    }
+
+    private func signed(_ amount: Money) -> String {
+        PortfolioHistoryDisplay.signedCurrency(amount)
+    }
+}
+
 /// Everything needed to restore a removed row without another catalog request.
 /// The value safely outlives the deleted SwiftData model.
 enum CollectionArtworkStore {
@@ -444,7 +760,7 @@ enum CollectionArtworkStore {
             .appendingPathComponent("CollectionArtwork", isDirectory: true)
     }
 
-    static func save(_ data: Data, replacing oldFilename: String?) -> String? {
+    static func save(_ data: Data) -> String? {
         guard UIImage(data: data) != nil, let directory else { return nil }
         do {
             try FileManager.default.createDirectory(
@@ -453,7 +769,6 @@ enum CollectionArtworkStore {
             )
             let filename = UUID().uuidString + ".image"
             try data.write(to: directory.appendingPathComponent(filename), options: .atomic)
-            remove(filename: oldFilename)
             return filename
         } catch {
             return nil

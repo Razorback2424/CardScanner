@@ -49,7 +49,7 @@ extension CollectionStoreError: LocalizedError {
             return "That history entry \(id.uuidString) is no longer available."
         case let .invalidActivity(id):
             return "That history entry \(id.uuidString) cannot be changed."
-        case let .activityAlreadyResolved(id):
+        case .activityAlreadyResolved:
             return "That history entry has already been acted on."
         case let .missingRemovalSnapshot(id):
             return "The removal snapshot for history entry \(id.uuidString) is missing."
@@ -321,7 +321,7 @@ struct CollectionStore {
         var inverseOperationIDs: [UUID] = []
         for (operationID, events) in lineage.reversed() {
             let inverseOperationID = UUID()
-            let outcomes = ledger.reverseOperation(
+            let outcomes = try ledger.reverseOperation(
                 operationID,
                 at: date,
                 inverseOperationID: inverseOperationID
@@ -339,6 +339,8 @@ struct CollectionStore {
                     )
                 case let .conflict(defect):
                     throw CollectionStoreError.ledgerConflict(defect.detail)
+                case let .unreadableStore(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
                 }
             }
             inverseOperationIDs.append(inverseOperationID)
@@ -353,6 +355,8 @@ struct CollectionStore {
         case .duplicate:
             throw CollectionStoreError.ledgerConflict("ledger operation already exists")
         case let .conflict(defect):
+            throw CollectionStoreError.ledgerConflict(defect.detail)
+        case let .unreadableStore(defect):
             throw CollectionStoreError.ledgerConflict(defect.detail)
         }
     }
@@ -423,7 +427,7 @@ struct CollectionStore {
                 + projection.defects
                 + PortfolioEngine.reconcile(
                     projection: projection,
-                    events: events.map(PortfolioEngine.entry(from:))
+                    events: events.map { PortfolioEngine.entry(from: $0) }
                 )
                 + activityDefects
             guard !activeDefects.isEmpty,
@@ -480,6 +484,8 @@ struct CollectionStore {
                     )
                 case let .conflict(defect):
                     throw CollectionStoreError.ledgerConflict(defect.detail)
+                case let .unreadableStore(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
                 }
             }
             try context.save()
@@ -516,7 +522,7 @@ struct CollectionStore {
                 certificationNumber: certificationNumber
             )
 
-            if certificationNumber == nil, let existing = self.card(forKey: key) {
+            if certificationNumber == nil, let existing = try uniqueCard(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
             storeMarketPrice(
@@ -634,7 +640,7 @@ struct CollectionStore {
                 variantUUID: variantUUID
             )
 
-            if let existing = self.card(forKey: key) {
+            if let existing = try uniqueCard(forKey: key) {
             existing.quantity += 1
             existing.dateAdded = .now
             // Re-adding also heals rows saved before sealed artwork support.
@@ -799,8 +805,8 @@ struct CollectionStore {
             let mutation: CollectionMutation
             let stored: CollectedCard
 
-            let existing = self.card(forKey: key) ?? (matchCatalogAliases
-                ? catalogAliasCard(
+            let existing = try uniqueCard(forKey: key) ?? (matchCatalogAliases
+                ? try catalogAliasCard(
                     providerID: card.providerID,
                     variantID: resolved.variant?.id,
                     pokemonPrintRun: pokemonPrintRun
@@ -888,15 +894,20 @@ struct CollectionStore {
         providerID: String,
         variantID: String?,
         pokemonPrintRun: PokemonPrintRun?
-    ) -> CollectedCard? {
-        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        return rows.first {
+    ) throws -> CollectedCard? {
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>()).filter {
             ($0.providerID == providerID || $0.catalogProviderID == providerID)
                 && $0.variantID == variantID
                 && (pokemonPrintRun == .unlimited
                     ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
                     : $0.pokemonPrintRun == pokemonPrintRun)
         }
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict(
+                "more than one collection row matches catalog identity \(providerID)"
+            )
+        }
+        return rows.first
     }
 
     /// Reverses exactly one scan mutation. Every precondition is checked before
@@ -1133,7 +1144,7 @@ struct CollectionStore {
                     "\(snapshot.collectionKey) was acquired again"
                 )
             }
-            if let removalActivity, existing != nil {
+            if removalActivity != nil, existing != nil {
                 // A row can still exist because this removal took only the
                 // copies claimed by one entry while sibling copies remained.
                 // That is safe to merge back into. A positive ledger event
@@ -1146,7 +1157,7 @@ struct CollectionStore {
                 }
                 let removalEvents = try ledger.events(forOperationID: operationID)
                 let removalRecordedAt = removalEvents.map(\.recordedAt).max() ?? .distantPast
-                let wasReacquired = ledger.events(collectionKey: snapshot.collectionKey).contains {
+                let wasReacquired = try ledger.events(collectionKey: snapshot.collectionKey).contains {
                     $0.recordedAt >= removalRecordedAt && $0.deltaQuantity > 0
                 }
                 guard !wasReacquired else {
@@ -1191,7 +1202,7 @@ struct CollectionStore {
             } else {
                 let restoredOperationID = UUID()
                 try snapshot.reinsert(in: context)
-                guard let row = card(forKey: snapshot.collectionKey) else {
+                guard let row = try uniqueCard(forKey: snapshot.collectionKey) else {
                     throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
                 }
                 try requireAppended(
@@ -1209,7 +1220,7 @@ struct CollectionStore {
             if snapshot.operationID != nil {
                 try snapshot.reinsert(in: context)
             }
-            guard let restoredCard = card(forKey: snapshot.collectionKey) else {
+            guard let restoredCard = try uniqueCard(forKey: snapshot.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(snapshot.collectionKey)
             }
             _ = try appendActivity(
@@ -1398,7 +1409,7 @@ struct CollectionStore {
         // one. Later price movement then follows the corrected identity by
         // itself, and the pair is what makes undo a group inversion.
         let correctionOperationID = UUID()
-        guard let correctedRow = self.card(forKey: mutation.collectionKey) else {
+        guard let correctedRow = try uniqueCard(forKey: mutation.collectionKey) else {
             throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
         }
         let correction = ledger.recordCorrection(
@@ -1416,10 +1427,12 @@ struct CollectionStore {
                 throw CollectionStoreError.ledgerConflict("correction leg already exists")
             case let .conflict(defect):
                 throw CollectionStoreError.ledgerConflict(defect.detail)
+            case let .unreadableStore(defect):
+                throw CollectionStoreError.ledgerConflict(defect.detail)
             }
         }
 
-        guard let correctedCard = self.card(forKey: mutation.collectionKey) else {
+        guard let correctedCard = try uniqueCard(forKey: mutation.collectionKey) else {
             throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
         }
 

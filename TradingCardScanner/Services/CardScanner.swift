@@ -495,9 +495,8 @@ enum PresentationState: Equatable {
 
 struct ScanAssistance: Equatable {
     let issue: OpticalIssue
-    let presentation: PresentationState
 
-    static let none = ScanAssistance(issue: .none, presentation: .unknown)
+    static let none = ScanAssistance(issue: .none)
 
     var message: String? {
         switch issue {
@@ -521,11 +520,11 @@ struct CaptureAssistanceMonitor {
 
     mutating func observe(_ assessment: CaptureAssessment, hasFooterText: Bool) -> ScanAssistance {
         if hasFooterText {
-            stableObservationCount += 1
+            stableObservationCount = min(stableObservationCount + 1, 4)
             presentation = stableObservationCount >= 2 ? .cardStable : .cardEntering
         } else {
-            stableObservationCount = 0
-            presentation = .unknown
+            stableObservationCount = max(0, stableObservationCount - 1)
+            presentation = stableObservationCount >= 2 ? .cardStable : .unknown
         }
 
         let next: OpticalIssue
@@ -551,9 +550,23 @@ struct CaptureAssistanceMonitor {
             candidateCount = 1
         }
         let emitted = candidateCount >= 3 ? next : .none
-        return ScanAssistance(issue: emitted, presentation: presentation)
+        return ScanAssistance(issue: emitted)
     }
 }
+
+#if DEBUG
+/// Debug-only Vision overlay state. Keeping it separate from CardScanner means
+/// the preview can observe box changes without subscribing to every scanner
+/// publication, including the high-frequency assistance stream.
+final class DebugVisionBoxStore: ObservableObject {
+    @Published private(set) var boxes: [CGRect] = []
+
+    func update(_ boxes: [CGRect]) {
+        guard self.boxes != boxes else { return }
+        self.boxes = boxes
+    }
+}
+#endif
 
 /// Which back camera the session runs on.
 ///
@@ -604,7 +617,7 @@ final class CardScanner: NSObject, ObservableObject {
     @Published private(set) var availableLenses: [CameraLens] = []
     @Published private(set) var scanAssistance: ScanAssistance = .none
 #if DEBUG
-    @Published private(set) var debugVisionBoxes: [CGRect] = []
+    let debugVisionBoxes = DebugVisionBoxStore()
 #endif
 
     /// A plausible identifier or historical evidence key has been read once.
@@ -647,6 +660,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
+    private let visionQueueKey = DispatchSpecificKey<Void>()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
@@ -654,6 +668,13 @@ final class CardScanner: NSObject, ObservableObject {
 
     private var isConfigured = false
     private var isPaused = false
+    /// Serialized with the capture-session queue so a delayed permission
+    /// callback cannot restart the camera after the scanner view disappeared.
+    private var requestedStartID: UUID?
+    /// Main-thread callbacks carry this epoch across the queue boundary. A
+    /// lifecycle or mode transition invalidates the epoch synchronously, so a
+    /// callback already waiting on the main queue cannot affect the next state.
+    private var callbackEpoch: UInt = 0
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
@@ -706,6 +727,7 @@ final class CardScanner: NSObject, ObservableObject {
             ocrInterval: 0.24
         )
         super.init()
+        visionQueue.setSpecific(key: visionQueueKey, value: ())
         configureTextRequest()
 
         interruptionObserver = NotificationCenter.default.addObserver(
@@ -713,7 +735,7 @@ final class CardScanner: NSObject, ObservableObject {
             object: session,
             queue: nil
         ) { [weak self] _ in
-            DispatchQueue.main.async { [weak self] in
+            self?.dispatchCurrentCallbackFromAnyQueue { [weak self] in
                 self?.onCameraInterruption?()
             }
         }
@@ -722,7 +744,7 @@ final class CardScanner: NSObject, ObservableObject {
             object: session,
             queue: nil
         ) { [weak self] _ in
-            DispatchQueue.main.async { [weak self] in
+            self?.dispatchCurrentCallbackFromAnyQueue { [weak self] in
                 self?.onCameraInterruptionEnded?()
             }
         }
@@ -757,16 +779,20 @@ final class CardScanner: NSObject, ObservableObject {
             return
         }
 #endif
+        let requestID = UUID()
+        sessionQueue.async { [weak self] in
+            self?.requestedStartID = requestID
+        }
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setCameraIssue(nil)
-            configureAndStartIfNeeded()
+            configureAndStartIfNeeded(requestID: requestID)
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 guard let self else { return }
                 if granted {
                     self.setCameraIssue(nil)
-                    self.configureAndStartIfNeeded()
+                    self.configureAndStartIfNeeded(requestID: requestID)
                 } else {
                     self.setCameraIssue(.permissionDenied)
                 }
@@ -781,7 +807,9 @@ final class CardScanner: NSObject, ObservableObject {
             self?.cancelHeldRepeatAuthorizationOnVisionQueue()
         }
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning else { return }
+            guard let self else { return }
+            self.requestedStartID = nil
+            guard self.session.isRunning else { return }
             self.session.stopRunning()
         }
     }
@@ -791,6 +819,18 @@ final class CardScanner: NSObject, ObservableObject {
             guard let self else { return }
             self.isPaused = true
             self.cancelHeldRepeatAuthorizationOnVisionQueue()
+        }
+    }
+
+    /// Drops callbacks that were queued before a presentation or lifecycle
+    /// boundary. This is synchronous from the caller's point of view, while
+    /// keeping all vision state serialized on the vision queue.
+    func invalidateCallbacks() {
+        let invalidate = { self.callbackEpoch &+= 1 }
+        if DispatchQueue.getSpecific(key: visionQueueKey) != nil {
+            invalidate()
+        } else {
+            visionQueue.sync(execute: invalidate)
         }
     }
 
@@ -1004,9 +1044,10 @@ final class CardScanner: NSObject, ObservableObject {
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
     }
 
-    private func configureAndStartIfNeeded() {
+    private func configureAndStartIfNeeded(requestID: UUID) {
         sessionQueue.async { [weak self] in
             guard let self else { return }
+            guard self.requestedStartID == requestID else { return }
 
             if !self.isConfigured {
                 do {
@@ -1022,6 +1063,7 @@ final class CardScanner: NSObject, ObservableObject {
             }
 
             if !self.session.isRunning {
+                guard self.requestedStartID == requestID else { return }
                 self.session.startRunning()
             }
         }
@@ -1289,7 +1331,7 @@ final class CardScanner: NSObject, ObservableObject {
                     }
                 }
                 recordDiagnostic("spatialProof")
-                DispatchQueue.main.async { [weak self] in
+                dispatchCurrentCallback { [weak self] in
                     self?.onSpatialResetProof?(proof)
                 }
                 return
@@ -1421,7 +1463,7 @@ final class CardScanner: NSObject, ObservableObject {
         id: UUID,
         outcome: HeldRepeatAuthorizationTerminalOutcome
     ) {
-        DispatchQueue.main.async { [weak self] in
+        dispatchCurrentCallback { [weak self] in
             self?.onHeldRepeatAuthorizationTerminated?(id, outcome)
         }
     }
@@ -1484,7 +1526,7 @@ final class CardScanner: NSObject, ObservableObject {
         let latchedBeforeObservation = latch.latched
         let decision = latch.observe(parsed, cardPresent: !footerLines.isEmpty, at: now)
         if let parsed {
-            DispatchQueue.main.async { [weak self] in
+            dispatchCurrentCallback { [weak self] in
                 self?.onObservedCandidate?(parsed)
             }
         }
@@ -1543,7 +1585,7 @@ final class CardScanner: NSObject, ObservableObject {
                     at: now
                 )
             }
-            DispatchQueue.main.async { [weak self] in
+            dispatchCurrentCallback { [weak self] in
                 self?.onConfirmedCandidate?(encounterID, confirmed, nil)
             }
 
@@ -1577,7 +1619,7 @@ final class CardScanner: NSObject, ObservableObject {
                     at: now
                 )
             }
-            DispatchQueue.main.async { [weak self] in
+            dispatchCurrentCallback { [weak self] in
                 self?.onConfirmedCandidate?(encounterID, confirmed, authorizationID)
             }
         }
@@ -1655,7 +1697,7 @@ final class CardScanner: NSObject, ObservableObject {
     private func announcePlausible(_ observation: ScanIdentifier?) {
         guard let observation, observation != lastAnnouncedPlausible else { return }
         lastAnnouncedPlausible = observation
-        DispatchQueue.main.async { [weak self] in
+        dispatchCurrentCallback { [weak self] in
             self?.onPlausibleCandidate?(observation)
         }
     }
@@ -1668,7 +1710,7 @@ final class CardScanner: NSObject, ObservableObject {
         didAnnounceLatchHold = true
         recordDiagnostic("heldDuplicateOffer")
         let encounterID = latchEncounterID
-        DispatchQueue.main.async { [weak self] in
+        dispatchCurrentCallback { [weak self] in
             self?.onLatchHolding?(latched, encounterID)
         }
     }
@@ -1677,7 +1719,7 @@ final class CardScanner: NSObject, ObservableObject {
         encounterID: UUID?,
         suppressionKey: ScanSuppressionKey
     ) {
-        DispatchQueue.main.async { [weak self] in
+        dispatchCurrentCallback { [weak self] in
             self?.onLatchReleased?(encounterID, suppressionKey)
         }
     }
@@ -1691,6 +1733,29 @@ final class CardScanner: NSObject, ObservableObject {
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
         historicalAttempt = nil
+    }
+
+    /// Called from the vision queue. The main-queue closure checks the epoch
+    /// back on the vision queue before invoking the view-model callback.
+    private func dispatchCurrentCallback(_ callback: @escaping () -> Void) {
+        let epoch = callbackEpoch
+        dispatchCallback(callback, epoch: epoch)
+    }
+
+    private func dispatchCurrentCallbackFromAnyQueue(_ callback: @escaping () -> Void) {
+        let epoch = DispatchQueue.getSpecific(key: visionQueueKey) != nil
+            ? callbackEpoch
+            : visionQueue.sync { callbackEpoch }
+        dispatchCallback(callback, epoch: epoch)
+    }
+
+    private func dispatchCallback(_ callback: @escaping () -> Void, epoch: UInt) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let isCurrent = self.visionQueue.sync { self.callbackEpoch == epoch }
+            guard isCurrent else { return }
+            callback()
+        }
     }
 
     private func recordDiagnostic(_ event: String) {
@@ -1882,7 +1947,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
 #if DEBUG
             let boxes = footerRequest.results?.map(\.boundingBox) ?? []
             DispatchQueue.main.async { [weak self] in
-                self?.debugVisionBoxes = boxes
+                self?.debugVisionBoxes.update(boxes)
             }
 #endif
 
@@ -1896,7 +1961,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         } catch {
 #if DEBUG
             DispatchQueue.main.async { [weak self] in
-                self?.debugVisionBoxes = []
+                self?.debugVisionBoxes.update([])
             }
 #endif
             // A bad frame is expected occasionally. Run it through the normal

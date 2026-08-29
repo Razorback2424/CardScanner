@@ -21,6 +21,7 @@ struct ContentView: View {
     @State private var selectedTab: Tab
     @StateObject private var portfolio = PortfolioEngine()
     @StateObject private var refresh = PriceRefreshController()
+    @StateObject private var history = PortfolioHistoryStore()
     /// One catalog actor is shared by every Collection/Browse route in this
     /// app session. Its protected checklist and in-memory caches therefore do
     /// not reset when the user pushes into a set and returns.
@@ -46,7 +47,7 @@ struct ContentView: View {
         debugRoute = route
         let initialTab: Tab
         switch route {
-        case "Browse", "SealedArtwork": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck": initialTab = .scan
         default: initialTab = .portfolio
@@ -62,6 +63,7 @@ struct ContentView: View {
             PortfolioView(
                 portfolio: portfolio,
                 refresh: refresh,
+                history: history,
                 onRefresh: refreshAllPrices,
                 onOpenCollectionSortedByPrice: {
                     collectionSort = .priceHighToLow
@@ -75,7 +77,9 @@ struct ContentView: View {
 
             CollectionView(
                 catalog: browseCatalog,
+                history: history,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
+                opensMovementDetailsOnLaunch: isMovementDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
                 onRefresh: refreshAllPrices,
                 sort: $collectionSort
@@ -102,6 +106,10 @@ struct ContentView: View {
             switch debugRoute {
             case "SealedArtwork":
                 seedSealedArtworkQA()
+            case "CardMovement":
+                PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
+                history.mode = .performance
+                history.range = .oneMonth
             case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
             case "PortfolioHistory":
@@ -128,6 +136,15 @@ struct ContentView: View {
             guard hasStartedPortfolio else { return }
             portfolio.recompute(context: modelContext)
             await refreshStalePricesIfNeeded()
+        }
+        .task(id: portfolioHistoryTaskID) {
+            guard hasStartedPortfolio else { return }
+            history.recompute(
+                context: modelContext,
+                summary: portfolio.summary,
+                factors: portfolio.performanceFactors,
+                contributions: portfolio.contributionIndex
+            )
         }
         .task { await recomputeAtDayRollover() }
         .task(id: scenePhase) {
@@ -180,15 +197,42 @@ struct ContentView: View {
             hasher.combine(activity.ledgerOperationIDs)
         }
 
+        // Price records can arrive independently through CloudKit. Include
+        // their value and freshness fields so the portfolio is recomputed when
+        // another device changes the evidence it is valued from.
+        for record in priceRecords {
+            hasher.combine(record.key)
+            hasher.combine(record.effectiveUnitMarketPriceUSD)
+            hasher.combine(record.currencyCode)
+            hasher.combine(record.sourceRaw)
+            hasher.combine(record.sourceUpdatedAt)
+            hasher.combine(record.fetchedAt)
+            hasher.combine(record.lastSuccessfulCheckAt)
+            hasher.combine(record.invalidatedAt)
+        }
+
         hasher.combine(cards.count)
         hasher.combine(inventoryEvents.count)
         hasher.combine(collectionActivities.count)
+        hasher.combine(priceRecords.count)
         return hasher.finalize()
+    }
+
+    private var portfolioHistoryTaskID: String {
+        "\(portfolio.inputRevision)-\(history.mode.rawValue)-\(history.range.rawValue)"
     }
 
     private var isBrowseDebugRoute: Bool {
 #if DEBUG
         return debugRoute == "Browse"
+#else
+        return false
+#endif
+    }
+
+    private var isMovementDebugRoute: Bool {
+#if DEBUG
+        return debugRoute == "CardMovement"
 #else
         return false
 #endif
@@ -220,7 +264,7 @@ struct ContentView: View {
                     catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
                     lastFailureAt: record?.lastFailureAt,
                     hasPrice: PriceRefreshController.hasFinishedPrice(
-                        amount: record?.unitMarketPriceUSD,
+                        amount: record?.effectiveUnitMarketPriceUSD,
                         currencyCode: record?.currencyCode,
                         usesFallback: usesPriceFallback
                     ),

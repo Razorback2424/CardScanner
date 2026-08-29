@@ -355,7 +355,7 @@ final class PriceRefreshController: ObservableObject {
                             printingID: target.printingID,
                             variantID: target.variantID
                         )
-                        let previousAmount = store.record(forKey: key)?.unitMarketPriceUSD
+                        let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
                         let newAmount: Double?
                         switch lookup {
                         case let .price(price): newAmount = price.unitMarketPriceUSD
@@ -597,7 +597,6 @@ final class PriceRefreshController: ObservableObject {
         var priced = 0
         var completed = 0
         var stoppedByAllowance = false
-        await fallbackService.beginRun()
         var budget = await fallbackService.budgetSnapshot()
         status = .refreshing(completed: 0, total: eligibleCandidates.count)
         fallbackStatus = .running(
@@ -616,7 +615,6 @@ final class PriceRefreshController: ObservableObject {
         // returns is persisted, and every later refresh finds it in the first
         // group.
         var batchable: [CardGame: [MarketPriceTarget]] = [:]
-        var ownersByPriceKey: [String: FallbackCandidate] = [:]
         var needsIdentity: [FallbackCandidate] = []
 
         for candidate in eligibleCandidates {
@@ -653,7 +651,6 @@ final class PriceRefreshController: ObservableObject {
             // has one these are left alone rather than pretended over.
             guard candidate.target.itemKind != .gradedCard else { continue }
 
-            ownersByPriceKey[key] = candidate
             batchable[candidate.target.game, default: []].append(
                 MarketPriceTarget(
                     priceKey: key,
@@ -755,7 +752,11 @@ final class PriceRefreshController: ObservableObject {
 
             guard let subject = candidate.subject(vendorCardID: cached) else { continue }
             let variant = candidate.target.variantID.map(PhysicalVariant.resolving)
-            let outcome = await fallbackService.quote(for: subject, variant: variant)
+            let outcome = await fallbackService.quote(
+                for: subject,
+                variant: variant,
+                lane: .background
+            )
             identities.record(outcome, forKey: key)
 
             switch outcome {

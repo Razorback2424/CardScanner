@@ -14,6 +14,8 @@ final class CardCenteringViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private var sourceData: Data?
+    private var loadGeneration = 0
+    private var analysisGeneration = 0
 
     var rotationIsPending: Bool {
         abs(rotationDegrees - appliedRotationDegrees) >= 0.005
@@ -21,16 +23,20 @@ final class CardCenteringViewModel: ObservableObject {
 
     func loadSelectedPhoto() async {
         guard let selectedPhoto else { return }
+        loadGeneration &+= 1
+        let requestID = loadGeneration
         do {
             guard let data = try await selectedPhoto.loadTransferable(type: Data.self) else {
                 throw CardCenteringAnalyzerError.unreadableImage
             }
+            guard requestID == loadGeneration, !Task.isCancelled else { return }
             sourceData = data
             self.selectedPhoto = nil
             rotationDegrees = 0
             appliedRotationDegrees = 0
             analyze(data, rotationDegrees: 0)
         } catch {
+            guard requestID == loadGeneration, !Task.isCancelled else { return }
             errorMessage = error.localizedDescription
         }
     }
@@ -40,6 +46,8 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     func loadFile(at url: URL) async {
+        loadGeneration &+= 1
+        let requestID = loadGeneration
         do {
             let data = try await Task.detached(priority: .userInitiated) {
                 let hasAccess = url.startAccessingSecurityScopedResource()
@@ -48,13 +56,16 @@ final class CardCenteringViewModel: ObservableObject {
                 }
                 return try Data(contentsOf: url, options: .mappedIfSafe)
             }.value
+            guard requestID == loadGeneration, !Task.isCancelled else { return }
             loadImageData(data)
         } catch {
+            guard requestID == loadGeneration, !Task.isCancelled else { return }
             errorMessage = error.localizedDescription
         }
     }
 
     private func loadImageData(_ data: Data) {
+        loadGeneration &+= 1
         sourceData = data
         selectedPhoto = nil
         rotationDegrees = 0
@@ -125,12 +136,14 @@ final class CardCenteringViewModel: ObservableObject {
     }
 
     private func analyze(_ data: Data, rotationDegrees: Double) {
+        analysisGeneration &+= 1
+        let requestID = analysisGeneration
         isAnalyzing = true
         errorMessage = nil
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = Result { try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees) }
             DispatchQueue.main.async {
-                guard let self else { return }
+                guard let self, self.analysisGeneration == requestID else { return }
                 self.isAnalyzing = false
                 switch result {
                 case let .success(analysis):

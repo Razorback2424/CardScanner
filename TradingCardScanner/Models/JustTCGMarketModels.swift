@@ -263,26 +263,50 @@ struct JustTCGVariant: Decodable, Sendable {
     /// What the app sends to identify this exact object.
     var variantId: String? { uuid ?? id }
 
-    /// The USD market price, whichever schema published it.
+    /// The market quote, preserving the currency published by the vendor.
     ///
     /// The graded path decodes v2 responses into this type, and v2 nests the
     /// number inside `markets` rather than publishing a flat `price`. Reading
     /// only the flat field meant every graded variant came back with no price
     /// at all — the picker showed grades with nothing beside them and no slab
     /// could ever contribute to a total.
+    var marketPrice: (amount: Double, currency: String)? {
+        if let price {
+            // v1 normally omits `currency` because its flat price is USD. If
+            // it is present, however, it is authoritative and must not be
+            // relabeled by the caller.
+            return (price, currency ?? "USD")
+        }
+        guard let market = usdMarket, let amount = market.price else { return nil }
+        // v2 market blocks are USD when the provider omits the currency key;
+        // unlike the old fallback, this never accepts an explicitly foreign
+        // currency.
+        return (amount, market.currency ?? "USD")
+    }
+
+    /// The USD market price, whichever schema published it. Foreign-currency
+    /// quotes are intentionally rejected rather than silently converted.
     var marketPriceUSD: Double? {
-        if let price { return price }
-        return usdMarket?.price
+        guard let quote = marketPrice,
+              quote.currency.caseInsensitiveCompare("USD") == .orderedSame else {
+            return nil
+        }
+        return quote.amount
     }
 
     var updatedAt: Date? {
-        if let lastUpdated { return Date(timeIntervalSince1970: lastUpdated) }
+        if price != nil,
+           currency == nil || currency?.caseInsensitiveCompare("USD") == .orderedSame {
+            if let lastUpdated { return Date(timeIntervalSince1970: lastUpdated) }
+        }
         return usdMarket?.updatedAt.map { Date(timeIntervalSince1970: $0) }
     }
 
     private var usdMarket: JustTCGMarket? {
-        markets?.first { $0.currency?.caseInsensitiveCompare("USD") == .orderedSame }
-            ?? markets?.first
+        markets?.first {
+            guard let currency = $0.currency else { return true }
+            return currency.caseInsensitiveCompare("USD") == .orderedSame
+        }
     }
 
     /// Sealed products are priced through the same variant infrastructure as
@@ -438,6 +462,32 @@ struct SealedSetSummary: Identifiable, Hashable, Sendable, Codable {
     let name: String
     let sealedCount: Int
     let game: CardGame
+    /// The provider's release date, when published. Older cached directories
+    /// decode with this left nil and sort after dated sets.
+    let releaseDate: Date?
+}
+
+enum SealedSetOrdering {
+    static func newestFirst(_ sets: [SealedSetSummary]) -> [SealedSetSummary] {
+        sets.sorted { lhs, rhs in
+            switch (lhs.releaseDate, rhs.releaseDate) {
+            case let (left?, right?):
+                if left != right { return left > right }
+            case (.some, .none):
+                return true
+            case (.none, .some):
+                return false
+            case (.none, .none):
+                break
+            }
+
+            let nameOrder = lhs.name.localizedStandardCompare(rhs.name)
+            if nameOrder != .orderedSame {
+                return nameOrder == .orderedAscending
+            }
+            return lhs.id < rhs.id
+        }
+    }
 }
 
 /// One purchasable graded variant of a card.

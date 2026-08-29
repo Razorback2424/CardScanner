@@ -1,21 +1,11 @@
 import Accessibility
 import Charts
-import SwiftData
 import SwiftUI
 import UIKit
 
 struct PortfolioHistoryView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @StateObject private var controller = PortfolioHistoryController()
-
-    @Binding var mode: PortfolioHistoryMode
-    let range: PortfolioHistoryRange
-    let summary: PortfolioSummary?
-    let factors: PortfolioPerformanceFactors
-    let contributions: PortfolioContributionIndex
-    let refreshRevision: UInt
-    let onResultUpdated: (PortfolioHistoryResult?) -> Void
+    @ObservedObject var history: PortfolioHistoryStore
 
     @State private var selectedPointID: String?
     @State private var lastHapticPointID: String?
@@ -23,8 +13,8 @@ struct PortfolioHistoryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Picker("History mode", selection: Binding(
-                get: { mode },
-                set: { mode = $0 }
+                get: { history.mode },
+                set: { history.mode = $0 }
             )) {
                 ForEach(PortfolioHistoryMode.allCases, id: \.self) { item in
                     Text(item.title).tag(item)
@@ -32,8 +22,9 @@ struct PortfolioHistoryView: View {
             }
             .pickerStyle(.segmented)
 
-            if let result = controller.result, !result.isEmpty {
-                if let point = selectedPoint(in: result) {
+            if let result = history.activeResult, !result.isEmpty {
+                if let point = selectedPoint(in: result),
+                   hasInspectableValue(point, in: result) {
                     pointInspector(point, result: result)
                 }
                 historyChart(result)
@@ -41,12 +32,6 @@ struct PortfolioHistoryView: View {
 
                 if !result.hasTwoPublishedPoints {
                     Text("History is being recorded.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                if let began = result.trackingBeganDate {
-                    Text("Since tracking began \(began.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -59,44 +44,56 @@ struct PortfolioHistoryView: View {
         }
         .padding(14)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .task(id: refreshKey) {
-            controller.recompute(
-                context: modelContext,
-                summary: summary,
-                factors: factors,
-                contributions: contributions,
-                mode: mode,
-                range: range
-            )
-            onResultUpdated(controller.result)
-        }
-        .onDisappear {
-            onResultUpdated(nil)
-        }
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: mode)
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: range)
-    }
-
-    private var refreshKey: String {
-        "\(refreshRevision)-\(mode.rawValue)-\(range.rawValue)"
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.mode)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
     }
 
     @ViewBuilder
     private func historyChart(_ result: PortfolioHistoryResult) -> some View {
+        if result.mode == .performance && !hasPlottableChartValues(result) {
+            Text("Not enough data to plot")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            historyChartPlot(result)
+        }
+    }
+
+    @ViewBuilder
+    private func historyChartPlot(_ result: PortfolioHistoryResult) -> some View {
         let selectionID = selectedID(in: result)
+        let domain = yDomain(result)
+        let fractionDigits = PortfolioHistoryDisplay.currencyFractionDigits(
+            forSpan: domain.upperBound - domain.lowerBound
+        )
         Chart {
             if result.mode == .value {
                 ForEach(result.points) { point in
                     historyLine(point, result: result, selectionID: selectionID)
                 }
             } else {
-                ForEach(result.points.filter { $0.performanceFactor != nil }) { point in
+                ForEach(result.points.filter {
+                    $0.performanceFactor != nil
+                        && result.accounting?.anchorValue.isZero == false
+                }) { point in
                     historyLine(point, result: result, selectionID: selectionID)
                 }
             }
         }
-        .chartYScale(domain: yDomain(result))
-        .chartYAxis { AxisMarks(position: .leading) }
+        .chartYScale(domain: domain)
+        .chartYAxis {
+            AxisMarks(position: .leading) { value in
+                AxisGridLine()
+                AxisTick()
+                AxisValueLabel {
+                    if let amount = value.as(Double.self) {
+                        Text(amount.formatted(.currency(code: "USD").precision(.fractionLength(fractionDigits))))
+                    }
+                }
+            }
+        }
         .chartXAxis {
             if chartSpansOnlyDays(result) {
                 AxisMarks(values: .stride(by: .day))
@@ -145,6 +142,30 @@ struct PortfolioHistoryView: View {
         }
     }
 
+    private func hasPlottableChartValues(_ result: PortfolioHistoryResult) -> Bool {
+        guard result.mode == .performance,
+              let anchorValue = result.accounting?.anchorValue,
+              !anchorValue.isZero else { return false }
+        return result.points.contains {
+            PortfolioHistoryDisplay.performanceDollars(
+                factor: $0.performanceFactor,
+                anchorValue: anchorValue
+            ) != nil
+        }
+    }
+
+    private func hasInspectableValue(
+        _ point: PortfolioHistoryPoint,
+        in result: PortfolioHistoryResult
+    ) -> Bool {
+        guard result.mode == .performance else { return true }
+        guard let dollars = PortfolioHistoryDisplay.performanceDollars(
+            factor: point.performanceFactor,
+            anchorValue: result.accounting?.anchorValue
+        ) else { return false }
+        return Money(rounding: dollars) != nil
+    }
+
     @ChartContentBuilder
     private func historyLine(
         _ point: PortfolioHistoryPoint,
@@ -153,7 +174,14 @@ struct PortfolioHistoryView: View {
     ) -> some ChartContent {
         LineMark(
             x: .value("Date", point.instant),
-            y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
+            y: .value(
+                result.mode.chartLabel,
+                chartValue(
+                    point,
+                    mode: result.mode,
+                    anchorValue: result.accounting?.anchorValue
+                )
+            )
         )
         .foregroundStyle(seriesColor(result))
 
@@ -161,7 +189,14 @@ struct PortfolioHistoryView: View {
         if isSelected {
             PointMark(
                 x: .value("Date", point.instant),
-                y: .value(result.mode.chartLabel, chartValue(point, mode: result.mode))
+                y: .value(
+                    result.mode.chartLabel,
+                    chartValue(
+                        point,
+                        mode: result.mode,
+                        anchorValue: result.accounting?.anchorValue
+                    )
+                )
             )
             .foregroundStyle(seriesColor(result))
             RuleMark(x: .value("Selected date", point.instant))
@@ -219,13 +254,23 @@ struct PortfolioHistoryView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Text(inspectorValue(point, mode: result.mode))
+            Text(inspectorValue(
+                point,
+                mode: result.mode,
+                anchorValue: result.accounting?.anchorValue
+            ))
                 .font(.headline.monospacedDigit())
                 .foregroundStyle(pointColor(point, mode: result.mode))
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(point.isLive ? "Today" : "\(point.displayDay.formatted(date: .abbreviated, time: .omitted)) close")
-        .accessibilityValue(inspectorValue(point, mode: result.mode))
+        .accessibilityValue(
+            inspectorValue(
+                point,
+                mode: result.mode,
+                anchorValue: result.accounting?.anchorValue
+            )
+        )
     }
 
     /// "Live portfolio value" under a percentage described the wrong quantity.
@@ -242,46 +287,79 @@ struct PortfolioHistoryView: View {
         }
     }
 
-    private func inspectorValue(_ point: PortfolioHistoryPoint, mode: PortfolioHistoryMode) -> String {
+    private func inspectorValue(
+        _ point: PortfolioHistoryPoint,
+        mode: PortfolioHistoryMode,
+        anchorValue: Money?
+    ) -> String {
         switch mode {
         case .value:
             return point.value.formatted()
         case .performance:
-            guard let factor = point.performanceFactor else { return "Unavailable" }
-            let percent = NSDecimalNumber(decimal: factor).doubleValue * 100 - 100
-            return (percent / 100).formatted(.percent.precision(.fractionLength(2)))
+            guard let factor = point.performanceFactor,
+                  let dollarChange = PortfolioHistoryDisplay.performanceDollars(
+                      factor: factor,
+                      anchorValue: anchorValue
+                  ),
+                  let moneyChange = Money(rounding: dollarChange)
+            else { return "Unavailable" }
+            let dollarText = PortfolioHistoryDisplay.signedCurrency(moneyChange)
+            guard let ratio = PortfolioHistoryDisplay.percentChange(
+                amount: moneyChange,
+                anchor: anchorValue ?? .zero
+            ) else {
+                return dollarText
+            }
+            return "\(dollarText) (\(PortfolioHistoryDisplay.signedPercent(ratio)))"
         }
     }
 
-    private func chartValue(_ point: PortfolioHistoryPoint, mode: PortfolioHistoryMode) -> Double {
+    private func chartValue(
+        _ point: PortfolioHistoryPoint,
+        mode: PortfolioHistoryMode,
+        anchorValue: Money?
+    ) -> Double {
         switch mode {
         case .value:
             return point.value.doubleValue
         case .performance:
-            guard let factor = point.performanceFactor else { return 0 }
-            return NSDecimalNumber(decimal: factor).doubleValue * 100 - 100
+            return PortfolioHistoryDisplay.performanceDollars(
+                factor: point.performanceFactor,
+                anchorValue: anchorValue
+            ) ?? 0
         }
     }
 
     private func yDomain(_ result: PortfolioHistoryResult) -> ClosedRange<Double> {
         let values = result.points.compactMap { point -> Double? in
-            guard result.mode == .value || point.performanceFactor != nil else { return nil }
-            return chartValue(point, mode: result.mode)
+            guard result.mode == .value
+                    || (point.performanceFactor != nil && result.accounting?.anchorValue.isZero == false)
+            else { return nil }
+            return chartValue(
+                point,
+                mode: result.mode,
+                anchorValue: result.accounting?.anchorValue
+            )
         }
         guard let low = values.min(), let high = values.max() else { return 0...1 }
         if low == high { return (low - 1)...(high + 1) }
-        let padding = max((high - low) * 0.12, result.mode == .performance ? 0.5 : 1)
+        let padding = max((high - low) * 0.12, 1)
         return (low - padding)...(high + padding)
     }
 
     private func summaryValue(for result: PortfolioHistoryResult, accounting: PortfolioHistoryAccounting) -> String {
         switch result.mode {
         case .value:
-            return signedCurrency(accounting.totalChange)
+            return PortfolioHistoryDisplay.signedCurrency(accounting.totalChange)
         case .performance:
-            guard result.performanceAvailable, let factor = result.performanceFactor else { return "Unavailable" }
-            let percent = NSDecimalNumber(decimal: factor).doubleValue * 100 - 100
-            return (percent / 100).formatted(.percent.precision(.fractionLength(2)))
+            guard result.performanceAvailable,
+                  let dollars = PortfolioHistoryDisplay.performanceDollars(
+                      factor: result.performanceFactor,
+                      anchorValue: accounting.anchorValue
+                  ),
+                  let money = Money(rounding: dollars)
+            else { return "Unavailable" }
+            return PortfolioHistoryDisplay.signedCurrency(money)
         }
     }
 
@@ -290,10 +368,6 @@ struct PortfolioHistoryView: View {
         return "From \(accounting.anchorValue.formatted()) to \(accounting.endValue.formatted()). \(summaryValue(for: result, accounting: accounting)). \(result.points.count) real points."
     }
 
-    private func signedCurrency(_ amount: Money) -> String {
-        let prefix = amount.tenThousandths > 0 ? "+" : ""
-        return prefix + amount.formatted()
-    }
 }
 
 private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
@@ -303,7 +377,11 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
         let pointValues = result.points.map { point -> Double? in
             switch result.mode {
             case .value: point.value.doubleValue
-            case .performance: point.performanceFactor.map { NSDecimalNumber(decimal: $0).doubleValue * 100 - 100 }
+            case .performance:
+                PortfolioHistoryDisplay.performanceDollars(
+                    factor: point.performanceFactor,
+                    anchorValue: result.accounting?.anchorValue
+                )
             }
         }
         let values = pointValues.compactMap { $0 }
@@ -315,9 +393,7 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
             range: yRange,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
-                result.mode == .performance
-                    ? (value / 100).formatted(.percent.precision(.fractionLength(1)))
-                    : value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
+                value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
             }
         )
         let dateLabels = result.points.map {
@@ -345,7 +421,7 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
     private func valueDescription(_ value: Double) -> String {
         switch result.mode {
         case .value: value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
-        case .performance: (value / 100).formatted(.percent.precision(.fractionLength(1)))
+        case .performance: value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
         }
     }
 }

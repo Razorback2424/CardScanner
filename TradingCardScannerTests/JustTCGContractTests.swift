@@ -318,6 +318,37 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(unresolved.map(\.priceKey), ["b"])
     }
 
+    func testUnmappedExplicitFinishDoesNotBorrowAnUnqualifiedListing() throws {
+        let json = """
+        { "data": [ { "uuid": "card-1", "variants": [
+          { "uuid": "variant-1", "condition": "Near Mint", "printing": "Normal", "price": 1.0 }
+        ] } ] }
+        """
+        let response = try JSONDecoder().decode(
+            JustTCGBatchResponse.self,
+            from: Data(json.utf8)
+        )
+        let target = MarketPriceTarget(
+            priceKey: "key",
+            game: .pokemon,
+            printingID: "sv01-001",
+            variantID: PhysicalVariant.masterBall.id,
+            itemKind: .rawCard,
+            marketVariantID: nil,
+            lookupCandidates: [.cardID("card-1")],
+            currentAmount: nil,
+            lastCheckedAt: nil
+        )
+
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .cardID("card-1"),
+            owners: [target],
+            response: response
+        ) else {
+            return XCTFail("an unmapped explicit finish must not inherit Normal")
+        }
+    }
+
     // MARK: - Which identifier the vendor can actually resolve
 
     /// Verified live, one batch, two identifiers:
@@ -442,8 +473,6 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let ledger = JustTCGRequestLedger(defaults: defaults)
-        ledger.beginRun()
-
         for _ in 0..<JustTCGQuota.backgroundDailyCeiling {
             XCTAssertEqual(ledger.reserve(lane: .background), .allowed)
         }
@@ -482,7 +511,6 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let ledger = JustTCGRequestLedger(defaults: defaults)
-        ledger.beginRun()
         let retryAt = Date.now.addingTimeInterval(600)
         ledger.recordRateLimit(until: retryAt)
 
@@ -504,8 +532,6 @@ final class JustTCGContractTests: XCTestCase {
 
         let ledger = JustTCGRequestLedger(defaults: defaults)
         let identityBudget = ProductFallbackBudget(defaults: defaults)
-        ledger.beginRun()
-
         // Spend the whole day through the batched path.
         for _ in 0..<JustTCGQuota.dailyHardLimit {
             XCTAssertEqual(ledger.reserve(lane: .interactive), .allowed)
@@ -526,8 +552,6 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let ledger = JustTCGRequestLedger(defaults: defaults)
-        ledger.beginRun()
-
         XCTAssertEqual(ledger.snapshot().usedToday, 0, "a fresh install knows nothing")
 
         // Shaped exactly like the live `_metadata` block.
@@ -555,7 +579,6 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let ledger = JustTCGRequestLedger(defaults: defaults)
-        ledger.beginRun()
         for _ in 0..<50 { _ = ledger.reserve(lane: .interactive) }
 
         ledger.syncFromServer(
@@ -576,7 +599,6 @@ final class JustTCGContractTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let ledger = JustTCGRequestLedger(defaults: defaults)
-        ledger.beginRun()
         for _ in 0..<JustTCGQuota.dailyHardLimit { _ = ledger.reserve(lane: .interactive) }
 
         guard case let .dailyReached(resetAt) = ledger.reserve(lane: .interactive) else {
@@ -748,6 +770,31 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_700_000_000))
     }
 
+    func testForeignCurrencyIsNotExposedAsUSD() throws {
+        let json = """
+        { "uuid": "eur-variant", "price": 106.39, "currency": "EUR",
+          "lastUpdated": 1700000000 }
+        """
+        let variant = try JSONDecoder().decode(JustTCGVariant.self, from: Data(json.utf8))
+
+        XCTAssertEqual(variant.marketPrice?.currency, "EUR")
+        XCTAssertNil(variant.marketPriceUSD)
+        XCTAssertNil(variant.updatedAt)
+    }
+
+    func testMarketPriceChoosesTheExplicitUSDMarket() throws {
+        let json = """
+        { "uuid": "mixed-variant", "markets": [
+          { "currency": "EUR", "price": 90.00, "updated_at": 1700000000 },
+          { "currency": "USD", "price": 100.00, "updated_at": 1700000100 }
+        ] }
+        """
+        let variant = try JSONDecoder().decode(JustTCGVariant.self, from: Data(json.utf8))
+
+        XCTAssertEqual(variant.marketPriceUSD, 100.00)
+        XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_700_000_100))
+    }
+
     /// v2 does not reject an identifier it does not recognise — it silently
     /// browses instead, returning arbitrary graded cards for the game. The app
     /// sends a catalog id, which v2 has never heard of, so the picker was
@@ -762,7 +809,7 @@ final class JustTCGContractTests: XCTestCase {
             name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
         )
 
-        XCTAssertFalse(asked.matches(returned))
+        XCTAssertFalse(asked.matches(returned, game: .pokemon))
     }
 
     func testGradedIdentityAcceptsTheCardItAskedFor() throws {
@@ -775,7 +822,21 @@ final class JustTCGContractTests: XCTestCase {
             name: "Charizard", setName: "Base Set", collectorNumber: "004/102"
         )
 
-        XCTAssertTrue(asked.matches(returned))
+        XCTAssertTrue(asked.matches(returned, game: .pokemon))
+    }
+
+    func testGradedIdentityUsesTheRequestedGameSetNormalization() throws {
+        let json = """
+        { "id": "right", "name": "The One Ring",
+          "set_name": "The Lord of the Rings Commander", "variants": [] }
+        """
+        let returned = try JSONDecoder().decode(JustTCGCard.self, from: Data(json.utf8))
+        let asked = GradedCardIdentity(
+            name: "The One Ring", setName: "Commander: The Lord of the Rings", collectorNumber: ""
+        )
+
+        XCTAssertTrue(asked.matches(returned, game: .magic))
+        XCTAssertFalse(asked.matches(returned, game: .pokemon))
     }
 
     /// One request must serve every owned grade of one card, or a shelf of PSA
@@ -815,10 +876,124 @@ final class JustTCGContractTests: XCTestCase {
             name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
         )
 
-        XCTAssertTrue(asked.matches(card))
+        XCTAssertTrue(asked.matches(card, game: .pokemon))
         XCTAssertEqual(variant.variantId, "b9174ffe-9b95-5aea-b916-2b3bcd6d5731")
         XCTAssertEqual(variant.marketPriceUSD, 1479.99)
         XCTAssertEqual(variant.grading?.gradingCompany, .psa)
         XCTAssertEqual(variant.grading?.gradeText, "8")
     }
+
+    // MARK: - Shared transport pacing
+
+    /// A request that is abandoned while queued for the shared pacer must not
+    /// consume quota. This exercises the transport boundary, rather than only
+    /// the pacer's cancellation behavior, so a future reorder of `perform` is
+    /// caught by the test.
+    func testCancellationWhilePacingDoesNotReserveQuota() async throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        let pacer = JustTCGPacer()
+        try await pacer.wait(lane: .background, minimumInterval: 0)
+
+        var configuration = JustTCGTransport.Configuration()
+        configuration.baseURL = URL(string: "http://127.0.0.1:1")!
+        configuration.minimumRequestInterval = 1
+        let transport = JustTCGTransport(
+            configuration: configuration,
+            session: URLSession(configuration: .ephemeral),
+            ledger: ledger,
+            pacer: pacer,
+            apiKeyOverride: "justtcg-test-key"
+        )
+
+        let request = Task {
+            try await transport.get(
+                "/test",
+                lane: .background,
+                as: EmptyJustTCGResponse.self
+            )
+        }
+        try await Task.sleep(for: .milliseconds(20))
+        request.cancel()
+
+        do {
+            _ = try await request.value
+            XCTFail("a cancelled paced request must not succeed")
+        } catch is CancellationError {
+            // Expected: the request was cancelled while waiting for its slot.
+        }
+
+        let snapshot = await transport.snapshot()
+        XCTAssertEqual(snapshot.usedToday, 0)
+        XCTAssertEqual(snapshot.usedThisMonth, 0)
+    }
+
+    /// Interactive work is selected ahead of an already queued background
+    /// waiter, so a long refresh cannot make a user-triggered lookup wait for
+    /// the entire refresh queue.
+    func testInteractivePacingPreemptsQueuedBackgroundWork() async throws {
+        let pacer = JustTCGPacer()
+        try await pacer.wait(lane: .background, minimumInterval: 0)
+
+        let background = Task {
+            try await pacer.wait(lane: .background, minimumInterval: 0.2)
+            return Date.now
+        }
+        await Task.yield()
+        try await Task.sleep(for: .milliseconds(20))
+
+        let interactive = Task {
+            try await pacer.wait(lane: .interactive, minimumInterval: 0.2)
+            return Date.now
+        }
+
+        let interactiveGrantedAt = try await interactive.value
+        let backgroundGrantedAt = try await background.value
+        XCTAssertLessThan(
+            interactiveGrantedAt,
+            backgroundGrantedAt,
+            "interactive work must not sit behind queued background work"
+        )
+    }
+
+    /// Pacing must not change the transport's existing budget error mapping.
+    func testBudgetReachedStillSurfacesAfterPacing() async throws {
+        let suite = "JustTCGContractTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        for _ in 0..<JustTCGQuota.backgroundDailyCeiling {
+            XCTAssertEqual(ledger.reserve(lane: .background), .allowed)
+        }
+
+        var configuration = JustTCGTransport.Configuration()
+        configuration.baseURL = URL(string: "http://127.0.0.1:1")!
+        configuration.minimumRequestInterval = 0
+        let transport = JustTCGTransport(
+            configuration: configuration,
+            session: URLSession(configuration: .ephemeral),
+            ledger: ledger,
+            pacer: JustTCGPacer(),
+            apiKeyOverride: "justtcg-test-key"
+        )
+
+        do {
+            _ = try await transport.get(
+                "/test",
+                lane: .background,
+                as: EmptyJustTCGResponse.self
+            )
+            XCTFail("an exhausted background budget must reject the request")
+        } catch JustTCGTransport.TransportError.budgetReached {
+            // Expected.
+        }
+
+        XCTAssertEqual(ledger.snapshot().usedToday, JustTCGQuota.backgroundDailyCeiling)
+    }
+
+    private struct EmptyJustTCGResponse: Decodable {}
 }

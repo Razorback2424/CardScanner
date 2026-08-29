@@ -482,7 +482,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
         _ = PortfolioEngine.publish(replay.days, timeZone: zone, context: context)
 
-        let closes = PortfolioEngine.allCloses(in: context)
+        let closes = try PortfolioEngine.allCloses(in: context)
         XCTAssertEqual(closes.count, 7)
         XCTAssertEqual(closes.first?.coverageState, .complete)
         XCTAssertEqual(closes.first?.carriedForwardValue, .zero)
@@ -555,7 +555,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         // Paused, not published: no close may be written from a reading the
         // app already knows is untrustworthy.
         XCTAssertNil(summary.attribution)
-        XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
+        XCTAssertEqual(try PortfolioEngine.allCloses(in: context).count, 0)
     }
 
     func testLedgerProjectionMismatchAlsoPausesPublication() async throws {
@@ -585,7 +585,7 @@ final class PortfolioReconciliationTests: XCTestCase {
             }
         )
         XCTAssertNil(summary.attribution)
-        XCTAssertEqual(PortfolioEngine.allCloses(in: context).count, 0)
+        XCTAssertEqual(try PortfolioEngine.allCloses(in: context).count, 0)
     }
 
     func testQuantityRepairAppendsOneAdjustmentPerMismatchedPosition() throws {
@@ -747,7 +747,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         _ = try CollectionCSV.apply(plan, to: context)
 
         let events = InventoryLedger(context: context).allEvents().map(PortfolioEngine.entry(from:))
-        let observations = PortfolioEngine.observations(in: context)
+        let observations = try PortfolioEngine.observations(in: context)
         let eventTime = try XCTUnwrap(events.first?.occurredAt)
         XCTAssertEqual(observations.first?.receivedAt, eventTime)
         XCTAssertEqual(events.first?.priceReceivedAtEvent, eventTime)
@@ -776,25 +776,354 @@ final class PortfolioReconciliationTests: XCTestCase {
                 source: .justTCG,
                 sourceVariantID: "v",
                 sourceUpdatedAt: nil,
-                fetchedAt: .now
+                fetchedAt: Date(timeIntervalSince1970: 1_000)
+            )
+        )
+        context.insert(record)
+        let invalidatedAt = Date(timeIntervalSince1970: 2_000)
+        _ = try XCTUnwrap(
+            PriceObservationLog(context: context).recordInvalidation(
+                instrumentKey: "instrument",
+                source: .justTCG,
+                at: invalidatedAt
+            )
+        )
+        try context.save()
+
+        XCTAssertNil(InventoryLedger(context: context).valuation(forPriceKey: "instrument").unitPrice)
+        XCTAssertNil(record.unitMarketPriceUSD)
+        XCTAssertEqual(record.invalidatedAt, invalidatedAt)
+    }
+
+    func testInvalidationMirrorsIntoCollectionReadPathAndBlocksLegacyFallback() throws {
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "collection",
+            game: .pokemon,
+            providerID: "printing",
+            name: "Test Card",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .imported
+        )
+        card.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+        card.justTCGVariantID = "market-variant"
+        card.justTCGAPIVersion = "v1"
+        let canonical = PriceRecord(
+            key: card.priceKey,
+            game: .pokemon,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+        canonical.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "wrong-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        context.insert(card)
+        context.insert(canonical)
+        let legacyKey = try XCTUnwrap(card.legacyPriceKeys.first)
+        let legacy = PriceRecord(
+            key: legacyKey,
+            game: .pokemon,
+            printingID: card.providerID,
+            variantID: card.variantID
+        )
+        legacy.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 99,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "legacy-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        context.insert(legacy)
+        try context.save()
+
+        let invalidatedAt = Date(timeIntervalSince1970: 200)
+        let invalidation = try XCTUnwrap(
+            PriceObservationLog(context: context).recordInvalidation(
+                instrumentKey: canonical.key,
+                source: .justTCG,
+                at: invalidatedAt
+            )
+        )
+        try context.save()
+
+        let visible = PriceStore.record(
+            for: card,
+            in: [canonical.key: canonical, legacy.key: legacy]
+        )
+        XCTAssertEqual(invalidation.kind, .explicitInvalidation)
+        XCTAssertTrue(canonical.isInvalidated)
+        XCTAssertTrue(legacy.effectiveUnitMarketPriceUSD != nil)
+        XCTAssertTrue(visible === canonical)
+        XCTAssertNil(visible?.unitMarketPriceUSD)
+        XCTAssertNil(visible?.display.amount)
+        XCTAssertEqual(canonical.invalidatedAt, invalidatedAt)
+    }
+
+    func testInvalidationStillWinsOverNewerUnusableObservationInScalarAndBulkReads() throws {
+        let context = try makeContext()
+        let recordDate = Date(timeIntervalSince1970: 100)
+        let invalidatedAt = Date(timeIntervalSince1970: 200)
+        let laterObservationAt = Date(timeIntervalSince1970: 300)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "wrong-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: recordDate
             )
         )
         context.insert(record)
         context.insert(
             PriceObservation(
                 instrumentKey: "instrument",
-                kind: .explicitInvalidation,
-                amount: nil,
+                kind: .marketUpdate,
+                amount: money(42),
+                currencyCode: "USD",
                 source: .justTCG,
-                sourceVariantID: "v",
+                sourceVariantID: "wrong-listing",
                 marketVariantID: nil,
-                effectiveAt: .now,
-                receivedAt: .now,
+                effectiveAt: recordDate,
+                receivedAt: recordDate,
                 isSourceStamped: false
             )
         )
         try context.save()
 
-        XCTAssertNil(InventoryLedger(context: context).valuation(forPriceKey: "instrument").unitPrice)
+        _ = try XCTUnwrap(
+            PriceObservationLog(context: context).recordInvalidation(
+                instrumentKey: "instrument",
+                source: .justTCG,
+                at: invalidatedAt
+            )
+        )
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(99),
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "foreign-listing",
+                marketVariantID: nil,
+                effectiveAt: laterObservationAt,
+                receivedAt: laterObservationAt,
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let scalar = InventoryLedger(context: context).valuation(forPriceKey: "instrument")
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+
+        XCTAssertNil(scalar.unitPrice)
+        XCTAssertNil(bulk.valuation(for: "instrument").unitPrice)
+    }
+
+    func testNewerUSDObservationCanArriveAfterInvalidationWatermark() throws {
+        let context = try makeContext()
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "old-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        _ = record.invalidate(at: Date(timeIntervalSince1970: 200))
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(99),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "new-listing",
+                marketVariantID: nil,
+                effectiveAt: Date(timeIntervalSince1970: 300),
+                receivedAt: Date(timeIntervalSince1970: 300),
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let scalar = InventoryLedger(context: context).valuation(forPriceKey: "instrument")
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+
+        XCTAssertEqual(scalar.unitPrice, money(99))
+        XCTAssertEqual(bulk.valuation(for: "instrument").unitPrice, money(99))
+    }
+
+    func testFreshPriceReplacesAnInvalidationButStalePriceCannot() throws {
+        let context = try makeContext()
+        let key = PriceRecord.key(game: .pokemon, printingID: "p", variantID: "normal")
+        let initial = Date(timeIntervalSince1970: 100)
+        let invalidatedAt = Date(timeIntervalSince1970: 200)
+        let store = PriceStore(context: context)
+
+        store.store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 42,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: "old-listing",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: initial
+                )
+            ),
+            game: .pokemon,
+            printingID: "p",
+            variantID: "normal",
+            at: initial
+        )
+        let record = try XCTUnwrap(store.record(forKey: key))
+        _ = try XCTUnwrap(
+            PriceObservationLog(context: context).recordInvalidation(
+                instrumentKey: key,
+                source: .justTCG,
+                at: invalidatedAt
+            )
+        )
+
+        store.store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 7,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: "stale-listing",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: initial
+                )
+            ),
+            game: .pokemon,
+            printingID: "p",
+            variantID: "normal",
+            at: initial
+        )
+        XCTAssertTrue(record.isInvalidated)
+        XCTAssertNil(record.unitMarketPriceUSD)
+        XCTAssertNil(InventoryLedger(context: context).valuation(forPriceKey: key).unitPrice)
+        XCTAssertEqual(
+            PriceObservationLog(context: context).observations(instrumentKey: key).count,
+            2,
+            "a response received before invalidation must not append stale value evidence"
+        )
+
+        let fresh = invalidatedAt.addingTimeInterval(1)
+        store.store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 9,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: "new-listing",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: fresh
+                )
+            ),
+            game: .pokemon,
+            printingID: "p",
+            variantID: "normal",
+            at: fresh
+        )
+
+        XCTAssertFalse(record.isInvalidated)
+        XCTAssertEqual(record.unitMarketPriceUSD, 9)
+        XCTAssertEqual(PriceObservationLog(context: context).observations(instrumentKey: key).count, 3)
+        XCTAssertEqual(InventoryLedger(context: context).valuation(forPriceKey: key).unitPrice, money(9))
+    }
+
+    func testOlderInvalidationCannotWithdrawAFreshPrice() throws {
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        let fresh = Date(timeIntervalSince1970: 300)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 9,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "new-listing",
+                sourceUpdatedAt: nil,
+                fetchedAt: fresh
+            )
+        )
+
+        XCTAssertFalse(record.invalidate(at: Date(timeIntervalSince1970: 200)))
+        XCTAssertFalse(record.isInvalidated)
+        XCTAssertEqual(record.unitMarketPriceUSD, 9)
+    }
+
+    func testScalarAndBulkValuationFallBackFromNewerNonUSDObservationToUSDRecord() throws {
+        let context = try makeContext()
+        let recordDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let observationDate = recordDate.addingTimeInterval(60)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usd-listing",
+                sourceUpdatedAt: recordDate,
+                fetchedAt: recordDate
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(99),
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "eur-listing",
+                marketVariantID: nil,
+                effectiveAt: observationDate,
+                receivedAt: observationDate,
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let scalar = InventoryLedger(context: context).valuation(forPriceKey: "instrument")
+        let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+        let records = try context.fetch(FetchDescriptor<PriceRecord>())
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: observations,
+            records: records
+        )
+
+        XCTAssertEqual(scalar.unitPrice, money(42))
+        XCTAssertEqual(scalar.source, .justTCG)
+        XCTAssertEqual(bulk.valuation(for: "instrument"), scalar)
     }
 }

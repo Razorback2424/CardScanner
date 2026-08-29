@@ -177,6 +177,37 @@ struct PriceStore {
         return try? context.fetch(descriptor).first
     }
 
+    /// Resolves the record for a write without treating an unreadable store as
+    /// an absent record. A failed lookup must not create a second price row, and
+    /// duplicate rows must not be silently updated through an arbitrary first
+    /// match. The public read helper remains best-effort because UI callers use
+    /// `nil` to mean that no display value is available.
+    private func recordForWrite(
+        key: String,
+        game: CardGame,
+        printingID: String,
+        variantID: String?
+    ) -> PriceRecord? {
+        do {
+            let matches = try context.fetch(
+                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
+            )
+            guard matches.count <= 1 else { return nil }
+            if let existing = matches.first { return existing }
+
+            let created = PriceRecord(
+                key: key,
+                game: game,
+                printingID: printingID,
+                variantID: variantID
+            )
+            context.insert(created)
+            return created
+        } catch {
+            return nil
+        }
+    }
+
     func allRecords() -> [PriceRecord] {
         (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
     }
@@ -186,10 +217,17 @@ struct PriceStore {
         in recordsByKey: [String: PriceRecord]
     ) -> PriceRecord? {
         let candidates = card.priceLookupKeys.compactMap { recordsByKey[$0] }
+        guard let primary = candidates.first else { return nil }
+
+        // The canonical record is authoritative once it has explicitly been
+        // invalidated. Falling through to a legacy key in that state would
+        // resurrect the very value the invalidation withdrew.
+        if primary.isInvalidated { return primary }
+
         // Prefer a real observation over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence
         // until the new key receives its own price.
-        return candidates.first(where: { $0.unitMarketPriceUSD != nil }) ?? candidates.first
+        return candidates.first(where: { $0.effectiveUnitMarketPriceUSD != nil }) ?? primary
     }
 
     func importedCardsByProviderID() -> [String: [CollectedCard]] {
@@ -222,11 +260,12 @@ struct PriceStore {
         at date: Date = .now
     ) {
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
-        let record = self.record(forKey: key) ?? {
-            let created = PriceRecord(key: key, game: game, printingID: printingID, variantID: variantID)
-            context.insert(created)
-            return created
-        }()
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID
+        ) else { return }
 
         let observationDecision = PriceObservationLog(context: context).ingest(
             lookup,
@@ -240,10 +279,13 @@ struct PriceStore {
             record.lastFailureReasonRaw = PricingDiagnosticReason.invalidProviderQuote.rawValue
             return
         }
+        if observationDecision == .ignoredAfterInvalidation {
+            return
+        }
 
         switch lookup {
         case let .price(price):
-            record.apply(price)
+            guard record.apply(price) else { return }
         case let .unavailable(source):
             record.applyUnavailable(source: source, at: date)
         }
@@ -264,12 +306,13 @@ struct PriceStore {
     ) {
         guard Money(rounding: amount) != nil else { return }
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
-        let record = self.record(forKey: key) ?? {
-            let created = PriceRecord(key: key, game: game, printingID: printingID, variantID: variantID)
-            context.insert(created)
-            return created
-        }()
-        guard record.unitMarketPriceUSD == nil else { return }
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID
+        ) else { return }
+        guard record.effectiveUnitMarketPriceUSD == nil else { return }
 
         // Value-setting, so it belongs in the observation log — without a row
         // here an entire imported collection would be invisible to the close
@@ -293,7 +336,7 @@ struct PriceStore {
             at: importedAt
         )
 
-        record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt, importedAt: importedAt)
+        _ = record.applyImported(amount: amount, sourceUpdatedAt: sourceUpdatedAt, importedAt: importedAt)
     }
 
     /// A refresh attempt that never reached an answer. The previous price stays
@@ -306,11 +349,12 @@ struct PriceStore {
         at date: Date = .now
     ) {
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
-        let record = self.record(forKey: key) ?? {
-            let created = PriceRecord(key: key, game: game, printingID: printingID, variantID: variantID)
-            context.insert(created)
-            return created
-        }()
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID
+        ) else { return }
         record.recordFailure(at: date)
     }
 

@@ -1,12 +1,121 @@
 import Foundation
 
+/// Serializes request start times across every JustTCG API client.
+///
+/// Waiters are held until their slot is actually available instead of reserving
+/// timestamps in advance. That makes cancellation cheap: a cancelled waiter is
+/// removed without consuming a request slot. Interactive work is selected ahead
+/// of queued background work, while requests within each lane remain FIFO.
+actor JustTCGPacer {
+    static let shared = JustTCGPacer()
+
+    private struct Waiter {
+        let id: UUID
+        let lane: JustTCGRequestLane
+        let minimumInterval: TimeInterval
+        let continuation: CheckedContinuation<Void, Error>
+    }
+
+    private var waiters: [Waiter] = []
+    private var lastGrantedAt: Date?
+    private var lastGrantedInterval: TimeInterval = 0
+    private var timer: Task<Void, Never>?
+    private var timerGeneration: UInt = 0
+
+    func wait(
+        lane: JustTCGRequestLane,
+        minimumInterval: TimeInterval
+    ) async throws {
+        let id = UUID()
+        try await withTaskCancellationHandler(operation: {
+            try await withCheckedThrowingContinuation { continuation in
+                enqueue(
+                    Waiter(
+                        id: id,
+                        lane: lane,
+                        minimumInterval: minimumInterval,
+                        continuation: continuation
+                    )
+                )
+            }
+        }, onCancel: {
+            Task { await self.cancel(id: id) }
+        })
+    }
+
+    private func enqueue(_ waiter: Waiter) {
+        guard !Task.isCancelled else {
+            waiter.continuation.resume(throwing: CancellationError())
+            return
+        }
+        waiters.append(waiter)
+        restartTimer()
+    }
+
+    private func cancel(id: UUID) {
+        guard let index = waiters.firstIndex(where: { $0.id == id }) else { return }
+        let waiter = waiters.remove(at: index)
+        waiter.continuation.resume(throwing: CancellationError())
+        restartTimer()
+    }
+
+    private func restartTimer() {
+        timerGeneration &+= 1
+        timer?.cancel()
+        timer = nil
+        scheduleNext()
+    }
+
+    private func scheduleNext() {
+        guard timer == nil else { return }
+
+        while !waiters.isEmpty {
+            let index = nextWaiterIndex()
+            let waiter = waiters[index]
+            let now = Date.now
+            let requiredGap = max(waiter.minimumInterval, lastGrantedInterval)
+            let earliest = lastGrantedAt?.addingTimeInterval(requiredGap) ?? now
+            let delay = earliest.timeIntervalSince(now)
+
+            if delay > 0 {
+                let generation = timerGeneration
+                timer = Task { [weak self] in
+                    do {
+                        try await Task.sleep(for: .seconds(delay))
+                    } catch {
+                        return
+                    }
+                    guard !Task.isCancelled else { return }
+                    await self?.fireTimer(generation: generation)
+                }
+                return
+            }
+
+            let granted = waiters.remove(at: index)
+            lastGrantedAt = now
+            lastGrantedInterval = waiter.minimumInterval
+            granted.continuation.resume()
+        }
+    }
+
+    private func fireTimer(generation: UInt) {
+        guard generation == timerGeneration else { return }
+        timer = nil
+        scheduleNext()
+    }
+
+    private func nextWaiterIndex() -> Int {
+        waiters.firstIndex(where: { $0.lane == .interactive }) ?? 0
+    }
+}
+
 /// Which lane a request is spending from.
 ///
 /// Background refreshes stop short of the daily ceiling so that an explicit user
 /// action — opening a sealed set, choosing a grade — still works at 5pm. Without
 /// this, an overnight refresh would routinely leave the app unable to answer the
 /// one question the user actually asked.
-enum JustTCGRequestLane: Sendable {
+enum JustTCGRequestLane: Sendable, Equatable {
     /// Automatic refreshes. Stops at the background ceiling.
     case background
     /// Something the user is waiting on. May spend into the reserve.
@@ -51,9 +160,9 @@ enum JustTCGQuota {
 /// Authentication, pacing, quota accounting and rate-limit backoff for every
 /// JustTCG call.
 ///
-/// One actor so that the ledger cannot be raced and the pacing cannot be
-/// defeated by concurrency. Every client goes through this; none of them talk to
-/// `URLSession` directly.
+/// One actor so that its ledger cannot be raced and its pacing cannot be
+/// defeated by concurrency. The legacy product fallback has a direct request
+/// path, but it shares this type's pacer and persisted ledger.
 actor JustTCGTransport {
     /// Collection refreshes and interactive Price Check requests share one
     /// pacer. The persisted ledger already shares quota; sharing the actor also
@@ -90,24 +199,25 @@ actor JustTCGTransport {
     private let configuration: Configuration
     private let session: URLSession
     private let ledger: JustTCGRequestLedger
-    private var lastRequestAt: Date?
+    private let pacer: JustTCGPacer
+    private let apiKeyOverride: String?
 
     init(
         configuration: Configuration = Configuration(),
         session: URLSession = .shared,
-        ledger: JustTCGRequestLedger = JustTCGRequestLedger()
+        ledger: JustTCGRequestLedger = JustTCGRequestLedger(),
+        pacer: JustTCGPacer = .shared,
+        apiKeyOverride: String? = nil
     ) {
         self.configuration = configuration
         self.session = session
         self.ledger = ledger
+        self.pacer = pacer
+        self.apiKeyOverride = apiKeyOverride
     }
 
     func snapshot(now: Date = .now) -> JustTCGRequestLedger.Snapshot {
         ledger.snapshot(now: now)
-    }
-
-    func beginRun() {
-        ledger.beginRun()
     }
 
     // MARK: - Requests
@@ -138,7 +248,12 @@ actor JustTCGTransport {
         _ request: URLRequest,
         lane: JustTCGRequestLane
     ) async throws -> Response {
-        // Reserved immediately before the call, never optimistically in advance,
+        // Pace before reserving. If a queued request is cancelled while waiting,
+        // it never consumes the day's allowance.
+        try await pace(lane: lane)
+        guard !Task.isCancelled else { throw CancellationError() }
+
+        // Reserve immediately before the call, never optimistically in advance,
         // so an abandoned plan does not silently consume the day's allowance.
         switch ledger.reserve(lane: lane) {
         case .allowed:
@@ -150,8 +265,6 @@ actor JustTCGTransport {
         case let .rateLimited(retryAt):
             throw TransportError.rateLimited(retryAt: retryAt)
         }
-
-        try await pace()
 
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {
@@ -191,7 +304,7 @@ actor JustTCGTransport {
         method: String,
         body: Data?
     ) throws -> URLRequest {
-        guard let key = PriceVendorCredentials.key else {
+        guard let key = apiKeyOverride ?? PriceVendorCredentials.key else {
             throw TransportError.missingCredentials
         }
         guard var components = URLComponents(
@@ -220,15 +333,11 @@ actor JustTCGTransport {
         return request
     }
 
-    private func pace() async throws {
-        if let lastRequestAt {
-            let remaining = configuration.minimumRequestInterval
-                - Date.now.timeIntervalSince(lastRequestAt)
-            if remaining > 0 {
-                try await Task.sleep(for: .milliseconds(Int(remaining * 1000)))
-            }
-        }
-        lastRequestAt = .now
+    private func pace(lane: JustTCGRequestLane) async throws {
+        try await pacer.wait(
+            lane: lane,
+            minimumInterval: configuration.minimumRequestInterval
+        )
     }
 
     /// Just the quota block, for reading it out of any response regardless of

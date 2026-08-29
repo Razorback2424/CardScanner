@@ -61,3 +61,37 @@ The focused baseline passed 28 `CardLatchTests`. The full suite had three unrela
 - `xcodebuild build-for-testing -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/trading-card-scanner-held-repeat-tests SWIFT_ENABLE_EXPLICIT_MODULES=NO` — an initial attempt completed without source diagnostics; a later rerun was blocked before test execution by the local SwiftData macro server returning a malformed response.
 - Added focused coverage for one-shot latch authorization, non-spatial semantics, identity mismatch, authorized reseeding after tracker loss, fake-clock expiry, and request carry-through.
 - Runtime XCTest execution after this slice was not available because CoreSimulatorService was disconnected and no simulator device set could be discovered. The previously recorded 506-test baseline remains unchanged; on-device validation is still required for stacked-card camera behavior.
+
+## Remaining code-sweep fixes
+
+This slice follows the later validated code-sweep report. The working tree also
+contains newer user-owned browse, portfolio, and card-movement changes; those
+are preserved and are not being reset or folded into unrelated fixes.
+
+- [x] Repair the Browse price-sort request lifecycle and completion coverage.
+- [x] Make effective price invalidation the shared production source of truth.
+- [x] Make portfolio close reads fail closed, matching the repaired write path.
+- [x] Make portfolio bootstrap fail closed when inventory or collection rows cannot be read.
+- [x] Make scanner review deletion and centering capture lifecycle-safe.
+- [x] Cancel artwork work with the detail view and reject non-sealed fallback data.
+- [x] Repair retry/cancellation/single-flight defensive paths and concrete Swift 6 warnings.
+
+Baseline for this slice: the user reports 561 tests with four repeated
+network-dependent failures. The edited sources pass parser validation and
+`git diff --check`; the most recent local `xcodebuild` attempt was blocked
+before compilation because CoreSimulator had no discoverable runtime.
+
+### Final code-sweep verification
+
+- All production Swift sources and tests pass `swiftc -frontend -parse`.
+- `git diff --check` is clean.
+- Generic iOS app build and test bundle build both pass with explicit modules
+  disabled; the only emitted messages are Xcode's signed XCTest bundle-strip
+  notices.
+- Focused agent-run tests covered Browse/catalog lifecycle, portfolio
+  reconciliation/ledger behavior, camera/artwork/sealed paths, and shared
+  JustTCG cancellation/lane behavior.
+- The user-reported full suite remains 561 tests with four repeated
+  network-dependent failures; no screenshot loop was run.
+- Portfolio bootstrap now propagates inventory/collection fetch failures rather
+  than treating either store as empty and writing a false initial baseline.

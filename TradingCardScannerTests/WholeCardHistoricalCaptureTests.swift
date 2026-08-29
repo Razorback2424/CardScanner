@@ -122,6 +122,48 @@ final class WholeCardHistoricalCaptureTests: XCTestCase {
         XCTAssertEqual(monitor.observe(tinyText, hasFooterText: true).message, "Move closer")
     }
 
+    func testStablePresentationSurvivesOneBlankOCRFrame() {
+        var monitor = CaptureAssistanceMonitor()
+        let tinyText = assessment(textHeight: 5)
+
+        for _ in 0..<4 {
+            _ = monitor.observe(tinyText, hasFooterText: true)
+        }
+        XCTAssertEqual(monitor.presentation, .cardStable)
+
+        let blankFrame = monitor.observe(tinyText, hasFooterText: false)
+        XCTAssertEqual(monitor.presentation, .cardStable)
+        XCTAssertEqual(blankFrame.message, "Move closer")
+
+        _ = monitor.observe(tinyText, hasFooterText: false)
+        XCTAssertEqual(monitor.presentation, .cardStable)
+
+        _ = monitor.observe(tinyText, hasFooterText: false)
+        XCTAssertEqual(monitor.presentation, .unknown)
+    }
+
+    func testStablePresentationCounterIsBoundedAfterLongRun() {
+        var monitor = CaptureAssistanceMonitor()
+        let readableText = assessment(textHeight: 12)
+
+        for _ in 0..<60 {
+            _ = monitor.observe(readableText, hasFooterText: true)
+        }
+        XCTAssertEqual(monitor.presentation, .cardStable)
+
+        var releaseFrame: Int?
+        for frame in 1...4 {
+            _ = monitor.observe(readableText, hasFooterText: false)
+            if monitor.presentation == .unknown {
+                releaseFrame = frame
+                break
+            }
+        }
+
+        XCTAssertNotNil(releaseFrame)
+        XCTAssertLessThanOrEqual(releaseFrame ?? .max, 3)
+    }
+
     func testCameraSettlingNeverProducesAComplaint() {
         var monitor = CaptureAssistanceMonitor()
         let settling = assessment(textHeight: 4, adjustingFocus: true)

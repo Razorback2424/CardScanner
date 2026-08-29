@@ -122,12 +122,34 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
 
         let cardsByProviderID = Dictionary(grouping: candidates, by: \.providerID)
+        let priceLog = PriceObservationLog(context: context)
         for request in requests {
             let rows = cardsByProviderID[request.sourceProviderID] ?? []
             if let metadata = matches[request.sourceProviderID] {
                 for row in rows {
+                    let previousVariantID = row.justTCGVariantID
+                    let previousPriceKey = row.priceKey
                     row.applyCatalogMetadata(metadata, checkedAt: now)
                     row.catalogMetadataVersion = Self.metadataVersion
+
+                    // A changed marketplace variant is a changed priced object,
+                    // even though the collection row and its physical finish
+                    // stayed the same. Withdraw the old evidence before the new
+                    // refresh can write under the row's (possibly unchanged)
+                    // price key; otherwise a legacy reader can keep showing the
+                    // old listing until a successful refresh happens to replace
+                    // it. This is the one production path with enough evidence
+                    // to make an invalidation decision: the catalog identity
+                    // itself changed, rather than merely returning no quote.
+                    if let previousVariantID,
+                       let currentVariantID = metadata.justTCGVariantID,
+                       previousVariantID != currentVariantID {
+                        _ = priceLog.recordInvalidation(
+                            instrumentKey: previousPriceKey,
+                            source: .justTCG,
+                            at: now
+                        )
+                    }
                 }
             } else {
                 let isDefinitiveSealedMiss = request.itemKind == .sealedProduct
@@ -232,7 +254,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private let tcgdex = TCGdexService()
     private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
-    private let justTCG = JustTCGV1Client(transport: JustTCGTransport())
+    private let justTCG = JustTCGV1Client(transport: JustTCGTransport.shared)
     private static let pokemonConcurrency = 4
 
     func resolve(_ requests: [ImportedCatalogRequest]) async -> ImportedCatalogResolution {

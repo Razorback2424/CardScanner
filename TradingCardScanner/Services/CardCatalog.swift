@@ -17,6 +17,72 @@ enum PokemonHistoricalCatalogError: Error, Sendable {
     case unsupported
 }
 
+/// A cancellation-aware bridge for a shared task. `Task.value` does not make
+/// the awaiting caller return when that caller is cancelled, so the bridge
+/// resumes its continuation from either the shared result or cancellation.
+/// The lock also makes the result/cancellation race a single-resume decision.
+private final class CardCatalogWaiter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<IdentifiedCard, Error>?
+    private var result: Result<IdentifiedCard, Error>?
+    private var cancelled = false
+
+    @discardableResult
+    func install(_ continuation: CheckedContinuation<IdentifiedCard, Error>) -> Bool {
+        var resultToResume: Result<IdentifiedCard, Error>?
+        var shouldCancel = false
+        var shouldObserve = false
+
+        lock.lock()
+        if cancelled {
+            shouldCancel = true
+        } else if let result {
+            self.result = nil
+            resultToResume = result
+        } else {
+            self.continuation = continuation
+            shouldObserve = true
+        }
+        lock.unlock()
+
+        if shouldCancel {
+            continuation.resume(throwing: CancellationError())
+        } else if let resultToResume {
+            continuation.resume(with: resultToResume)
+        }
+        return shouldObserve
+    }
+
+    func resolve(_ result: Result<IdentifiedCard, Error>) {
+        var continuationToResume: CheckedContinuation<IdentifiedCard, Error>?
+
+        lock.lock()
+        if !cancelled {
+            if let continuation {
+                self.continuation = nil
+                continuationToResume = continuation
+            } else {
+                self.result = result
+            }
+        }
+        lock.unlock()
+
+        continuationToResume?.resume(with: result)
+    }
+
+    func cancel() {
+        var continuationToResume: CheckedContinuation<IdentifiedCard, Error>?
+
+        lock.lock()
+        cancelled = true
+        continuationToResume = continuation
+        continuation = nil
+        lock.unlock()
+
+        continuationToResume?.resume(throwing: CancellationError())
+    }
+}
+
 /// Turns identifiers into catalog records, overlapping the network with OCR
 /// instead of waiting for one to finish before starting the other.
 ///
@@ -49,14 +115,16 @@ actor CardCatalog {
     /// affect anything on its own.
     func prefetch(_ identifier: ScanIdentifier) {
         guard resolved[identifier] == nil, inFlight[identifier] == nil else { return }
-        let task = start(identifier)
-        Task { _ = await self.complete(identifier, task: task) }
+        _ = start(identifier)
     }
 
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
         if let card = resolved[identifier] { return card }
         let task = inFlight[identifier] ?? start(identifier)
-        return try await complete(identifier, task: task).get()
+        // The lookup is shared and must outlive this caller. Only the waiter
+        // below is cancelled, while the independent completion observer still
+        // caches a successful result and clears the in-flight entry.
+        return try await waitForSharedResult(task)
     }
 
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
@@ -167,7 +235,32 @@ actor CardCatalog {
             }
         }
         inFlight[identifier] = task
+        Task { [weak self] in
+            guard let self else { return }
+            _ = await self.complete(identifier, task: task)
+        }
         return task
+    }
+
+    /// Await a shared lookup without making caller cancellation cancel the
+    /// shared network task. The continuation is resumed by either the shared
+    /// result observer or the cancellation handler; the shared task itself is
+    /// never cancelled by this caller.
+    private func waitForSharedResult(
+        _ task: Task<IdentifiedCard, Error>
+    ) async throws -> IdentifiedCard {
+        let waiter = CardCatalogWaiter()
+        return try await withTaskCancellationHandler(operation: {
+            try await withCheckedThrowingContinuation { continuation in
+                if waiter.install(continuation) {
+                    Task {
+                        waiter.resolve(await task.result)
+                    }
+                }
+            }
+        }, onCancel: {
+            waiter.cancel()
+        })
     }
 
     private func complete(

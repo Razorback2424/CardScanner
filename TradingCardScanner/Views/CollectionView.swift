@@ -11,7 +11,9 @@ struct CollectionView: View {
 
     @Query private var priceRecords: [PriceRecord]
     let catalog: any BrowseCatalogProviding
+    @ObservedObject var history: PortfolioHistoryStore
     let opensBrowseOnLaunch: Bool
+    let opensMovementDetailsOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
     @Binding var sort: CollectionSort
@@ -30,15 +32,17 @@ struct CollectionView: View {
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalErrorMessage: String?
-    /// The detail column's stack. Selection lives here rather than in a closure
-    /// destination so it survives the window shrinking to one column and widening
-    /// back out — resizing must never throw away where the user was.
+    /// The compact phone stack or regular-width detail-column stack. Selection
+    /// lives here rather than in a closure destination so it survives the
+    /// window shrinking to one column and widening back out — resizing must
+    /// never throw away where the user was.
     @State private var navigationPath: [Destination] = []
     /// `.doubleColumn` rather than `.automatic`: automatic hides the grid behind a
     /// toggle in a portrait iPad window, which would land the user on an empty
     /// detail pane in the one orientation an iPad is most often held.
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Both of the collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
@@ -48,17 +52,22 @@ struct CollectionView: View {
         case browse
         case history
         case card(String)
+        case movement(String)
     }
 
     init(
         catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        history: PortfolioHistoryStore,
         opensBrowseOnLaunch: Bool,
+        opensMovementDetailsOnLaunch: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
         onRefresh: @escaping @MainActor () async -> Void,
         sort: Binding<CollectionSort>
     ) {
         self.catalog = catalog
+        self.history = history
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
+        self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
         self.onOpenScanner = onOpenScanner
         self.onRefresh = onRefresh
         self._sort = sort
@@ -81,61 +90,33 @@ struct CollectionView: View {
         // filter-option counts always describe the same logical collection.
         let snapshot = makeSnapshot()
 
-        return NavigationSplitView(columnVisibility: $columnVisibility) {
-            Group {
-                if cards.isEmpty {
-                    emptyCollection
-                } else {
-                    content(snapshot)
+        return Group {
+            if horizontalSizeClass == .compact {
+                // On a phone the collection itself is the navigation root. A
+                // split view's empty detail column would otherwise become an
+                // extra back-stop between a card and the collection grid.
+                NavigationStack(path: $navigationPath) {
+                    collectionRoot(snapshot)
+                        .navigationDestination(for: Destination.self) { destination in
+                            destinationView(destination, in: snapshot)
+                        }
                 }
-            }
-            // Wider than a stock sidebar, because this column is a grid of card
-            // art rather than a list of labels — at the default width it would
-            // show one column and waste the room it was given.
-            .navigationSplitViewColumnWidth(min: 360, ideal: 520)
-            .navigationTitle("Collection")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button {
-                        select(.browse)
-                    } label: {
-                        Label("Find items to add", systemImage: "plus")
+            } else {
+                NavigationSplitView(columnVisibility: $columnVisibility) {
+                    collectionRoot(snapshot)
+                        // Wider than a stock sidebar, because this column is a
+                        // grid of card art rather than a list of labels — at the
+                        // default width it would show one column and waste the
+                        // room it was given.
+                        .navigationSplitViewColumnWidth(min: 360, ideal: 520)
+                } detail: {
+                    NavigationStack(path: $navigationPath) {
+                        noSelection
+                            .navigationDestination(for: Destination.self) { destination in
+                                destinationView(destination, in: snapshot)
+                            }
                     }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Find items to add")
-
-                    Button("Filters", systemImage: filters.isActive
-                           ? "line.3.horizontal.decrease.circle.fill"
-                           : "line.3.horizontal.decrease.circle") {
-                        isShowingFilters = true
-                    }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
-
-                    Button {
-                        select(.history)
-                    } label: {
-                        Label("Collection history", systemImage: "clock.arrow.circlepath")
-                    }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Collection history")
                 }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Settings", systemImage: "gearshape") {
-                        isShowingSettings = true
-                    }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Settings")
-                }
-            }
-        } detail: {
-            NavigationStack(path: $navigationPath) {
-                noSelection
-                    .navigationDestination(for: Destination.self) { destination in
-                        destinationView(destination, in: snapshot)
-                    }
             }
         }
         .inspector(isPresented: $isShowingFilters) {
@@ -162,6 +143,12 @@ struct CollectionView: View {
             guard opensBrowseOnLaunch, navigationPath.isEmpty else { return }
             select(.browse)
         }
+        .task {
+            guard opensMovementDetailsOnLaunch, navigationPath.isEmpty else { return }
+            try? await Task.sleep(for: .milliseconds(300))
+            guard let entry = snapshot.entries.first else { return }
+            navigationPath = [.card(entry.id), .movement(entry.id)]
+        }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
                 removalUndoBanner(pendingRemoval).contentWidthLimit(.standard)
@@ -171,6 +158,54 @@ struct CollectionView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(removalErrorMessage ?? "Please try again.")
+        }
+    }
+
+    @ViewBuilder
+    private func collectionRoot(_ snapshot: Snapshot) -> some View {
+        Group {
+            if cards.isEmpty {
+                emptyCollection
+            } else {
+                content(snapshot)
+            }
+        }
+        .navigationTitle("Collection")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button {
+                    select(.browse)
+                } label: {
+                    Label("Find items to add", systemImage: "plus")
+                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("Find items to add")
+
+                Button("Filters", systemImage: filters.isActive
+                       ? "line.3.horizontal.decrease.circle.fill"
+                       : "line.3.horizontal.decrease.circle") {
+                    isShowingFilters = true
+                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
+
+                Button {
+                    select(.history)
+                } label: {
+                    Label("Collection history", systemImage: "clock.arrow.circlepath")
+                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("Collection history")
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Settings", systemImage: "gearshape") {
+                    isShowingSettings = true
+                }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("Settings")
+            }
         }
     }
 
@@ -193,14 +228,32 @@ struct CollectionView: View {
                 CollectionCardDetailView(
                     card: entry.card,
                     price: entry.row.price,
+                    history: history,
                     unpricedReason: entry.unpricedReason,
                     artworkReason: entry.artworkReason,
+                    logicalQuantity: entry.row.quantity,
+                    isLogicalConflict: entry.isLogicalConflict,
                     onRemoved: presentUndo(for:)
                 )
             } else {
                 // The card was removed, or a filter now excludes it. Either way the
                 // id no longer names anything, so say so rather than showing a stale
                 // copy of a card that is not in the collection any more.
+                ContentUnavailableView(
+                    "Card not shown",
+                    systemImage: "rectangle.stack",
+                    description: Text("It was removed, or the current filters exclude it.")
+                )
+            }
+        case let .movement(id):
+            if let entry = snapshot.entries.first(where: { $0.id == id }) {
+                MovementDetailsView(
+                    card: entry.card,
+                    price: entry.row.price,
+                    history: history,
+                    quantity: entry.row.quantity
+                )
+            } else {
                 ContentUnavailableView(
                     "Card not shown",
                     systemImage: "rectangle.stack",
@@ -406,6 +459,7 @@ struct CollectionView: View {
             let card: CollectedCard
             let unpricedReason: PricingDiagnosticReason?
             let artworkReason: ArtworkDiagnosticReason?
+            let isLogicalConflict: Bool
 
             var id: String { row.id }
         }
@@ -467,7 +521,8 @@ struct CollectionView: View {
                     unpricedReason: row.unitPrice == nil
                         ? PricingDiagnostics.unpricedReason(for: card, record: record)
                         : nil,
-                    artworkReason: ArtworkDiagnostics.reason(for: card)
+                    artworkReason: ArtworkDiagnostics.reason(for: card),
+                    isLogicalConflict: (projection.byKey[row.id]?.physicalRowCount ?? 1) > 1
                 )
             }
         )

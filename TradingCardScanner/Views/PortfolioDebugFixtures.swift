@@ -6,6 +6,83 @@ import SwiftData
 /// still derives every close, reconciliation row, and chart point from them.
 enum PortfolioDebugFixtures {
     @MainActor
+    static func seedMovementIfNeeded(in modelContext: ModelContext) {
+        guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
+
+        let timeZone = PortfolioCalendar.timeZone()
+        let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+        let epochDay = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-3 * 86_400),
+            in: timeZone
+        )
+        UserDefaults.standard.set(epochDay.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
+
+        let product = SealedProductSummary(
+            id: "ui-movement-card",
+            name: "Movement Details QA Card",
+            setName: "Movement QA",
+            variantID: "ui-movement-card-variant",
+            marketPriceUSD: 9.95,
+            updatedAt: .now,
+            imageURL: nil
+        )
+        let store = CollectionStore(context: modelContext)
+        _ = try? store.addSealed(product, game: .pokemon)
+        _ = try? store.addSealed(product, game: .pokemon)
+        _ = try? store.addSealed(product, game: .pokemon)
+
+        guard let card = (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.first else { return }
+        let ledger = InventoryLedger(context: modelContext)
+        let instrument = ledger.priceStorageKey(for: card)
+        for event in (try? ledger.events(collectionKey: card.collectionKey)) ?? [] {
+            event.occurredAt = epochDay.addingTimeInterval(60)
+        }
+
+        let first = epochDay.addingTimeInterval(3_600)
+        modelContext.insert(
+            PriceObservation(
+                instrumentKey: instrument,
+                kind: .marketUpdate,
+                amount: Money(rounding: 10),
+                source: .justTCG,
+                sourceVariantID: card.justTCGVariantID,
+                marketVariantID: card.justTCGVariantID,
+                effectiveAt: first,
+                receivedAt: first,
+                isSourceStamped: true
+            )
+        )
+        modelContext.insert(
+            PriceObservation(
+                instrumentKey: instrument,
+                kind: .marketUpdate,
+                amount: Money(rounding: 9.95),
+                source: .justTCG,
+                sourceVariantID: card.justTCGVariantID,
+                marketVariantID: card.justTCGVariantID,
+                effectiveAt: .now,
+                receivedAt: .now,
+                isSourceStamped: true
+            )
+        )
+        modelContext.insert(
+            PriceCheckDay(
+                instrumentKey: instrument,
+                portfolioDay: today,
+                lastSuccessfulCheckAt: .now,
+                source: .justTCG
+            )
+        )
+        if let record = PriceStore(context: modelContext).record(forKey: instrument) {
+            record.unitMarketPriceUSD = 9.95
+            record.fetchedAt = .now
+            record.sourceUpdatedAt = .now
+            record.lastSuccessfulCheckAt = .now
+        }
+        try? modelContext.save()
+    }
+
+    @MainActor
     static func seedHistoryIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
@@ -35,7 +112,7 @@ enum PortfolioDebugFixtures {
 
         guard let card = (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.first else { return }
         let instrument = InventoryLedger(context: modelContext).priceStorageKey(for: card)
-        for event in InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey) {
+        for event in (try? InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey)) ?? [] {
             event.occurredAt = epochDay.addingTimeInterval(60)
         }
 
@@ -117,7 +194,7 @@ enum PortfolioDebugFixtures {
         let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         for (card, fixture) in zip(cards.sorted { $0.name < $1.name }, fixtures.sorted { $0.name < $1.name }) {
             let instrument = InventoryLedger(context: modelContext).priceStorageKey(for: card)
-            for event in InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey) {
+        for event in (try? InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey)) ?? [] {
                 event.occurredAt = epoch.addingTimeInterval(60)
             }
             modelContext.insert(

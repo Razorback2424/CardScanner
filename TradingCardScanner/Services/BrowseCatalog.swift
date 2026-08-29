@@ -52,6 +52,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var pokemonSetSummaries: [String: [CatalogCardSummary]] = [:]
     private var pokemonSnapshot: PokemonChecklistSnapshot?
     private var pokemonSnapshotLoaded = false
+    /// The read is shared across re-entrant actor calls. It is intentionally
+    /// unstructured: cancelling one Browse caller must not cancel the snapshot
+    /// load that another caller may still need.
+    private var pokemonSnapshotLoadTask: Task<PokemonChecklistSnapshot?, Never>?
     private var refreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var sortPriceCache: [String: Double] = [:]
@@ -462,14 +466,32 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func loadPokemonSnapshotIfNeeded() async {
         guard !pokemonSnapshotLoaded else { return }
-        pokemonSnapshotLoaded = true
-        let bundled = await checklistStore.bundledSnapshot()
-        let downloaded = await checklistStore.downloadedSnapshot()
-        pokemonSnapshot = PokemonChecklistSnapshot.merged(
-            bundled: bundled,
-            downloaded: downloaded
-        )
-        if let snapshot = pokemonSnapshot {
+        let loadTask: Task<PokemonChecklistSnapshot?, Never>
+        if let existing = pokemonSnapshotLoadTask {
+            loadTask = existing
+        } else {
+            let checklistStore = checklistStore
+            let task = Task<PokemonChecklistSnapshot?, Never> {
+                let bundled = await checklistStore.bundledSnapshot()
+                let downloaded = await checklistStore.downloadedSnapshot()
+                return PokemonChecklistSnapshot.merged(
+                    bundled: bundled,
+                    downloaded: downloaded
+                )
+            }
+            pokemonSnapshotLoadTask = task
+            loadTask = task
+        }
+
+        let snapshot = await loadTask.value
+        // Do not turn a cancelled or unsuccessful request into a completed
+        // latch. A nil result must remain retryable if both snapshot sources
+        // were temporarily unavailable.
+        guard !Task.isCancelled else { return }
+        pokemonSnapshotLoadTask = nil
+        pokemonSnapshotLoaded = snapshot != nil
+        pokemonSnapshot = snapshot
+        if let snapshot {
             let sets = snapshot.sets
             setCache[.pokemon] = sets
             installPokemonReleaseOrder(from: sets, game: .pokemon)

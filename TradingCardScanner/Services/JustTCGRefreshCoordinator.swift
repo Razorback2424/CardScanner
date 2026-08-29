@@ -153,20 +153,31 @@ struct JustTCGRefreshCoordinator {
 
                 for lookup in chunk {
                     guard let owners = batched[lookup] else { continue }
-                    guard case let .matched(card, variant) = Self.exactListing(
-                        lookup: lookup,
-                        owners: owners,
-                        response: response
-                    ) else {
-                        // Absent from a delta response means "unchanged", and a
-                        // cached price must never be cleared because of it. In a
-                        // full response absence is ambiguous — unresolved or
-                        // unavailable — and is likewise left alone rather than
-                        // guessed at.
-                        continue
+                    var applied = false
+
+                    // A card-level lookup can serve several owned finishes. The
+                    // request is still deduplicated, but the returned listing
+                    // must be selected and applied per physical variant.
+                    for finishOwners in Dictionary(grouping: owners, by: \.variantID).values {
+                        guard case let .matched(card, variant) = Self.exactListing(
+                            lookup: lookup,
+                            owners: finishOwners,
+                            response: response
+                        ) else {
+                            // Absent from a delta response means "unchanged", and a
+                            // cached price must never be cleared because of it. In a
+                            // full response absence is ambiguous — unresolved or
+                            // unavailable — and is likewise left alone rather than
+                            // guessed at.
+                            continue
+                        }
+                        apply(card, variant, finishOwners)
+                        applied = true
                     }
-                    apply(card, variant, owners)
-                    report.variantsUpdated += owners.isEmpty ? 0 : 1
+                    // Keep this counter at one per network lookup, preserving
+                    // the report's existing meaning even when one response
+                    // contains several owned finishes.
+                    report.variantsUpdated += applied ? 1 : 0
                 }
 
                 report.batchesCompleted += 1
@@ -279,7 +290,11 @@ struct JustTCGRefreshCoordinator {
         // No finish was requested — an imported row whose finish was never
         // recorded. One Near Mint listing is unambiguous; several are not, and
         // guessing between them is how a foil's price lands on a plain copy.
-        guard wanted.isEmpty else { return nil }
+        // An explicit but unmapped finish is different from an absent finish:
+        // it is known physical evidence that this resolver cannot translate,
+        // so it must remain unpriced rather than borrowing the sole Near Mint
+        // listing by accident.
+        guard wanted.isEmpty, owners.allSatisfy({ $0.variantID == nil }) else { return nil }
         let nearMint = variants.filter {
             $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
         }

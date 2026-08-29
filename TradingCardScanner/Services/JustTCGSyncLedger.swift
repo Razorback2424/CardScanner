@@ -2,10 +2,16 @@ import Foundation
 
 /// The persisted record of how much of the vendor's allowance has been spent.
 ///
-/// Not an actor: it is only ever touched from inside `JustTCGTransport`, which
-/// is one. Keeping it a plain type makes it directly testable against an
-/// injected `UserDefaults` suite without awaiting anything.
-struct JustTCGRequestLedger: Sendable {
+/// Not an actor: its small UserDefaults transactions are protected by a lock
+/// because both the shared transport and the direct product fallback use it.
+/// Keeping it a plain type makes it directly testable against an injected
+/// `UserDefaults` suite without awaiting anything.
+struct JustTCGRequestLedger: @unchecked Sendable {
+    /// Transport and identity lookup are separate actors, but they spend from
+    /// the same persisted allowance. The lock makes each read/modify/write
+    /// reservation atomic across those actors as well as across app tasks.
+    private static let accessLock = NSLock()
+
     struct Snapshot: Equatable, Sendable {
         let usedToday: Int
         let remainingToday: Int
@@ -38,15 +44,9 @@ struct JustTCGRequestLedger: Sendable {
     private let usedTodayKey = "justTCGRequestsUsedToday"
     private let usedMonthKey = "justTCGRequestsUsedThisMonth"
     private let blockedUntilKey = "justTCGBlockedUntil"
-    private let runKey = "justTCGRunRequests"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-    }
-
-    func beginRun() {
-        defaults.set(0, forKey: runKey)
-        rolloverIfNeeded(now: .now)
     }
 
     /// Take one request from the allowance, or explain why it cannot.
@@ -54,33 +54,36 @@ struct JustTCGRequestLedger: Sendable {
     /// The lane decides the ceiling: background work stops at 75 so the last 20
     /// stay available for whatever the user asks for directly.
     func reserve(lane: JustTCGRequestLane, now: Date = .now) -> Reservation {
-        rolloverIfNeeded(now: now)
+        Self.withLock {
+            rolloverIfNeeded(now: now)
 
-        if let retryAt = defaults.object(forKey: blockedUntilKey) as? Date, retryAt > now {
-            return .rateLimited(retryAt: retryAt)
+            if let retryAt = defaults.object(forKey: blockedUntilKey) as? Date, retryAt > now {
+                return .rateLimited(retryAt: retryAt)
+            }
+
+            let usedMonth = defaults.integer(forKey: usedMonthKey)
+            guard usedMonth < JustTCGQuota.monthlyHardLimit else {
+                return .monthlyReached(resetAt: nextMonthStart(after: now))
+            }
+
+            let usedToday = defaults.integer(forKey: usedTodayKey)
+            guard usedToday < lane.ceiling else {
+                return .dailyReached(resetAt: nextDayStart(after: now))
+            }
+
+            defaults.set(usedToday + 1, forKey: usedTodayKey)
+            defaults.set(usedMonth + 1, forKey: usedMonthKey)
+            return .allowed
         }
-
-        let usedMonth = defaults.integer(forKey: usedMonthKey)
-        guard usedMonth < JustTCGQuota.monthlyHardLimit else {
-            return .monthlyReached(resetAt: nextMonthStart(after: now))
-        }
-
-        let usedToday = defaults.integer(forKey: usedTodayKey)
-        guard usedToday < lane.ceiling else {
-            return .dailyReached(resetAt: nextDayStart(after: now))
-        }
-
-        defaults.set(usedToday + 1, forKey: usedTodayKey)
-        defaults.set(usedMonth + 1, forKey: usedMonthKey)
-        defaults.set(defaults.integer(forKey: runKey) + 1, forKey: runKey)
-        return .allowed
     }
 
     /// A 429 blocks every lane until the server's own retry moment. Recorded
     /// without consuming an allowance — being told to wait is not a request the
     /// user got any value from.
     func recordRateLimit(until date: Date) {
-        defaults.set(date, forKey: blockedUntilKey)
+        Self.withLock {
+            defaults.set(date, forKey: blockedUntilKey)
+        }
     }
 
     /// Correct the local count against the vendor's own, which every response
@@ -98,30 +101,40 @@ struct JustTCGRequestLedger: Sendable {
     /// it has spent more than the server has recorded yet, spending down to the
     /// server's number would overshoot the limit.
     func syncFromServer(_ metadata: JustTCGQuotaMetadata, now: Date = .now) {
-        rolloverIfNeeded(now: now)
-        if let used = metadata.apiDailyRequestsUsed {
-            defaults.set(max(used, defaults.integer(forKey: usedTodayKey)), forKey: usedTodayKey)
-        }
-        if let used = metadata.apiRequestsUsed {
-            defaults.set(max(used, defaults.integer(forKey: usedMonthKey)), forKey: usedMonthKey)
+        Self.withLock {
+            rolloverIfNeeded(now: now)
+            if let used = metadata.apiDailyRequestsUsed {
+                defaults.set(max(used, defaults.integer(forKey: usedTodayKey)), forKey: usedTodayKey)
+            }
+            if let used = metadata.apiRequestsUsed {
+                defaults.set(max(used, defaults.integer(forKey: usedMonthKey)), forKey: usedMonthKey)
+            }
         }
     }
 
     func snapshot(now: Date = .now) -> Snapshot {
-        rolloverIfNeeded(now: now)
-        let usedToday = defaults.integer(forKey: usedTodayKey)
-        let usedMonth = defaults.integer(forKey: usedMonthKey)
-        return Snapshot(
-            usedToday: usedToday,
-            remainingToday: max(JustTCGQuota.dailyHardLimit - usedToday, 0),
-            usedThisMonth: usedMonth,
-            remainingThisMonth: max(JustTCGQuota.monthlyHardLimit - usedMonth, 0),
-            dailyResetAt: nextDayStart(after: now),
-            monthlyResetAt: nextMonthStart(after: now),
-            retryAt: (defaults.object(forKey: blockedUntilKey) as? Date).flatMap {
-                $0 > now ? $0 : nil
-            }
-        )
+        Self.withLock {
+            rolloverIfNeeded(now: now)
+            let usedToday = defaults.integer(forKey: usedTodayKey)
+            let usedMonth = defaults.integer(forKey: usedMonthKey)
+            return Snapshot(
+                usedToday: usedToday,
+                remainingToday: max(JustTCGQuota.dailyHardLimit - usedToday, 0),
+                usedThisMonth: usedMonth,
+                remainingThisMonth: max(JustTCGQuota.monthlyHardLimit - usedMonth, 0),
+                dailyResetAt: nextDayStart(after: now),
+                monthlyResetAt: nextMonthStart(after: now),
+                retryAt: (defaults.object(forKey: blockedUntilKey) as? Date).flatMap {
+                    $0 > now ? $0 : nil
+                }
+            )
+        }
+    }
+
+    private static func withLock<Result>(_ body: () -> Result) -> Result {
+        accessLock.lock()
+        defer { accessLock.unlock() }
+        return body()
     }
 
     // MARK: - Rollover
@@ -133,7 +146,6 @@ struct JustTCGRequestLedger: Sendable {
             defaults.set(today, forKey: dayKey)
             defaults.set(0, forKey: usedTodayKey)
             defaults.removeObject(forKey: blockedUntilKey)
-            defaults.set(0, forKey: runKey)
         }
 
         let month = calendar.dateInterval(of: .month, for: now)?.start ?? today
@@ -170,7 +182,11 @@ struct JustTCGRequestLedger: Sendable {
 /// The rule this exists to enforce: `updated_after` is only safe once a complete
 /// pass has succeeded. Before that, a variant missing from a delta response is
 /// indistinguishable from one that was never fetched.
-struct JustTCGSyncLedger: Sendable {
+struct JustTCGSyncLedger: @unchecked Sendable {
+    /// A sync checkpoint is a read/modify/write transaction. UserDefaults is
+    /// thread-safe for individual operations, but that guarantee does not make
+    /// the checkpoint transaction atomic across the shared transport actors.
+    private static let accessLock = NSLock()
     private let defaults: UserDefaults
     private let key = "justTCGSyncCheckpoints"
 
@@ -179,34 +195,46 @@ struct JustTCGSyncLedger: Sendable {
     }
 
     func checkpoint(game: CardGame, apiVersion: String) -> JustTCGSyncCheckpoint {
-        all()[Self.identifier(game: game, apiVersion: apiVersion)]
-            ?? JustTCGSyncCheckpoint(game: game.rawValue, apiVersion: apiVersion)
+        Self.withLock {
+            checkpointUnlocked(game: game, apiVersion: apiVersion)
+        }
     }
 
     /// The moment to pass as `updated_after`, or nil when a full pass is still
     /// required.
     func deltaCutoff(game: CardGame, apiVersion: String) -> Date? {
-        let checkpoint = self.checkpoint(game: game, apiVersion: apiVersion)
-        guard checkpoint.supportsDeltaSync else { return nil }
-        return checkpoint.lastCompleteSyncAt
+        Self.withLock {
+            let checkpoint = checkpointUnlocked(game: game, apiVersion: apiVersion)
+            guard checkpoint.supportsDeltaSync else { return nil }
+            return checkpoint.lastCompleteSyncAt
+        }
     }
 
     func recordProviderClock(game: CardGame, apiVersion: String, updatedAt: Date?) {
-        var checkpoint = self.checkpoint(game: game, apiVersion: apiVersion)
-        checkpoint.providerLastUpdated = updatedAt
-        write(checkpoint)
+        Self.withLock {
+            var checkpoint = checkpointUnlocked(game: game, apiVersion: apiVersion)
+            checkpoint.providerLastUpdated = updatedAt
+            writeUnlocked(checkpoint)
+        }
     }
 
     /// Only called when *every* batch in a pass succeeded. A partial pass must
     /// not advance the checkpoint, or the next delta would skip whatever the
     /// failed batch contained.
     func recordCompleteSync(game: CardGame, apiVersion: String, at date: Date = .now) {
-        var checkpoint = self.checkpoint(game: game, apiVersion: apiVersion)
-        checkpoint.lastCompleteSyncAt = date
-        write(checkpoint)
+        Self.withLock {
+            var checkpoint = checkpointUnlocked(game: game, apiVersion: apiVersion)
+            checkpoint.lastCompleteSyncAt = date
+            writeUnlocked(checkpoint)
+        }
     }
 
-    private func all() -> [String: JustTCGSyncCheckpoint] {
+    private func checkpointUnlocked(game: CardGame, apiVersion: String) -> JustTCGSyncCheckpoint {
+        allUnlocked()[Self.identifier(game: game, apiVersion: apiVersion)]
+            ?? JustTCGSyncCheckpoint(game: game.rawValue, apiVersion: apiVersion)
+    }
+
+    private func allUnlocked() -> [String: JustTCGSyncCheckpoint] {
         guard let data = defaults.data(forKey: key),
               let decoded = try? JSONDecoder().decode(
                 [String: JustTCGSyncCheckpoint].self, from: data
@@ -216,11 +244,17 @@ struct JustTCGSyncLedger: Sendable {
         return decoded
     }
 
-    private func write(_ checkpoint: JustTCGSyncCheckpoint) {
-        var checkpoints = all()
+    private func writeUnlocked(_ checkpoint: JustTCGSyncCheckpoint) {
+        var checkpoints = allUnlocked()
         checkpoints[Self.identifier(game: checkpoint.game, apiVersion: checkpoint.apiVersion)] = checkpoint
         guard let data = try? JSONEncoder().encode(checkpoints) else { return }
         defaults.set(data, forKey: key)
+    }
+
+    private static func withLock<Result>(_ body: () -> Result) -> Result {
+        accessLock.lock()
+        defer { accessLock.unlock() }
+        return body()
     }
 
     private static func identifier(game: CardGame, apiVersion: String) -> String {

@@ -48,7 +48,7 @@ struct GradedCardIdentity: Hashable, Sendable {
             .joined(separator: "|")
     }
 
-    func matches(_ card: JustTCGCard) -> Bool {
+    func matches(_ card: JustTCGCard, game: CardGame) -> Bool {
         guard let candidateName = card.name else { return false }
         guard CatalogIdentityNormalization.namesMatch(
             imported: name,
@@ -60,8 +60,8 @@ struct GradedCardIdentity: Hashable, Sendable {
             return CatalogIdentityNormalization.localNumber(candidateNumber)
                 == CatalogIdentityNormalization.localNumber(collectorNumber)
         }
-        return CatalogIdentityNormalization.canonicalSetName(setName, game: .pokemon)
-            == CatalogIdentityNormalization.canonicalSetName(card.setName ?? "", game: .pokemon)
+        return CatalogIdentityNormalization.canonicalSetName(setName, game: game)
+            == CatalogIdentityNormalization.canonicalSetName(card.setName ?? "", game: game)
     }
 }
 
@@ -130,7 +130,7 @@ struct JustTCGV2GradedClient: Sendable {
         )
 
         // Only cards that are demonstrably the one asked for.
-        return response.data.filter(identity.matches).flatMap { card in
+        return response.data.filter { identity.matches($0, game: game) }.flatMap { card in
             (card.variants ?? []).compactMap { variant -> GradedVariant? in
                 guard let id = variant.variantId,
                       let grading = variant.grading,

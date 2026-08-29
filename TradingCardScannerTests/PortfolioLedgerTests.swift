@@ -41,11 +41,13 @@ final class PortfolioLedgerTests: XCTestCase {
     private func previous(
         value: PriceObservationValue? = nil,
         effectiveAt: Date,
+        receivedAt: Date? = nil,
         isSourceStamped: Bool = true
     ) -> PriceObservationRules.Previous {
         PriceObservationRules.Previous(
             value: value ?? self.value(),
             effectiveAt: effectiveAt,
+            receivedAt: receivedAt ?? effectiveAt,
             isSourceStamped: isSourceStamped
         )
     }

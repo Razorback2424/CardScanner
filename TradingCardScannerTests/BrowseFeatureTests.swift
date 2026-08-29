@@ -131,6 +131,35 @@ final class BrowseFeatureTests: XCTestCase {
         )
     }
 
+    func testSealedSetOrderingUsesReleaseDateNewestFirst() {
+        let older = SealedSetSummary(
+            id: "older",
+            name: "Older Set",
+            sealedCount: 1,
+            game: .pokemon,
+            releaseDate: Date(timeIntervalSince1970: 100)
+        )
+        let newer = SealedSetSummary(
+            id: "newer",
+            name: "Newer Set",
+            sealedCount: 1,
+            game: .pokemon,
+            releaseDate: Date(timeIntervalSince1970: 200)
+        )
+        let undated = SealedSetSummary(
+            id: "undated",
+            name: "Undated Set",
+            sealedCount: 1,
+            game: .pokemon,
+            releaseDate: nil
+        )
+
+        XCTAssertEqual(
+            SealedSetOrdering.newestFirst([older, undated, newer]).map(\.id),
+            [newer.id, older.id, undated.id]
+        )
+    }
+
     @MainActor
     func testSealedSearchReadsCachedResultsWithoutCredentials() async throws {
         let root = try makeTemporaryCacheDirectory()

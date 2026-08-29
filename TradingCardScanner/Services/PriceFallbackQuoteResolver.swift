@@ -66,8 +66,6 @@ final class PriceFallbackQuoteResolver {
             return .failed(.missingCredentials)
         }
         guard !Task.isCancelled else { return .failed(.cancelled) }
-        await productService.beginRun()
-
         let printingID = Self.printingID(for: card, pokemonPrintRun: pokemonPrintRun)
         let key = ProductIdentity.key(game: card.game, printingID: printingID, variantID: variant?.id)
         let identities = ProductIdentityStore(context: context)
@@ -109,7 +107,11 @@ final class PriceFallbackQuoteResolver {
             return .failed(.requestFailed)
         }
 
-        let outcome = await productService.quote(for: subject, variant: variant)
+        let outcome = await productService.quote(
+            for: subject,
+            variant: variant,
+            lane: .interactive
+        )
         guard !Task.isCancelled else { return .failed(.cancelled) }
         switch outcome {
         case let .price(price, _, _):

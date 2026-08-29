@@ -30,7 +30,7 @@ final class BrowseViewModel: ObservableObject {
         sealedModel: SealedBrowseModel? = nil
     ) {
         self.catalog = catalog
-        let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport())
+        let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared)
         self.sealedModel = sealedModel
         self.sealedModelCancellable = sealedModel.objectWillChange.sink { [weak self] _ in
             self?.objectWillChange.send()
@@ -59,6 +59,8 @@ final class BrowseViewModel: ObservableObject {
 
     func loadMore(_ game: CardGame) async {
         let requestedQuery = normalizedQuery
+        let requestedGeneration = generation
+        let requestedSetIDs = effectiveSetIDs(for: game)
         guard requestedQuery.count >= 2,
               selectedGame == nil || selectedGame == game,
               var lane = lanes[game],
@@ -66,22 +68,37 @@ final class BrowseViewModel: ObservableObject {
               !lane.isLoading else { return }
         lane.isLoading = true
         lanes[game] = lane
+        defer {
+            if generation == requestedGeneration,
+               var currentLane = lanes[game] {
+                currentLane.isLoading = false
+                lanes[game] = currentLane
+            }
+        }
         do {
             let page = try await catalog.searchCards(
                 named: requestedQuery,
                 game: game,
-                setIDs: effectiveSetIDs(for: game),
+                setIDs: requestedSetIDs,
                 cursor: cursor
             )
-            guard CardNameSearch.normalize(searchText) == requestedQuery else { return }
-            lane.cards = deduplicated(lane.cards + page.items)
-            lane.cursor = page.nextCursor
-            lane.error = nil
+            guard generation == requestedGeneration,
+                  CardNameSearch.normalize(searchText) == requestedQuery,
+                  var currentLane = lanes[game],
+                  currentLane.cursor == cursor else { return }
+            currentLane.cards = deduplicated(currentLane.cards + page.items)
+            currentLane.cursor = page.nextCursor
+            currentLane.error = nil
+            lanes[game] = currentLane
         } catch {
-            lane.error = error.localizedDescription
+            guard generation == requestedGeneration,
+                  CardNameSearch.normalize(searchText) == requestedQuery,
+                  var currentLane = lanes[game],
+                  currentLane.cursor == cursor else { return }
+            currentLane.error = error.localizedDescription
+            lanes[game] = currentLane
+            return
         }
-        lane.isLoading = false
-        lanes[game] = lane
     }
 
     private func scheduleSearch() {
@@ -850,6 +867,11 @@ private struct CatalogSetCardsView: View {
     @State private var prices: [String: Double] = [:]
     @State private var isLoadingPrices = false
     @State private var hasLoadedPrices = false
+    @State private var contentGeneration = UUID()
+    /// Identifies the price request that owns `isLoadingPrices`. Content can
+    /// change while a catalog price lookup is suspended, so the content token
+    /// alone is not enough to safely clean up the loading state.
+    @State private var priceRequestID: UUID?
 
     private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
@@ -1006,24 +1028,61 @@ private struct CatalogSetCardsView: View {
 
     private func load(reset: Bool) async {
         guard !isLoading else { return }
+        let requestID = UUID()
+        contentGeneration = requestID
+        // A page load changes the card set even before its response arrives.
+        // Invalidate any sort request for the previous set so its result cannot
+        // strand the new page in a loading state or mark it fully priced.
+        priceRequestID = nil
+        isLoadingPrices = false
+        hasLoadedPrices = false
         isLoading = true
+        defer {
+            if contentGeneration == requestID { isLoading = false }
+        }
         if reset { error = nil; cursor = nil }
         do {
             let page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
+            guard contentGeneration == requestID, !Task.isCancelled else { return }
             cards = reset ? page.items : deduplicated(cards + page.items)
             cursor = page.nextCursor
-            if sort.needsPrices { await loadPrices() }
-        } catch { self.error = error.localizedDescription }
-        isLoading = false
+            if sort.needsPrices { await loadPrices(for: requestID, whileLoadingCards: true) }
+        } catch {
+            guard contentGeneration == requestID, !Task.isCancelled else { return }
+            self.error = error.localizedDescription
+        }
     }
 
-    private func loadPrices() async {
-        guard !isLoadingPrices, !cards.isEmpty else { return }
+    private func loadPrices(
+        for expectedContentGeneration: UUID? = nil,
+        whileLoadingCards: Bool = false
+    ) async {
+        // Pagination owns the card-content transition. A sort-change task must
+        // not snapshot the old card set while that transition is in flight;
+        // the page load will start the price request after its page is applied.
+        guard !cards.isEmpty,
+              whileLoadingCards || !isLoading else { return }
+        let contentRequestID = expectedContentGeneration ?? contentGeneration
+        guard contentRequestID == contentGeneration else { return }
+        guard priceRequestID == nil else { return }
+
+        let priceRequestID = UUID()
+        self.priceRequestID = priceRequestID
+        let requestedCardIDs = Set(cards.map(\.id))
         isLoadingPrices = true
         hasLoadedPrices = false
-        prices.merge(await catalog.sortPrices(for: cards)) { _, newest in newest }
-        hasLoadedPrices = true
-        isLoadingPrices = false
+        defer {
+            if self.priceRequestID == priceRequestID {
+                self.priceRequestID = nil
+                self.isLoadingPrices = false
+            }
+        }
+        let loadedPrices = await catalog.sortPrices(for: cards)
+        guard contentRequestID == contentGeneration,
+              self.priceRequestID == priceRequestID,
+              !Task.isCancelled else { return }
+        prices.merge(loadedPrices) { _, newest in newest }
+        hasLoadedPrices = requestedCardIDs == Set(cards.map(\.id))
     }
 
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
@@ -1217,6 +1276,11 @@ actor CatalogImageCache {
     private static let maximumAssetBytes = 5 * 1_024 * 1_024
 
     private let directory: URL
+    private struct InFlight {
+        let id: UUID
+        let task: Task<Data, Error>
+    }
+    private var inFlight: [URL: InFlight] = [:]
 
     init(directory: URL? = nil) {
         self.directory = directory ?? FileManager.default
@@ -1232,19 +1296,49 @@ actor CatalogImageCache {
             return cached
         }
 
+        if let existing = inFlight[url] {
+            // A cancelled image owner must not cancel a request another cell is
+            // already waiting for. The shared task is intentionally unstructured
+            // and is cleaned up by whichever waiter resumes first.
+            return try await existing.task.value
+        }
+
         var request = URLRequest(url: url)
         request.timeoutInterval = 15
         request.cachePolicy = .reloadIgnoringLocalCacheData
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw BrowseCatalogError.badResponse
+        let requestID = UUID()
+        let task = Task<Data, Error> {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse,
+                  (200..<300).contains(http.statusCode) else {
+                throw BrowseCatalogError.badResponse
+            }
+            return data
         }
-        if data.count <= Self.maximumAssetBytes {
-            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            try? data.write(to: file, options: .atomic)
-            trim()
+
+        inFlight[url] = InFlight(id: requestID, task: task)
+        do {
+            let data = try await task.value
+            // Only one waiter writes the completed response. This also avoids
+            // duplicate LRU timestamps when several visible cells share a URL.
+            if inFlight[url]?.id == requestID {
+                inFlight[url] = nil
+                if data.count <= Self.maximumAssetBytes {
+                    try? FileManager.default.createDirectory(
+                        at: directory,
+                        withIntermediateDirectories: true
+                    )
+                    try? data.write(to: file, options: .atomic)
+                    trim()
+                }
+            }
+            return data
+        } catch {
+            if inFlight[url]?.id == requestID {
+                inFlight[url] = nil
+            }
+            throw error
         }
-        return data
     }
 
     private func touch(_ url: URL) {

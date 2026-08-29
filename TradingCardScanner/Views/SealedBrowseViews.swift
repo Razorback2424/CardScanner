@@ -33,6 +33,17 @@ final class SealedBrowseModel: ObservableObject {
     private var loadedProductKey: String?
     private var searchQuery: String?
     private var searchGeneration = UUID()
+    private struct ProductRoute: Equatable {
+        let game: CardGame
+        let setID: String?
+        let query: String?
+    }
+    private var setsRequestID = UUID()
+    private var activeSetsGame: CardGame?
+    private var productsRequestID = UUID()
+    private var activeProductRoute: ProductRoute?
+    private var isLoadingSets = false
+    private var isLoadingProducts = false
 
     init(
         transport: JustTCGTransport,
@@ -166,6 +177,13 @@ final class SealedBrowseModel: ObservableObject {
         let token = searchGeneration
         lane.isLoading = true
         searchLanes[game] = lane
+        defer {
+            if token == searchGeneration,
+               var currentLane = searchLanes[game] {
+                currentLane.isLoading = false
+                searchLanes[game] = currentLane
+            }
+        }
         let cacheKey = CatalogCacheStore.sealedPageKey(
             game: game,
             setID: nil,
@@ -178,7 +196,6 @@ final class SealedBrowseModel: ObservableObject {
                   var lane = searchLanes[game] else { return }
             lane.products += saved.value.items
             lane.nextOffset = Int(saved.value.nextCursor ?? "")
-            lane.isLoading = false
             lane.error = nil
             searchLanes[game] = lane
             return
@@ -209,12 +226,11 @@ final class SealedBrowseModel: ObservableObject {
                   var lane = searchLanes[game] else { return }
             lane.products += cachePage.items
             lane.nextOffset = Int(cachePage.nextCursor ?? "")
-            lane.isLoading = false
             lane.error = nil
             searchLanes[game] = lane
         } catch {
-            guard token == searchGeneration, var lane = searchLanes[game] else { return }
-            lane.isLoading = false
+            guard token == searchGeneration, !Task.isCancelled,
+                  var lane = searchLanes[game] else { return }
             lane.error = Self.message(for: error)
             searchLanes[game] = lane
         }
@@ -223,13 +239,26 @@ final class SealedBrowseModel: ObservableObject {
     /// One request, and only when the directory is not already loaded for this
     /// game. Sealed browse is interactive, but it is still the user's quota.
     func loadSetsIfNeeded(game: CardGame) async {
-        guard (loadedGame != game || sets.isEmpty), !isLoading else { return }
+        guard (loadedGame != game || sets.isEmpty), activeSetsGame != game else { return }
+        let requestID = UUID()
+        setsRequestID = requestID
+        activeSetsGame = game
+        isLoadingSets = true
+        updateLoadingState()
+        defer {
+            if setsRequestID == requestID {
+                activeSetsGame = nil
+                isLoadingSets = false
+                updateLoadingState()
+            }
+        }
         if loadedGame != game {
             sets = []
             errorMessage = nil
         }
         if let saved = await cache.sealedSets(for: game) {
-            sets = saved.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            guard requestID == setsRequestID, !Task.isCancelled else { return }
+            sets = SealedSetOrdering.newestFirst(saved.value)
             loadedGame = game
             if saved.isFresh {
                 errorMessage = nil
@@ -240,15 +269,16 @@ final class SealedBrowseModel: ObservableObject {
             loadedGame = game
             return
         }
-        isLoading = true
-        defer { isLoading = false }
         do {
-            sets = try await client.sealedSets(game: game)
-                .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            let loadedSets = try await client.sealedSets(game: game)
+            guard requestID == setsRequestID, !Task.isCancelled else { return }
+            sets = SealedSetOrdering.newestFirst(loadedSets)
             loadedGame = game
             await cache.storeSealedSets(sets, for: game)
+            guard requestID == setsRequestID, !Task.isCancelled else { return }
             errorMessage = nil
         } catch {
+            guard requestID == setsRequestID, !Task.isCancelled else { return }
             errorMessage = sets.isEmpty
                 ? Self.message(for: error)
                 : "Showing saved sealed sets · \(Self.message(for: error))"
@@ -256,7 +286,20 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
-        guard !isLoading else { return }
+        let route = ProductRoute(game: game, setID: setID, query: query)
+        guard activeProductRoute != route else { return }
+        let requestID = UUID()
+        productsRequestID = requestID
+        activeProductRoute = route
+        isLoadingProducts = true
+        updateLoadingState()
+        defer {
+            if productsRequestID == requestID {
+                activeProductRoute = nil
+                isLoadingProducts = false
+                updateLoadingState()
+            }
+        }
         offset = 0
         let cacheKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: offset)
         if loadedProductKey != cacheKey {
@@ -266,6 +309,7 @@ final class SealedBrowseModel: ObservableObject {
             loadedProductKey = cacheKey
         }
         if let saved = await cache.sealedProductPage(for: cacheKey) {
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(saved.value, replacing: true)
             if saved.isFresh || !isConfigured {
                 errorMessage = nil
@@ -276,17 +320,18 @@ final class SealedBrowseModel: ObservableObject {
             errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             return
         }
-        isLoading = true
-        defer { isLoading = false }
         do {
             let page = try await client.searchSealedProducts(
                 game: game, setID: setID, query: query, offset: 0
             )
             let cachePage = cachePage(from: page)
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(cachePage, replacing: true)
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             errorMessage = nil
         } catch {
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             errorMessage = products.isEmpty
                 ? Self.message(for: error)
                 : "Showing saved products · \(Self.message(for: error))"
@@ -294,13 +339,27 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMore(game: CardGame, setID: String?, query: String? = nil) async {
-        guard hasMore, !isLoading else { return }
+        let route = ProductRoute(game: game, setID: setID, query: query)
+        guard hasMore, activeProductRoute != route else { return }
+        let requestID = UUID()
+        productsRequestID = requestID
+        activeProductRoute = route
+        isLoadingProducts = true
+        updateLoadingState()
+        defer {
+            if productsRequestID == requestID {
+                activeProductRoute = nil
+                isLoadingProducts = false
+                updateLoadingState()
+            }
+        }
         let requestedOffset = offset
         let cacheKey = CatalogCacheStore.sealedPageKey(
             game: game, setID: setID, query: query, offset: requestedOffset
         )
         if let saved = await cache.sealedProductPage(for: cacheKey) {
             if saved.isFresh || !isConfigured {
+                guard requestID == productsRequestID, !Task.isCancelled else { return }
                 apply(saved.value, replacing: false)
                 errorMessage = nil
                 return
@@ -311,21 +370,26 @@ final class SealedBrowseModel: ObservableObject {
             errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             return
         }
-        isLoading = true
-        defer { isLoading = false }
         do {
             let page = try await client.searchSealedProducts(
                 game: game, setID: setID, query: query, offset: requestedOffset
             )
             let cachePage = cachePage(from: page)
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(cachePage, replacing: false)
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             errorMessage = nil
         } catch {
+            guard requestID == productsRequestID, !Task.isCancelled else { return }
             errorMessage = products.isEmpty
                 ? Self.message(for: error)
                 : "Showing saved products · \(Self.message(for: error))"
         }
+    }
+
+    private func updateLoadingState() {
+        isLoading = isLoadingSets || isLoadingProducts
     }
 
     private func cachePage(from page: MarketCatalogPage<SealedProductSummary>) -> CatalogPage<SealedProductSummary> {
@@ -367,6 +431,18 @@ final class SealedBrowseModel: ObservableObject {
 struct SealedSetDirectoryView: View {
     let game: CardGame
     @ObservedObject var model: SealedBrowseModel
+    @State private var searchText = ""
+
+    private var normalizedSearch: String {
+        CardNameSearch.normalize(searchText)
+    }
+
+    private var visibleSets: [SealedSetSummary] {
+        guard !normalizedSearch.isEmpty else { return model.sets }
+        return model.sets.filter {
+            CardNameSearch.normalize($0.name).contains(normalizedSearch)
+        }
+    }
 
     var body: some View {
         List {
@@ -378,7 +454,7 @@ struct SealedSetDirectoryView: View {
                     .foregroundStyle(.orange)
             }
 
-            ForEach(model.sets) { set in
+            ForEach(visibleSets) { set in
                 NavigationLink {
                     SealedProductGridView(game: game, set: set, model: model)
                 } label: {
@@ -406,10 +482,17 @@ struct SealedSetDirectoryView: View {
                     systemImage: "shippingbox",
                     description: Text("This game has no sealed products in the price catalogue.")
                 )
+            } else if !normalizedSearch.isEmpty, visibleSets.isEmpty {
+                ContentUnavailableView(
+                    "No Matching Sets",
+                    systemImage: "magnifyingglass",
+                    description: Text("No " + game.label + " sealed set matches \"" + searchText + "\".")
+                )
             }
         }
         .navigationTitle("Sealed")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: "Search " + game.label + " sets")
         .task(id: game) { await model.loadSetsIfNeeded(game: game) }
     }
 
@@ -527,6 +610,7 @@ struct SealedProductDetailView: View {
     private var ownedQuantity: Int {
         owned
             .filter { $0.itemKind == .sealedProduct && $0.justTCGCardID == product.id }
+            .filter { $0.justTCGVariantID == product.variantID }
             .reduce(0) { $0 + $1.quantity }
     }
 

@@ -19,6 +19,17 @@ import SwiftData
 enum PortfolioEpoch {
     static let defaultsKey = "portfolioEpochStartedAt"
 
+    enum EstablishmentError: LocalizedError {
+        case baselineWriteFailed(String)
+
+        var errorDescription: String? {
+            switch self {
+            case let .baselineWriteFailed(detail):
+                return "Portfolio baseline could not be recorded: \(detail)"
+            }
+        }
+    }
+
     /// Namespace for the deterministic baseline ids. Two devices that both
     /// establish an epoch before sync catches up must produce the *same*
     /// idempotency key per position, so the ledger dedupes them instead of
@@ -72,7 +83,8 @@ enum PortfolioEpoch {
         // Any ledger activity means ownership accounting already exists,
         // usually because CloudKit delivered it from another device. This
         // device starts local history today and does not add another baseline.
-        guard !ledger.hasAnyEvent() else {
+        let hasAnyEvent = try ledger.hasAnyEvent()
+        guard !hasAnyEvent else {
             defaults.set(date.timeIntervalSince1970, forKey: defaultsKey)
             return date
         }
@@ -81,29 +93,38 @@ enum PortfolioEpoch {
         // first day boundary are established by one act rather than two.
         _ = PortfolioCalendar.timeZone(defaults: defaults)
 
-        // One baseline event per *position*, not per stored row.
-        //
-        // The baseline id is deterministic on `collectionKey` so two devices
-        // racing the migration produce the same key and dedupe. That is
-        // precisely why iterating physical rows was wrong: two rows claiming
-        // one key would either collapse into a single event — opening the
-        // books below what is owned — or collide as an idempotency conflict,
-        // and neither outcome starts the ledger at the right quantity.
-        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let projection = LogicalCollection.project(cards: cards, ledger: ledger)
-        for position in projection.positions where position.quantity != 0 {
-            ledger.record(
-                position.representative,
-                kind: .initialBalance,
-                source: .catalog,
-                deltaQuantity: position.quantity,
-                operationID: baselineOperationID(collectionKey: position.collectionKey),
-                occurredAt: date,
-                acquiredAt: position.representative.dateAdded
-            )
-        }
-
         do {
+            // One baseline event per *position*, not per stored row.
+            //
+            // The baseline id is deterministic on `collectionKey` so two
+            // devices racing the migration produce the same idempotency key
+            // and dedupe. This entire read-and-stage sequence is inside the
+            // transaction: an unreadable collection or ledger lookup must
+            // abort rather than being interpreted as an empty collection or
+            // an absent event.
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+            for position in projection.positions where position.quantity != 0 {
+                let outcome = ledger.record(
+                    position.representative,
+                    kind: .initialBalance,
+                    source: .catalog,
+                    deltaQuantity: position.quantity,
+                    operationID: baselineOperationID(collectionKey: position.collectionKey),
+                    occurredAt: date,
+                    acquiredAt: position.representative.dateAdded
+                )
+                switch outcome {
+                case .appended:
+                    break
+                case .duplicate:
+                    throw EstablishmentError.baselineWriteFailed(
+                        "baseline event already exists for \(position.collectionKey)"
+                    )
+                case let .conflict(defect), let .unreadableStore(defect):
+                    throw EstablishmentError.baselineWriteFailed(defect.detail)
+                }
+            }
             try save(context)
         } catch {
             // The epoch flag is the public claim that the books are open. If

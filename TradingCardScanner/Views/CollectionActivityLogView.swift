@@ -47,6 +47,18 @@ struct CollectionActivityLogView: View {
                                 .tint(.green)
                             }
                         }
+                        .confirmationDialog(
+                            "Remove \(pendingRemoval?.name ?? "copies")?",
+                            isPresented: removalDialogBinding,
+                            titleVisibility: .visible
+                        ) {
+                            Button("Remove", role: .destructive) {
+                                if let pendingRemoval { remove(pendingRemoval) }
+                            }
+                            Button("Cancel", role: .cancel) { pendingRemovalID = nil }
+                        } message: {
+                            Text("Only the copies claimed by this history entry will be removed.")
+                        }
                     }
                 }
             }
@@ -59,18 +71,6 @@ struct CollectionActivityLogView: View {
             }
         }
         .task { try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded() }
-        .confirmationDialog(
-            "Remove \(pendingRemoval?.name ?? "copies")?",
-            isPresented: removalDialogBinding,
-            titleVisibility: .visible
-        ) {
-            Button("Remove", role: .destructive) {
-                if let pendingRemoval { remove(pendingRemoval) }
-            }
-            Button("Cancel", role: .cancel) { pendingRemovalID = nil }
-        } message: {
-            Text("Only the copies claimed by this history entry will be removed.")
-        }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
         } message: {

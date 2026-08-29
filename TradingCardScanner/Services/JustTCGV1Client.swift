@@ -1,33 +1,5 @@
 import Foundation
 
-/// What the app asks a market provider for, independent of which API version
-/// answers. Sealed and graded work can move between endpoints later without the
-/// collection layer noticing.
-protocol JustTCGProviding: Sendable {
-    func batchCards(
-        _ lookups: [JustTCGBatchLookup],
-        updatedAfter: Date?,
-        includePriceHistory: Bool,
-        lane: JustTCGRequestLane
-    ) async throws -> JustTCGBatchResponse
-
-    func searchSealedProducts(
-        game: CardGame,
-        setID: String?,
-        query: String?,
-        offset: Int
-    ) async throws -> MarketCatalogPage<SealedProductSummary>
-
-    func sealedSets(game: CardGame) async throws -> [SealedSetSummary]
-
-    func gradedVariants(
-        cardID: String,
-        game: CardGame,
-        companies: Set<GradingCompany>,
-        grades: Set<String>
-    ) async throws -> [GradedVariant]
-}
-
 protocol SealedBrowseProviding: Sendable {
     func searchSealedProducts(
         game: CardGame,
@@ -122,7 +94,8 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
                 id: id,
                 name: set.name ?? id,
                 sealedCount: count,
-                game: game
+                game: game,
+                releaseDate: set.releaseDate
             )
         }
     }
@@ -158,18 +131,20 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
 
         let items = response.data.compactMap { card -> SealedProductSummary? in
             guard let id = card.uuid ?? card.id else { return nil }
-            let sealed = (card.variants ?? []).first { $0.isSealed } ?? card.variants?.first
+            guard let sealed = (card.variants ?? []).first(where: \.isSealed) else {
+                return nil
+            }
             return SealedProductSummary(
                 id: id,
                 name: card.name ?? id,
                 // The display name, not the slug — `Legendary Treasures`
                 // rather than `legendary-treasures-pokemon`.
                 setName: card.setName ?? card.set,
-                variantID: sealed?.variantId,
+                variantID: sealed.variantId,
                 // Dollars. Verified: fractional sealed prices exist, so these
                 // are not cents.
-                marketPriceUSD: sealed?.price,
-                updatedAt: sealed?.updatedAt,
+                marketPriceUSD: sealed.marketPriceUSD,
+                updatedAt: sealed.updatedAt,
                 // JustTCG already supplies the canonical TCGplayer product ID.
                 // Keep the CDN convention isolated here so a provider-supplied
                 // image URL can replace it without touching models or views.
@@ -242,10 +217,40 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
         let id: String?
         let name: String?
         let sealedCount: Int?
+        let releaseDate: Date?
 
         enum CodingKeys: String, CodingKey {
             case id, name
             case sealedCount = "sealed_count"
+            case releaseDate = "release_date"
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = try container.decodeIfPresent(String.self, forKey: .id)
+            name = try container.decodeIfPresent(String.self, forKey: .name)
+            sealedCount = try container.decodeIfPresent(Int.self, forKey: .sealedCount)
+            releaseDate = Self.parseDate(
+                try container.decodeIfPresent(String.self, forKey: .releaseDate)
+            )
+        }
+
+        private static func parseDate(_ value: String?) -> Date? {
+            guard let value, !value.isEmpty else { return nil }
+
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let date = isoFormatter.date(from: value) { return date }
+
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            if let date = isoFormatter.date(from: value) { return date }
+
+            let dayFormatter = DateFormatter()
+            dayFormatter.calendar = Calendar(identifier: .gregorian)
+            dayFormatter.locale = Locale(identifier: "en_US_POSIX")
+            dayFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+            dayFormatter.dateFormat = "yyyy-MM-dd"
+            return dayFormatter.date(from: value)
         }
     }
 

@@ -128,6 +128,7 @@ enum PortfolioHistoryEngine {
             hasTwoPublishedPoints: selected.count >= 2,
             accountingInterval: interval,
             contributions: input.contributions.contributions(in: interval),
+            movementDetails: input.contributions.movementDetails(in: interval),
             hasEligibleMarketMovement: input.contributions.hasEligibleMarketMovement(in: interval)
         )
     }
@@ -205,16 +206,48 @@ enum PortfolioHistoryEngine {
 }
 
 @MainActor
-final class PortfolioHistoryController: ObservableObject {
+final class PortfolioHistoryStore: ObservableObject {
+    @Published var mode: PortfolioHistoryMode {
+        didSet {
+            UserDefaults.standard.set(mode.rawValue, forKey: "portfolioHistoryMode")
+            if oldValue != mode { result = nil }
+        }
+    }
+
+    @Published var range: PortfolioHistoryRange {
+        didSet {
+            UserDefaults.standard.set(range.rawValue, forKey: "portfolioHistoryRange")
+            if oldValue != range { result = nil }
+        }
+    }
+
     @Published private(set) var result: PortfolioHistoryResult?
+
+    init() {
+        mode = PortfolioHistoryMode(
+            rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryMode") ?? ""
+        ) ?? .performance
+        range = PortfolioHistoryRange(
+            rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryRange") ?? ""
+        ) ?? .oneMonth
+    }
+
+    /// Result scoped to the currently selected period. The mode may differ,
+    /// but movement attribution is the same for both history presentations.
+    var activeResult: PortfolioHistoryResult? {
+        guard let result, result.range == range else { return nil }
+        return result
+    }
+
+    func movementState(for collectionKey: String) -> PortfolioCardMovementState {
+        activeResult?.cardMovement(for: collectionKey) ?? .historyRecording
+    }
 
     func recompute(
         context: ModelContext,
         summary: PortfolioSummary?,
         factors: PortfolioPerformanceFactors,
         contributions: PortfolioContributionIndex,
-        mode: PortfolioHistoryMode,
-        range: PortfolioHistoryRange,
         now: Date = .now
     ) {
         guard let summary else {
@@ -225,7 +258,17 @@ final class PortfolioHistoryController: ObservableObject {
         // Closes only. The chart plots published days and needs no replay of
         // its own — the factors arrive from the computation the engine already
         // performed.
-        let closes = PortfolioEngine.allCloses(in: context).map {
+        let storedCloses: [PortfolioDailyClose]
+        do {
+            storedCloses = try PortfolioEngine.allCloses(in: context)
+        } catch {
+            // History is derived from persisted closes. If that read is
+            // unavailable, publishing an empty chart would make a storage
+            // problem look like missing history.
+            result = nil
+            return
+        }
+        let closes = storedCloses.map {
             PortfolioPublishedClose(
                 date: $0.date, revision: $0.revision, timeZoneIdentifier: $0.timeZoneIdentifier,
                 closeValue: $0.closeValue, market: $0.marketContribution, flow: $0.flowContribution,

@@ -13,7 +13,7 @@ enum PortfolioHistoryMode: String, CaseIterable, Codable, Sendable {
 
     var chartLabel: String {
         switch self {
-        case .performance: return "Return percent"
+        case .performance: return "Return in dollars"
         case .value: return "Collection value"
         }
     }
@@ -128,15 +128,56 @@ struct PortfolioAccountingInterval: Equatable, Sendable {
     var liveDay: Date?
 }
 
+/// The market movement a position experienced during one or more replay steps.
+/// `cumulativeUnitMovement` keeps the per-copy price path separate from the
+/// holding impact, while `affectedQuantities` makes it possible to refuse a
+/// misleading per-copy average when ownership changed during the period.
+struct PortfolioContributionDetail: Equatable, Sendable {
+    var totalImpact: Money = .zero
+    var cumulativeUnitMovement: Money = .zero
+    var affectedQuantities: [Int] = []
+
+    var hasConsistentQuantity: Bool { affectedQuantities.count == 1 }
+
+    mutating func record(unitMovement: Money, quantity: Int) {
+        totalImpact += unitMovement * quantity
+        cumulativeUnitMovement += unitMovement
+        if !affectedQuantities.contains(quantity) {
+            affectedQuantities.append(quantity)
+            affectedQuantities.sort()
+        }
+    }
+}
+
+enum PortfolioCardMovementState: Equatable, Sendable {
+    case historyRecording
+    case noRecordedMarketMovement
+    case recorded(PortfolioContributionDetail)
+}
+
 /// Sparse position-level market impacts from replay. This is derived data, not
 /// a persisted accounting model: a key is retained only for a nonzero eligible
 /// market update on that portfolio day.
 struct PortfolioContributionIndex: Equatable, Sendable {
     var byDay: [Date: [String: Money]] = [:]
+    /// Enriched contribution data from the same replay that produced `byDay`.
+    /// `byDay` remains as a compatibility projection for portfolio rows and
+    /// existing history consumers.
+    var detailsByDay: [Date: [String: PortfolioContributionDetail]] = [:]
     /// A day may have genuine market updates whose position impacts cancel to
     /// zero. Keep that state separate from the sparse value index so the UI
     /// does not mistake an interesting $0 day for no movement.
     var daysWithEligibleMarketMovement: Set<Date> = []
+
+    init(
+        byDay: [Date: [String: Money]] = [:],
+        detailsByDay: [Date: [String: PortfolioContributionDetail]] = [:],
+        daysWithEligibleMarketMovement: Set<Date> = []
+    ) {
+        self.byDay = byDay
+        self.detailsByDay = detailsByDay
+        self.daysWithEligibleMarketMovement = daysWithEligibleMarketMovement
+    }
 
     func contributions(in interval: PortfolioAccountingInterval) -> [String: Money] {
         var result: [String: Money] = [:]
@@ -154,6 +195,37 @@ struct PortfolioContributionIndex: Equatable, Sendable {
         let days = interval.includedClosedDays
             + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
         return days.contains { daysWithEligibleMarketMovement.contains($0) }
+    }
+
+    func movementDetails(in interval: PortfolioAccountingInterval) -> [String: PortfolioContributionDetail] {
+        var result: [String: PortfolioContributionDetail] = [:]
+        let days = interval.includedClosedDays
+            + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+
+        for day in days {
+            if let details = detailsByDay[day] {
+                for (key, detail) in details {
+                    var combined = result[key, default: PortfolioContributionDetail()]
+                    combined.totalImpact += detail.totalImpact
+                    combined.cumulativeUnitMovement += detail.cumulativeUnitMovement
+                    for quantity in detail.affectedQuantities where !combined.affectedQuantities.contains(quantity) {
+                        combined.affectedQuantities.append(quantity)
+                    }
+                    combined.affectedQuantities.sort()
+                    result[key] = combined
+                }
+            } else {
+                // Older in-memory fixtures and imported callers may provide the
+                // original money-only projection. Preserve their totals while
+                // correctly withholding a made-up unit figure.
+                for (key, amount) in byDay[day, default: [:]] {
+                    var combined = result[key, default: PortfolioContributionDetail()]
+                    combined.totalImpact += amount
+                    result[key] = combined
+                }
+            }
+        }
+        return result.filter { !$0.value.totalImpact.isZero }
     }
 }
 
@@ -208,6 +280,7 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     var hasTwoPublishedPoints: Bool
     var accountingInterval: PortfolioAccountingInterval?
     var contributions: [String: Money]
+    var movementDetails: [String: PortfolioContributionDetail] = [:]
     var hasEligibleMarketMovement: Bool
 
     var isEmpty: Bool { points.isEmpty }
@@ -220,5 +293,82 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     /// detect — so every period-scoped surface asks this first.
     func matches(range: PortfolioHistoryRange, mode: PortfolioHistoryMode) -> Bool {
         self.range == range && self.mode == mode
+    }
+
+    func movement(for collectionKey: String) -> PortfolioContributionDetail? {
+        movementDetails[collectionKey]
+    }
+
+    func cardMovement(for collectionKey: String) -> PortfolioCardMovementState {
+        guard hasTwoPublishedPoints, accountingInterval != nil else {
+            return .historyRecording
+        }
+        guard let detail = movement(for: collectionKey), !detail.totalImpact.isZero else {
+            return .noRecordedMarketMovement
+        }
+        return .recorded(detail)
+    }
+}
+
+/// Shared display policy for the two history surfaces. The performance series
+/// is a time-weighted index, so its dollar projection is always anchored to the
+/// selected period's starting value.
+enum PortfolioHistoryDisplay {
+    static let performanceUnavailable = "Return isn't available for this period"
+
+    static func periodChange(
+        for mode: PortfolioHistoryMode,
+        accounting: PortfolioHistoryAccounting,
+        performanceFactor: Decimal?
+    ) -> Money? {
+        switch mode {
+        case .value:
+            return accounting.totalChange
+        case .performance:
+            guard let dollars = performanceDollars(
+                factor: performanceFactor,
+                anchorValue: accounting.anchorValue
+            ) else { return nil }
+            return Money(rounding: dollars)
+        }
+    }
+
+    static func percentChange(amount: Money, anchor: Money) -> Double? {
+        guard !anchor.isZero else { return nil }
+        return amount.doubleValue / anchor.doubleValue
+    }
+
+    static func performanceDollars(
+        factor: Decimal?,
+        anchorValue: Money?
+    ) -> Double? {
+        guard let factor, let anchorValue, !anchorValue.isZero else { return nil }
+        let factorValue = NSDecimalNumber(decimal: factor).doubleValue
+        return anchorValue.doubleValue * (factorValue - 1)
+    }
+
+    static func hasBreakdown(_ accounting: PortfolioHistoryAccounting) -> Bool {
+        !accounting.netInventoryActivity.isZero
+            || !accounting.corrections.isZero
+            || !accounting.pricingAdjustments.isZero
+            || !accounting.unexplained.isZero
+    }
+
+    static func currencyFractionDigits(forSpan span: Double) -> Int {
+        span < 10 ? 2 : 0
+    }
+
+    static func signedCurrency(_ amount: Money) -> String {
+        let magnitude = amount.magnitude.formatted()
+        if amount.tenThousandths < 0 { return "−\(magnitude)" }
+        if amount.tenThousandths > 0 { return "+\(magnitude)" }
+        return magnitude
+    }
+
+    static func signedPercent(_ ratio: Double) -> String {
+        let magnitude = abs(ratio).formatted(.percent.precision(.fractionLength(2)))
+        if ratio < 0 { return "−\(magnitude)" }
+        if ratio > 0 { return "+\(magnitude)" }
+        return magnitude
     }
 }

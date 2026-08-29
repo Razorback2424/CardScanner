@@ -126,10 +126,23 @@ enum PortfolioReplaySnapshotBuilder {
     ) -> Snapshot {
         let ledger = InventoryLedger(context: context)
         let reading = ledger.read()
-        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let activities = (try? context.fetch(FetchDescriptor<CollectionActivity>())) ?? []
+        var defects = reading.defects
+        let cards: [CollectedCard]
+        do {
+            cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        } catch {
+            cards = []
+            defects.append(Self.unreadableDefect(for: "CollectedCard", error: error))
+        }
+        let activities: [CollectionActivity]
+        do {
+            activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        } catch {
+            activities = []
+            defects.append(Self.unreadableDefect(for: "CollectionActivity", error: error))
+        }
 
-        let events = reading.events.map(PortfolioEngine.entry(from:))
+        let events = reading.events.map { PortfolioEngine.entry(from: $0) }
         let activityDefects = CollectionActivity.integrityDefects(
             activities: activities,
             events: reading.events
@@ -138,17 +151,29 @@ enum PortfolioReplaySnapshotBuilder {
         // One materialisation of each table, reused. Fetching the observation
         // log twice — once to replay and once to value the collection — doubled
         // the dominant cost of the whole recomputation.
-        let rows = (try? context.fetch(
-            FetchDescriptor<PriceObservation>(
-                sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+        let rows: [PriceObservation]
+        do {
+            rows = try context.fetch(
+                FetchDescriptor<PriceObservation>(
+                    sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+                )
             )
-        )) ?? []
-        let observations = rows.map(PortfolioEngine.observationEntry(from:))
-        let records = (try? context.fetch(FetchDescriptor<PriceRecord>())) ?? []
+        } catch {
+            rows = []
+            defects.append(Self.unreadableDefect(for: "PriceObservation", error: error))
+        }
+        let observations = rows.map { PortfolioEngine.observationEntry(from: $0) }
+        let records: [PriceRecord]
+        do {
+            records = try context.fetch(FetchDescriptor<PriceRecord>())
+        } catch {
+            records = []
+            defects.append(Self.unreadableDefect(for: "PriceRecord", error: error))
+        }
         let valuations = valuationIndex(observations: rows, records: records)
         let otherCurrencyInstruments = Set(
             records
-                .filter { $0.unitMarketPriceUSD != nil && $0.currencyCode != "USD" }
+                .filter { $0.effectiveUnitMarketPriceUSD != nil && $0.currencyCode != "USD" }
                 .map(\.key)
         )
         let projection = LogicalCollection.project(cards: cards) {
@@ -156,12 +181,18 @@ enum PortfolioReplaySnapshotBuilder {
         }
 
         let epochDay = PortfolioCalendar.day(containing: epoch, in: timeZone)
-        let coverage = coverageIndex(
-            context: context,
-            from: epochDay,
-            through: through,
-            timeZone: timeZone
-        )
+        let coverage: PortfolioCoverageIndex
+        do {
+            coverage = try coverageIndexThrowing(
+                context: context,
+                from: epochDay,
+                through: through,
+                timeZone: timeZone
+            )
+        } catch {
+            coverage = PortfolioCoverageIndex(checkedByDay: [:])
+            defects.append(Self.unreadableDefect(for: "PriceCheckDay", error: error))
+        }
 
         return Snapshot(
             input: PortfolioReplayInput(
@@ -175,18 +206,29 @@ enum PortfolioReplaySnapshotBuilder {
             valuations: valuations,
             otherCurrencyInstruments: otherCurrencyInstruments,
             isAuthoritative: reading.isAuthoritative
+                && defects.isEmpty
                 && projection.defects.isEmpty
                 && activityDefects.isEmpty,
-            defects: reading.defects + projection.defects + activityDefects,
+            defects: defects + projection.defects + activityDefects,
             projection: projection
+        )
+    }
+
+    private static func unreadableDefect(for table: String, error: Error) -> LedgerIntegrityDefect {
+        LedgerIntegrityDefect(
+            reason: .unreadableStore,
+            collectionKey: "store:\(table)",
+            detail: "\(table) rows could not be read: \(error)",
+            canRepairQuantity: false
         )
     }
 
     /// Current value per instrument, from two bulk reads.
     ///
-    /// The newest observation wins; a `PriceRecord` fills in only for
-    /// instruments priced before the log existed. Mirrors
-    /// `InventoryLedger.valuation(forPriceKey:)` exactly, in bulk.
+    /// The newest usable USD observation wins; a `PriceRecord` fills in when
+    /// the newest observation cannot be used for a USD total. An explicit
+    /// invalidation blocks that fallback. The evidence-resolution rule lives
+    /// in `InventoryLedger` and is shared with scalar reads.
     static func valuationIndex(
         observations: [PriceObservation],
         records: [PriceRecord]
@@ -198,40 +240,16 @@ enum PortfolioReplaySnapshotBuilder {
             newest[observation.instrumentKey] = observation
         }
 
-        var index: [String: InventoryValuation] = [:]
-        for (key, observation) in newest {
-            // An invalidation is authoritative: falling through to the mutable
-            // PriceRecord would resurrect exactly the price the log withdrew.
-            if observation.kind == .explicitInvalidation {
-                index[key] = .unpriced
-                continue
-            }
-            guard let amount = observation.amount, observation.currencyCode == "USD" else {
-                index[key] = .unpriced
-                continue
-            }
-            index[key] = InventoryValuation(
-                unitPrice: amount,
-                source: observation.source,
-                effectiveAt: observation.effectiveAt,
-                receivedAt: observation.receivedAt,
-                observationID: observation.id
-            )
+        var recordsByKey: [String: PriceRecord] = [:]
+        for record in records where recordsByKey[record.key] == nil {
+            recordsByKey[record.key] = record
         }
 
-        for record in records where index[record.key] == nil {
-            guard let amount = record.unitMarketPriceUSD,
-                  record.currencyCode == "USD",
-                  let money = Money(rounding: amount) else {
-                index[record.key] = .unpriced
-                continue
-            }
-            index[record.key] = InventoryValuation(
-                unitPrice: money,
-                source: record.source,
-                effectiveAt: record.sourceUpdatedAt ?? record.fetchedAt,
-                receivedAt: record.fetchedAt,
-                observationID: nil
+        var index: [String: InventoryValuation] = [:]
+        for key in Set(newest.keys).union(recordsByKey.keys) {
+            index[key] = InventoryLedger.resolveValuation(
+                observation: newest[key],
+                record: recordsByKey[key]
             )
         }
 
@@ -249,13 +267,27 @@ enum PortfolioReplaySnapshotBuilder {
         through end: Date,
         timeZone: TimeZone
     ) -> PortfolioCoverageIndex {
+        (try? coverageIndexThrowing(
+            context: context,
+            from: start,
+            through: end,
+            timeZone: timeZone
+        )) ?? PortfolioCoverageIndex(checkedByDay: [:])
+    }
+
+    private static func coverageIndexThrowing(
+        context: ModelContext,
+        from start: Date,
+        through end: Date,
+        timeZone: TimeZone
+    ) throws -> PortfolioCoverageIndex {
         // The last day the replay can close is the one containing `end`, so the
         // index has to reach that day's start.
         let lastDay = PortfolioCalendar.day(containing: end, in: timeZone)
         let descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.portfolioDay >= start && $0.portfolioDay <= lastDay }
         )
-        let checks = (try? context.fetch(descriptor)) ?? []
+        let checks = try context.fetch(descriptor)
 
         var checkedByDay: [Date: Set<String>] = [:]
         for check in checks {

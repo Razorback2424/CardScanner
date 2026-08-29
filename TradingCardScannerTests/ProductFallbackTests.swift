@@ -100,14 +100,13 @@ final class ProductFallbackTests: XCTestCase {
         )
     }
 
-    func testDailyBudgetStopsAtNinetyAndResetsTheNextUTCDay() async throws {
+    func testDailyBudgetStopsAtNinetyFiveAndResetsTheNextUTCDay() async throws {
         let suite = "ProductFallbackTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
         let budget = ProductFallbackBudget(defaults: defaults)
         let now = Date.now
 
-        await budget.beginRun()
         for _ in 0..<ProductFallbackBudget.dailyLimit {
             let reservation = await budget.reserveRequest(now: now)
             XCTAssertEqual(reservation, .allowed)
@@ -115,12 +114,31 @@ final class ProductFallbackTests: XCTestCase {
 
         let exhausted = await budget.reserveRequest(now: now)
         guard case .budgetReached = exhausted else {
-            return XCTFail("Expected the persisted daily limit to stop request 91")
+            return XCTFail("Expected the persisted daily limit to stop request 96")
         }
 
         let tomorrow = now.addingTimeInterval(25 * 60 * 60)
         let reset = await budget.reserveRequest(now: tomorrow)
         XCTAssertEqual(reset, .allowed)
+    }
+
+    func testBackgroundFallbackStopsAtBackgroundCeilingButInteractiveCanContinue() async throws {
+        let suite = "ProductFallbackTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let budget = ProductFallbackBudget(defaults: defaults)
+
+        for _ in 0..<JustTCGQuota.backgroundDailyCeiling {
+            let reservation = await budget.reserveRequest(lane: .background)
+            XCTAssertEqual(reservation, .allowed)
+        }
+
+        let exhausted = await budget.reserveRequest(lane: .background)
+        guard case .budgetReached = exhausted else {
+            return XCTFail("background fallback must stop at its reserved ceiling")
+        }
+        let interactive = await budget.reserveRequest(lane: .interactive)
+        XCTAssertEqual(interactive, .allowed)
     }
 
     func testRateLimitBlocksWithoutConsumingAnotherRequest() async throws {
@@ -131,7 +149,6 @@ final class ProductFallbackTests: XCTestCase {
         let now = Date.now
         let retryAt = now.addingTimeInterval(600)
 
-        await budget.beginRun()
         await budget.recordRateLimit(until: retryAt)
         let reservation = await budget.reserveRequest(now: now)
         XCTAssertEqual(reservation, .rateLimited(retryAt: retryAt))

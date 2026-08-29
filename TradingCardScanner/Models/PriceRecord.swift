@@ -113,6 +113,13 @@ final class PriceRecord {
     /// Stable support-facing diagnosis for rejected data or request failures.
     var lastFailureReasonRaw: String?
 
+    /// The last time this record's value was explicitly withdrawn because it
+    /// was attached to the wrong market variant. The observation log is the
+    /// historical source of truth; this synced watermark is the read-path
+    /// guard that keeps collection/detail surfaces (which only receive
+    /// `PriceRecord`s) from resurrecting the withdrawn amount.
+    var invalidatedAt: Date?
+
     init(
         key: String,
         game: CardGame,
@@ -133,7 +140,13 @@ final class PriceRecord {
         sourceRaw.flatMap(PriceSource.init(rawValue:))
     }
 
-    func apply(_ price: NormalizedPrice) {
+    @discardableResult
+    func apply(_ price: NormalizedPrice) -> Bool {
+        // A response learned before an invalidation is stale evidence. It may
+        // still be useful in the append-only history, but it must not restore
+        // the mutable record's value or clear the invalidation watermark.
+        if let invalidatedAt, price.fetchedAt <= invalidatedAt { return false }
+
         unitMarketPriceUSD = price.unitMarketPriceUSD
         currencyCode = price.currencyCode
         sourceRaw = price.source.rawValue
@@ -144,11 +157,16 @@ final class PriceRecord {
         lastSuccessfulCheckAt = price.fetchedAt
         lastFailureAt = nil
         lastFailureReasonRaw = nil
+        self.invalidatedAt = nil
+        return true
     }
 
     /// Keeps the exact per-variant market value supplied by an import while
     /// leaving the record eligible for an immediate live provider check.
-    func applyImported(amount: Double, sourceUpdatedAt: Date?, importedAt: Date = .now) {
+    @discardableResult
+    func applyImported(amount: Double, sourceUpdatedAt: Date?, importedAt: Date = .now) -> Bool {
+        if let invalidatedAt, importedAt <= invalidatedAt { return false }
+
         unitMarketPriceUSD = amount
         currencyCode = "USD"
         sourceRaw = PriceSource.importedCSV.rawValue
@@ -162,6 +180,29 @@ final class PriceRecord {
         lastSuccessfulCheckAt = nil
         lastFailureAt = nil
         lastFailureReasonRaw = nil
+        invalidatedAt = nil
+        return true
+    }
+
+    /// Withdraws the current amount without pretending that the provider
+    /// answered "no price". A later valid observation is allowed to replace
+    /// this state through `apply(_:)` or `applyImported`.
+    @discardableResult
+    func invalidate(at date: Date) -> Bool {
+        if let invalidatedAt, invalidatedAt > date { return false }
+        if invalidatedAt == nil, let fetchedAt, fetchedAt > date { return false }
+        invalidatedAt = date
+        unitMarketPriceUSD = nil
+        return true
+    }
+
+    var isInvalidated: Bool { invalidatedAt != nil }
+
+    /// The amount that a read path may safely expose. Keeping this derived
+    /// property next to the mutable record makes the invalidation rule explicit
+    /// for services that do not have access to the local observation log.
+    var effectiveUnitMarketPriceUSD: Double? {
+        isInvalidated ? nil : unitMarketPriceUSD
     }
 
     /// The provider answered and had nothing for this variant. That is a real,
@@ -169,7 +210,8 @@ final class PriceRecord {
     func applyUnavailable(source: PriceSource?, at date: Date) {
         // A provider lacking this exact variant does not invalidate a known,
         // dated price imported for that same variant.
-        if unitMarketPriceUSD == nil {
+        if effectiveUnitMarketPriceUSD == nil {
+            unitMarketPriceUSD = nil
             sourceRaw = source?.rawValue
             sourceVariantID = nil
             sourceUpdatedAt = nil
@@ -190,7 +232,7 @@ final class PriceRecord {
 
     var display: PriceDisplay {
         PriceDisplay(
-            amount: unitMarketPriceUSD,
+            amount: effectiveUnitMarketPriceUSD,
             currencyCode: currencyCode,
             source: source,
             sourceUpdatedAt: sourceUpdatedAt,

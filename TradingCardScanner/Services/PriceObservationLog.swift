@@ -34,6 +34,7 @@ enum PriceObservationRules {
     struct Previous: Equatable, Sendable {
         var value: PriceObservationValue
         var effectiveAt: Date
+        var receivedAt: Date
         var isSourceStamped: Bool
     }
 
@@ -46,10 +47,20 @@ enum PriceObservationRules {
         /// A non-finite or unrepresentable provider amount. Not a successful
         /// check and never persisted as value evidence.
         case rejectedInvalidQuote
+        /// A response that was already received before an explicit
+        /// invalidation. It is not allowed to become newer evidence merely
+        /// because a delayed caller wrote it after the invalidation.
+        case ignoredAfterInvalidation
     }
 
     /// Whether a provider answer is value-setting, and if so what it means.
     nonisolated static func decide(candidate: Candidate, previous: Previous?) -> Decision {
+        if let previous,
+           previous.value.amount == nil,
+           previous.receivedAt >= candidate.receivedAt {
+            return .ignoredAfterInvalidation
+        }
+
         // Identical value *and* identical provenance: the app has learned
         // nothing new. Appending here would fill the log with thousands of
         // rows a day that say "still $42, still from the same object".
@@ -203,21 +214,39 @@ struct PriceObservationLog {
         source: PriceSource,
         at date: Date = .now
     ) -> PriceObservation? {
-        guard let previous = newestObservation(instrumentKey: instrumentKey),
-              previous.amount != nil else { return nil }
+        let record = PriceStore(context: context).record(forKey: instrumentKey)
+        let previous = newestObservation(instrumentKey: instrumentKey)
+
+        // Invalidation is idempotent. This also repairs a record created by an
+        // older build that already has the invalidation row but did not mirror
+        // the withdrawn state onto PriceRecord.
+        if let previous, previous.kind == .explicitInvalidation {
+            record?.invalidate(at: previous.receivedAt)
+            return previous
+        }
+
+        // Backfilled or legacy records may not have an observation yet. They
+        // are still valid invalidation targets; requiring a prior log row would
+        // leave the collection/detail readers able to show the value forever.
+        if let previous, previous.amount == nil { return nil }
+        guard previous?.amount != nil
+            || record?.effectiveUnitMarketPriceUSD != nil else {
+            return nil
+        }
 
         let observation = PriceObservation(
             instrumentKey: instrumentKey,
             kind: .explicitInvalidation,
             amount: nil,
-            currencyCode: previous.currencyCode,
+            currencyCode: previous?.currencyCode ?? record?.currencyCode ?? "USD",
             source: source,
-            sourceVariantID: previous.sourceVariantID,
-            marketVariantID: previous.marketVariantID,
+            sourceVariantID: previous?.sourceVariantID ?? record?.sourceVariantID,
+            marketVariantID: previous?.marketVariantID ?? record?.marketVariantID,
             effectiveAt: date,
             receivedAt: date,
             isSourceStamped: false
         )
+        if let record, !record.invalidate(at: date) { return nil }
         context.insert(observation)
         return observation
     }
@@ -268,7 +297,7 @@ struct PriceObservationLog {
         var written = 0
 
         for record in records {
-            guard let amount = record.unitMarketPriceUSD,
+            guard let amount = record.effectiveUnitMarketPriceUSD,
                   record.currencyCode == "USD",
                   let source = record.source,
                   let money = Money(rounding: amount),
@@ -306,6 +335,7 @@ struct PriceObservationLog {
         return PriceObservationRules.Previous(
             value: newest.value,
             effectiveAt: newest.effectiveAt,
+            receivedAt: newest.receivedAt,
             isSourceStamped: newest.isSourceStamped
         )
     }

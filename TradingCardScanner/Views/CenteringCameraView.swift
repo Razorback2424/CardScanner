@@ -18,15 +18,27 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     private let photoOutput = AVCapturePhotoOutput()
     private let motionManager = CMMotionManager()
     private var isConfigured = false
+    /// A centering capture is a one-shot interaction. Keep the request marked
+    /// active until the view stops so rapid taps cannot queue multiple photos
+    /// before the first result dismisses the camera.
+    private var isCaptureInFlight = false
+    /// All start/stop decisions are serialized with capture-session work. This
+    /// prevents a delayed permission callback from starting the camera after the
+    /// full-screen camera has already disappeared.
+    private var requestedStartID: UUID?
 
     func start() {
+        let requestID = UUID()
+        sessionQueue.async { [weak self] in
+            self?.requestedStartID = requestID
+        }
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            configureAndStart()
+            configureAndStart(requestID: requestID)
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 if granted {
-                    self?.configureAndStart()
+                    self?.configureAndStart(requestID: requestID)
                 } else {
                     self?.setIssue(.permissionDenied)
                 }
@@ -40,14 +52,18 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     func stop() {
         motionManager.stopDeviceMotionUpdates()
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning else { return }
+            guard let self else { return }
+            self.requestedStartID = nil
+            self.isCaptureInFlight = false
+            guard self.session.isRunning else { return }
             self.session.stopRunning()
         }
     }
 
     func capture() {
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning else { return }
+            guard let self, self.session.isRunning, !self.isCaptureInFlight else { return }
+            self.isCaptureInFlight = true
             let settings = AVCapturePhotoSettings()
             settings.photoQualityPrioritization = .quality
             let angle = self.rotation.currentAngle
@@ -64,24 +80,34 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
-        guard error == nil, let data = photo.fileDataRepresentation() else {
-            setIssue(.configurationFailed)
-            return
-        }
-        DispatchQueue.main.async { [weak self] in
-            self?.capturedData = data
+        let data = error == nil ? photo.fileDataRepresentation() : nil
+        sessionQueue.async { [weak self] in
+            guard let self, self.isCaptureInFlight else { return }
+            guard let data else {
+                self.isCaptureInFlight = false
+                self.setIssue(.configurationFailed)
+                return
+            }
+            // Keep the one-shot occupied until stop() runs. The SwiftUI
+            // observer dismisses the view from the main queue, and this closes
+            // the small window in which a second tap could otherwise enqueue.
+            DispatchQueue.main.async { [weak self] in
+                self?.capturedData = data
+            }
         }
     }
 
-    private func configureAndStart() {
+    private func configureAndStart(requestID: UUID) {
         sessionQueue.async { [weak self] in
             guard let self else { return }
+            guard self.requestedStartID == requestID else { return }
             do {
                 if !self.isConfigured {
                     try self.configureSession()
                     self.isConfigured = true
                 }
                 guard !self.session.isRunning else { return }
+                guard self.requestedStartID == requestID else { return }
                 self.session.startRunning()
                 self.setIssue(nil)
             } catch {
@@ -164,6 +190,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 }
 
 struct CenteringCameraView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismiss
     @StateObject private var camera = CenteringCameraController()
 
@@ -218,11 +245,20 @@ struct CenteringCameraView: View {
             }
 
             if let issue = camera.cameraIssue {
-                ContentUnavailableView(
-                    "Camera Unavailable",
-                    systemImage: "camera.fill",
-                    description: Text(issue.message)
-                )
+                VStack(spacing: 12) {
+                    ContentUnavailableView(
+                        "Camera Unavailable",
+                        systemImage: "camera.fill",
+                        description: Text(issue.message)
+                    )
+                    if issue == .permissionDenied {
+                        Button("Open Settings") {
+                            guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                            UIApplication.shared.open(url)
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
                 .padding(24)
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
                 .padding()
@@ -231,6 +267,16 @@ struct CenteringCameraView: View {
         .statusBarHidden()
         .onAppear { camera.start() }
         .onDisappear { camera.stop() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                // Returning from Settings can grant camera access while this
+                // full-screen view remains mounted; retry without requiring a
+                // dismiss/reopen cycle.
+                camera.start()
+            } else {
+                camera.stop()
+            }
+        }
         .onChange(of: camera.capturedData) { _, data in
             guard let data else { return }
             onCapture(data)

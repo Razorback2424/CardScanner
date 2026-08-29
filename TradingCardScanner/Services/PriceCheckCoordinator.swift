@@ -147,7 +147,7 @@ final class PriceCheckCoordinator {
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {
-        guard let amount = record.unitMarketPriceUSD,
+        guard let amount = record.effectiveUnitMarketPriceUSD,
               Money(rounding: amount) != nil,
               let source = record.source,
               let sourceVariantID = record.sourceVariantID,

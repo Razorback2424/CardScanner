@@ -257,6 +257,50 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.live?.contributions.values.sum(), result.live?.attribution.market)
     }
 
+    func testMovementDetailsPreserveUnitMovementAndAffectedQuantity() throws {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [event(delta: 3, at: at(1, hour: 9))],
+                observations: [
+                    observation(10, at: at(1, hour: 8)),
+                    observation(9.95, at: at(2, hour: 10))
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        let detail = try XCTUnwrap(result.live?.movementDetails["position"])
+        XCTAssertEqual(detail.totalImpact, usd(-0.15))
+        XCTAssertEqual(detail.cumulativeUnitMovement, usd(-0.05))
+        XCTAssertEqual(detail.affectedQuantities, [3])
+        XCTAssertEqual(result.live?.attribution.market, usd(-0.15))
+    }
+
+    func testMovementDetailsRefuseExactPerCardMathWhenQuantityChanges() throws {
+        let result = PortfolioReplayEngine.replay(
+            input(
+                events: [
+                    event(delta: 3, at: at(1, hour: 9)),
+                    event(.dispose, delta: -2, at: at(2, hour: 9))
+                ],
+                observations: [
+                    observation(10, at: at(1, hour: 8)),
+                    observation(9.95, at: at(2, hour: 8)),
+                    observation(9.90, at: at(2, hour: 10))
+                ],
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        let detail = try XCTUnwrap(result.live?.movementDetails["position"])
+        XCTAssertEqual(detail.totalImpact, usd(-0.20))
+        XCTAssertEqual(detail.cumulativeUnitMovement, usd(-0.10))
+        XCTAssertEqual(detail.affectedQuantities, [1, 3])
+        XCTAssertFalse(detail.hasConsistentQuantity)
+    }
+
     func testOffsettingContributorsRemainVisibleAtZeroNetMarketMovement() {
         let result = PortfolioReplayEngine.replay(
             input(

@@ -17,7 +17,7 @@ struct CatalogCardDetailView: View {
     @State private var showsGradedPicker = false
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
-    private let marketTransport = JustTCGTransport()
+    private let marketTransport = JustTCGTransport.shared
 
     var body: some View {
         ScrollView {
@@ -40,12 +40,6 @@ struct CatalogCardDetailView: View {
                 )
             }
         }
-        .confirmationDialog("Choose a finish", isPresented: $showsFinishChoice, titleVisibility: .visible) {
-            ForEach(finishOptions) { variant in
-                Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: { Text("Add the physical version you own.") }
         .safeAreaInset(edge: .bottom) {
             if let mutation = pendingMutation {
                 addedBanner(mutation).contentWidthLimit(.standard)
@@ -93,6 +87,18 @@ struct CatalogCardDetailView: View {
                     .frame(maxWidth: .infinity, minHeight: 50)
             }
             .buttonStyle(.borderedProminent)
+            .confirmationDialog(
+                "Choose a finish",
+                isPresented: $showsFinishChoice,
+                titleVisibility: .visible
+            ) {
+                ForEach(finishOptions) { variant in
+                    Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Add the physical version you own.")
+            }
 
             // Separate from the raw path on purpose: a slab is a different
             // object with its own price, and choosing a grade is a decision the

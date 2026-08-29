@@ -30,28 +30,27 @@ enum PortfolioPalette {
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var portfolio: PortfolioEngine
     @ObservedObject var refresh: PriceRefreshController
+    @ObservedObject var history: PortfolioHistoryStore
     let onRefresh: @MainActor () async -> Void
     let onOpenCollectionSortedByPrice: @MainActor () -> Void
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalErrorMessage: String?
-    @State private var historyResult: PortfolioHistoryResult?
+    @State private var isShowingPeriodBreakdown = false
     @State private var isShowingQuantityRepairConfirmation = false
     @State private var quantityRepairError: String?
-    @AppStorage("portfolioHistoryMode") private var historyModeRaw = PortfolioHistoryMode.performance.rawValue
-    @AppStorage("portfolioHistoryRange") private var historyRangeRaw = PortfolioHistoryRange.oneMonth.rawValue
-
     private var historyMode: PortfolioHistoryMode {
-        get { PortfolioHistoryMode(rawValue: historyModeRaw) ?? .performance }
-        nonmutating set { historyModeRaw = newValue.rawValue }
+        get { history.mode }
+        nonmutating set { history.mode = newValue }
     }
 
     private var historyRange: PortfolioHistoryRange {
-        get { PortfolioHistoryRange(rawValue: historyRangeRaw) ?? .oneMonth }
-        nonmutating set { historyRangeRaw = newValue.rawValue }
+        get { history.range }
+        nonmutating set { history.range = newValue }
     }
 
     /// The history result that actually belongs to the current selection.
@@ -63,10 +62,7 @@ struct PortfolioView: View {
     /// that describes the selected period reads this and shows nothing until a
     /// matching result exists.
     private var activeHistoryResult: PortfolioHistoryResult? {
-        guard let result = historyResult,
-              result.matches(range: historyRange, mode: historyMode)
-        else { return nil }
-        return result
+        history.activeResult
     }
 
     private var startsAtPhase3DebugSection: Bool {
@@ -104,32 +100,30 @@ struct PortfolioView: View {
 
                     if let summary = portfolio.summary {
                         if !summary.isAuthoritative {
-                            integrityWarning(summary)
+                            integrityWarning(summary.defects)
                         }
 
                         if summary.isAuthoritative {
                             periodControl
                             periodSummary
 
-                            PortfolioHistoryView(
-                                mode: Binding(get: { historyMode }, set: { historyMode = $0 }),
-                                range: historyRange,
-                                summary: summary,
-                                factors: portfolio.performanceFactors,
-                                contributions: portfolio.contributionIndex,
-                                refreshRevision: portfolio.inputRevision,
-                                onResultUpdated: { historyResult = $0 }
-                            )
-
-                            if let activeHistoryResult {
-                                periodActivityBreakdown(activeHistoryResult)
+                            if isShowingPeriodBreakdown, let result = activeHistoryResult,
+                               let accounting = result.accounting,
+                               canDiscloseBreakdown(accounting) {
+                                periodActivityBreakdown(result)
                             }
+
+                            PortfolioHistoryView(
+                                history: history
+                            )
 
                             biggestMovers()
                                 .id("phase3-movers")
                             largestHoldings
                         }
 
+                    } else if !portfolio.integrityDefects.isEmpty {
+                        integrityWarning(portfolio.integrityDefects)
                     } else {
                         ProgressView("Calculating portfolio…")
                             .frame(maxWidth: .infinity, minHeight: 140)
@@ -144,7 +138,6 @@ struct PortfolioView: View {
                     proxy.scrollTo("phase3-movers", anchor: .top)
                 }
             }
-            .navigationTitle("Portfolio")
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let summary = portfolio.summary {
@@ -179,10 +172,12 @@ struct PortfolioView: View {
                     .accessibilityLabel("Settings")
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(item: $contributorContext) { context in
                 PortfolioContributorsView(
                     context: context,
                     holdings: portfolio.holdings,
+                    history: history,
                     onRemoved: presentUndo(for:)
                 )
             }
@@ -191,21 +186,15 @@ struct PortfolioView: View {
                       let attribution = portfolio.summary?.attribution else { return }
                 contributorContext = todayContext(attribution)
             }
+            .onChange(of: history.mode) { _, _ in
+                isShowingPeriodBreakdown = false
+            }
+            .onChange(of: history.range) { _, _ in
+                isShowingPeriodBreakdown = false
+            }
         }
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
-        }
-        .confirmationDialog(
-            "Reconcile with Collection",
-            isPresented: $isShowingQuantityRepairConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Reconcile") {
-                repairQuantityMismatches()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Your collection contents will remain unchanged. Append-only quantity correction events will be recorded for the mismatched positions.")
         }
         .alert(
             "Reconciliation failed",
@@ -236,7 +225,9 @@ struct PortfolioView: View {
     }
 
     private var needsPortfolioAttention: Bool {
-        guard let summary = portfolio.summary else { return false }
+        guard let summary = portfolio.summary else {
+            return !portfolio.integrityDefects.isEmpty
+        }
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
         if !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero { return true }
         if case let .finished(result) = refresh.status {
@@ -246,7 +237,8 @@ struct PortfolioView: View {
     }
 
     private var canRepairQuantityDefects: Bool {
-        guard let defects = portfolio.summary?.defects, !defects.isEmpty else { return false }
+        let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
+        guard !defects.isEmpty else { return false }
         return defects.allSatisfy {
             $0.reason == .quantityMismatch && $0.canRepairQuantity
         }
@@ -275,15 +267,18 @@ struct PortfolioView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 10) {
-                Text((portfolio.summary?.currentValue ?? .zero).formatted())
-                    .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                Text(portfolio.summary?.currentValue.formatted() ?? "Value unavailable")
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
                     .foregroundStyle(PortfolioPalette.value)
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.65)
                     .contentTransition(.numericText())
                     .animation(.snappy, value: portfolio.summary?.currentValue)
-                    .accessibilityLabel("Collection value, \((portfolio.summary?.currentValue ?? .zero).formatted())")
+                    .accessibilityLabel(
+                        portfolio.summary.map { "Collection value, \($0.currentValue.formatted())" }
+                            ?? "Collection value unavailable"
+                    )
 
                 Button("Refresh Prices", systemImage: "arrow.clockwise") {
                     Task { await onRefresh() }
@@ -303,7 +298,8 @@ struct PortfolioView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 8)
+        .padding(.top, 2)
+        .padding(.bottom, 8)
     }
 
     /// The selected period's change, stated once, directly under the control
@@ -315,21 +311,71 @@ struct PortfolioView: View {
     /// that the app does not know yet.
     @ViewBuilder
     private var periodSummary: some View {
-        if let accounting = activeHistoryResult?.accounting {
-            Text("\(signedCurrency(accounting.totalChange)) over \(historyRange.rawValue)")
-                .font(.headline)
-                .foregroundStyle(PortfolioPalette.direction(accounting.totalChange))
-                .monospacedDigit()
-                .accessibilityLabel(
-                    "\(signedCurrency(accounting.totalChange)) over \(historyRange.accessibilityName)"
-                )
+        if let result = activeHistoryResult,
+           let accounting = result.accounting {
+            if let amount = PortfolioHistoryDisplay.periodChange(
+                for: historyMode,
+                accounting: accounting,
+                performanceFactor: result.performanceFactor
+            ) {
+                let summary = periodSummaryText(amount: amount, anchor: accounting.anchorValue)
+                if canDiscloseBreakdown(accounting) {
+                    Button {
+                        withAnimation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.82)) {
+                            isShowingPeriodBreakdown.toggle()
+                        }
+                    } label: {
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text(summary)
+                                .monospacedDigit()
+                            Spacer(minLength: 8)
+                            Image(systemName: "chevron.down")
+                                .font(.caption.weight(.semibold))
+                                .rotationEffect(.degrees(isShowingPeriodBreakdown ? 180 : 0))
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .font(.headline)
+                    .foregroundStyle(PortfolioPalette.direction(amount))
+                    .accessibilityLabel("\(historyMode.title): \(summary)")
+                    .accessibilityHint(
+                        isShowingPeriodBreakdown
+                            ? "Hides the period activity breakdown"
+                            : "Shows what changed during this period"
+                    )
+                } else {
+                    Text(summary)
+                        .font(.headline)
+                        .foregroundStyle(PortfolioPalette.direction(amount))
+                        .monospacedDigit()
+                        .accessibilityLabel("\(historyMode.title): \(summary)")
+                }
+            } else {
+                Text(PortfolioHistoryDisplay.performanceUnavailable)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(PortfolioHistoryDisplay.performanceUnavailable)
+            }
         }
     }
 
-    private func integrityWarning(_ summary: PortfolioSummary) -> some View {
+    private func periodSummaryText(amount: Money, anchor: Money) -> String {
+        let change = PortfolioHistoryDisplay.signedCurrency(amount)
+        guard let ratio = PortfolioHistoryDisplay.percentChange(amount: amount, anchor: anchor) else {
+            return "\(change) over \(historyRange.rawValue)"
+        }
+        return "\(change) (\(PortfolioHistoryDisplay.signedPercent(ratio))) over \(historyRange.rawValue)"
+    }
+
+    private func canDiscloseBreakdown(_ accounting: PortfolioHistoryAccounting) -> Bool {
+        historyMode == .value && PortfolioHistoryDisplay.hasBreakdown(accounting)
+    }
+
+    private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Label(
-                summary.defects.isEmpty
+                defects.isEmpty
                     ? "Performance is paused while portfolio data reconciles."
                     : "Performance is paused until the collection records reconcile.",
                 systemImage: "exclamationmark.triangle.fill"
@@ -345,6 +391,18 @@ struct PortfolioView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(PortfolioPalette.attention)
                 .accessibilityHint("Records append-only quantity corrections without changing collection contents")
+                .confirmationDialog(
+                    "Reconcile with Collection",
+                    isPresented: $isShowingQuantityRepairConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Reconcile") {
+                        repairQuantityMismatches()
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Your collection contents will remain unchanged. Append-only quantity correction events will be recorded for the mismatched positions.")
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -356,7 +414,8 @@ struct PortfolioView: View {
     }
 
     private func repairQuantityMismatches() {
-        guard let defects = portfolio.summary?.defects else { return }
+        let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
+        guard !defects.isEmpty else { return }
         do {
             try CollectionStore.repairQuantityMismatches(defects, in: modelContext)
             portfolio.recompute(context: modelContext)
@@ -368,9 +427,7 @@ struct PortfolioView: View {
     @ViewBuilder
     private func periodActivityBreakdown(_ result: PortfolioHistoryResult) -> some View {
         if let accounting = result.accounting,
-           !accounting.netInventoryActivity.isZero
-                || !accounting.corrections.isZero
-                || !accounting.pricingAdjustments.isZero {
+           PortfolioHistoryDisplay.hasBreakdown(accounting) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("What changed")
                     .font(.headline)
@@ -388,6 +445,10 @@ struct PortfolioView: View {
                 if !accounting.corrections.isZero { changeRow("Corrections", accounting.corrections) }
                 if !accounting.pricingAdjustments.isZero {
                     changeRow("Pricing adjustments", accounting.pricingAdjustments)
+                }
+                if !accounting.unexplained.isZero {
+                    changeRow("Unexplained", accounting.unexplained)
+                        .foregroundStyle(PortfolioPalette.attention)
                 }
 
                 Divider()
@@ -415,7 +476,7 @@ struct PortfolioView: View {
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text("Biggest movers · \(historyRange.rawValue)")
+                    Text("Biggest holding movers · \(historyRange.rawValue)")
                         .font(.headline)
                     Spacer()
                     Button("See all") {
@@ -430,6 +491,7 @@ struct PortfolioView: View {
                     contributions: contributions,
                     total: total,
                     holdings: portfolio.holdings,
+                    history: history,
                     onRemoved: presentUndo(for:)
                 )
             }
@@ -465,6 +527,7 @@ struct PortfolioView: View {
                     NavigationLink {
                         PortfolioOwnedCardDestination(
                             collectionKey: holding.collectionKey,
+                            history: history,
                             onRemoved: presentUndo(for:)
                         )
                     } label: {
@@ -568,19 +631,13 @@ struct PortfolioView: View {
         HStack {
             Text(title)
             Spacer(minLength: 12)
-            Text(signedCurrency(amount))
+            Text(PortfolioHistoryDisplay.signedCurrency(amount))
                 .monospacedDigit()
         }
         .font(emphasized ? .subheadline.weight(.semibold) : .subheadline)
         .foregroundStyle(emphasized ? .primary : .secondary)
     }
 
-    private func signedCurrency(_ amount: Money) -> String {
-        let sign = amount.tenThousandths < 0 ? "−" : "+"
-        return sign + amount.magnitude.formatted()
-    }
-
-    private func changeColor(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 }
 
 private struct PortfolioContributorContext: Identifiable, Hashable {
@@ -716,6 +773,7 @@ private struct PortfolioContributorPreview: View {
     let contributions: [String: Money]
     let total: Money
     let holdings: [PortfolioHoldingSnapshot]
+    let history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
@@ -743,7 +801,7 @@ private struct PortfolioContributorPreview: View {
     private func previewRow(_ row: PortfolioContributionRowModel, maximum: Money) -> some View {
         if let key = row.collectionKey {
             NavigationLink {
-                PortfolioOwnedCardDestination(collectionKey: key, onRemoved: onRemoved)
+                PortfolioOwnedCardDestination(collectionKey: key, history: history, onRemoved: onRemoved)
             } label: {
                 PortfolioContributionRow(
                     row: row,
@@ -766,6 +824,7 @@ private struct PortfolioContributorPreview: View {
 private struct PortfolioContributorsView: View {
     let context: PortfolioContributorContext
     let holdings: [PortfolioHoldingSnapshot]
+    let history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
     @State private var order: PortfolioContributionOrder = .impact
 
@@ -809,7 +868,7 @@ private struct PortfolioContributorsView: View {
                     ForEach(rows) { row in
                         if let key = row.collectionKey {
                             NavigationLink {
-                                PortfolioOwnedCardDestination(collectionKey: key, onRemoved: onRemoved)
+                                PortfolioOwnedCardDestination(collectionKey: key, history: history, onRemoved: onRemoved)
                             } label: {
                                 PortfolioContributionRow(
                                     row: row,
@@ -896,23 +955,6 @@ private struct PortfolioContributionRow: View {
     }
 }
 
-private struct PortfolioHoldingsView: View {
-    let holdings: [PortfolioHoldingSnapshot]
-    let onRemoved: (RemovedCardSnapshot) -> Void
-
-    var body: some View {
-        List(holdings) { holding in
-            NavigationLink {
-                PortfolioOwnedCardDestination(collectionKey: holding.collectionKey, onRemoved: onRemoved)
-            } label: {
-                PortfolioHoldingRow(holding: holding)
-            }
-        }
-        .navigationTitle("Largest holdings")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
 private struct PortfolioHoldingRow: View {
     let holding: PortfolioHoldingSnapshot
 
@@ -929,7 +971,7 @@ private struct PortfolioHoldingRow: View {
                     .lineLimit(1)
             }
             Spacer(minLength: 8)
-            Text((holding.currentValue ?? .zero).formatted())
+            Text(holding.currentValue.map { $0.formatted() } ?? "Value unavailable")
                 .font(.subheadline.weight(.semibold).monospacedDigit())
                 .foregroundStyle(.primary)
         }
@@ -940,7 +982,8 @@ private struct PortfolioHoldingRow: View {
 
     private var holdingAccessibilityLabel: String {
         let quantity = holding.quantity > 1 ? ", quantity \(holding.quantity)" : ""
-        return "\(holding.name), \(holding.detail)\(quantity)"
+        let value = holding.currentValue.map { $0.formatted() } ?? "Value unavailable"
+        return "\(holding.name), \(holding.detail)\(quantity), \(value)"
     }
 
 }
@@ -990,13 +1033,20 @@ private struct PortfolioArtwork: View {
 }
 
 private struct PortfolioOwnedCardDestination: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \CollectedCard.dateAdded, order: .forward) private var cards: [CollectedCard]
     @Query private var priceRecords: [PriceRecord]
     let collectionKey: String
+    @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
-        if let card = cards.first(where: { $0.collectionKey == collectionKey }) {
+        let projection = LogicalCollection.project(
+            cards: cards,
+            ledger: InventoryLedger(context: modelContext)
+        )
+        if let position = projection.byKey[collectionKey] {
+            let card = position.representative
             let record = PriceStore.record(
                 for: card,
                 in: Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
@@ -1004,10 +1054,13 @@ private struct PortfolioOwnedCardDestination: View {
             CollectionCardDetailView(
                 card: card,
                 price: record?.display ?? .unknown,
-                unpricedReason: record?.unitMarketPriceUSD == nil
+                history: history,
+                unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
                     ? PricingDiagnostics.unpricedReason(for: card, record: record)
                     : nil,
                 artworkReason: ArtworkDiagnostics.reason(for: card),
+                logicalQuantity: position.quantity,
+                isLogicalConflict: position.physicalRowCount > 1,
                 onRemoved: onRemoved
             )
         } else {

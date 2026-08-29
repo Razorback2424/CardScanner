@@ -75,6 +75,8 @@ struct PortfolioReplayDay: Sendable, Equatable {
     var carriedForwardValue: Money
     /// Sparse position impacts for this completed portfolio day.
     var contributions: [String: Money]
+    /// Enriched position impacts from the same market updates.
+    var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
 
     var flow: Money { added - removed }
@@ -88,6 +90,7 @@ struct PortfolioReplayLive: Sendable, Equatable {
     var pricedPositionCount: Int
     var excludedQuantity: Int
     var contributions: [String: Money]
+    var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
 }
 
@@ -339,6 +342,7 @@ enum PortfolioReplayEngine {
                 pricedPositionCount: state.pricedPositionCount,
                 excludedQuantity: state.excludedQuantity,
                 contributions: accumulator.contributions,
+                movementDetails: accumulator.movementDetails,
                 hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
             )
         }
@@ -348,6 +352,9 @@ enum PortfolioReplayEngine {
             if !finished.contributions.isEmpty {
                 contributionIndex.byDay[finished.displayDay] = finished.contributions
             }
+            if !finished.movementDetails.isEmpty {
+                contributionIndex.detailsByDay[finished.displayDay] = finished.movementDetails
+            }
             if finished.hasEligibleMarketMovement {
                 contributionIndex.daysWithEligibleMarketMovement.insert(finished.displayDay)
             }
@@ -355,6 +362,9 @@ enum PortfolioReplayEngine {
         if let live {
             if !live.contributions.isEmpty {
                 contributionIndex.byDay[live.day] = live.contributions
+            }
+            if !live.movementDetails.isEmpty {
+                contributionIndex.detailsByDay[live.day] = live.movementDetails
             }
             if live.hasEligibleMarketMovement {
                 contributionIndex.daysWithEligibleMarketMovement.insert(live.day)
@@ -380,6 +390,7 @@ enum PortfolioReplayEngine {
         var pricingAdjustment = Money.zero
         var performanceFactor: Decimal? = 1
         var contributions: [String: Money] = [:]
+        var movementDetails: [String: PortfolioContributionDetail] = [:]
         var hasEligibleMarketMovement = false
     }
 
@@ -414,6 +425,9 @@ enum PortfolioReplayEngine {
                     if accumulator.contributions[position]?.isZero == true {
                         accumulator.contributions.removeValue(forKey: position)
                     }
+                    var detail = accumulator.movementDetails[position, default: PortfolioContributionDetail()]
+                    detail.record(unitMovement: difference, quantity: heldQuantity)
+                    accumulator.movementDetails[position] = detail
                 }
             }
         } else {
@@ -519,6 +533,7 @@ enum PortfolioReplayEngine {
             ),
             carriedForwardValue: carriedForwardValue,
             contributions: accumulator.contributions,
+            movementDetails: accumulator.movementDetails,
             hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
         )
     }

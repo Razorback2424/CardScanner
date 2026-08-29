@@ -59,6 +59,37 @@ final class PortfolioTrustPassTests: XCTestCase {
         }
     }
 
+    func testCardMovementStateKeepsRecordingAndNoMovementVisible() {
+        let recording = result(range: .oneMonth, mode: .performance)
+        XCTAssertEqual(recording.cardMovement(for: "card"), .historyRecording)
+
+        var settled = recording
+        settled.hasTwoPublishedPoints = true
+        settled.accountingInterval = PortfolioAccountingInterval(
+            anchorDate: Date(timeIntervalSince1970: 1),
+            includedClosedDays: [],
+            includesLiveDay: true,
+            liveDay: Date(timeIntervalSince1970: 2)
+        )
+        XCTAssertEqual(
+            settled.cardMovement(for: "card"),
+            .noRecordedMarketMovement
+        )
+
+        settled.movementDetails = [
+            "card": PortfolioContributionDetail(
+                totalImpact: Money(tenThousandths: -500),
+                cumulativeUnitMovement: Money(tenThousandths: -500),
+                affectedQuantities: [1]
+            )
+        ]
+        if case .recorded(let detail) = settled.cardMovement(for: "card") {
+            XCTAssertEqual(detail.totalImpact, Money(tenThousandths: -500))
+        } else {
+            XCTFail("Expected a recorded card movement")
+        }
+    }
+
     // MARK: - Unresolved failures outlive transient feedback
 
     private func summary(failed: Int, unreachable: Bool) -> PriceRefreshController.Summary {

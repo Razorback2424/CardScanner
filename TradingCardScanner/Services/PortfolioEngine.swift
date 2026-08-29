@@ -1,5 +1,4 @@
 import Foundation
-import CryptoKit
 import SwiftData
 
 /// How much of what is held was actually repriced today.
@@ -86,7 +85,17 @@ final class PortfolioEngine: ObservableObject {
     /// nested observable that changes while SwiftUI is rendering it.
     @Published private(set) var contributionIndex = PortfolioContributionIndex()
     @Published private(set) var holdings: [PortfolioHoldingSnapshot] = []
+    /// Integrity defects from the latest computation, including defects found
+    /// before a usable summary can be produced. This stays separate from the
+    /// summary so a first-launch unreadable store does not become a fabricated
+    /// zero-valued portfolio.
+    @Published private(set) var integrityDefects: [LedgerIntegrityDefect] = []
 
+    /// Kept separately from `status` because recomputation moves status through
+    /// `.computing` before its result arrives. A failed read can therefore
+    /// retain the last usable summary without making `summary` appear ready
+    /// while work is still in flight.
+    private var lastUsableSummary: PortfolioSummary?
     private var lastComputedDay: Date?
     /// Guards against a slower earlier pass publishing over a fresher one.
     private var computationSequence: UInt = 0
@@ -133,7 +142,6 @@ final class PortfolioEngine: ObservableObject {
         status = .computing
 
         let timeZone = PortfolioCalendar.timeZone()
-        lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
 
         computationSequence &+= 1
         let sequence = computationSequence
@@ -149,7 +157,7 @@ final class PortfolioEngine: ObservableObject {
                 timeZoneIdentifier: timeZone.identifier
             )
             guard !Task.isCancelled else { return }
-            await self?.apply(
+            self?.apply(
                 computation,
                 sequence: sequence,
                 now: now,
@@ -176,6 +184,28 @@ final class PortfolioEngine: ObservableObject {
         // A slower earlier pass must never overwrite a fresher one.
         guard sequence == computationSequence else { return }
 
+        // A failed read must never replace a known-good summary with a
+        // fabricated zero. Keep the last usable values visible, mark them
+        // non-authoritative, and leave the day eligible for a later retry.
+        if computation.defects.contains(where: { $0.reason == .unreadableStore }) {
+            integrityDefects = computation.defects
+            LedgerIntegrityLog.shared.replaceAll(with: integrityDefects)
+
+            if var retained = lastUsableSummary {
+                retained.defects = computation.defects
+                retained.isAuthoritative = false
+                status = .ready(retained)
+            } else {
+                // There is no trustworthy value to retain on first launch.
+                // Keep summary nil so the UI can honestly render “Value
+                // unavailable” while still surfacing the read failure.
+                status = .idle
+            }
+            return
+        }
+
+        lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
+
         // Bumped here rather than when the work starts. Consumers key their
         // recomputation off this, and a revision published before the result
         // exists means they run once against a nil summary and never run again.
@@ -191,6 +221,8 @@ final class PortfolioEngine: ObservableObject {
         )
         summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
+        integrityDefects = summary.defects
+        lastUsableSummary = summary
         LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
 #if DEBUG
@@ -272,10 +304,6 @@ final class PortfolioEngine: ObservableObject {
 
     /// The collection's value right now, taken from the collection itself.
     ///
-    /// Deliberately not the walk's ending state: the residual only means
-    /// something if the two sides are measured independently.
-    /// The collection's value right now, taken from the collection itself.
-    ///
     /// Deliberately not the replay's ending state: the residual only means
     /// something if the two sides are measured independently. Prices come from
     /// the bulk index — one fetch per position would be one fetch per position
@@ -309,32 +337,6 @@ final class PortfolioEngine: ObservableObject {
 
         valuation.instrumentsHeld = Array(instruments)
         return valuation
-    }
-
-    // MARK: - Coverage
-
-    static func coverage(
-        instruments: Set<String>,
-        day: Date,
-        context: ModelContext,
-        isKnown: Bool
-    ) -> PortfolioCoverage {
-        guard !instruments.isEmpty else {
-            return PortfolioCoverage(state: isKnown ? .complete : .unknown)
-        }
-
-        let log = PriceObservationLog(context: context)
-        var refreshed = 0
-        for instrument in instruments where log.checkDay(instrumentKey: instrument, day: day) != nil {
-            refreshed += 1
-        }
-        let carriedForward = instruments.count - refreshed
-
-        return PortfolioCoverage(
-            refreshed: refreshed,
-            carriedForward: carriedForward,
-            state: !isKnown ? .unknown : (carriedForward == 0 ? .complete : .partial)
-        )
     }
 
     // MARK: - The ledger/projection assertion
@@ -389,12 +391,20 @@ final class PortfolioEngine: ObservableObject {
         guard !days.isEmpty else { return nil }
 
         // One fetch for every stored close, grouped once. The publisher used to
-        // query per day inside a loop over the whole history.
-        let stored = Dictionary(grouping: allCloses(in: context), by: \.date)
+        // query per day inside a loop over the whole history. A failed read is
+        // not an empty history: returning nil keeps the caller from publishing
+        // revision numbers derived from an incomplete view of the store.
+        let storedCloses: [PortfolioDailyClose]
+        do {
+            storedCloses = try allCloses(in: context)
+        } catch {
+            return nil
+        }
+        let stored = Dictionary(grouping: storedCloses, by: \.date)
             .compactMapValues { $0.max { $0.revision < $1.revision } }
 
         var latest: PortfolioDailyClose?
-        var inserted = false
+        var insertedCloses: [PortfolioDailyClose] = []
 
         for day in days {
             let existing = stored[day.displayDay]
@@ -426,11 +436,23 @@ final class PortfolioEngine: ObservableObject {
                 revisionReason: existing == nil ? nil : .recomputed
             )
             context.insert(close)
+            insertedCloses.append(close)
             latest = close
-            inserted = true
         }
 
-        if inserted { try? context.save() }
+        if !insertedCloses.isEmpty {
+            do {
+                try context.save()
+            } catch {
+                // Delete only the objects this publisher inserted. A rollback
+                // could discard unrelated work the caller staged in the same
+                // context.
+                for close in insertedCloses {
+                    context.delete(close)
+                }
+                return nil
+            }
+        }
         return latest
     }
 
@@ -449,39 +471,14 @@ final class PortfolioEngine: ObservableObject {
             && stored.excludedCount == day.excludedQuantity
     }
 
-    static func latestClose(for day: Date, in context: ModelContext) -> PortfolioDailyClose? {
-        var descriptor = FetchDescriptor<PortfolioDailyClose>(
-            predicate: #Predicate { $0.date == day },
-            sortBy: [SortDescriptor(\.revision, order: .reverse)]
-        )
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
-    }
-
-    static func allCloses(in context: ModelContext) -> [PortfolioDailyClose] {
+    static func allCloses(in context: ModelContext) throws -> [PortfolioDailyClose] {
         let descriptor = FetchDescriptor<PortfolioDailyClose>(
             sortBy: [SortDescriptor(\.date, order: .forward), SortDescriptor(\.revision, order: .forward)]
         )
-        return (try? context.fetch(descriptor)) ?? []
+        return try context.fetch(descriptor)
     }
 
-    // MARK: -
-
-    /// A stable digest of everything a close was derived from. Changing it is
-    /// the only thing that justifies a revision; leaving it alone is what makes
-    /// recomputing an already-published day free.
-    static func fingerprint(events: [LedgerEntry], observations: [ObservationEntry]) -> String {
-        var hasher = SHA256()
-        for event in events.sorted(by: { $0.eventID.uuidString < $1.eventID.uuidString }) {
-            hasher.update(data: Data("\(event.eventID.uuidString):\(event.operationID.uuidString):\(event.kind.rawValue):\(event.deltaQuantity):\(event.collectionKey):\(event.priceStorageKey):\(event.reversesEventID?.uuidString ?? "-")".utf8))
-        }
-        for observation in observations.sorted(by: { $0.id.uuidString < $1.id.uuidString }) {
-            hasher.update(data: Data("\(observation.id.uuidString):\(observation.instrumentKey):\(observation.kind.rawValue):\(observation.amount?.tenThousandths.description ?? "nil")".utf8))
-        }
-        return hasher.finalize().map { String(format: "%02x", $0) }.joined()
-    }
-
-    static func entry(from event: InventoryEvent) -> LedgerEntry {
+    nonisolated static func entry(from event: InventoryEvent) -> LedgerEntry {
         LedgerEntry(
             eventID: event.eventID,
             operationID: event.operationID,
@@ -498,14 +495,14 @@ final class PortfolioEngine: ObservableObject {
         )
     }
 
-    static func observations(in context: ModelContext) -> [ObservationEntry] {
+    static func observations(in context: ModelContext) throws -> [ObservationEntry] {
         let descriptor = FetchDescriptor<PriceObservation>(
             sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
         )
-        return ((try? context.fetch(descriptor)) ?? []).map(observationEntry(from:))
+        return try context.fetch(descriptor).map(observationEntry(from:))
     }
 
-    static func observationEntry(from row: PriceObservation) -> ObservationEntry {
+    nonisolated static func observationEntry(from row: PriceObservation) -> ObservationEntry {
         ObservationEntry(
             id: row.id,
             instrumentKey: row.instrumentKey,

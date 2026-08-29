@@ -230,7 +230,7 @@ enum CollectionCSV {
         )
         return diagnosticExport(
             cards.filter { card in
-                PriceStore.record(for: card, in: recordsByKey)?.unitMarketPriceUSD == nil
+                PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
             },
             priceRecords: priceRecords,
             diagnostic: { card, record in
@@ -286,7 +286,7 @@ enum CollectionCSV {
                 String(card.quantity),
                 diagnostic(card, record),
                 priceStatus(record),
-                record?.unitMarketPriceUSD.map { String($0) } ?? "",
+                record?.effectiveUnitMarketPriceUSD.map { String($0) } ?? "",
                 record?.source?.label ?? "",
                 record?.sourceVariantID ?? "",
                 record?.lastCheckedAt.map { formatter.string(from: $0) } ?? "",
@@ -313,7 +313,7 @@ enum CollectionCSV {
     private static func priceStatus(_ record: PriceRecord?) -> String {
         guard let record, record.lastCheckedAt != nil else { return "never_checked" }
         if record.lastFailureAt != nil { return "refresh_failed" }
-        return record.unitMarketPriceUSD == nil ? "unavailable" : "priced"
+        return record.effectiveUnitMarketPriceUSD == nil ? "unavailable" : "priced"
     }
 
     static func parse(_ data: Data) throws -> CollectionCSVImportPlan {
@@ -493,6 +493,8 @@ enum CollectionCSV {
                 case .duplicate:
                     throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
                 case let .conflict(defect):
+                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                case let .unreadableStore(defect):
                     throw CollectionStoreError.ledgerConflict(defect.detail)
                 }
                 _ = try CollectionStore(context: context).appendActivity(

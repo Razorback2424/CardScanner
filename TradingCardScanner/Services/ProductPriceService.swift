@@ -19,8 +19,8 @@ enum ProductPriceOutcome: Equatable, Sendable {
     case noListingForVariant(vendorCardID: String?)
     /// Nothing came back that passed identity checking.
     case noProductMatch
-    /// No request was made because this run or today's persisted allowance was
-    /// exhausted. This is scheduling state, not evidence about the card.
+    /// No request was made because today's persisted allowance was exhausted.
+    /// This is scheduling state, not evidence about the card.
     case budgetReached(resetAt: Date)
     /// The vendor asked the app to stop. No identity or price failure is cached.
     case rateLimited(retryAt: Date)
@@ -84,18 +84,19 @@ actor ProductPriceService {
 
     private let configuration: Configuration
     private let session: URLSession
-    private var lastRequestAt: Date?
+    private let pacer: JustTCGPacer
     /// The vendor's set directory, per game. Fetched once per refresh and used
     /// to find the vendor's set for a catalog set name.
     private var knownSets: [ProductCatalogIdentity.Game: ProductSetDirectory] = [:]
 
-    init(configuration: Configuration = Configuration(), session: URLSession = .shared) {
+    init(
+        configuration: Configuration = Configuration(),
+        session: URLSession = .shared,
+        pacer: JustTCGPacer = .shared
+    ) {
         self.configuration = configuration
         self.session = session
-    }
-
-    func beginRun() async {
-        await ProductFallbackBudget.shared.beginRun()
+        self.pacer = pacer
     }
 
     func budgetSnapshot() async -> ProductFallbackBudget.Snapshot {
@@ -107,6 +108,7 @@ actor ProductPriceService {
     func quote(
         for subject: ProductPriceSubject,
         variant: PhysicalVariant?,
+        lane: JustTCGRequestLane = .background,
         at fetchedAt: Date = .now
     ) async -> ProductPriceOutcome {
         // An unmapped finish is refused before any request is made. Asking the
@@ -134,10 +136,10 @@ actor ProductPriceService {
 
             if let cardID = subject.vendorCardID {
                 // Already resolved once. No search, no slug needed.
-                candidates = try await fetchCards(query: [("cardId", cardID)])
+                candidates = try await fetchCards(query: [("cardId", cardID)], lane: lane)
                 resolvedSlug = candidates.first?.set
             } else {
-                let directory = try await setDirectory(for: game)
+                let directory = try await setDirectory(for: game, lane: lane)
                 guard let plainSlug = ProductCatalogIdentity.setSlug(
                     setName: subject.setName,
                     japaneseSetID: subject.japaneseSetID,
@@ -163,7 +165,7 @@ actor ProductPriceService {
                     ("game", game.rawValue),
                     ("set", slug),
                     ("limit", String(configuration.resultLimit))
-                ])
+                ], lane: lane)
             }
 
             guard let slug = resolvedSlug else { return .noProductMatch }
@@ -259,12 +261,14 @@ actor ProductPriceService {
     // MARK: - Networking
 
     private func setDirectory(
-        for game: ProductCatalogIdentity.Game
+        for game: ProductCatalogIdentity.Game,
+        lane: JustTCGRequestLane
     ) async throws -> ProductSetDirectory {
         if let cached = knownSets[game] { return cached }
         let response: ProductSetsResponse = try await get(
             path: "sets",
-            query: [("game", game.rawValue)]
+            query: [("game", game.rawValue)],
+            lane: lane
         )
         let directory = ProductSetDirectory(
             sets: response.data.compactMap { set in
@@ -275,13 +279,20 @@ actor ProductPriceService {
         return directory
     }
 
-    private func fetchCards(query: [(String, String)]) async throws -> [ProductCard] {
-        let response: ProductCardsResponse = try await get(path: "cards", query: query)
+    private func fetchCards(
+        query: [(String, String)],
+        lane: JustTCGRequestLane
+    ) async throws -> [ProductCard] {
+        let response: ProductCardsResponse = try await get(path: "cards", query: query, lane: lane)
         return response.data
     }
 
-    private func get<T: Decodable>(path: String, query: [(String, String)]) async throws -> T {
-        try await pace()
+    private func get<T: Decodable>(
+        path: String,
+        query: [(String, String)],
+        lane: JustTCGRequestLane
+    ) async throws -> T {
+        try await pace(lane: lane)
 
         guard var components = URLComponents(
             url: configuration.baseURL.appendingPathComponent(path),
@@ -303,9 +314,11 @@ actor ProductPriceService {
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        switch await ProductFallbackBudget.shared.reserveRequest() {
+        switch await ProductFallbackBudget.shared.reserveRequest(lane: lane) {
         case .allowed:
             break
+        case .cancelled:
+            throw CancellationError()
         case let .budgetReached(resetAt):
             throw ProductPriceError.budgetReached(resetAt)
         case let .rateLimited(retryAt):
@@ -351,15 +364,11 @@ actor ProductPriceService {
 
     /// Hold each request back far enough from the last that the tier's
     /// per-minute allowance is never the reason a refresh fails.
-    private func pace() async throws {
-        if let lastRequestAt {
-            let elapsed = Date.now.timeIntervalSince(lastRequestAt)
-            let remaining = configuration.minimumRequestInterval - elapsed
-            if remaining > 0 {
-                try await Task.sleep(for: .milliseconds(Int(remaining * 1000)))
-            }
-        }
-        lastRequestAt = .now
+    private func pace(lane: JustTCGRequestLane) async throws {
+        try await pacer.wait(
+            lane: lane,
+            minimumInterval: configuration.minimumRequestInterval
+        )
     }
 }
 
@@ -388,7 +397,6 @@ enum ProductPriceError: Error {
 actor ProductFallbackBudget {
     static let shared = ProductFallbackBudget()
     static var dailyLimit: Int { JustTCGQuota.dailyHardLimit }
-    static var perRunLimit: Int { JustTCGQuota.dailyHardLimit }
 
     struct Snapshot: Equatable, Sendable {
         let usedToday: Int
@@ -399,6 +407,7 @@ actor ProductFallbackBudget {
 
     enum Reservation: Equatable, Sendable {
         case allowed
+        case cancelled
         case budgetReached(resetAt: Date)
         case rateLimited(retryAt: Date)
     }
@@ -409,14 +418,15 @@ actor ProductFallbackBudget {
         self.ledger = JustTCGRequestLedger(defaults: defaults)
     }
 
-    func beginRun() {
-        ledger.beginRun()
-    }
-
-    /// Identity resolution is work the user is waiting on — it is the only way a
-    /// card ever becomes batchable — so it spends from the interactive lane.
-    func reserveRequest(now: Date = .now) -> Reservation {
-        switch ledger.reserve(lane: .interactive, now: now) {
+    /// Identity resolution can be interactive (Price Check) or background (a
+    /// scheduled refresh). The caller's lane must govern both pacing and quota,
+    /// otherwise fallback work would consume the interactive reserve.
+    func reserveRequest(
+        now: Date = .now,
+        lane: JustTCGRequestLane = .interactive
+    ) -> Reservation {
+        guard !Task.isCancelled else { return .cancelled }
+        switch ledger.reserve(lane: lane, now: now) {
         case .allowed:
             return .allowed
         case let .dailyReached(resetAt), let .monthlyReached(resetAt):
