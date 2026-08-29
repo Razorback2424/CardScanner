@@ -660,7 +660,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
-    private let visionQueueKey = DispatchSpecificKey<Void>()
+    private let callbackEpochLock = NSLock()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
@@ -671,9 +671,9 @@ final class CardScanner: NSObject, ObservableObject {
     /// Serialized with the capture-session queue so a delayed permission
     /// callback cannot restart the camera after the scanner view disappeared.
     private var requestedStartID: UUID?
-    /// Main-thread callbacks carry this epoch across the queue boundary. A
-    /// lifecycle or mode transition invalidates the epoch synchronously, so a
-    /// callback already waiting on the main queue cannot affect the next state.
+    /// Main-thread callbacks carry this epoch across the queue boundary. Access
+    /// is protected by a short lock so validating a callback never makes the
+    /// main thread wait for the OCR/tracking queue to finish a frame.
     private var callbackEpoch: UInt = 0
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
@@ -727,7 +727,6 @@ final class CardScanner: NSObject, ObservableObject {
             ocrInterval: 0.24
         )
         super.init()
-        visionQueue.setSpecific(key: visionQueueKey, value: ())
         configureTextRequest()
 
         interruptionObserver = NotificationCenter.default.addObserver(
@@ -823,15 +822,12 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Drops callbacks that were queued before a presentation or lifecycle
-    /// boundary. This is synchronous from the caller's point of view, while
-    /// keeping all vision state serialized on the vision queue.
+    /// boundary. This is synchronous from the caller's point of view and does
+    /// not block on an OCR frame that may already be in progress.
     func invalidateCallbacks() {
-        let invalidate = { self.callbackEpoch &+= 1 }
-        if DispatchQueue.getSpecific(key: visionQueueKey) != nil {
-            invalidate()
-        } else {
-            visionQueue.sync(execute: invalidate)
-        }
+        callbackEpochLock.lock()
+        callbackEpoch &+= 1
+        callbackEpochLock.unlock()
     }
 
     func resumeRecognition() {
@@ -1736,26 +1732,28 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Called from the vision queue. The main-queue closure checks the epoch
-    /// back on the vision queue before invoking the view-model callback.
+    /// before invoking the view-model callback.
     private func dispatchCurrentCallback(_ callback: @escaping () -> Void) {
-        let epoch = callbackEpoch
+        let epoch = currentCallbackEpoch()
         dispatchCallback(callback, epoch: epoch)
     }
 
     private func dispatchCurrentCallbackFromAnyQueue(_ callback: @escaping () -> Void) {
-        let epoch = DispatchQueue.getSpecific(key: visionQueueKey) != nil
-            ? callbackEpoch
-            : visionQueue.sync { callbackEpoch }
-        dispatchCallback(callback, epoch: epoch)
+        dispatchCallback(callback, epoch: currentCallbackEpoch())
     }
 
     private func dispatchCallback(_ callback: @escaping () -> Void, epoch: UInt) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            let isCurrent = self.visionQueue.sync { self.callbackEpoch == epoch }
-            guard isCurrent else { return }
+            guard self.currentCallbackEpoch() == epoch else { return }
             callback()
         }
+    }
+
+    private func currentCallbackEpoch() -> UInt {
+        callbackEpochLock.lock()
+        defer { callbackEpochLock.unlock() }
+        return callbackEpoch
     }
 
     private func recordDiagnostic(_ event: String) {
