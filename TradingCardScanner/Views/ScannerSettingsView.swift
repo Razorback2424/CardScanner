@@ -180,11 +180,19 @@ struct SettingsView: View {
             }
 
             Button("Export Value History", systemImage: "square.and.arrow.up") {
-                csvExportDocument = CollectionCSV.exportPortfolioHistory(
-                    PortfolioEngine.allCloses(in: modelContext)
-                )
-                csvExportFilename = "CardScanner Value History"
-                isShowingCSVExporter = true
+                do {
+                    csvExportDocument = CollectionCSV.exportPortfolioHistory(
+                        try PortfolioEngine.allCloses(in: modelContext)
+                    )
+                    csvExportFilename = "CardScanner Value History"
+                    isShowingCSVExporter = true
+                } catch {
+                    csvMessage = CSVMessage(
+                        title: "Export Failed",
+                        message: error.localizedDescription,
+                        skippedCSVText: nil
+                    )
+                }
             }
             .disabled(portfolioCloseCount == 0)
         } header: {
@@ -204,7 +212,7 @@ struct SettingsView: View {
     }
 
     private var portfolioCloseCount: Int {
-        PortfolioEngine.allCloses(in: modelContext).count
+        (try? PortfolioEngine.allCloses(in: modelContext).count) ?? 0
     }
 
     private var developerSection: some View {
