@@ -884,6 +884,122 @@ final class BrowseCollectionTests: XCTestCase {
 }
 
 final class PokemonChecklistBrowseTests: XCTestCase {
+    func testOfflineModernPokemonCardResolvesWithoutProviderRequests() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "sv10"),
+            name: "Destined Rivals",
+            code: "DRI",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 182,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv10-085",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Example Pokémon",
+            collectorNumber: "085",
+            thumbnailURL: URL(string: "https://example.com/card-small.png"),
+            imageURL: URL(string: "https://example.com/card-large.png")
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: "sv10",
+                    providerFingerprint: "fixture",
+                    resource: "sets/sv10.json"
+                )]
+            ),
+            checklists: [set.id: [summary]]
+        )
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+        try await store.publish(snapshot)
+        let offline = PokemonOfflineCatalog(
+            store: PokemonChecklistStore(root: root, bundle: nil)
+        )
+
+        let offlineCard = await offline.card(
+            providerSetID: "SV10",
+            localID: "085",
+            expectedOfficialCount: 182
+        )
+        let card = try XCTUnwrap(offlineCard)
+        XCTAssertEqual(card.id, "sv10-085")
+        XCTAssertEqual(card.name, "Example Pokémon")
+        XCTAssertNil(card.pricing)
+        XCTAssertNil(card.variants)
+        XCTAssertEqual(card.highImageURL, URL(string: "https://example.com/card-large.png"))
+
+        let identified = IdentifiedCard.pokemon(card, setCode: "DRI")
+        XCTAssertEqual(
+            VariantResolver.resolve(identified.variantEvidence),
+            .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
+        )
+    }
+
+    func testOfflinePokemonCardRejectsAStalePrintedDenominator() throws {
+        let set = sampleSet(id: "sv10", name: "Destined Rivals")
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv10-085",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Example Pokémon",
+            collectorNumber: "085",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: "sv10",
+                    providerFingerprint: "fixture",
+                    resource: "sets/sv10.json"
+                )]
+            ),
+            checklists: [set.id: [summary]]
+        )
+
+        XCTAssertNil(
+            PokemonOfflineCardFactory.card(
+                in: snapshot,
+                providerSetID: "sv10",
+                localID: "085",
+                expectedOfficialCount: 181
+            )
+        )
+    }
+
+    func testTCGdexCircuitBreakerSuppressesRequestsDuringCooldown() async {
+        let breaker = TCGdexCircuitBreaker(cooldown: 10)
+        let now = Date(timeIntervalSince1970: 10_000)
+
+        let initiallyPermitted = await breaker.permitsRequest(now: now)
+        XCTAssertTrue(initiallyPermitted)
+        await breaker.recordFailure(now: now)
+        let blockedDuringCooldown = await breaker.permitsRequest(now: now.addingTimeInterval(1))
+        XCTAssertFalse(blockedDuringCooldown)
+        let permittedAfterCooldown = await breaker.permitsRequest(now: now.addingTimeInterval(11))
+        XCTAssertTrue(permittedAfterCooldown)
+    }
+
     func testBundledChecklistOpensOfflineWithoutCatalogRequests() async throws {
         let root = try temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }

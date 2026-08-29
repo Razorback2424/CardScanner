@@ -44,9 +44,36 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         }
     }
 
+    /// Creates the smallest honest card record that can be built from an
+    /// offline checklist or a secondary catalog. It intentionally has no
+    /// pricing and no inferred finish information. Those facts must come from
+    /// a provider response or a later user choice.
+    init(
+        id: String,
+        localId: String,
+        name: String,
+        image: String?,
+        rarity: String?,
+        set: TCGdexSetBrief,
+        variants: TCGdexVariants?,
+        pricing: TCGdexPricing?,
+        variantsDetailed: [TCGdexDetailedVariant]?
+    ) {
+        self.id = id
+        self.localId = localId
+        self.name = name
+        self.image = image
+        self.rarity = rarity
+        self.set = set
+        self.variants = variants
+        self.pricing = pricing
+        self.variantsDetailed = variantsDetailed
+    }
+
     var highImageURL: URL? {
         guard let image else { return nil }
-        return URL(string: image + "/high.png")
+        guard let url = URL(string: image) else { return nil }
+        return url.pathExtension.isEmpty ? URL(string: image + "/high.png") : url
     }
 
     /// What TCGdex says this printing physically exists as, drawn from both
@@ -141,6 +168,22 @@ struct TCGdexCardCount: Decodable, Sendable {
     let holo: Int?
     let firstEd: Int?
 
+    init(
+        total: Int,
+        official: Int,
+        normal: Int? = nil,
+        reverse: Int? = nil,
+        holo: Int? = nil,
+        firstEd: Int? = nil
+    ) {
+        self.total = total
+        self.official = official
+        self.normal = normal
+        self.reverse = reverse
+        self.holo = holo
+        self.firstEd = firstEd
+    }
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         total = try container.decode(Int.self, forKey: .total)
@@ -194,11 +237,15 @@ struct TCGdexCardBrief: Decodable, Sendable {
     }
 }
 
-/// Minimal Pokémon TCG API representation used only as an artwork fallback.
-/// TCGdex remains the identity source; this provider fills a scan only after
-/// set, printed number and name all agree.
+/// Minimal Pokémon TCG API representation used as a bounded secondary source
+/// when TCGdex is unavailable, and as an artwork fallback for imports. Scanner
+/// callers still validate set and number before accepting the result.
 struct PokemonTCGAPIResponse: Decodable, Sendable {
     let data: [PokemonTCGAPICard]
+}
+
+struct PokemonTCGAPISingleResponse: Decodable, Sendable {
+    let data: PokemonTCGAPICard
 }
 
 struct PokemonTCGAPICard: Decodable, Sendable {
@@ -210,7 +257,9 @@ struct PokemonTCGAPICard: Decodable, Sendable {
 }
 
 struct PokemonTCGAPISet: Decodable, Sendable {
+    let id: String?
     let name: String
+    let printedTotal: Int?
 }
 
 struct PokemonTCGAPIImages: Decodable, Sendable {
@@ -640,7 +689,8 @@ enum IdentifiedCard: Identifiable, Sendable {
         switch self {
         case let .pokemon(card, _):
             guard let image = card.image else { return nil }
-            return URL(string: image + "/low.png")
+            guard let url = URL(string: image) else { return nil }
+            return url.pathExtension.isEmpty ? URL(string: image + "/low.png") : url
         case let .magic(card): return card.thumbnailImageURL
         }
     }

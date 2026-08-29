@@ -86,18 +86,6 @@ struct SettingsView: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .confirmationDialog(
-                "Delete entire collection?",
-                isPresented: $isConfirmingCollectionDeletion,
-                titleVisibility: .visible
-            ) {
-                Button("Delete Collection", role: .destructive) {
-                    deleteCollection()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This permanently deletes every card in your collection.")
-            }
             .alert("Collection Couldn’t Be Deleted", isPresented: deletionErrorBinding) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -114,14 +102,6 @@ struct SettingsView: View {
                 if case let .failure(error) = result {
                     csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
-            }
-            .confirmationDialog("Import CSV?", isPresented: Binding(get: { pendingCSVImport != nil }, set: { if !$0 { pendingCSVImport = nil } }), titleVisibility: .visible) {
-                if let plan = pendingCSVImport {
-                    Button("Import \(plan.totalQuantity) Cards") { importCSV(plan) }
-                }
-                Button("Cancel", role: .cancel) { pendingCSVImport = nil }
-            } message: {
-                if let plan = pendingCSVImport { Text(importConfirmationMessage(plan)) }
             }
             .alert(item: $csvMessage) { message in
                 if let skippedCSVText = message.skippedCSVText {
@@ -141,6 +121,21 @@ struct SettingsView: View {
             Button("Import CSV", systemImage: "square.and.arrow.down") {
                 isShowingCSVImporter = true
             }
+            .confirmationDialog(
+                "Import CSV?",
+                isPresented: Binding(
+                    get: { pendingCSVImport != nil },
+                    set: { if !$0 { pendingCSVImport = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                if let plan = pendingCSVImport {
+                    Button("Import \(plan.totalQuantity) Cards") { importCSV(plan) }
+                }
+                Button("Cancel", role: .cancel) { pendingCSVImport = nil }
+            } message: {
+                if let plan = pendingCSVImport { Text(importConfirmationMessage(plan)) }
+            }
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
                 csvExportDocument = CollectionCSV.export(cards)
@@ -157,6 +152,18 @@ struct SettingsView: View {
 
             Button("Delete Entire Collection", role: .destructive) {
                 isConfirmingCollectionDeletion = true
+            }
+            .confirmationDialog(
+                "Delete entire collection?",
+                isPresented: $isConfirmingCollectionDeletion,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Collection", role: .destructive) {
+                    deleteCollection()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently deletes every card in your collection.")
             }
         }
     }

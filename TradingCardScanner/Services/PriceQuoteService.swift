@@ -2,12 +2,14 @@ import Foundation
 
 enum PriceQuoteError: Error {
     case identityMismatch
+    case providerUnavailable
 }
 
 /// Refreshes only a card that has already been resolved. It never receives OCR
 /// evidence, so a refresh cannot silently re-identify the card in someone's hand.
 struct PriceQuoteService {
     private let tcgdex = TCGdexService()
+    private let tcgdexCircuit = TCGdexCircuitBreaker()
     private let scryfall = ScryfallService()
 
     func refresh(
@@ -18,7 +20,21 @@ struct PriceQuoteService {
         let refreshed: IdentifiedCard
         switch card {
         case .pokemon:
-            let returned = try await tcgdex.fetchCard(id: card.providerID, ignoringCache: true)
+            guard await tcgdexCircuit.permitsRequest() else {
+                throw PriceQuoteError.providerUnavailable
+            }
+            let returned: TCGdexCard
+            do {
+                returned = try await tcgdex.fetchCard(
+                    id: card.providerID,
+                    ignoringCache: true,
+                    timeout: 2.5
+                )
+                await tcgdexCircuit.recordSuccess()
+            } catch {
+                await tcgdexCircuit.recordFailure()
+                throw error
+            }
             refreshed = .pokemon(returned, setCode: card.setCode)
         case .magic:
             let returned = try await scryfall.fetchCard(id: card.providerID, ignoringCache: true)

@@ -398,6 +398,16 @@ actor PokemonChecklistStore {
         return loadSnapshot(from: bundledRoot)
     }
 
+    /// The scanner and Browse use the same precedence rule: a complete
+    /// downloaded overlay wins for a set, while bundled data remains available
+    /// for sets the overlay does not contain.
+    func mergedSnapshot() -> PokemonChecklistSnapshot? {
+        PokemonChecklistSnapshot.merged(
+            bundled: bundledSnapshot(),
+            downloaded: downloadedSnapshot()
+        )
+    }
+
     /// Files are written using unique resource names and the manifest is the
     /// final write. A cancellation or malformed response cannot replace the
     /// last manifest because the caller only invokes this after full building.

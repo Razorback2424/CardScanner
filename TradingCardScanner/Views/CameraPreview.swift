@@ -3,10 +3,18 @@ import SwiftUI
 import UIKit
 
 struct CameraPreview: UIViewRepresentable {
-    @ObservedObject var scanner: CardScanner
+    /// The capture session is stable after the view is created. Keeping the
+    /// scanner as a plain reference prevents unrelated scanner publications
+    /// (especially OCR assistance) from invalidating this representable.
+    let scanner: CardScanner
     /// Observed so an iPad's preview and guide overlays re-lay-out when the window
     /// turns. On iPhone this never changes value.
     @ObservedObject private var rotationTracker: CameraRotationTracker
+#if DEBUG
+    /// Debug boxes remain independently observable without subscribing to the
+    /// scanner's other high-frequency state.
+    @ObservedObject private var debugVisionBoxes: DebugVisionBoxStore
+#endif
     /// Increments once per successful add. The band itself acknowledging the
     /// card is the cheapest possible way to say "consumed, give me the next
     /// one" without moving the user anywhere.
@@ -16,6 +24,9 @@ struct CameraPreview: UIViewRepresentable {
         self.scanner = scanner
         self.successCount = successCount
         _rotationTracker = ObservedObject(wrappedValue: scanner.rotation)
+#if DEBUG
+        _debugVisionBoxes = ObservedObject(wrappedValue: scanner.debugVisionBoxes)
+#endif
     }
 
     func makeUIView(context: Context) -> PreviewView {
@@ -25,19 +36,20 @@ struct CameraPreview: UIViewRepresentable {
         view.rotation = scanner.rotation
         view.syncSuccessCount(successCount)
 #if DEBUG
-        view.debugVisionBoxes = scanner.debugVisionBoxes
+        view.debugVisionBoxes = debugVisionBoxes.boxes
 #endif
         return view
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
-        uiView.previewLayer.session = scanner.session
+        if uiView.previewLayer.session !== scanner.session {
+            uiView.previewLayer.session = scanner.session
+        }
         uiView.rotation = scanner.rotation
         uiView.syncSuccessCount(successCount)
 #if DEBUG
-        uiView.debugVisionBoxes = scanner.debugVisionBoxes
+        uiView.debugVisionBoxes = debugVisionBoxes.boxes
 #endif
-        uiView.setNeedsLayout()
     }
 }
 

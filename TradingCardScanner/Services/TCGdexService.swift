@@ -45,12 +45,13 @@ struct TCGdexService: Sendable {
     func fetchCard(
         setID: String,
         localID: String,
-        ignoringCache: Bool = false
+        ignoringCache: Bool = false,
+        timeout: TimeInterval = 8
     ) async throws -> TCGdexCard {
         guard let url = URL(string: "https://api.tcgdex.net/v2/en/sets/\(setID)/\(localID)") else {
             throw TCGdexError.invalidURL
         }
-        return try await fetch(url, ignoringCache: ignoringCache)
+        return try await fetch(url, ignoringCache: ignoringCache, timeout: timeout)
     }
 
     func fetchSet(id: String, locale: TCGdexLocale = .en) async throws -> TCGdexSetCatalog {
@@ -74,18 +75,23 @@ struct TCGdexService: Sendable {
     func fetchCard(
         id: String,
         locale: TCGdexLocale = .en,
-        ignoringCache: Bool = false
+        ignoringCache: Bool = false,
+        timeout: TimeInterval = 8
     ) async throws -> TCGdexCard {
         guard let encoded = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/cards/\(encoded)") else {
             throw TCGdexError.invalidURL
         }
-        return try await fetch(url, ignoringCache: ignoringCache)
+        return try await fetch(url, ignoringCache: ignoringCache, timeout: timeout)
     }
 
-    private func fetch(_ url: URL, ignoringCache: Bool = false) async throws -> TCGdexCard {
+    private func fetch(
+        _ url: URL,
+        ignoringCache: Bool = false,
+        timeout: TimeInterval = 8
+    ) async throws -> TCGdexCard {
         var request = URLRequest(url: url)
-        request.timeoutInterval = 8
+        request.timeoutInterval = timeout
 
         // Respect normal HTTP cache validation. Unlike returnCacheDataElseLoad,
         // this allows mutable pricing data to refresh when the server says it should.
@@ -110,10 +116,43 @@ struct TCGdexService: Sendable {
     }
 }
 
-/// English artwork fallback for catalog records whose TCGdex identity is valid
-/// but whose scan is absent. Exact matching happens again after decoding; the
-/// server query narrows results but is never trusted as identity proof.
+/// Small secondary Pokémon catalog client. Exact set/number lookup is used only
+/// by the scanner when TCGdex is unavailable; artwork lookup remains limited to
+/// records whose identity was already established elsewhere.
 struct PokemonTCGAPIService: Sendable {
+    /// Exact set/number lookup used when TCGdex is unavailable. The response is
+    /// still validated by the scanner before it becomes an identified card; this
+    /// service only narrows the secondary provider's result set.
+    func fetchCard(
+        setID: String,
+        cardNumber: String,
+        timeout: TimeInterval = 4
+    ) async throws -> PokemonTCGAPICard? {
+        let number = CatalogIdentityNormalization.localNumber(cardNumber)
+        // Card ids retain the printed zero padding (for example `sv10-085`),
+        // while identity comparison below intentionally ignores that padding.
+        let providerNumber = cardNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let providerID = "\(setID)-\(providerNumber)"
+        guard let encodedID = providerID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let url = URL(string: "https://api.pokemontcg.io/v2/cards/\(encodedID)") else {
+            throw TCGdexError.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = timeout
+        request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse else { throw TCGdexError.badResponse }
+        if http.statusCode == 404 { return nil }
+        guard (200..<300).contains(http.statusCode) else { throw TCGdexError.badResponse }
+        let card = try JSONDecoder().decode(PokemonTCGAPISingleResponse.self, from: data).data
+        guard CatalogIdentityNormalization.localNumber(card.number) == number,
+              card.set.id?.caseInsensitiveCompare(setID) == .orderedSame else {
+            return nil
+        }
+        return card
+    }
+
     func fetchArtwork(
         name: String,
         setName: String,

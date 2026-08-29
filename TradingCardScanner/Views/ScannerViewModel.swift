@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import SwiftData
+import SwiftUI
 import UIKit
 
 extension ScanIdentifier {
@@ -616,6 +617,8 @@ final class ScannerViewModel: ObservableObject {
     private var resolutionTask: Task<Void, Never>?
     private var quoteRefreshTask: Task<Void, Never>?
     private var scanGeneration = 0
+    private var isScannerViewVisible = false
+    private var isScannerSessionActive = false
     /// Proofs arrive independently of catalog resolution. A provisional proof
     /// is held by encounter id until its successful commit can associate it with
     /// a committed presentation.
@@ -637,12 +640,21 @@ final class ScannerViewModel: ObservableObject {
     private static let slowLookupThreshold: Duration = .milliseconds(400)
     private static let noteLifetime: Duration = .milliseconds(2600)
 
+    private func animateScannerChrome(_ changes: () -> Void) {
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.86), changes)
+    }
+
+    private func animateScannerNote(_ changes: () -> Void) {
+        withAnimation(.easeOut(duration: 0.18), changes)
+    }
+
     init() {
         scanner.onPlausibleCandidate = { [weak self] identifier in
             guard let self else { return }
             // Speculation only. Nothing downstream may act on this.
             Task { @MainActor in
-                guard self.catalogMissVerification?.suppressionKey != identifier.suppressionKey else {
+                guard self.isScannerSessionActive,
+                      self.catalogMissVerification?.suppressionKey != identifier.suppressionKey else {
                     return
                 }
                 await self.catalog.prefetch(identifier)
@@ -651,13 +663,15 @@ final class ScannerViewModel: ObservableObject {
 
         scanner.onObservedCandidate = { [weak self] identifier in
             Task { @MainActor in
-                self?.observeCatalogMissVerification(identifier)
+                guard let self, self.isScannerSessionActive else { return }
+                self.observeCatalogMissVerification(identifier)
             }
         }
 
         scanner.onConfirmedCandidate = { [weak self] encounterID, identifier, authorizationID in
             guard let self else { return }
             Task { @MainActor in
+                guard self.isScannerSessionActive else { return }
                 if let state = self.heldRepeatAuthorizationState,
                    authorizationID == Optional(state.authorization.id) {
                     // The scanner has consumed the one-shot permit. Keep its
@@ -677,7 +691,9 @@ final class ScannerViewModel: ObservableObject {
                 if let offer = self.heldDuplicateOffer,
                    offer.encounterID != encounterID ||
                    offer.suppressionKey != identifier.suppressionKey {
-                    self.heldDuplicateOffer = nil
+                    self.animateScannerChrome {
+                        self.heldDuplicateOffer = nil
+                    }
                     self.diagnostic("heldDuplicateOfferDismissedByDifferentCard")
                 }
                 if let deferred = self.deferredHeldDuplicateOffer,
@@ -698,7 +714,7 @@ final class ScannerViewModel: ObservableObject {
 
         scanner.onHeldRepeatAuthorizationTerminated = { [weak self] authorizationID, outcome in
             Task { @MainActor in
-                guard let self,
+                guard let self, self.isScannerSessionActive,
                       self.heldRepeatAuthorizationState?.authorization.id == authorizationID else { return }
                 switch outcome {
                 case .consumed:
@@ -710,41 +726,49 @@ final class ScannerViewModel: ObservableObject {
                     )
                 case .expired, .rejected, .cancelled:
                     self.heldRepeatAuthorizationState = nil
-                    self.heldDuplicateOffer = nil
+                    self.animateScannerChrome {
+                        self.heldDuplicateOffer = nil
+                    }
                 }
             }
         }
 
         scanner.onSpatialResetProof = { [weak self] proof in
             Task { @MainActor in
-                self?.receiveSpatialResetProof(proof)
+                guard let self, self.isScannerSessionActive else { return }
+                self.receiveSpatialResetProof(proof)
             }
         }
 
         scanner.onCameraInterruption = { [weak self] in
             Task { @MainActor in
-                self?.cameraInterruptionStarted()
+                guard let self, self.isScannerSessionActive else { return }
+                self.cameraInterruptionStarted()
             }
         }
         scanner.onCameraInterruptionEnded = { [weak self] in
             Task { @MainActor in
-                self?.resumeRecognitionIfPossible()
+                guard let self, self.isScannerSessionActive else { return }
+                self.resumeRecognitionIfPossible()
             }
         }
 
         scanner.onLatchHolding = { [weak self] identifier, encounterID in
             Task { @MainActor in
-                self?.offerHeldDuplicate(for: identifier, encounterID: encounterID)
+                guard let self, self.isScannerSessionActive else { return }
+                self.offerHeldDuplicate(for: identifier, encounterID: encounterID)
             }
         }
 
         scanner.onLatchReleased = { [weak self] encounterID, suppressionKey in
             Task { @MainActor in
-                guard let self else { return }
+                guard let self, self.isScannerSessionActive else { return }
                 if let offer = self.heldDuplicateOffer,
                    offer.suppressionKey == suppressionKey,
                    encounterID == nil || offer.encounterID == encounterID {
-                    self.heldDuplicateOffer = nil
+                    self.animateScannerChrome {
+                        self.heldDuplicateOffer = nil
+                    }
                 }
                 if let deferred = self.deferredHeldDuplicateOffer,
                    deferred.identifier.suppressionKey == suppressionKey,
@@ -761,6 +785,9 @@ final class ScannerViewModel: ObservableObject {
     // MARK: - Session lifecycle
 
     func start(context: ModelContext) {
+        isScannerViewVisible = true
+        isScannerSessionActive = true
+        scanner.invalidateCallbacks()
         store = CollectionStore(context: context)
         prices = PriceStore(context: context)
         priceCheckCoordinator = PriceCheckCoordinator(context: context)
@@ -776,13 +803,21 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func viewDisappeared() {
+        isScannerViewVisible = false
+        isScannerSessionActive = false
         invalidatePendingScan()
         quoteRefreshTask?.cancel()
         scanner.stop()
     }
 
     func scenePhaseChanged(isActive: Bool) {
-        guard !isActive else { return }
+        guard isScannerViewVisible else { return }
+        guard !isActive else {
+            isScannerSessionActive = true
+            resumeRecognitionIfPossible()
+            return
+        }
+        isScannerSessionActive = false
         invalidatePendingScan()
         quoteRefreshTask?.cancel()
         if priceCheckResult?.isRefreshing == true {
@@ -799,11 +834,15 @@ final class ScannerViewModel: ObservableObject {
     /// deliberately elsewhere, and a card added behind a sheet would be a card
     /// nobody saw being added.
     func pauseForPresentation() {
+        isScannerSessionActive = false
         dismissReceipt()
+        scanner.invalidateCallbacks()
         scanner.pauseRecognition()
     }
 
     func resumeAfterPresentation() {
+        guard isScannerViewVisible else { return }
+        isScannerSessionActive = true
         feedback.prepare()
         resumeRecognitionIfPossible()
     }
@@ -811,6 +850,8 @@ final class ScannerViewModel: ObservableObject {
     func dismissPriceCheckResult() {
         quoteRefreshTask?.cancel()
         priceCheckResult = nil
+        guard isScannerViewVisible else { return }
+        isScannerSessionActive = true
         feedback.prepare()
         resumeRecognitionIfPossible()
     }
@@ -837,18 +878,25 @@ final class ScannerViewModel: ObservableObject {
         isProcessingIdentification = false
         resolutionTask?.cancel()
         identificationQueue.removeAll()
-        pendingChoice = nil
-        pendingPrintRunChoice = nil
-        pendingIdentityChoice = nil
-        pendingDuplicateConfirmation = nil
+        animateScannerChrome {
+            pendingChoice = nil
+            pendingPrintRunChoice = nil
+            pendingIdentityChoice = nil
+            pendingDuplicateConfirmation = nil
+        }
         spatialResetProofs.removeAll()
         deferredHeldDuplicateOffer = nil
         catalogMissVerification = nil
         clearHeldRepeatState()
         receiptTask?.cancel()
-        receipt = nil
+        animateScannerChrome {
+            receipt = nil
+        }
         noteTask?.cancel()
-        note = nil
+        animateScannerNote {
+            note = nil
+        }
+        scanner.invalidateCallbacks()
         scanner.invalidateSpatialContinuity()
         scanner.pauseRecognition()
     }
@@ -861,7 +909,9 @@ final class ScannerViewModel: ObservableObject {
         // already-tapped authorization alive: the proof may have been queued
         // by the old tracker just before the tap, or may belong to the newly
         // authorized encounter while catalog choices are still pending.
-        heldDuplicateOffer = nil
+        animateScannerChrome {
+            heldDuplicateOffer = nil
+        }
 
         // A tracker can exit while its catalog resolution is still in flight.
         // Once that resolution has committed, attach the already-observed proof
@@ -949,22 +999,26 @@ final class ScannerViewModel: ObservableObject {
               pendingIdentityChoice == nil,
               pendingDuplicateConfirmation == nil else { return }
 
-        heldDuplicateOffer = HeldDuplicateOffer(
-            offerID: UUID(),
-            previousScanID: previous.id,
-            previousPresentationToken: previous.presentationToken,
-            encounterID: encounterID,
-            identity: previous.identity,
-            suppressionKey: identifier.suppressionKey,
-            cardName: previousScan.card.name,
-            printedIdentifier: previousScan.identifier.scannerDisplayIdentifier(for: previousScan.card)
-        )
+        animateScannerChrome {
+            heldDuplicateOffer = HeldDuplicateOffer(
+                offerID: UUID(),
+                previousScanID: previous.id,
+                previousPresentationToken: previous.presentationToken,
+                encounterID: encounterID,
+                identity: previous.identity,
+                suppressionKey: identifier.suppressionKey,
+                cardName: previousScan.card.name,
+                printedIdentifier: previousScan.identifier.scannerDisplayIdentifier(for: previousScan.card)
+            )
+        }
         diagnostic("heldDuplicateOfferPublished")
     }
 
     private func clearHeldRepeatState() {
         heldRepeatAuthorizationState = nil
-        heldDuplicateOffer = nil
+        animateScannerChrome {
+            heldDuplicateOffer = nil
+        }
         scanner.cancelHeldRepeatAuthorization()
     }
 
@@ -973,7 +1027,9 @@ final class ScannerViewModel: ObservableObject {
     /// still continuous at the moment the answer is made.
     func chooseSameCard() {
         guard let pending = pendingDuplicateConfirmation else { return }
-        pendingDuplicateConfirmation = nil
+        animateScannerChrome {
+            pendingDuplicateConfirmation = nil
+        }
         spatialResetProofs.removeAll { $0.encounterID == pending.encounterID }
 
         guard let previous = committedSessionHistory.last,
@@ -998,13 +1054,17 @@ final class ScannerViewModel: ObservableObject {
     /// be intercepted by duplicate routing a second time.
     func addAnother() {
         guard let pending = pendingDuplicateConfirmation else { return }
-        pendingDuplicateConfirmation = nil
+        animateScannerChrome {
+            pendingDuplicateConfirmation = nil
+        }
 
         guard commitAuthorizedCollectionCandidate(
             pending.candidate,
             authorization: .addAnother
         ) else {
-            pendingDuplicateConfirmation = pending
+            animateScannerChrome {
+                pendingDuplicateConfirmation = pending
+            }
             scanner.pauseRecognition()
             return
         }
@@ -1035,7 +1095,9 @@ final class ScannerViewModel: ObservableObject {
             authorization: authorization,
             offer: offer
         )
-        heldDuplicateOffer = nil
+        animateScannerChrome {
+            heldDuplicateOffer = nil
+        }
         diagnostic("heldRepeatTapCreated")
 
         scanner.authorizeHeldRepeat(authorization) { [weak self] result in
@@ -1047,12 +1109,16 @@ final class ScannerViewModel: ObservableObject {
                     self.diagnostic("heldRepeatAuthorizationAccepted")
                 case .rejected(.expired), .rejected(.recognitionPaused):
                     self.heldRepeatAuthorizationState = nil
-                    self.heldDuplicateOffer = offer
+                    self.animateScannerChrome {
+                        self.heldDuplicateOffer = offer
+                    }
                     self.show(ScanNote(text: "Card changed — try again", tone: .info))
                     self.feedback.problem()
                 case .rejected(.cardChanged):
                     self.heldRepeatAuthorizationState = nil
-                    self.heldDuplicateOffer = offer
+                    self.animateScannerChrome {
+                        self.heldDuplicateOffer = offer
+                    }
                     self.show(ScanNote(text: "Card changed — try again", tone: .info))
                     self.feedback.problem()
                 }
@@ -1064,9 +1130,12 @@ final class ScannerViewModel: ObservableObject {
     /// owns this history for its lifetime; this method is the only deliberate
     /// reset boundary.
     func endSession() {
+        isScannerSessionActive = false
         invalidatePendingScan()
         committedSessionHistory.removeAll()
-        recent.removeAll()
+        animateScannerChrome {
+            recent.removeAll()
+        }
         unresolvedScans.removeAll()
         lastAdd = nil
         scanner.stop()
@@ -1116,7 +1185,9 @@ final class ScannerViewModel: ObservableObject {
     /// Walking away from a question writes nothing. The latch stays engaged, so
     /// the same card sitting in the band does not immediately ask again.
     func dismissChoice() {
-        pendingChoice = nil
+        animateScannerChrome {
+            pendingChoice = nil
+        }
         resumeRecognitionIfPossible()
         processNextIdentificationIfPossible()
     }
@@ -1125,7 +1196,9 @@ final class ScannerViewModel: ObservableObject {
         guard let pending = pendingPrintRunChoice,
               pending.options.contains(printRun) else { return }
         feedback.choiceMade()
-        pendingPrintRunChoice = nil
+        animateScannerChrome {
+            pendingPrintRunChoice = nil
+        }
         resolveVariant(
             for: pending.request,
             card: pending.card,
@@ -1136,7 +1209,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func dismissPrintRunChoice() {
-        pendingPrintRunChoice = nil
+        animateScannerChrome {
+            pendingPrintRunChoice = nil
+        }
         resumeRecognitionIfPossible()
         processNextIdentificationIfPossible()
     }
@@ -1159,7 +1234,9 @@ final class ScannerViewModel: ObservableObject {
                 guard !Task.isCancelled,
                       self.isCurrent(pending.request),
                       self.pendingIdentityChoice?.id == pending.id else { return }
-                self.pendingIdentityChoice = nil
+                self.animateScannerChrome {
+                    self.pendingIdentityChoice = nil
+                }
                 self.resolvePrintRun(for: pending.request, card: card)
                 self.resumeRecognitionIfPossible()
                 self.processNextIdentificationIfPossible()
@@ -1172,7 +1249,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func dismissIdentityChoice() {
-        pendingIdentityChoice = nil
+        animateScannerChrome {
+            pendingIdentityChoice = nil
+        }
         resumeRecognitionIfPossible()
         processNextIdentificationIfPossible()
     }
@@ -1200,7 +1279,9 @@ final class ScannerViewModel: ObservableObject {
             return false
         }
 
-        recent.removeAll { $0.id == scanID }
+        animateScannerChrome {
+            recent.removeAll { $0.id == scanID }
+        }
         removeCommittedHistory(for: scanID)
         spatialResetProofs.removeAll { $0.encounterID == removedHistoryEntry?.encounterID }
 
@@ -1209,13 +1290,17 @@ final class ScannerViewModel: ObservableObject {
             clearHeldRepeatState()
         }
         if pendingDuplicateConfirmation?.previousScanID == scanID {
-            pendingDuplicateConfirmation = nil
+            animateScannerChrome {
+                pendingDuplicateConfirmation = nil
+            }
         }
         if lastAdd?.id == scanID {
             lastAdd = nil
         }
         if receipt?.scanID == scanID {
-            receipt = nil
+            animateScannerChrome {
+                receipt = nil
+            }
             receiptTask?.cancel()
         }
         if let removedHistoryEntry {
@@ -1434,13 +1519,17 @@ final class ScannerViewModel: ObservableObject {
                 handleLookupFailure(request, error)
                 return
             }
-            receipt = nil
+            animateScannerChrome {
+                receipt = nil
+            }
             receiptTask?.cancel()
-            pendingIdentityChoice = PendingIdentityChoice(
-                request: request,
-                evidence: evidence,
-                candidates: candidates
-            )
+            animateScannerChrome {
+                pendingIdentityChoice = PendingIdentityChoice(
+                    request: request,
+                    evidence: evidence,
+                    candidates: candidates
+                )
+            }
             scanner.pauseRecognition()
             feedback.needsChoice()
         case .unsupported:
@@ -1455,7 +1544,9 @@ final class ScannerViewModel: ObservableObject {
         slowLookupTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Self.slowLookupThreshold)
             guard !Task.isCancelled, let self, self.identificationsInFlight > 0 else { return }
-            self.isSlowIdentifying = true
+            self.animateScannerChrome {
+                self.isSlowIdentifying = true
+            }
         }
     }
 
@@ -1464,7 +1555,9 @@ final class ScannerViewModel: ObservableObject {
         guard identificationsInFlight <= 0 else { return }
         identificationsInFlight = 0
         slowLookupTask?.cancel()
-        isSlowIdentifying = false
+        animateScannerChrome {
+            isSlowIdentifying = false
+        }
     }
 
     private func resolvePrintRun(for request: ScanRequest, card: IdentifiedCard) {
@@ -1477,13 +1570,17 @@ final class ScannerViewModel: ObservableObject {
             return
         }
 
-        receipt = nil
+        animateScannerChrome {
+            receipt = nil
+        }
         receiptTask?.cancel()
-        pendingPrintRunChoice = PendingPrintRunChoice(
-            request: request,
-            card: card,
-            options: options
-        )
+        animateScannerChrome {
+            pendingPrintRunChoice = PendingPrintRunChoice(
+                request: request,
+                card: card,
+                options: options
+            )
+        }
         scanner.pauseRecognition()
         feedback.needsChoice()
     }
@@ -1515,15 +1612,19 @@ final class ScannerViewModel: ObservableObject {
             )
 
         case let .needsChoice(options, lockDidNotApply):
-            receipt = nil
+            animateScannerChrome {
+                receipt = nil
+            }
             receiptTask?.cancel()
-            pendingChoice = PendingVariantChoice(
-                request: request,
-                card: card,
-                options: options,
-                pokemonPrintRun: pokemonPrintRun,
-                lockDidNotApply: lockDidNotApply
-            )
+            animateScannerChrome {
+                pendingChoice = PendingVariantChoice(
+                    request: request,
+                    card: card,
+                    options: options,
+                    pokemonPrintRun: pokemonPrintRun,
+                    lockDidNotApply: lockDidNotApply
+                )
+            }
             scanner.pauseRecognition()
             if let lockDidNotApply {
                 show(ScanNote(text: "No \(lockDidNotApply.label) printing of this card", tone: .info))
@@ -1567,7 +1668,9 @@ final class ScannerViewModel: ObservableObject {
         )
 
         // Both are projections of the same successful store mutation.
-        recent.insert(scan, at: 0)
+        animateScannerChrome {
+            recent.insert(scan, at: 0)
+        }
         committedSessionHistory.append(committed)
 
         // A provisional tracker may have exited while the catalog request was
@@ -1669,15 +1772,17 @@ final class ScannerViewModel: ObservableObject {
             // Proofs are one-shot. The detached candidate owns the proof while
             // the user decides, independent of any generation-owned task.
             let proof = spatialResetProofs.remove(at: proofIndex)
-            pendingChoice = nil
-            pendingPrintRunChoice = nil
-            pendingIdentityChoice = nil
-            pendingDuplicateConfirmation = PendingDuplicateConfirmation(
-                candidate: candidate,
-                matchingSpatialResetProof: proof,
-                previousScanID: previous.id,
-                previousPresentationToken: previous.presentationToken
-            )
+            animateScannerChrome {
+                pendingChoice = nil
+                pendingPrintRunChoice = nil
+                pendingIdentityChoice = nil
+                pendingDuplicateConfirmation = PendingDuplicateConfirmation(
+                    candidate: candidate,
+                    matchingSpatialResetProof: proof,
+                    previousScanID: previous.id,
+                    previousPresentationToken: previous.presentationToken
+                )
+            }
             invalidateResolutionForDuplicatePrompt()
             scanner.pauseRecognition()
             feedback.needsChoice()
@@ -1720,12 +1825,16 @@ final class ScannerViewModel: ObservableObject {
         }
 
         heldRepeatAuthorizationState = nil
-        heldDuplicateOffer = nil
+        animateScannerChrome {
+            heldDuplicateOffer = nil
+        }
 
         guard commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
             // The consumed permit is never restored. Publish a fresh offer and
             // make the next tap create a new scanner-owned authorization.
-            heldDuplicateOffer = state.offer
+            animateScannerChrome {
+                heldDuplicateOffer = state.offer
+            }
             scanner.restoreHeldRepeatAfterFailure()
             diagnostic("routingHeldRepeatSaveFailed")
             return
@@ -1771,7 +1880,9 @@ final class ScannerViewModel: ObservableObject {
         }
 
         if pendingChoice?.request.id == candidate.requestID {
-            pendingChoice = nil
+            animateScannerChrome {
+                pendingChoice = nil
+            }
         }
         appendCommittedScan(candidate, mutation: mutation)
         resumeRecognitionIfPossible()
@@ -1791,9 +1902,11 @@ final class ScannerViewModel: ObservableObject {
     /// The Price Check coordinator intentionally has no `CollectionStore`.
     private func presentPriceCheck(_ resolvedScan: ResolvedScan) {
         guard let priceCheckCoordinator, isCurrent(resolvedScan.request) else { return }
-        pendingChoice = nil
-        pendingPrintRunChoice = nil
-        pendingIdentityChoice = nil
+        animateScannerChrome {
+            pendingChoice = nil
+            pendingPrintRunChoice = nil
+            pendingIdentityChoice = nil
+        }
         scanner.pauseRecognition()
         priceCheckResult = priceCheckCoordinator.present(resolvedScan)
     }
@@ -1898,31 +2011,39 @@ final class ScannerViewModel: ObservableObject {
 
     private func showReceipt(_ newReceipt: ScanReceipt) {
         receiptTask?.cancel()
-        receipt = newReceipt
+        animateScannerChrome {
+            receipt = newReceipt
+        }
 
         receiptTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Self.receiptLifetime)
             guard !Task.isCancelled else { return }
-            if self?.receipt?.id == newReceipt.id {
-                self?.receipt = nil
+            guard let self, self.receipt?.id == newReceipt.id else { return }
+            self.animateScannerChrome {
+                self.receipt = nil
             }
         }
     }
 
     private func dismissReceipt() {
         receiptTask?.cancel()
-        receipt = nil
+        animateScannerChrome {
+            receipt = nil
+        }
     }
 
     private func show(_ newNote: ScanNote) {
         noteTask?.cancel()
-        note = newNote
+        animateScannerNote {
+            note = newNote
+        }
 
         noteTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Self.noteLifetime)
             guard !Task.isCancelled else { return }
-            if self?.note?.id == newNote.id {
-                self?.note = nil
+            guard let self, self.note?.id == newNote.id else { return }
+            self.animateScannerNote {
+                self.note = nil
             }
         }
     }
