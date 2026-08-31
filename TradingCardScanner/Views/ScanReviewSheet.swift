@@ -11,9 +11,7 @@ struct ScanReviewSheet: View {
 
     let scan: RecentScan
     let onCorrect: (PhysicalVariant) -> ScanCorrectionOutcome
-    /// Returns true only after the model has persisted the undo. The sheet must
-    /// remain available when persistence fails so the user can retry.
-    let onDelete: () -> Bool
+    let onDelete: () -> Void
 
     @State private var variant: PhysicalVariant?
     @State private var resolution: VariantResolution
@@ -23,7 +21,7 @@ struct ScanReviewSheet: View {
     init(
         scan: RecentScan,
         onCorrect: @escaping (PhysicalVariant) -> ScanCorrectionOutcome,
-        onDelete: @escaping () -> Bool
+        onDelete: @escaping () -> Void
     ) {
         self.scan = scan
         self.onCorrect = onCorrect
@@ -77,22 +75,21 @@ struct ScanReviewSheet: View {
                     } label: {
                         Label("Undo Scan", systemImage: "arrow.uturn.backward")
                     }
-                    .confirmationDialog(
-                        "Undo this scan?",
-                        isPresented: $isConfirmingDelete,
-                        titleVisibility: .visible
-                    ) {
-                        Button("Undo Scan", role: .destructive) {
-                            if onDelete() {
-                                dismiss()
-                            }
-                        }
-                        Button("Cancel", role: .cancel) {}
-                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
+            }
+            .confirmationDialog(
+                "Undo this scan?",
+                isPresented: $isConfirmingDelete,
+                titleVisibility: .visible
+            ) {
+                Button("Undo Scan", role: .destructive) {
+                    onDelete()
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {}
             }
         }
     }

@@ -30,7 +30,6 @@ enum PortfolioPalette {
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var portfolio: PortfolioEngine
     @ObservedObject var refresh: PriceRefreshController
     @ObservedObject var history: PortfolioHistoryStore
@@ -40,13 +39,8 @@ struct PortfolioView: View {
     @State private var contributorContext: PortfolioContributorContext?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalErrorMessage: String?
-    @State private var isShowingPeriodBreakdown = false
     @State private var isShowingQuantityRepairConfirmation = false
     @State private var quantityRepairError: String?
-    private var historyMode: PortfolioHistoryMode {
-        get { history.mode }
-        nonmutating set { history.mode = newValue }
-    }
 
     private var historyRange: PortfolioHistoryRange {
         get { history.range }
@@ -106,12 +100,6 @@ struct PortfolioView: View {
                         if summary.isAuthoritative {
                             periodControl
                             periodSummary
-
-                            if isShowingPeriodBreakdown, let result = activeHistoryResult,
-                               let accounting = result.accounting,
-                               canDiscloseBreakdown(accounting) {
-                                periodActivityBreakdown(result)
-                            }
 
                             PortfolioHistoryView(
                                 history: history
@@ -185,12 +173,6 @@ struct PortfolioView: View {
                 guard opensContributorsDebugScreen,
                       let attribution = portfolio.summary?.attribution else { return }
                 contributorContext = todayContext(attribution)
-            }
-            .onChange(of: history.mode) { _, _ in
-                isShowingPeriodBreakdown = false
-            }
-            .onChange(of: history.range) { _, _ in
-                isShowingPeriodBreakdown = false
             }
         }
         .sheet(isPresented: $isShowingSettings) {
@@ -302,82 +284,53 @@ struct PortfolioView: View {
         .padding(.bottom, 8)
     }
 
-    /// The selected period's change, stated once, directly under the control
-    /// that scopes it.
+    /// The one period metric shown on the primary Portfolio screen.
     ///
-    /// Absent — not zero, and never Today's figure — while a newly selected
-    /// period is still computing. A placeholder number here would be a wrong
-    /// number, and `$0.00` is a claim about the market rather than an admission
-    /// that the app does not know yet.
+    /// It is deliberately the same additive market movement used by the
+    /// chart and contributor rows. Full portfolio-value accounting remains one
+    /// explicit tap away in the details view.
     @ViewBuilder
     private var periodSummary: some View {
-        if let result = activeHistoryResult,
+        if let summary = portfolio.summary,
+           let result = activeHistoryResult,
            let accounting = result.accounting {
-            if let amount = PortfolioHistoryDisplay.periodChange(
-                for: historyMode,
-                accounting: accounting,
-                performanceFactor: result.performanceFactor
-            ) {
-                let summary = periodSummaryText(amount: amount, anchor: accounting.anchorValue)
-                if canDiscloseBreakdown(accounting) {
-                    Button {
-                        withAnimation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.82)) {
-                            isShowingPeriodBreakdown.toggle()
-                        }
-                    } label: {
-                        HStack(alignment: .firstTextBaseline, spacing: 8) {
-                            Text(summary)
-                                .monospacedDigit()
-                            Spacer(minLength: 8)
-                            Image(systemName: "chevron.down")
-                                .font(.caption.weight(.semibold))
-                                .rotationEffect(.degrees(isShowingPeriodBreakdown ? 180 : 0))
-                        }
-                        .contentShape(Rectangle())
+            let amount = accounting.market
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Market movement · \(historyRange.rawValue)")
+                            .font(.headline)
+                        Text(PortfolioHistoryDisplay.signedCurrency(amount))
+                            .font(.title2.bold().monospacedDigit())
+                            .foregroundStyle(PortfolioPalette.direction(amount))
                     }
-                    .buttonStyle(.plain)
-                    .font(.headline)
-                    .foregroundStyle(PortfolioPalette.direction(amount))
-                    .accessibilityLabel("\(historyMode.title): \(summary)")
-                    .accessibilityHint(
-                        isShowingPeriodBreakdown
-                            ? "Hides the period activity breakdown"
-                            : "Shows what changed during this period"
-                    )
-                } else {
-                    Text(summary)
-                        .font(.headline)
-                        .foregroundStyle(PortfolioPalette.direction(amount))
-                        .monospacedDigit()
-                        .accessibilityLabel("\(historyMode.title): \(summary)")
+                    Spacer(minLength: 8)
+                    NavigationLink {
+                        PortfolioDetailsView(
+                            summary: summary,
+                            refresh: refresh,
+                            historyResult: result
+                        )
+                    } label: {
+                        Text("Details")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .accessibilityHint("Shows the full portfolio value change and its accounting")
                 }
-            } else {
-                Text(PortfolioHistoryDisplay.performanceUnavailable)
-                    .font(.subheadline)
+                Text("Price changes only · cards added or removed are excluded")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
-                    .accessibilityLabel(PortfolioHistoryDisplay.performanceUnavailable)
             }
+            .accessibilityElement(children: .contain)
         }
-    }
-
-    private func periodSummaryText(amount: Money, anchor: Money) -> String {
-        let change = PortfolioHistoryDisplay.signedCurrency(amount)
-        guard let ratio = PortfolioHistoryDisplay.percentChange(amount: amount, anchor: anchor) else {
-            return "\(change) over \(historyRange.rawValue)"
-        }
-        return "\(change) (\(PortfolioHistoryDisplay.signedPercent(ratio))) over \(historyRange.rawValue)"
-    }
-
-    private func canDiscloseBreakdown(_ accounting: PortfolioHistoryAccounting) -> Bool {
-        historyMode == .value && PortfolioHistoryDisplay.hasBreakdown(accounting)
     }
 
     private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Label(
                 defects.isEmpty
-                    ? "Performance is paused while portfolio data reconciles."
-                    : "Performance is paused until the collection records reconcile.",
+                    ? "History is paused while portfolio data reconciles."
+                    : "History is paused until the collection records reconcile.",
                 systemImage: "exclamationmark.triangle.fill"
             )
             .font(.subheadline.weight(.semibold))
@@ -425,41 +378,6 @@ struct PortfolioView: View {
     }
 
     @ViewBuilder
-    private func periodActivityBreakdown(_ result: PortfolioHistoryResult) -> some View {
-        if let accounting = result.accounting,
-           PortfolioHistoryDisplay.hasBreakdown(accounting) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("What changed")
-                    .font(.headline)
-
-                Button {
-                    contributorContext = historicalContext(from: result)
-                } label: {
-                    changeRow("Market movement", accounting.market)
-                }
-                .buttonStyle(.plain)
-                .accessibilityHint("Shows market contributors for this period")
-                if !accounting.netInventoryActivity.isZero {
-                    changeRow("Net collection activity", accounting.netInventoryActivity)
-                }
-                if !accounting.corrections.isZero { changeRow("Corrections", accounting.corrections) }
-                if !accounting.pricingAdjustments.isZero {
-                    changeRow("Pricing adjustments", accounting.pricingAdjustments)
-                }
-                if !accounting.unexplained.isZero {
-                    changeRow("Unexplained", accounting.unexplained)
-                        .foregroundStyle(PortfolioPalette.attention)
-                }
-
-                Divider()
-                changeRow("Total change", accounting.totalChange, emphasized: true)
-            }
-            .padding(16)
-            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        }
-    }
-
-    @ViewBuilder
     private func biggestMovers() -> some View {
         let active = activeHistoryResult
         let contributions = active?.contributions ?? [:]
@@ -475,8 +393,8 @@ struct PortfolioView: View {
                 .foregroundStyle(.secondary)
         } else {
             VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("Biggest holding movers · \(historyRange.rawValue)")
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Market movement by holding · \(historyRange.rawValue)")
                         .font(.headline)
                     Spacer()
                     Button("See all") {
@@ -627,17 +545,6 @@ struct PortfolioView: View {
         }
     }
 
-    private func changeRow(_ title: String, _ amount: Money, emphasized: Bool = false) -> some View {
-        HStack {
-            Text(title)
-            Spacer(minLength: 12)
-            Text(PortfolioHistoryDisplay.signedCurrency(amount))
-                .monospacedDigit()
-        }
-        .font(emphasized ? .subheadline.weight(.semibold) : .subheadline)
-        .foregroundStyle(emphasized ? .primary : .secondary)
-    }
-
 }
 
 private struct PortfolioContributorContext: Identifiable, Hashable {
@@ -678,8 +585,8 @@ private struct PortfolioContributionRowModel: Identifiable {
     var title: String {
         switch kind {
         case let .holding(holding): return holding.name
-        case .previouslyOwned: return "Previously owned holdings"
-        case .otherHoldings: return "Other holdings"
+        case .previouslyOwned: return "Former or unmatched holdings"
+        case .otherHoldings: return "Remaining contributors"
         }
     }
 
@@ -1103,7 +1010,7 @@ private struct PortfolioDetailsView: View {
                 }
 
                 if !summary.isAuthoritative {
-                    Text("Performance and history resume after reconciliation.")
+                    Text("History resumes after reconciliation.")
                         .foregroundStyle(PortfolioPalette.attention)
                 }
             }
@@ -1120,25 +1027,21 @@ private struct PortfolioDetailsView: View {
     private func periodEvidence(_ result: PortfolioHistoryResult) -> some View {
         Section("\(result.range.rawValue) details") {
             if let accounting = result.accounting {
+                LabeledContent("Starting portfolio value", value: accounting.anchorValue.formatted())
+                LabeledContent("Current portfolio value", value: accounting.endValue.formatted())
+                LabeledContent("Portfolio value change", value: signed(accounting.totalChange))
                 LabeledContent("Market movement", value: signed(accounting.market))
-                if result.mode == .performance {
-                    LabeledContent(
-                        "Time-weighted return",
-                        value: result.performanceAvailable ? percentage(result.performanceFactor) : "Unavailable"
-                    )
-                    Text("Net collection activity, corrections, and pricing adjustments are excluded from return.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                } else {
-                    if !accounting.netInventoryActivity.isZero {
-                        LabeledContent("Net collection activity", value: signed(accounting.netInventoryActivity))
-                    }
-                    if !accounting.corrections.isZero {
-                        LabeledContent("Corrections", value: signed(accounting.corrections))
-                    }
-                    if !accounting.pricingAdjustments.isZero {
-                        LabeledContent("Pricing adjustments", value: signed(accounting.pricingAdjustments))
-                    }
+                if !accounting.netInventoryActivity.isZero {
+                    LabeledContent("Cards added or removed", value: signed(accounting.netInventoryActivity))
+                }
+                if !accounting.newlyAddedValue.isZero {
+                    LabeledContent("Newly priced additions", value: signed(accounting.newlyAddedValue))
+                }
+                if !accounting.corrections.isZero {
+                    LabeledContent("Corrections", value: signed(accounting.corrections))
+                }
+                if !accounting.pricingAdjustments.isZero {
+                    LabeledContent("Pricing adjustments", value: signed(accounting.pricingAdjustments))
                 }
                 if !accounting.unexplained.isZero {
                     LabeledContent("Unexplained", value: signed(accounting.unexplained))
@@ -1188,12 +1091,6 @@ private struct PortfolioDetailsView: View {
     private func signed(_ amount: Money) -> String {
         let prefix = amount.tenThousandths > 0 ? "+" : amount.tenThousandths < 0 ? "−" : ""
         return prefix + amount.magnitude.formatted()
-    }
-
-    private func percentage(_ factor: Decimal?) -> String {
-        guard let factor else { return "Unavailable" }
-        let value = NSDecimalNumber(decimal: factor).doubleValue - 1
-        return value.formatted(.percent.precision(.fractionLength(2)))
     }
 
     @ViewBuilder

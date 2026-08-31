@@ -93,8 +93,9 @@ final class InventoryEvent {
 
     /// `nil` means the copy was added while genuinely unpriced — offline, or
     /// before any provider had a number for it. It flows through as `added $0`,
-    /// and the value arrives later as a pricing adjustment. Mechanically
-    /// honest, and it must never surface as market movement or a correction.
+    /// and the value arrives later as a newly valued portfolio addition.
+    /// Mechanically honest, and it must never surface as market movement or a
+    /// correction.
     var unitPriceUSDTenThousandths: Int64?
     var priceSourceAtEvent: String?
     var priceEffectiveAtEvent: Date?

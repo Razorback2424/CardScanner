@@ -382,6 +382,7 @@ struct CollectionActivityEditor: View {
 
     @State private var variantID: String?
     @State private var errorMessage: String?
+    @State private var fallbackQuoteTask: Task<Void, Never>?
 
     init(activity: CollectionActivity) {
         self.activity = activity
@@ -483,18 +484,67 @@ struct CollectionActivityEditor: View {
         let variant = PhysicalVariant.resolving(variantID)
 
         do {
-            guard try CollectionStore(context: modelContext).recordVariantCorrection(
+            let store = CollectionStore(context: modelContext)
+            guard let mutation = try store.recordVariantCorrection(
                 for: card,
                 to: ResolvedVariant(variant: variant, resolution: .userConfirmed),
                 activityID: activity.id,
                 quantity: activity.remainingQuantity
-            ) != nil else {
+            )
+            else {
                 errorMessage = "This entry could not be corrected."
                 return
+            }
+            if let correctedCard = store.card(forKey: mutation.collectionKey) {
+                queueFallbackPrice(for: correctedCard)
             }
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    private func queueFallbackPrice(for card: CollectedCard) {
+        // A correction can land on a destination row that already has a valid
+        // observation. Leave it alone; the normal stale-target gate owns later
+        // refreshes for that exact printing and finish.
+        let prices = PriceStore(context: modelContext)
+        let existing = prices.record(forKey: card.priceKey)
+        let usesFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
+        guard !PriceRefreshController.hasFinishedPrice(
+            amount: existing?.effectiveUnitMarketPriceUSD,
+            currencyCode: existing?.currencyCode,
+            usesFallback: usesFallback
+        ), usesFallback, PriceVendorCredentials.hasKey else { return }
+
+        fallbackQuoteTask?.cancel()
+        let resolver = PriceFallbackQuoteResolver(context: modelContext)
+        fallbackQuoteTask = Task { @MainActor in
+            switch await resolver.resolve(
+                card: card,
+                variant: card.variant,
+                pokemonPrintRun: card.pokemonPrintRun
+            ) {
+            case let .lookup(quote):
+                guard !Task.isCancelled else { return }
+                let identityKey = ProductIdentity.key(
+                    game: card.cardGame,
+                    printingID: card.priceStorageID,
+                    variantID: card.variantID
+                )
+                let marketVariantID = ProductIdentityStore(context: prices.context)
+                    .cachedVariantID(forKey: identityKey)
+                prices.store(
+                    quote,
+                    game: card.cardGame,
+                    printingID: card.priceStorageID,
+                    variantID: card.variantID,
+                    marketVariantID: marketVariantID
+                )
+                prices.save()
+            case .failed:
+                break
+            }
         }
     }
 

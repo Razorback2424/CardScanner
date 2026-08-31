@@ -108,12 +108,16 @@ struct ContentView: View {
                 seedSealedArtworkQA()
             case "CardMovement":
                 PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
-                history.mode = .performance
+                history.mode = .marketMovement
                 history.range = .oneMonth
             case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                history.mode = .marketMovement
+                history.range = .oneWeek
             case "PortfolioHistory":
                 PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
+                history.mode = .marketMovement
+                history.range = .all
             default:
                 break
             }
@@ -250,35 +254,41 @@ struct ContentView: View {
             if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
             let record = PriceStore.record(for: card, in: recordsByKey)
-            result.append(
-                PriceTarget(
-                    game: card.cardGame,
-                    printingID: card.priceStorageID,
-                    catalogPrintingID: card.catalogProviderID ?? card.providerID,
-                    setCode: card.setCode,
-                    variantID: card.variantID,
-                    pokemonPrintRun: card.pokemonPrintRun,
-                    importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
-                        ? ImportedPriceIdentity(name: card.name, setName: card.setName, cardNumber: card.cardNumber)
-                        : nil,
-                    catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
-                    lastFailureAt: record?.lastFailureAt,
-                    hasPrice: PriceRefreshController.hasFinishedPrice(
-                        amount: record?.effectiveUnitMarketPriceUSD,
-                        currencyCode: record?.currencyCode,
-                        usesFallback: usesPriceFallback
-                    ),
-                    lastCheckedAt: record?.lastCheckedAt,
-                    itemKind: card.itemKind,
-                    marketVariantID: card.justTCGVariantID,
-                    needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
-                    gradedIdentity: card.itemKind == .gradedCard
-                        ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
-                        : nil,
-                    gradingCompany: card.gradingCompany,
-                    grade: card.gradeRaw
-                )
+            var target = PriceTarget(
+                game: card.cardGame,
+                printingID: card.priceStorageID,
+                catalogPrintingID: card.catalogProviderID ?? card.providerID,
+                setCode: card.setCode,
+                variantID: card.variantID,
+                pokemonPrintRun: card.pokemonPrintRun,
+                importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
+                    ? ImportedPriceIdentity(name: card.name, setName: card.setName, cardNumber: card.cardNumber)
+                    : nil,
+                catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
+                lastFailureAt: record?.lastFailureAt,
+                hasPrice: PriceRefreshController.hasFinishedPrice(
+                    amount: record?.effectiveUnitMarketPriceUSD,
+                    currencyCode: record?.currencyCode,
+                    usesFallback: usesPriceFallback
+                ),
+                lastCheckedAt: record?.lastCheckedAt,
+                itemKind: card.itemKind,
+                marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
+                needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
+                gradedIdentity: card.itemKind == .gradedCard
+                    ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
+                    : nil,
+                gradingCompany: card.gradingCompany,
+                grade: card.gradeRaw
             )
+            target.fallbackIdentity = ImportedPriceIdentity(
+                name: card.name,
+                setName: card.setName,
+                cardNumber: card.cardNumber
+            )
+            target.justTCGCardID = card.justTCGCardID
+            target.tcgplayerProductID = card.tcgplayerProductID
+            result.append(target)
         }
         return result
     }

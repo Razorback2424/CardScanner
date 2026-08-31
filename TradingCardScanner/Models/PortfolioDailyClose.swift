@@ -49,6 +49,7 @@ final class PortfolioDailyClose {
     var marketContributionTenThousandths: Int64 = 0
     var flowContributionTenThousandths: Int64 = 0
     var correctionContributionTenThousandths: Int64 = 0
+    var newlyAddedValueTenThousandths: Int64 = 0
     var pricingAdjustmentTenThousandths: Int64 = 0
     var carriedForwardValueTenThousandths: Int64 = 0
 
@@ -75,6 +76,7 @@ final class PortfolioDailyClose {
         market: Money,
         flow: Money,
         corrections: Money,
+        newlyAddedValue: Money = .zero,
         pricingAdjustment: Money,
         carriedForwardValue: Money,
         coverage: PortfolioCoverageState,
@@ -93,6 +95,7 @@ final class PortfolioDailyClose {
         self.marketContributionTenThousandths = market.tenThousandths
         self.flowContributionTenThousandths = flow.tenThousandths
         self.correctionContributionTenThousandths = corrections.tenThousandths
+        self.newlyAddedValueTenThousandths = newlyAddedValue.tenThousandths
         self.pricingAdjustmentTenThousandths = pricingAdjustment.tenThousandths
         self.carriedForwardValueTenThousandths = carriedForwardValue.tenThousandths
         self.coverageStateRaw = coverage.rawValue
@@ -109,6 +112,7 @@ final class PortfolioDailyClose {
     var marketContribution: Money { Money(tenThousandths: marketContributionTenThousandths) }
     var flowContribution: Money { Money(tenThousandths: flowContributionTenThousandths) }
     var correctionContribution: Money { Money(tenThousandths: correctionContributionTenThousandths) }
+    var newlyAddedValue: Money { Money(tenThousandths: newlyAddedValueTenThousandths) }
     var pricingAdjustment: Money { Money(tenThousandths: pricingAdjustmentTenThousandths) }
     var carriedForwardValue: Money { Money(tenThousandths: carriedForwardValueTenThousandths) }
 

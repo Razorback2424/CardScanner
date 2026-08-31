@@ -42,6 +42,10 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     let variantID: String?
     var pokemonPrintRun: PokemonPrintRun? = nil
     let importedIdentity: ImportedPriceIdentity?
+    /// Persisted card identity used only when the catalog provider is down.
+    /// Kept separate from `importedIdentity` so normal catalog-backed rows still
+    /// use their provider id during the primary pass.
+    var fallbackIdentity: ImportedPriceIdentity? = nil
     let catalogMetadataCheckedAt: Date?
     let lastFailureAt: Date?
     let hasPrice: Bool
@@ -52,6 +56,14 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// The vendor's variant handle already stored on the row, from the sealed or
     /// graded catalogue it was added out of.
     var marketVariantID: String? = nil
+    /// The vendor's card handle already stored on the row. This is useful when a
+    /// corrected raw-card finish must be resolved again but the card itself is
+    /// already known.
+    var justTCGCardID: String? = nil
+    /// A provider-published TCGplayer product id is a safe card-level lookup
+    /// when the catalog provider is unavailable. It avoids a name/set search;
+    /// the requested finish is still selected and validated from the response.
+    var tcgplayerProductID: String? = nil
     /// This row has no picture and the vendor's response carries one.
     ///
     /// Artwork rides along with the price, but a row can need one without
@@ -192,10 +204,9 @@ final class PriceRefreshController: ObservableObject {
     /// polite client.
     private static let maxConcurrentRequests = 4
 
-    /// One full wave of in-flight requests failing to reach the provider, with
-    /// nothing priced to contradict them, is taken as the provider being down.
-    /// Small on purpose: the cost of being wrong is one retry, and the cost of
-    /// being slow is minutes of timeouts.
+    /// A short run of in-flight requests failing to reach the provider is taken
+    /// as the provider being down. Small on purpose: the cost of being wrong is
+    /// one retry, and the cost of being slow is minutes of timeouts.
     private static let unreachableThreshold = maxConcurrentRequests
 
     private var isRefreshing: Bool {
@@ -237,7 +248,8 @@ final class PriceRefreshController: ObservableObject {
         usesFallback: Bool
     ) -> Bool {
         guard amount != nil else { return false }
-        return !usesFallback || currencyCode == "USD"
+        return !usesFallback
+            || currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
     }
 
     /// Sealed artwork is part of the owned product, not an optional price
@@ -394,42 +406,56 @@ final class PriceRefreshController: ObservableObject {
                         )
                         // A card the catalog could not even identify is the
                         // strongest fallback candidate there is — it has no
-                        // price and no artwork today. The imported strings are
-                        // all the vendor needs.
-                        if printing.importedIdentity != nil {
-                            fallbackSubjects.append(
-                                FallbackCandidate(target: target, card: nil)
-                            )
-                        }
+                        // price and no artwork today. The row's persisted
+                        // fallback identity is all the vendor needs.
+                        fallbackSubjects.append(
+                            FallbackCandidate(target: target, card: nil)
+                        )
                     }
 
                 case .unreachable:
                     // Every card in the queue is about to fail the same way, one
-                    // eight-second timeout at a time. Four hundred of those at a
+                    // short timeout at a time. Four hundred of those at a
                     // concurrency of four is thirteen minutes of watching a
                     // progress bar crawl before the fallback even starts.
                     //
-                    // So the first full wave of unreachable responses, with no
-                    // success to contradict them, ends the catalog pass. Nothing
-                    // is recorded as a price failure: these cards were never
-                    // actually asked about, and stamping them would misreport an
-                    // outage as four hundred missing cards.
+                    // So a short run of unreachable responses ends the catalog
+                    // pass. Nothing is recorded as a price failure: these cards
+                    // were never actually asked about, and stamping them would
+                    // misreport an outage as four hundred missing cards.
+                    fallbackSubjects.append(contentsOf: (byPrinting[printing] ?? []).map {
+                        FallbackCandidate(target: $0, card: nil)
+                    })
                     consecutiveUnreachable += 1
-                    if priced == 0, consecutiveUnreachable >= Self.unreachableThreshold {
+                    if consecutiveUnreachable >= Self.unreachableThreshold {
                         providerUnreachable = true
+                        // The remaining queue has not been asked yet. Include it
+                        // in this fallback pass instead of waiting for another
+                        // refresh to discover each stale card.
+                        for pending in order.dropFirst(cursor) {
+                            fallbackSubjects.append(contentsOf: (byPrinting[pending] ?? []).map {
+                                FallbackCandidate(target: $0, card: nil)
+                            })
+                        }
                     }
 
                 case .cancelled:
                     wasCancelled = true
                 }
 
-                if case .card = outcome.result { consecutiveUnreachable = 0 }
-                if providerUnreachable { break }
-
+                switch outcome.result {
+                case .card, .failed:
+                    // The provider answered, even if that answer was not usable
+                    // for this row. Do not turn a few missing cards into an
+                    // outage declaration.
+                    consecutiveUnreachable = 0
+                case .unreachable, .cancelled:
+                    break
+                }
                 completed += 1
                 status = .refreshing(completed: completed, total: order.count)
 
-                if cursor < order.count, !wasCancelled, !Task.isCancelled {
+                if cursor < order.count, !providerUnreachable, !wasCancelled, !Task.isCancelled {
                     let next = order[cursor]
                     cursor += 1
                     group.addTask { [tcgdex, scryfall, importedResolver] in
@@ -507,15 +533,11 @@ final class PriceRefreshController: ObservableObject {
         /// Absent when the catalog could not identify it at all.
         let card: IdentifiedCard?
 
-        /// Identifiers the vendor accepts directly, with no search first.
-        ///
-        /// This is what lets Magic fall-throughs batch immediately: Scryfall's
-        /// card id *is* one of the vendor's supported lookup keys, so an art
-        /// card or token can be priced twenty-to-a-request without ever running
-        /// a name search. Pokémon fall-throughs have no such key — they fell
-        /// through precisely because TCGdex published no TCGplayer block for
-        /// them — so those still need identity resolved once.
-        /// Identifiers the vendor can resolve directly, with no search first.
+        /// A stored vendor card handle or provider-published TCGplayer id lets a
+        /// card batch immediately, without paying for a name search. Pokémon
+        /// fall-throughs normally have neither — they fell through precisely
+        /// because TCGdex published no TCGplayer block — so those still need
+        /// identity resolved once.
         ///
         /// This used to send the Scryfall id for every Magic card, on the
         /// assumption that Scryfall's id is one of the vendor's supported
@@ -537,6 +559,14 @@ final class PriceRefreshController: ObservableObject {
                 let stamped = PriceFallbackQuoteResolver.verifiedLookups(catalogID: catalogID, variant: variant)
                 if !stamped.isEmpty { return stamped }
             }
+            if let tcgplayerProductID = target.tcgplayerProductID,
+               !tcgplayerProductID.isEmpty {
+                return [.tcgplayerID(tcgplayerProductID)]
+            }
+            if let justTCGCardID = target.justTCGCardID,
+               !justTCGCardID.isEmpty {
+                return [.cardID(justTCGCardID)]
+            }
             guard case let .magic(magic)? = card,
                   let tcgplayerID = magic.tcgplayerID else {
                 return []
@@ -545,9 +575,10 @@ final class PriceRefreshController: ObservableObject {
         }
 
         func subject(vendorCardID: String?) -> ProductPriceSubject? {
-            let name = card?.name ?? target.importedIdentity?.name
-            let setName = card?.setName ?? target.importedIdentity?.setName
-            let number = card?.cardNumber ?? target.importedIdentity?.cardNumber
+            let identity = target.fallbackIdentity ?? target.importedIdentity
+            let name = card?.name ?? identity?.name
+            let setName = card?.setName ?? identity?.setName
+            let number = card?.cardNumber ?? identity?.cardNumber
             guard let name, let setName, let number, !name.isEmpty, !number.isEmpty else {
                 return nil
             }
@@ -1110,7 +1141,8 @@ final class PriceRefreshController: ObservableObject {
                     // wrong edition turns a priceable card into an unreachable
                     // one.
                     locale: CatalogIdentityNormalization.locale(forCatalogCardID: printing.printingID),
-                    ignoringCache: true
+                    ignoringCache: true,
+                    timeout: 2.5
                 )
                 return PriceFetchOutcome(printing: printing, result: .card(.pokemon(card, setCode: printing.setCode)))
             case .magic:
@@ -1127,6 +1159,18 @@ final class PriceRefreshController: ObservableObject {
             // the data, and treating them alike makes an outage look like four
             // hundred missing cards.
             return PriceFetchOutcome(printing: printing, result: .unreachable)
+        } catch let error as TCGdexError {
+            // TCGdex wraps HTTP failures in its own error type. Treat its
+            // server response as an outage so the stale target reaches JustTCG.
+            if case .badResponse = error, printing.game == .pokemon {
+                return PriceFetchOutcome(printing: printing, result: .unreachable)
+            }
+            return PriceFetchOutcome(printing: printing, result: .failed)
+        } catch let error as ScryfallError {
+            if case .badResponse = error, printing.game == .magic {
+                return PriceFetchOutcome(printing: printing, result: .unreachable)
+            }
+            return PriceFetchOutcome(printing: printing, result: .failed)
         } catch {
             return PriceFetchOutcome(printing: printing, result: .failed)
         }

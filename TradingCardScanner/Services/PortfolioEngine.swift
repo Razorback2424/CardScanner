@@ -421,6 +421,7 @@ final class PortfolioEngine: ObservableObject {
                 market: day.market,
                 flow: day.flow,
                 corrections: day.corrections,
+                newlyAddedValue: day.newlyAddedValue,
                 pricingAdjustment: day.pricingAdjustment,
                 carriedForwardValue: day.carriedForwardValue,
                 coverage: day.coverage.state,
@@ -462,6 +463,7 @@ final class PortfolioEngine: ObservableObject {
             && stored.marketContribution == day.market
             && stored.flowContribution == day.flow
             && stored.correctionContribution == day.corrections
+            && stored.newlyAddedValue == day.newlyAddedValue
             && stored.pricingAdjustment == day.pricingAdjustment
             && stored.carriedForwardValue == day.carriedForwardValue
             && stored.coverageState == day.coverage.state

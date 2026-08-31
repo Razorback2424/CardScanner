@@ -9,7 +9,9 @@ enum PriceQuoteError: Error {
 /// evidence, so a refresh cannot silently re-identify the card in someone's hand.
 struct PriceQuoteService {
     private let tcgdex = TCGdexService()
-    private let tcgdexCircuit = TCGdexCircuitBreaker()
+    /// The same breaker the catalog uses. TCGdex being down is one fact about
+    /// one host; discovering it twice costs a second connect timeout per scan.
+    private let tcgdexCircuit = TCGdexCircuitBreaker.shared
     private let scryfall = ScryfallService()
 
     func refresh(
@@ -32,7 +34,9 @@ struct PriceQuoteService {
                 )
                 await tcgdexCircuit.recordSuccess()
             } catch {
-                await tcgdexCircuit.recordFailure()
+                await tcgdexCircuit.recordFailure(
+                    Self.failureKind(for: error)
+                )
                 throw error
             }
             refreshed = .pokemon(returned, setCode: card.setCode)
@@ -50,6 +54,13 @@ struct PriceQuoteService {
             pokemonPrintRun: pokemonPrintRun,
             at: .now
         )
+    }
+
+    /// A `badResponse` means TCGdex answered; anything else means it did not.
+    /// The distinction decides how long the breaker stays open.
+    static func failureKind(for error: Error) -> TCGdexCircuitBreaker.Failure {
+        if case TCGdexError.badResponse = error { return .serverError }
+        return .unreachable
     }
 
     /// A direct provider id is authoritative, but the redundant stable card

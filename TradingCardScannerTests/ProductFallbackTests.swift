@@ -586,3 +586,120 @@ final class ProductFallbackTests: XCTestCase {
         )
     }
 }
+
+/// The catalog fallback chain: what it asks the secondary provider for, and how
+/// long it stays away from a provider that is failing.
+final class PokemonCatalogFallbackTests: XCTestCase {
+    // MARK: - Provider id construction
+
+    /// api.pokemontcg.io ids carry no zero padding. Verified against the live
+    /// API: `me1-25` returns 200 and `me1-025` returns 404. TCGdex supplies a
+    /// padded `localId` for modern sets, so padding it through meant the
+    /// fallback asked for a record that cannot exist.
+    func testProviderIDStripsPrintedZeroPadding() {
+        XCTAssertEqual(
+            PokemonTCGAPIService.providerID(setID: "me1", cardNumber: "025"),
+            "me1-25"
+        )
+        XCTAssertEqual(
+            PokemonTCGAPIService.providerID(setID: "sv10", cardNumber: "085"),
+            "sv10-85"
+        )
+    }
+
+    func testProviderIDLeavesUnpaddedAndAlphanumericNumbersAlone() {
+        XCTAssertEqual(
+            PokemonTCGAPIService.providerID(setID: "base1", cardNumber: "4"),
+            "base1-4"
+        )
+        XCTAssertEqual(
+            PokemonTCGAPIService.providerID(setID: "swsh4", cardNumber: "TG05"),
+            "swsh4-TG05"
+        )
+    }
+
+    // MARK: - Circuit breaker
+
+    func testUnreachableProviderBacksOffExponentially() async {
+        let breaker = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+
+        await breaker.recordFailure(.unreachable, now: start)
+        // 30s base: still closed at +29, open again at +30.
+        var permits = await breaker.permitsRequest(now: start.addingTimeInterval(29))
+        XCTAssertFalse(permits)
+        permits = await breaker.permitsRequest(now: start.addingTimeInterval(30))
+        XCTAssertTrue(permits)
+
+        // A probe that fails again must wait longer than the one before it.
+        await breaker.recordFailure(.unreachable, now: start.addingTimeInterval(30))
+        permits = await breaker.permitsRequest(now: start.addingTimeInterval(30 + 59))
+        XCTAssertFalse(permits)
+        permits = await breaker.permitsRequest(now: start.addingTimeInterval(30 + 60))
+        XCTAssertTrue(permits)
+    }
+
+    func testUnreachableBackoffIsCapped() async {
+        let breaker = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+        for _ in 0..<20 {
+            await breaker.recordFailure(.unreachable, now: start)
+        }
+        var permits = await breaker.permitsRequest(now: start.addingTimeInterval(599))
+        XCTAssertFalse(permits)
+        permits = await breaker.permitsRequest(now: start.addingTimeInterval(600))
+        XCTAssertTrue(permits, "A dead host must still be re-probed every ten minutes.")
+    }
+
+    /// A host that answered badly is not the same outage as a host that is gone.
+    /// Banishing a slow-but-alive provider for ten minutes throws away a
+    /// provider that usually works on the next attempt.
+    func testServerErrorsBackOffFarLessThanUnreachability() async {
+        let lenient = TCGdexCircuitBreaker()
+        let harsh = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+
+        for _ in 0..<10 {
+            await lenient.recordFailure(.serverError, now: start)
+            await harsh.recordFailure(.unreachable, now: start)
+        }
+
+        let lenientPermits = await lenient.permitsRequest(now: start.addingTimeInterval(60))
+        let harshPermits = await harsh.permitsRequest(now: start.addingTimeInterval(60))
+        XCTAssertTrue(lenientPermits)
+        XCTAssertFalse(harshPermits)
+    }
+
+    func testSuccessClearsEscalation() async {
+        let breaker = TCGdexCircuitBreaker()
+        let start = Date(timeIntervalSince1970: 1_000_000)
+
+        for _ in 0..<5 {
+            await breaker.recordFailure(.unreachable, now: start)
+        }
+        await breaker.recordSuccess()
+
+        let permitsImmediately = await breaker.permitsRequest(now: start)
+        XCTAssertTrue(permitsImmediately)
+
+        // The next failure starts again at the 30s base, not where it left off.
+        await breaker.recordFailure(.unreachable, now: start)
+        let permits = await breaker.permitsRequest(now: start.addingTimeInterval(30))
+        XCTAssertTrue(permits)
+    }
+
+    func testBadResponseIsClassifiedAsServerErrorAndTransportFailuresAsUnreachable() {
+        XCTAssertEqual(
+            PriceQuoteService.failureKind(for: TCGdexError.badResponse),
+            .serverError
+        )
+        XCTAssertEqual(
+            PriceQuoteService.failureKind(for: URLError(.timedOut)),
+            .unreachable
+        )
+        XCTAssertEqual(
+            PriceQuoteService.failureKind(for: URLError(.cannotConnectToHost)),
+            .unreachable
+        )
+    }
+}

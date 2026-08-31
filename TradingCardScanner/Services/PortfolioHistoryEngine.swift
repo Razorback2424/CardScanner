@@ -37,10 +37,12 @@ enum PortfolioHistoryEngine {
         var factors: [Decimal?] = []
         var factorAvailable = true
         var factor: Decimal = 1
+        var cumulativeMarketMovement = Money.zero
         points.append(PortfolioHistoryPoint(
             displayDay: anchor.date,
             instant: anchor.instant,
             value: anchor.closeValue,
+            cumulativeMarketMovement: .zero,
             performanceFactor: 1,
             isLive: false
         ))
@@ -67,9 +69,11 @@ enum PortfolioHistoryEngine {
                 displayDay: close.date,
                 instant: close.instant,
                 value: close.closeValue,
+                cumulativeMarketMovement: cumulativeMarketMovement + close.market,
                 performanceFactor: factorAvailable ? factor : nil,
                 isLive: false
             ))
+            cumulativeMarketMovement += close.market
             factors.append(factorAvailable ? factor : nil)
             previousDate = close.date
         }
@@ -88,10 +92,12 @@ enum PortfolioHistoryEngine {
                 factor = rounded(factor * link)
                 cursor = PortfolioCalendar.boundary(afterDay: cursor, in: timeZone)
             }
+            cumulativeMarketMovement += input.summary.attribution?.market ?? .zero
             points.append(PortfolioHistoryPoint(
                 displayDay: PortfolioCalendar.day(containing: input.now, in: timeZone),
                 instant: input.now,
                 value: input.summary.currentValue,
+                cumulativeMarketMovement: cumulativeMarketMovement,
                 performanceFactor: factorAvailable ? factor : nil,
                 isLive: true
             ))
@@ -143,18 +149,21 @@ enum PortfolioHistoryEngine {
         var market = Money.zero
         var flow = Money.zero
         var corrections = Money.zero
+        var newlyAddedValue = Money.zero
         var pricing = Money.zero
         for day in interval.includedClosedDays {
             guard let close = closes[day] else { continue }
             market += close.market
             flow += close.flow
             corrections += close.corrections
+            newlyAddedValue += close.newlyAddedValue
             pricing += close.pricingAdjustment
         }
         if interval.includesLiveDay, let live = liveAttribution {
             market += live.market
             flow += live.added - live.removed
             corrections += live.corrections
+            newlyAddedValue += live.newlyAddedValue
             pricing += live.pricingAdjustment
         }
         return PortfolioHistoryAccounting(
@@ -163,8 +172,9 @@ enum PortfolioHistoryEngine {
             market: market,
             netInventoryActivity: flow,
             corrections: corrections,
+            newlyAddedValue: newlyAddedValue,
             pricingAdjustments: pricing,
-            unexplained: endValue - anchor.closeValue - market - flow - corrections - pricing
+            unexplained: endValue - anchor.closeValue - market - flow - corrections - newlyAddedValue - pricing
         )
     }
 
@@ -224,18 +234,18 @@ final class PortfolioHistoryStore: ObservableObject {
     @Published private(set) var result: PortfolioHistoryResult?
 
     init() {
-        mode = PortfolioHistoryMode(
-            rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryMode") ?? ""
-        ) ?? .performance
+        // The primary Portfolio screen has one period metric. Ignore the
+        // legacy Performance/Collection Value preference so an old setting
+        // cannot restore the ambiguous presentation.
+        mode = .marketMovement
         range = PortfolioHistoryRange(
             rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryRange") ?? ""
         ) ?? .oneMonth
     }
 
-    /// Result scoped to the currently selected period. The mode may differ,
-    /// but movement attribution is the same for both history presentations.
+    /// Result scoped to the currently selected period and presentation mode.
     var activeResult: PortfolioHistoryResult? {
-        guard let result, result.range == range else { return nil }
+        guard let result, result.matches(range: range, mode: mode) else { return nil }
         return result
     }
 
@@ -272,7 +282,8 @@ final class PortfolioHistoryStore: ObservableObject {
             PortfolioPublishedClose(
                 date: $0.date, revision: $0.revision, timeZoneIdentifier: $0.timeZoneIdentifier,
                 closeValue: $0.closeValue, market: $0.marketContribution, flow: $0.flowContribution,
-                corrections: $0.correctionContribution, pricingAdjustment: $0.pricingAdjustment,
+                corrections: $0.correctionContribution, newlyAddedValue: $0.newlyAddedValue,
+                pricingAdjustment: $0.pricingAdjustment,
                 carriedForwardValue: $0.carriedForwardValue, coverage: $0.coverageState,
                 refreshedInstrumentCount: $0.refreshedInstrumentCount,
                 carriedForwardInstrumentCount: $0.carriedForwardInstrumentCount,

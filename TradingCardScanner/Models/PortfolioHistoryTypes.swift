@@ -1,11 +1,13 @@
 import Foundation
 
 enum PortfolioHistoryMode: String, CaseIterable, Codable, Sendable {
+    case marketMovement
     case performance
     case value
 
     var title: String {
         switch self {
+        case .marketMovement: return "Market movement"
         case .performance: return "Performance"
         case .value: return "Collection Value"
         }
@@ -13,6 +15,7 @@ enum PortfolioHistoryMode: String, CaseIterable, Codable, Sendable {
 
     var chartLabel: String {
         switch self {
+        case .marketMovement: return "Market movement"
         case .performance: return "Return in dollars"
         case .value: return "Collection value"
         }
@@ -65,6 +68,7 @@ struct PortfolioPublishedClose: Equatable, Sendable {
     var market: Money
     var flow: Money
     var corrections: Money
+    var newlyAddedValue: Money = .zero
     var pricingAdjustment: Money
     var carriedForwardValue: Money
     var coverage: PortfolioCoverageState
@@ -236,6 +240,10 @@ struct PortfolioHistoryPoint: Identifiable, Equatable, Sendable {
     /// published close, or the live summary's current instant.
     var instant: Date
     var value: Money
+    /// Additive market movement from the selected period's anchor close.
+    /// Unlike performance dollars, this is the same measure used by the
+    /// accounting total and holding contributors.
+    var cumulativeMarketMovement: Money = .zero
     var performanceFactor: Decimal?
     var isLive: Bool
 
@@ -261,6 +269,7 @@ struct PortfolioHistoryAccounting: Equatable, Sendable {
     var market: Money
     var netInventoryActivity: Money
     var corrections: Money
+    var newlyAddedValue: Money = .zero
     var pricingAdjustments: Money
     var unexplained: Money
 
@@ -310,7 +319,7 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     }
 }
 
-/// Shared display policy for the two history surfaces. The performance series
+/// Shared display policy for the history presentations. The performance series
 /// is a time-weighted index, so its dollar projection is always anchored to the
 /// selected period's starting value.
 enum PortfolioHistoryDisplay {
@@ -322,6 +331,8 @@ enum PortfolioHistoryDisplay {
         performanceFactor: Decimal?
     ) -> Money? {
         switch mode {
+        case .marketMovement:
+            return accounting.market
         case .value:
             return accounting.totalChange
         case .performance:
@@ -350,6 +361,7 @@ enum PortfolioHistoryDisplay {
     static func hasBreakdown(_ accounting: PortfolioHistoryAccounting) -> Bool {
         !accounting.netInventoryActivity.isZero
             || !accounting.corrections.isZero
+            || !accounting.newlyAddedValue.isZero
             || !accounting.pricingAdjustments.isZero
             || !accounting.unexplained.isZero
     }

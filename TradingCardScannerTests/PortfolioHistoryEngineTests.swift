@@ -57,13 +57,15 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         revision: Int = 1,
         market: Int64 = 0,
         flow: Int64 = 0,
+        newlyAddedValue: Int64 = 0,
         coverage: PortfolioCoverageState = .complete,
         reason: PortfolioRevisionReason? = nil
     ) -> PortfolioPublishedClose {
         PortfolioPublishedClose(
             date: date(day), revision: revision, timeZoneIdentifier: "UTC",
             closeValue: money(value), market: money(market), flow: money(flow),
-            corrections: .zero, pricingAdjustment: .zero, carriedForwardValue: .zero,
+            corrections: .zero, newlyAddedValue: money(newlyAddedValue),
+            pricingAdjustment: .zero, carriedForwardValue: .zero,
             coverage: coverage, refreshedInstrumentCount: 1,
             carriedForwardInstrumentCount: coverage == .partial ? 1 : 0,
             pricedPositionCount: 1, excludedCount: 0, revisionReason: reason
@@ -144,6 +146,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             market: money(-10),
             netInventoryActivity: money(17),
             corrections: .zero,
+            newlyAddedValue: .zero,
             pricingAdjustments: .zero,
             unexplained: .zero
         )
@@ -196,6 +199,189 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         )
     }
 
+    func testMarketMovementPeriodChangeUsesAccountingMarket() {
+        let accounting = PortfolioHistoryAccounting(
+            anchorValue: money(100),
+            endValue: money(107),
+            market: money(-17),
+            netInventoryActivity: money(24),
+            corrections: .zero,
+            newlyAddedValue: .zero,
+            pricingAdjustments: .zero,
+            unexplained: .zero
+        )
+
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.periodChange(
+                for: .marketMovement,
+                accounting: accounting,
+                performanceFactor: Decimal(string: "1.25")
+            ),
+            Optional(money(-17))
+        )
+    }
+
+    func testMarketMovementSeriesStartsAtZeroAndEndsAtAccountingMarket() {
+        var attribution = PortfolioClose.Attribution()
+        attribution.market = money(3)
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100, market: 100),
+                    close(2, value: 110, market: 10),
+                    close(3, value: 108, market: -2)
+                ],
+                currentValue: 111,
+                now: date(4, hour: 1),
+                attribution: attribution
+            ),
+            mode: .marketMovement,
+            range: .all
+        )
+
+        XCTAssertEqual(
+            result.points.map(\.cumulativeMarketMovement),
+            [money(0), money(10), money(8), money(11)]
+        )
+        XCTAssertEqual(result.points.first?.cumulativeMarketMovement, .zero)
+        XCTAssertEqual(result.accounting?.market, money(11))
+        XCTAssertEqual(result.points.last?.cumulativeMarketMovement, result.accounting?.market)
+    }
+
+    func testMarketMovementRangesUseTheSameIntervalLogicAndContributorTotal() {
+        let timeZoneID = "UTC"
+        let now = zonedDay(2025, 12, 31, timeZoneID: timeZoneID).addingTimeInterval(60 * 60)
+        let calendar = PortfolioCalendar.calendar(in: TimeZone(identifier: timeZoneID)!)
+        let today = calendar.startOfDay(for: now)
+        func day(_ offset: Int) -> Date {
+            calendar.date(byAdding: .day, value: offset, to: today)!
+        }
+
+        let closes = [
+            close(at: day(-400), value: 100, timeZoneID: timeZoneID, market: 100),
+            close(at: day(-370), value: 101, timeZoneID: timeZoneID, market: 1),
+            close(at: day(-200), value: 103, timeZoneID: timeZoneID, market: 2),
+            close(at: day(-100), value: 106, timeZoneID: timeZoneID, market: 3),
+            close(at: day(-40), value: 110, timeZoneID: timeZoneID, market: 4),
+            close(at: day(-20), value: 115, timeZoneID: timeZoneID, market: 5),
+            close(at: day(-6), value: 121, timeZoneID: timeZoneID, market: 6),
+            close(at: day(-1), value: 128, timeZoneID: timeZoneID, market: 7),
+            close(at: day(0), value: 136, timeZoneID: timeZoneID, market: 8)
+        ]
+        let contributions = PortfolioContributionIndex(
+            byDay: Dictionary(uniqueKeysWithValues: closes.map { ($0.date, ["market": $0.market]) })
+        )
+        let historyInput = PortfolioHistoryInput(
+            closes: closes,
+            summary: PortfolioSummary(currentValue: money(136)),
+            epoch: closes.first?.date,
+            timeZoneIdentifier: timeZoneID,
+            now: now,
+            contributions: contributions
+        )
+
+        let expectedMarkets: [(PortfolioHistoryRange, Int64)] = [
+            (.oneWeek, 15),
+            (.oneMonth, 21),
+            (.threeMonths, 26),
+            (.oneYear, 33),
+            (.all, 36)
+        ]
+
+        for (range, expectedDollars) in expectedMarkets {
+            let result = PortfolioHistoryEngine.calculate(
+                input: historyInput,
+                mode: .marketMovement,
+                range: range
+            )
+            let expected = money(expectedDollars)
+
+            XCTAssertEqual(result.accounting?.market, expected, "market total for \(range.rawValue)")
+            XCTAssertEqual(result.points.first?.cumulativeMarketMovement, .zero)
+            XCTAssertEqual(result.points.last?.cumulativeMarketMovement, expected)
+            XCTAssertEqual(result.contributions["market"], expected, "contributors for \(range.rawValue)")
+        }
+    }
+
+    func testInventoryActivityChangesPortfolioValueButNotMarketMovement() {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100),
+                    close(2, value: 50_100, flow: 50_000)
+                ],
+                currentValue: 50_100,
+                now: date(2)
+            ),
+            mode: .marketMovement,
+            range: .all
+        )
+
+        XCTAssertEqual(result.accounting?.totalChange, money(50_000))
+        XCTAssertEqual(result.accounting?.netInventoryActivity, money(50_000))
+        XCTAssertEqual(result.accounting?.market, .zero)
+        XCTAssertTrue(result.contributions.isEmpty)
+    }
+
+    func testAccountingAdjustmentsDoNotBecomeMarketContributors() {
+        var adjustedClose = close(2, value: 110)
+        adjustedClose.corrections = money(4)
+        adjustedClose.newlyAddedValue = money(2)
+        adjustedClose.pricingAdjustment = money(4)
+
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [close(1, value: 100), adjustedClose],
+                currentValue: 110,
+                now: date(2)
+            ),
+            mode: .marketMovement,
+            range: .all
+        )
+
+        XCTAssertEqual(result.accounting?.market, .zero)
+        XCTAssertEqual(result.accounting?.corrections, money(4))
+        XCTAssertEqual(result.accounting?.newlyAddedValue, money(2))
+        XCTAssertEqual(result.accounting?.pricingAdjustments, money(4))
+        XCTAssertEqual(result.accounting?.unexplained, .zero)
+        XCTAssertTrue(result.contributions.isEmpty)
+    }
+
+    @MainActor
+    func testLegacyPerformancePreferenceCannotRestorePrimaryHistoryMode() {
+        let defaults = UserDefaults.standard
+        let previous = defaults.object(forKey: "portfolioHistoryMode")
+        defer {
+            if let previous {
+                defaults.set(previous, forKey: "portfolioHistoryMode")
+            } else {
+                defaults.removeObject(forKey: "portfolioHistoryMode")
+            }
+        }
+
+        defaults.set(PortfolioHistoryMode.performance.rawValue, forKey: "portfolioHistoryMode")
+        XCTAssertEqual(PortfolioHistoryStore().mode, .marketMovement)
+    }
+
+    func testNewlyAddedValueFlowsThroughHistoryWithoutBecomingPricingAdjustment() {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 0),
+                    close(2, value: 100, newlyAddedValue: 100)
+                ],
+                currentValue: 100,
+                now: date(3, hour: 1)
+            ),
+            mode: .value,
+            range: .all
+        )
+
+        XCTAssertEqual(result.accounting?.newlyAddedValue, money(100))
+        XCTAssertEqual(result.accounting?.pricingAdjustments, .zero)
+        XCTAssertEqual(result.accounting?.unexplained, .zero)
+    }
+
     func testPerformanceDollarsScaleFactorFromAnchorValue() {
         XCTAssertEqual(
             PortfolioHistoryDisplay.performanceDollars(
@@ -213,6 +399,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             market: money(10),
             netInventoryActivity: .zero,
             corrections: .zero,
+            newlyAddedValue: .zero,
             pricingAdjustments: .zero,
             unexplained: .zero
         )
@@ -242,6 +429,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             market: .zero,
             netInventoryActivity: .zero,
             corrections: .zero,
+            newlyAddedValue: .zero,
             pricingAdjustments: .zero,
             unexplained: .zero
         )
@@ -262,6 +450,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             market: .zero,
             netInventoryActivity: .zero,
             corrections: .zero,
+            newlyAddedValue: .zero,
             pricingAdjustments: .zero,
             unexplained: .zero
         )
@@ -271,11 +460,19 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
                 netInventoryActivity: money(1), corrections: .zero,
+                newlyAddedValue: .zero,
                 pricingAdjustments: .zero, unexplained: .zero
             ),
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
                 netInventoryActivity: .zero, corrections: money(1),
+                newlyAddedValue: .zero,
+                pricingAdjustments: .zero, unexplained: .zero
+            ),
+            PortfolioHistoryAccounting(
+                anchorValue: money(100), endValue: money(100), market: .zero,
+                netInventoryActivity: .zero, corrections: .zero,
+                newlyAddedValue: money(1),
                 pricingAdjustments: .zero, unexplained: .zero
             ),
             PortfolioHistoryAccounting(
@@ -286,6 +483,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             PortfolioHistoryAccounting(
                 anchorValue: money(100), endValue: money(100), market: .zero,
                 netInventoryActivity: .zero, corrections: .zero,
+                newlyAddedValue: .zero,
                 pricingAdjustments: .zero, unexplained: money(1)
             )
         ] {

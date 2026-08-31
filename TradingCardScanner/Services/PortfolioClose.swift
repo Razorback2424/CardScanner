@@ -150,13 +150,18 @@ enum PortfolioClose {
         /// A positive magnitude. It is *subtracted* in the identity.
         var removed: Money = .zero
         var corrections: Money = .zero
+        /// Value that arrived when a position newly recorded in the tracked
+        /// portfolio received its first usable price. This is kept separate
+        /// from ordinary pricing adjustments so an imported, initially
+        /// unpriced collection does not look like a vendor repricing.
+        var newlyAddedValue: Money = .zero
         var pricingAdjustment: Money = .zero
         var currentValue: Money = .zero
         var pricedPositionCount: Int = 0
 
         /// What the app claims happened since the close.
         var totalChange: Money {
-            market + added - removed + corrections + pricingAdjustment
+            market + added - removed + corrections + newlyAddedValue + pricingAdjustment
         }
 
         /// What it cannot account for. Displayed, never absorbed: computing
@@ -198,6 +203,11 @@ enum PortfolioClose {
         }
         let periodEvents = events.filter { inPeriod($0.occurredAt) }
         let eventByID = Dictionary(uniqueKeysWithValues: events.map { ($0.eventID, $0) })
+        /// Positive additions made while their instrument had no usable price.
+        /// The map is intentionally scoped to this attribution window: a
+        /// position that was already held before the boundary is a pricing
+        /// adjustment when it becomes priceable today, not a new addition.
+        var pendingNewlyAddedQuantities: [String: Int] = [:]
 
         // An operation and its explicit undo in the same unpublished period
         // are audit rows, but not user-facing economic activity. Removing both
@@ -227,6 +237,15 @@ enum PortfolioClose {
                 let new = observation.amount
                 let quantity = quantityPriced(through: instrument, in: state)
                 let difference = (new ?? .zero) - (old ?? .zero)
+                let newlyAddedQuantity: Int
+                if old == nil, new != nil {
+                    newlyAddedQuantity = min(
+                        max(pendingNewlyAddedQuantities[instrument, default: 0], 0),
+                        max(quantity, 0)
+                    )
+                } else {
+                    newlyAddedQuantity = 0
+                }
 
                 // Market movement is only what the market did to a value the
                 // app already held and still holds. An instrument arriving at
@@ -240,9 +259,11 @@ enum PortfolioClose {
                 if isMarketMovement {
                     result.market += difference * quantity
                 } else {
-                    result.pricingAdjustment += difference * quantity
+                    result.newlyAddedValue += difference * newlyAddedQuantity
+                    result.pricingAdjustment += difference * (quantity - newlyAddedQuantity)
                 }
 
+                pendingNewlyAddedQuantities.removeValue(forKey: instrument)
                 apply(observation, to: &state)
 
             case let .operation(legs):
@@ -261,18 +282,34 @@ enum PortfolioClose {
                         // the UI.
                         result.corrections += value
                     } else {
-                    switch event.kind {
-                    case .correction:
-                        result.corrections += value
-                    case .dispose:
-                        result.removed += Money(tenThousandths: -value.tenThousandths)
-                    case .quantityAdjust:
-                        result.corrections += value
-                    case .acquire, .recordExisting, .initialBalance:
-                        // A signed add: an undo of an acquisition retracts it
-                        // from "Added" rather than reporting it as a sale.
-                        result.added += value
+                        switch event.kind {
+                        case .correction:
+                            result.corrections += value
+                        case .dispose:
+                            result.removed += Money(tenThousandths: -value.tenThousandths)
+                        case .quantityAdjust:
+                            result.corrections += value
+                        case .acquire, .recordExisting, .initialBalance:
+                            // A signed add: an undo of an acquisition retracts it
+                            // from "Added" rather than reporting it as a sale.
+                            result.added += value
+                        }
                     }
+
+                    if event.deltaQuantity > 0,
+                       (event.kind == .acquire || event.kind == .recordExisting),
+                       price == nil {
+                        pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] += event.deltaQuantity
+                    } else if event.deltaQuantity < 0 {
+                        let remaining = max(
+                            pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] + event.deltaQuantity,
+                            0
+                        )
+                        if remaining == 0 {
+                            pendingNewlyAddedQuantities.removeValue(forKey: event.priceStorageKey)
+                        } else {
+                            pendingNewlyAddedQuantities[event.priceStorageKey] = remaining
+                        }
                     }
 
                     state.quantities[event.collectionKey, default: 0] += event.deltaQuantity

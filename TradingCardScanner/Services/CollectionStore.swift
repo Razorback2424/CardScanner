@@ -1561,11 +1561,16 @@ struct CollectionStore {
                 inserted.catalogProviderID = previousSnapshot.catalogProviderID
                 inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
                 inserted.tcgplayerProductID = previousSnapshot.tcgplayerProductID
-                inserted.tcgplayerSKUID = previousSnapshot.tcgplayerSKUID
+                // A SKU is finish-specific just like the marketplace variant.
+                // The correction must resolve the destination independently.
+                inserted.tcgplayerSKUID = nil
                 inserted.userArtworkFilename = previousSnapshot.userArtworkFilename
                 inserted.itemKindRaw = previousSnapshot.itemKindRaw
                 inserted.justTCGCardID = previousSnapshot.justTCGCardID
-                inserted.justTCGVariantID = previousSnapshot.justTCGVariantID
+                // The old marketplace variant is exact for the outgoing row;
+                // carrying it over would price the corrected finish as the old
+                // one during the next refresh.
+                inserted.justTCGVariantID = nil
                 inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
                 inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw
                 inserted.catalogMetadataCheckedAt = previousSnapshot.catalogMetadataCheckedAt

@@ -164,7 +164,7 @@ struct VariantChoiceBar: View {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 44, height: 44)
+                        .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -262,7 +262,7 @@ struct PrintRunChoiceBar: View {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 44, height: 44)
+                        .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -329,7 +329,7 @@ struct IdentityChoiceBar: View {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 44, height: 44)
+                        .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -437,14 +437,13 @@ struct RecentScanRail: View {
                     Button {
                         onSelect(scan)
                     } label: {
-                        ZStack(alignment: .bottomTrailing) {
-                            CardThumbnail(url: scan.thumbnailURL, width: 38)
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 11))
-                                .foregroundStyle(.green, .black)
-                                .padding(2)
-                        }
-                        .frame(width: 44, height: 60)
+                        CardThumbnail(url: scan.thumbnailURL, width: 38)
+                            .overlay(alignment: .bottomTrailing) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.green, .black)
+                                    .padding(2)
+                            }
                     }
                     .buttonStyle(.plain)
                     .contextMenu {

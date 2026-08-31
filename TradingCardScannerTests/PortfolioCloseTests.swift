@@ -5,7 +5,7 @@ import XCTest
 /// numbers can be defended:
 ///
 ///     Unexplained = current − Close(D) − market − added + removed
-///                   − corrections − pricingAdjustment
+///                   − corrections − newlyAddedValue − pricingAdjustment
 ///
 /// Every test here asserts `unexplained == .zero` exactly. Not within an
 /// epsilon — the point of integer money is that the books balance or they do
@@ -274,18 +274,33 @@ final class PortfolioCloseTests: XCTestCase {
 
     // MARK: - Knowledge changing is not the market moving
 
-    func testFirstEverPriceOnAnUnpricedPositionIsAPricingAdjustment() {
-        // Case 16. A card added offline records no price and flows through as
-        // `added $0`; the value arriving later is the app learning something,
-        // not the card appreciating.
+    func testFirstEverPriceOnAnUnpricedAdditionIsANewPortfolioAddition() {
+        // An imported or offline-added card records no price and flows through
+        // as `added $0`; when its value arrives later, show that value as a new
+        // portfolio addition rather than a vendor repricing.
         let result = attribute(
-            events: [event(kind: .acquire, delta: 1, at: at(26))],
+            events: [event(kind: .recordExisting, delta: 1, at: at(26))],
             observations: [observation(usd(100), at: at(30))],
             boundary: at(24),
             now: at(36)
         )
 
         XCTAssertEqual(result.added, .zero)
+        XCTAssertEqual(result.newlyAddedValue, usd(100))
+        XCTAssertEqual(result.pricingAdjustment, .zero)
+        XCTAssertEqual(result.market, .zero)
+        XCTAssertEqual(result.currentValue, usd(100))
+    }
+
+    func testFirstEverPriceOnPreviouslyHeldUnpricedPositionRemainsAPricingAdjustment() {
+        let result = attribute(
+            events: [event(kind: .recordExisting, delta: 1, at: at(-10))],
+            observations: [observation(usd(100), at: at(30))],
+            boundary: at(24),
+            now: at(36)
+        )
+
+        XCTAssertEqual(result.newlyAddedValue, .zero)
         XCTAssertEqual(result.pricingAdjustment, usd(100))
         XCTAssertEqual(result.market, .zero)
         XCTAssertEqual(result.currentValue, usd(100))

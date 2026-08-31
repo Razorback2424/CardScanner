@@ -14,9 +14,8 @@ enum CatalogFailure: Equatable {
 
 enum PokemonHistoricalCatalogError: Error, Sendable {
     case ambiguous([PokemonCatalogCardIdentity])
-    case unsupported
+case unsupported
 }
-
 /// A small, identity-only Pokémon record assembled from the on-device Browse
 /// checklist. The checklist is authoritative for the set/card relationship, but
 /// it deliberately does not pretend to contain live market data.
@@ -217,15 +216,56 @@ actor PokemonOfflineCatalog {
     }
 }
 
+
 /// Prevents every scan frame from opening another doomed TCGdex connection
 /// while the provider is timing out. A success closes the circuit immediately;
 /// only provider failures open it.
 actor TCGdexCircuitBreaker {
-    private let cooldown: TimeInterval
-    private var unavailableUntil: Date?
+    /// Outage state belongs to the host, not to whichever type noticed first.
+    /// The catalog and the price refresher both talk to TCGdex, and a private
+    /// breaker each meant the second caller re-paid the connect timeout the
+    /// first had already established was hopeless.
+    static let shared = TCGdexCircuitBreaker()
 
-    init(cooldown: TimeInterval = 30) {
-        self.cooldown = max(cooldown, 0)
+    /// How badly the provider failed, which decides how long to stay away.
+    ///
+    /// These are not the same outage. A 5xx is a host that answered — the next
+    /// request may well succeed, and banishing it for ten minutes would throw
+    /// away a working provider. A refused or timed-out connection is a host
+    /// that is not there, and re-probing it costs the full timeout every time.
+    enum Failure: Equatable {
+        /// The host answered, badly. Retry soon.
+        case serverError
+        /// Nothing answered: connection refused, DNS failure, or timeout.
+        case unreachable
+
+        var base: TimeInterval {
+            switch self {
+            case .serverError: return 10
+            case .unreachable: return 30
+            }
+        }
+
+        var cap: TimeInterval {
+            switch self {
+            case .serverError: return 60
+            case .unreachable: return 600
+            }
+        }
+    }
+
+    private let baseCooldown: TimeInterval?
+    private var unavailableUntil: Date?
+    /// Survives cooldown expiry on purpose. A probe that fails again must back
+    /// off further than the one before it, which cannot happen if the count is
+    /// cleared every time the door is reopened.
+    private var consecutiveFailures = 0
+
+    /// - Parameter cooldown: fixes the cooldown at one value, for tests that
+    ///   need a deterministic window. Production leaves this nil and lets the
+    ///   failure kind decide.
+    init(cooldown: TimeInterval? = nil) {
+        self.baseCooldown = cooldown.map { max($0, 0) }
     }
 
     func permitsRequest(now: Date = .now) -> Bool {
@@ -239,10 +279,20 @@ actor TCGdexCircuitBreaker {
 
     func recordSuccess() {
         unavailableUntil = nil
+        consecutiveFailures = 0
     }
 
-    func recordFailure(now: Date = .now) {
-        unavailableUntil = now.addingTimeInterval(cooldown)
+    func recordFailure(_ failure: Failure = .unreachable, now: Date = .now) {
+        consecutiveFailures += 1
+        unavailableUntil = now.addingTimeInterval(cooldown(for: failure))
+    }
+
+    private func cooldown(for failure: Failure) -> TimeInterval {
+        if let baseCooldown { return baseCooldown }
+        // 30s, 60, 120, 240 … capped. `consecutiveFailures` is at least 1 here.
+        let exponent = min(consecutiveFailures - 1, 16)
+        let scaled = failure.base * pow(2, Double(exponent))
+        return min(scaled, failure.cap)
     }
 }
 
@@ -264,9 +314,6 @@ actor TCGdexCircuitBreaker {
 /// resolved this session needs no round trip at all.
 actor CardCatalog {
     private let tcgdex = TCGdexService()
-    private let pokemonAPI = PokemonTCGAPIService()
-    private let pokemonOffline = PokemonOfflineCatalog()
-    private let tcgdexCircuit = TCGdexCircuitBreaker()
     private let scryfall = ScryfallService()
     private let historicalPokemon = PokemonHistoricalCatalog()
 
@@ -275,7 +322,6 @@ actor CardCatalog {
     /// unstable OCR cannot grow it without limit.
     private var resolved = BoundedCache<ScanIdentifier, IdentifiedCard>(capacity: 256)
     private var inFlight: [ScanIdentifier: Task<IdentifiedCard, Error>] = [:]
-    private var enrichmentStarted: Set<ScanIdentifier> = []
 
     /// Start resolving an identifier that looks plausible but is not yet
     /// confirmed. Deliberately returns nothing: speculation must never be able to
@@ -289,9 +335,6 @@ actor CardCatalog {
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
         if let card = resolved[identifier] { return card }
         let task = inFlight[identifier] ?? start(identifier)
-        // Complete on the catalog actor before returning to the scanner. This
-        // is the original, proven prefetch-to-confirmation handoff: success is
-        // cached and the in-flight slot is cleared as one actor transaction.
         return try await complete(identifier, task: task).get()
     }
 
@@ -321,55 +364,38 @@ actor CardCatalog {
 
     private func start(_ identifier: ScanIdentifier) -> Task<IdentifiedCard, Error> {
         let tcgdex = tcgdex
-        let pokemonAPI = pokemonAPI
-        let pokemonOffline = pokemonOffline
-        let tcgdexCircuit = tcgdexCircuit
         let scryfall = scryfall
         let historicalPokemon = historicalPokemon
         let task = Task<IdentifiedCard, Error> {
             switch identifier {
             case let .pokemon(setCode, cardNumber, printedTotal, setDefinition):
-                if let card = await pokemonOffline.card(
-                    providerSetID: setDefinition.tcgdexSetID,
-                    localID: cardNumber,
-                    expectedOfficialCount: printedTotal
-                ) {
-                    return .pokemon(card, setCode: setCode)
-                }
-
-                let card = try await Self.fetchPokemonCard(
-                    tcgdex: tcgdex,
-                    pokemonAPI: pokemonAPI,
-                    circuit: tcgdexCircuit,
+                let card = try await tcgdex.fetchCard(
                     setID: setDefinition.tcgdexSetID,
-                    localID: cardNumber,
-                    expectedOfficialCount: printedTotal
+                    localID: cardNumber
                 )
+                // A network response answers the question the card asked; it does
+                // not get to change the question. If the record disagrees with the
+                // printed denominator or number, the identification failed.
+                guard card.set.cardCount.official == printedTotal,
+                      PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
+                        == PokemonHistoricalIdentityResolver.canonicalLocalID(cardNumber) else {
+                    throw TCGdexError.identityMismatch
+                }
                 return .pokemon(card, setCode: setCode)
 
             case let .pokemonPromo(prefix, localID, setDefinition):
-                if let card = await pokemonOffline.card(
-                    providerSetID: setDefinition.tcgdexSetID,
-                    localID: localID,
-                    expectedOfficialCount: nil
-                ) {
-                    return .pokemon(card, setCode: prefix)
-                }
-
-                let card = try await Self.fetchPokemonCard(
-                    tcgdex: tcgdex,
-                    pokemonAPI: pokemonAPI,
-                    circuit: tcgdexCircuit,
+                let card = try await tcgdex.fetchCard(
                     setID: setDefinition.tcgdexSetID,
-                    localID: localID,
-                    expectedOfficialCount: nil
+                    localID: localID
                 )
+                guard card.set.id.caseInsensitiveCompare(setDefinition.tcgdexSetID) == .orderedSame,
+                      PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
+                        == PokemonHistoricalIdentityResolver.canonicalLocalID(localID) else {
+                    throw TCGdexError.identityMismatch
+                }
                 return .pokemon(card, setCode: prefix)
 
             case let .pokemonHistorical(evidence):
-                if let card = await pokemonOffline.historicalCard(for: evidence) {
-                    return card
-                }
                 return try await historicalPokemon.card(for: evidence)
 
             case let .magic(setCode, collectorNumber, language, contentKind):
@@ -423,95 +449,6 @@ actor CardCatalog {
         return task
     }
 
-    private static func fetchPokemonCard(
-        tcgdex: TCGdexService,
-        pokemonAPI: PokemonTCGAPIService,
-        circuit: TCGdexCircuitBreaker,
-        setID: String,
-        localID: String,
-        expectedOfficialCount: Int?
-    ) async throws -> TCGdexCard {
-        var lastError: Error = TCGdexError.badResponse
-
-        if await circuit.permitsRequest() {
-            do {
-                let card = try await tcgdex.fetchCard(
-                    setID: setID,
-                    localID: localID,
-                    timeout: 2.5
-                )
-                guard card.set.id.caseInsensitiveCompare(setID) == .orderedSame,
-                      expectedOfficialCount == nil
-                        || card.set.cardCount.official == expectedOfficialCount,
-                      PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
-                        == PokemonHistoricalIdentityResolver.canonicalLocalID(localID) else {
-                    await circuit.recordSuccess()
-                    throw TCGdexError.identityMismatch
-                }
-                await circuit.recordSuccess()
-                return card
-            } catch let error as TCGdexError {
-                switch error {
-                case .cardNotFound, .identityMismatch:
-                    // A definitive provider answer must not be replaced by a
-                    // looser secondary search.
-                    await circuit.recordSuccess()
-                    throw error
-                default:
-                    await circuit.recordFailure()
-                    lastError = error
-                }
-            } catch {
-                await circuit.recordFailure()
-                lastError = error
-            }
-        }
-
-        // TCGdex is optional for scanner completion. The secondary provider is
-        // queried by exact provider set id and local number, then validated again
-        // before its identity-only card enters the session cache.
-        do {
-            guard let alternate = try await pokemonAPI.fetchCard(
-                setID: setID,
-                cardNumber: localID,
-                timeout: 3
-            ),
-            alternate.set.id?.caseInsensitiveCompare(setID) == .orderedSame,
-            expectedOfficialCount == nil
-                || alternate.set.printedTotal == nil
-                || alternate.set.printedTotal == expectedOfficialCount,
-            PokemonHistoricalIdentityResolver.canonicalLocalID(alternate.number)
-                == PokemonHistoricalIdentityResolver.canonicalLocalID(localID) else {
-                throw lastError
-            }
-
-            let officialCount = expectedOfficialCount
-                ?? alternate.set.printedTotal
-                ?? 0
-            let set = TCGdexSetBrief(
-                id: setID,
-                name: alternate.set.name,
-                cardCount: TCGdexCardCount(
-                    total: max(officialCount, 0),
-                    official: max(officialCount, 0)
-                )
-            )
-            return TCGdexCard(
-                id: "\(setID)-\(alternate.number)",
-                localId: alternate.number,
-                name: alternate.name,
-                image: alternate.images.large.absoluteString,
-                rarity: nil,
-                set: set,
-                variants: nil,
-                pricing: nil,
-                variantsDetailed: nil
-            )
-        } catch {
-            throw lastError
-        }
-    }
-
     private func complete(
         _ identifier: ScanIdentifier,
         task: Task<IdentifiedCard, Error>
@@ -519,68 +456,11 @@ actor CardCatalog {
         let result = await task.result
         if case let .success(card) = result {
             resolved[identifier] = card
-            if await isOfflinePokemon(identifier), enrichmentStarted.insert(identifier).inserted {
-                Task { [weak self] in
-                    await self?.enrich(identifier)
-                }
-            }
         }
         // Only successes are remembered. A failed lookup leaves no trace, so the
         // next attempt is a real attempt rather than a replayed failure.
         inFlight[identifier] = nil
         return result
-    }
-
-    private func isOfflinePokemon(_ identifier: ScanIdentifier) async -> Bool {
-        switch identifier {
-        case let .pokemon(_, cardNumber, printedTotal, setDefinition):
-            return await pokemonOffline.contains(
-                providerSetID: setDefinition.tcgdexSetID,
-                localID: cardNumber,
-                expectedOfficialCount: printedTotal
-            )
-        case let .pokemonPromo(_, localID, setDefinition):
-            return await pokemonOffline.contains(
-                providerSetID: setDefinition.tcgdexSetID,
-                localID: localID,
-                expectedOfficialCount: nil
-            )
-        case .pokemonHistorical, .magic:
-            return false
-        }
-    }
-
-    private func enrich(_ identifier: ScanIdentifier) async {
-        defer { enrichmentStarted.remove(identifier) }
-        do {
-            switch identifier {
-            case let .pokemon(setCode, cardNumber, printedTotal, setDefinition):
-                let card = try await Self.fetchPokemonCard(
-                    tcgdex: tcgdex,
-                    pokemonAPI: pokemonAPI,
-                    circuit: tcgdexCircuit,
-                    setID: setDefinition.tcgdexSetID,
-                    localID: cardNumber,
-                    expectedOfficialCount: printedTotal
-                )
-                resolved[identifier] = .pokemon(card, setCode: setCode)
-            case let .pokemonPromo(prefix, localID, setDefinition):
-                let card = try await Self.fetchPokemonCard(
-                    tcgdex: tcgdex,
-                    pokemonAPI: pokemonAPI,
-                    circuit: tcgdexCircuit,
-                    setID: setDefinition.tcgdexSetID,
-                    localID: localID,
-                    expectedOfficialCount: nil
-                )
-                resolved[identifier] = .pokemon(card, setCode: prefix)
-            case .pokemonHistorical, .magic:
-                break
-            }
-        } catch {
-            // Offline identity is already usable. Enrichment is best effort and
-            // must never turn a provider outage into a failed scan.
-        }
     }
 }
 

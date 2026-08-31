@@ -761,8 +761,71 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
 
         XCTAssertEqual(attribution.added, money(7_000))
+        XCTAssertEqual(attribution.newlyAddedValue, .zero)
         XCTAssertEqual(attribution.pricingAdjustment, .zero)
         XCTAssertEqual(attribution.market, .zero)
+        XCTAssertEqual(attribution.unexplained, .zero)
+    }
+
+    func testCSVImportedWithoutPriceThenRefreshedShowsNewPortfolioAddition() throws {
+        let context = try makeContext()
+        let plan = CollectionCSVImportPlan(
+            entries: [
+                CollectionCSVEntry(
+                    collectionKey: "csv-unpriced-position",
+                    game: .pokemon,
+                    providerID: "csv-printing",
+                    name: "Imported Without Price",
+                    setName: "Imported Set",
+                    setCode: "CSV",
+                    cardNumber: "8",
+                    rarity: nil,
+                    imageURL: nil,
+                    thumbnailURL: nil,
+                    variant: nil,
+                    quantity: 1,
+                    dateAdded: Date(timeIntervalSince1970: 1_800_000_000)
+                )
+            ],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+
+        _ = try CollectionCSV.apply(plan, to: context)
+        let events = InventoryLedger(context: context).allEvents().map(PortfolioEngine.entry(from:))
+        let eventTime = try XCTUnwrap(events.first?.occurredAt)
+        let card = try XCTUnwrap(try context.fetch(FetchDescriptor<CollectedCard>()).first)
+        let refreshedAt = eventTime.addingTimeInterval(60)
+
+        PriceStore(context: context).store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 7_000,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: "refreshed-variant",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: refreshedAt
+                )
+            ),
+            game: card.game,
+            printingID: card.priceStorageID,
+            variantID: card.variantID,
+            at: refreshedAt
+        )
+
+        let attribution = PortfolioClose.attribute(
+            events: events,
+            observations: try PortfolioEngine.observations(in: context),
+            boundary: eventTime.addingTimeInterval(-1),
+            now: refreshedAt.addingTimeInterval(1),
+            currentValue: money(7_000)
+        )
+
+        XCTAssertEqual(events.first?.kind, .recordExisting)
+        XCTAssertEqual(attribution.added, .zero)
+        XCTAssertEqual(attribution.newlyAddedValue, money(7_000))
+        XCTAssertEqual(attribution.pricingAdjustment, .zero)
         XCTAssertEqual(attribution.unexplained, .zero)
     }
 

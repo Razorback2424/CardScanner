@@ -14,6 +14,7 @@ struct CatalogCardDetailView: View {
     @State private var showsFinishChoice = false
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
+    @State private var fallbackQuoteTask: Task<Void, Never>?
     @State private var showsGradedPicker = false
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
@@ -180,22 +181,73 @@ struct CatalogCardDetailView: View {
         let stored = store.card(forKey: mutation.collectionKey)
         let storageID = stored?.priceStorageID ?? details.card.providerID
         let prices = PriceStore(context: modelContext)
+        let catalogLookup = CardPricing.price(
+            for: details.card,
+            variant: resolved.variant,
+            pokemonPrintRun: summary.pokemonPrintRun
+        )
         prices.store(
-            CardPricing.price(
-                for: details.card,
-                variant: resolved.variant,
-                pokemonPrintRun: summary.pokemonPrintRun
-            ),
+            catalogLookup,
             game: details.card.game,
             printingID: storageID,
             variantID: resolved.variant?.id
         )
         prices.save()
+        queueFallbackPrice(
+            for: details.card,
+            variant: resolved.variant,
+            pokemonPrintRun: summary.pokemonPrintRun,
+            printingID: storageID,
+            catalogLookup: catalogLookup,
+            prices: prices
+        )
         pendingMutation = mutation
         undoTask?.cancel()
         undoTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(6))
             if !Task.isCancelled { pendingMutation = nil }
+        }
+    }
+
+    private func queueFallbackPrice(
+        for card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?,
+        printingID: String,
+        catalogLookup: PriceLookup,
+        prices: PriceStore
+    ) {
+        guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
+              PriceVendorCredentials.hasKey else { return }
+
+        fallbackQuoteTask?.cancel()
+        let resolver = PriceFallbackQuoteResolver(context: modelContext)
+        fallbackQuoteTask = Task { @MainActor in
+            switch await resolver.resolve(
+                card: card,
+                variant: variant,
+                pokemonPrintRun: pokemonPrintRun
+            ) {
+            case let .lookup(quote):
+                guard !Task.isCancelled else { return }
+                let identityKey = ProductIdentity.key(
+                    game: card.game,
+                    printingID: printingID,
+                    variantID: variant?.id
+                )
+                let marketVariantID = ProductIdentityStore(context: prices.context)
+                    .cachedVariantID(forKey: identityKey)
+                prices.store(
+                    quote,
+                    game: card.game,
+                    printingID: printingID,
+                    variantID: variant?.id,
+                    marketVariantID: marketVariantID
+                )
+                prices.save()
+            case .failed:
+                break
+            }
         }
     }
 

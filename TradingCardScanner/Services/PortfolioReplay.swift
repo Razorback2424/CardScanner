@@ -65,6 +65,7 @@ struct PortfolioReplayDay: Sendable, Equatable {
     var added: Money
     var removed: Money
     var corrections: Money
+    var newlyAddedValue: Money
     var pricingAdjustment: Money
     /// Time-weighted factor for this day alone. `nil` where no meaningful link
     /// could be formed — an honest "not defined", never a silent 0%.
@@ -254,6 +255,7 @@ enum PortfolioReplayEngine {
 
         var operationIndex = 0
         var observationIndex = 0
+        var pendingNewlyAddedQuantities: [String: Int] = [:]
 
         var day = PortfolioCalendar.day(containing: prepared.epoch, in: prepared.timeZone)
         var boundary = PortfolioCalendar.boundary(afterDay: day, in: prepared.timeZone)
@@ -313,10 +315,20 @@ enum PortfolioReplayEngine {
             }
 
             if takeObservation, let observation = nextObservation {
-                apply(observation, to: &state, into: &accumulator)
+                apply(
+                    observation,
+                    to: &state,
+                    into: &accumulator,
+                    pendingNewlyAddedQuantities: &pendingNewlyAddedQuantities
+                )
                 observationIndex += 1
             } else if let operation = nextOperation {
-                apply(operation, to: &state, into: &accumulator)
+                apply(
+                    operation,
+                    to: &state,
+                    into: &accumulator,
+                    pendingNewlyAddedQuantities: &pendingNewlyAddedQuantities
+                )
                 operationIndex += 1
             } else {
                 break
@@ -332,6 +344,7 @@ enum PortfolioReplayEngine {
             attribution.added = accumulator.added
             attribution.removed = accumulator.removed
             attribution.corrections = accumulator.corrections
+            attribution.newlyAddedValue = accumulator.newlyAddedValue
             attribution.pricingAdjustment = accumulator.pricingAdjustment
             attribution.currentValue = state.value
             attribution.pricedPositionCount = state.pricedPositionCount
@@ -387,6 +400,7 @@ enum PortfolioReplayEngine {
         var added = Money.zero
         var removed = Money.zero
         var corrections = Money.zero
+        var newlyAddedValue = Money.zero
         var pricingAdjustment = Money.zero
         var performanceFactor: Decimal? = 1
         var contributions: [String: Money] = [:]
@@ -397,13 +411,23 @@ enum PortfolioReplayEngine {
     private nonisolated static func apply(
         _ observation: ObservationEntry,
         to state: inout PortfolioReplayState,
-        into accumulator: inout DayAccumulator
+        into accumulator: inout DayAccumulator,
+        pendingNewlyAddedQuantities: inout [String: Int]
     ) {
         let instrument = observation.instrumentKey
         let old = state.prices[instrument]
         let new = observation.amount
         let quantity = state.quantityPriced(through: instrument)
         let difference = (new ?? .zero) - (old ?? .zero)
+        let newlyAddedQuantity: Int
+        if old == nil, new != nil {
+            newlyAddedQuantity = min(
+                max(pendingNewlyAddedQuantities[instrument, default: 0], 0),
+                max(quantity, 0)
+            )
+        } else {
+            newlyAddedQuantity = 0
+        }
 
         // Market movement is only what the market did to a value the app
         // already held and still holds. An instrument arriving at or leaving
@@ -431,9 +455,11 @@ enum PortfolioReplayEngine {
                 }
             }
         } else {
-            accumulator.pricingAdjustment += difference * quantity
+            accumulator.newlyAddedValue += difference * newlyAddedQuantity
+            accumulator.pricingAdjustment += difference * (quantity - newlyAddedQuantity)
         }
 
+        pendingNewlyAddedQuantities.removeValue(forKey: instrument)
         // The time-weighted link comes off the same state transition, in the
         // same pass, so performance can never disagree with attribution.
         if isMarketMovement, quantity != 0, old != new {
@@ -456,7 +482,8 @@ enum PortfolioReplayEngine {
     private nonisolated static func apply(
         _ operation: PreparedOperation,
         to state: inout PortfolioReplayState,
-        into accumulator: inout DayAccumulator
+        into accumulator: inout DayAccumulator,
+        pendingNewlyAddedQuantities: inout [String: Int]
     ) {
         // Correction legs move together or the ledger does not balance: an
         // observation between them would value one identity before a price
@@ -478,6 +505,22 @@ enum PortfolioReplayEngine {
                     accumulator.removed += Money(tenThousandths: -value.tenThousandths)
                 case .acquire, .recordExisting, .initialBalance:
                     accumulator.added += value
+                }
+            }
+
+            if event.deltaQuantity > 0,
+               (event.kind == .acquire || event.kind == .recordExisting),
+               price == nil {
+                pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] += event.deltaQuantity
+            } else if event.deltaQuantity < 0 {
+                let remaining = max(
+                    pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] + event.deltaQuantity,
+                    0
+                )
+                if remaining == 0 {
+                    pendingNewlyAddedQuantities.removeValue(forKey: event.priceStorageKey)
+                } else {
+                    pendingNewlyAddedQuantities[event.priceStorageKey] = remaining
                 }
             }
 
@@ -520,6 +563,7 @@ enum PortfolioReplayEngine {
             added: accumulator.added,
             removed: accumulator.removed,
             corrections: accumulator.corrections,
+            newlyAddedValue: accumulator.newlyAddedValue,
             pricingAdjustment: accumulator.pricingAdjustment,
             performanceFactor: accumulator.performanceFactor,
             pricedPositionCount: state.pricedPositionCount,

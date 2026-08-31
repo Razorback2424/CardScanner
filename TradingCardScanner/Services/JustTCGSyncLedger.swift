@@ -82,6 +82,8 @@ struct JustTCGRequestLedger: @unchecked Sendable {
     /// user got any value from.
     func recordRateLimit(until date: Date) {
         Self.withLock {
+            let existing = defaults.object(forKey: blockedUntilKey) as? Date
+            if let existing, existing >= date { return }
             defaults.set(date, forKey: blockedUntilKey)
         }
     }
@@ -145,7 +147,6 @@ struct JustTCGRequestLedger: @unchecked Sendable {
         if defaults.object(forKey: dayKey) as? Date != today {
             defaults.set(today, forKey: dayKey)
             defaults.set(0, forKey: usedTodayKey)
-            defaults.removeObject(forKey: blockedUntilKey)
         }
 
         let month = calendar.dateInterval(of: .month, for: now)?.start ?? today

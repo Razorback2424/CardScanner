@@ -78,7 +78,20 @@ final class PriceCheckCoordinator {
         } catch is CancellationError {
             return .failed(.cancelled)
         } catch {
-            return .failed(.requestFailed)
+            // TCGdex being unavailable is exactly the case the configured
+            // JustTCG path is meant to cover. Do not discard the fallback merely
+            // because the primary catalog request threw before returning a quote.
+            switch await fallbackResolver.resolve(
+                card: result.card,
+                variant: result.resolved.variant,
+                pokemonPrintRun: result.pokemonPrintRun
+            ) {
+            case let .lookup(quote):
+                _ = cache.store(quote, game: key.game, printingID: key.printingID, variantID: key.variantID)
+                return .quote(quote)
+            case let .failed(reason):
+                return .failed(reason)
+            }
         }
 
         if Self.isUsableUSD(catalogQuote) {

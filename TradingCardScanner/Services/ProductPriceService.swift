@@ -270,6 +270,9 @@ actor ProductPriceService {
             query: [("game", game.rawValue)],
             lane: lane
         )
+        if let metadata = response.metadata {
+            await ProductFallbackBudget.shared.syncFromServer(metadata)
+        }
         let directory = ProductSetDirectory(
             sets: response.data.compactMap { set in
                 set.id.map { (id: $0, name: set.name) }
@@ -284,6 +287,9 @@ actor ProductPriceService {
         lane: JustTCGRequestLane
     ) async throws -> [ProductCard] {
         let response: ProductCardsResponse = try await get(path: "cards", query: query, lane: lane)
+        if let metadata = response.metadata {
+            await ProductFallbackBudget.shared.syncFromServer(metadata)
+        }
         return response.data
     }
 
@@ -699,6 +705,12 @@ enum ProductFinish {
 
 private struct ProductSetsResponse: Decodable {
     let data: [ProductSet]
+    let metadata: JustTCGQuotaMetadata?
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case metadata = "_metadata"
+    }
 }
 
 private struct ProductSet: Decodable {
@@ -711,6 +723,12 @@ private struct ProductSet: Decodable {
 
 private struct ProductCardsResponse: Decodable {
     let data: [ProductCard]
+    let metadata: JustTCGQuotaMetadata?
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case metadata = "_metadata"
+    }
 }
 
 struct ProductCard: Decodable, Sendable {
@@ -727,7 +745,18 @@ struct ProductCard: Decodable, Sendable {
     let collectorNumber: String?
     let variants: [ProductVariant]?
 
-    var printedNumber: String? { number ?? collectorNumber }
+    /// The vendor uses the literal `N/A` for cards without a collector number.
+    /// Normalize that sentinel at the model boundary so matching can use the
+    /// same unnumbered-card path as catalog responses.
+    var printedNumber: String? {
+        guard let raw = number ?? collectorNumber else { return nil }
+        let value = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty,
+              value.caseInsensitiveCompare("N/A") != .orderedSame else {
+            return nil
+        }
+        return value
+    }
 
     /// The handle to persist and to send back as `cardId`.
     var vendorID: String? { id ?? uuid }

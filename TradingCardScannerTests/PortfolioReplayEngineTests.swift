@@ -105,6 +105,10 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(live.attribution.removed, legacy.removed, "removed", file: file, line: line)
         XCTAssertEqual(live.attribution.corrections, legacy.corrections, "corrections", file: file, line: line)
         XCTAssertEqual(
+            live.attribution.newlyAddedValue, legacy.newlyAddedValue,
+            "newly added value", file: file, line: line
+        )
+        XCTAssertEqual(
             live.attribution.pricingAdjustment, legacy.pricingAdjustment,
             "pricing adjustment", file: file, line: line
         )
@@ -530,6 +534,7 @@ final class PortfolioReplayEngineTests: XCTestCase {
                 + replayDay.added
                 - replayDay.removed
                 + replayDay.corrections
+                + replayDay.newlyAddedValue
                 + replayDay.pricingAdjustment
             XCTAssertEqual(
                 replayDay.closeValue - previousClose, claimed,

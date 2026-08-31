@@ -59,6 +59,68 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceFallbackQuoteResolution {
+        await resolve(
+            game: card.game,
+            printingID: Self.printingID(for: card, pokemonPrintRun: pokemonPrintRun),
+            catalogID: card.providerID,
+            name: card.name,
+            setName: card.setName,
+            cardNumber: card.cardNumber,
+            variant: variant,
+            pokemonPrintRun: pokemonPrintRun,
+            lookupCandidates: Self.directLookups(card: card, variant: variant)
+        )
+    }
+
+    /// Resolves a stored collection identity without requiring a live catalog
+    /// object. This is used by history corrections, where the collection row is
+    /// the only identity available after the correction transaction completes.
+    func resolve(
+        card: CollectedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceFallbackQuoteResolution {
+        let knownVariantID: String?
+        if let variant, card.variantID == variant.id {
+            knownVariantID = card.justTCGVariantID
+        } else {
+            knownVariantID = nil
+        }
+        var lookupCandidates: [JustTCGBatchLookup] = []
+        if let tcgplayerProductID = card.tcgplayerProductID,
+           !tcgplayerProductID.isEmpty {
+            lookupCandidates.append(.tcgplayerID(tcgplayerProductID))
+        }
+        if let justTCGCardID = card.justTCGCardID,
+           !justTCGCardID.isEmpty {
+            lookupCandidates.append(.cardID(justTCGCardID))
+        }
+        return await resolve(
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            catalogID: card.catalogProviderID ?? (card.providerID.hasPrefix("csv:") ? nil : card.providerID),
+            name: card.name,
+            setName: card.setName,
+            cardNumber: card.cardNumber,
+            variant: variant,
+            pokemonPrintRun: pokemonPrintRun,
+            marketVariantID: knownVariantID,
+            lookupCandidates: lookupCandidates
+        )
+    }
+
+    private func resolve(
+        game: CardGame,
+        printingID: String,
+        catalogID: String?,
+        name: String,
+        setName: String,
+        cardNumber: String,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?,
+        marketVariantID: String? = nil,
+        lookupCandidates: [JustTCGBatchLookup] = []
+    ) async -> PriceFallbackQuoteResolution {
         guard UserDefaults.standard.bool(forKey: "usesPriceFallback") else {
             return .failed(.disabled)
         }
@@ -66,23 +128,24 @@ final class PriceFallbackQuoteResolver {
             return .failed(.missingCredentials)
         }
         guard !Task.isCancelled else { return .failed(.cancelled) }
-        let printingID = Self.printingID(for: card, pokemonPrintRun: pokemonPrintRun)
-        let key = ProductIdentity.key(game: card.game, printingID: printingID, variantID: variant?.id)
+        let key = ProductIdentity.key(game: game, printingID: printingID, variantID: variant?.id)
         let identities = ProductIdentityStore(context: context)
         let recordedVariantID = PriceStore(context: context)
-            .record(forKey: PriceRecord.key(game: card.game, printingID: printingID, variantID: variant?.id))?
+            .record(forKey: PriceRecord.key(game: game, printingID: printingID, variantID: variant?.id))?
             .marketVariantID
         let target = MarketPriceTarget(
             priceKey: key,
-            game: card.game,
+            game: game,
             printingID: printingID,
             variantID: variant?.id,
             itemKind: .rawCard,
             // A collection record's resolved variant is the same exact
             // printing-and-finish identity as ProductIdentity's cache. Either
             // one takes precedence over a stamped mapping or a text search.
-            marketVariantID: recordedVariantID ?? identities.cachedVariantID(forKey: key),
-            lookupCandidates: Self.verifiedLookups(card: card, variant: variant),
+            marketVariantID: marketVariantID
+                ?? recordedVariantID
+                ?? identities.cachedVariantID(forKey: key),
+            lookupCandidates: lookupCandidates,
             currentAmount: nil,
             lastCheckedAt: nil
         )
@@ -91,7 +154,12 @@ final class PriceFallbackQuoteResolver {
             // An unresolved cached vendor id is not evidence that this exact
             // listing is absent. `directQuote` returns a failure in that case,
             // so Price Check preserves a prior quote.
-            return await directQuote(for: target, lookup: lookup)
+            return await directQuote(
+                for: target,
+                lookup: lookup,
+                identities: identities,
+                identityKey: key
+            )
         }
 
         // A previous definitive product mismatch is collection evidence, not a
@@ -100,7 +168,11 @@ final class PriceFallbackQuoteResolver {
             return .failed(.requestFailed)
         }
         guard let subject = Self.subject(
-            for: card,
+            game: game,
+            catalogID: catalogID,
+            name: name,
+            setName: setName,
+            cardNumber: cardNumber,
             pokemonPrintRun: pokemonPrintRun,
             vendorCardID: identities.cachedCardID(forKey: key)
         ) else {
@@ -113,6 +185,11 @@ final class PriceFallbackQuoteResolver {
             lane: .interactive
         )
         guard !Task.isCancelled else { return .failed(.cancelled) }
+        // The expensive search is also the mapping resolution. Persist it
+        // before returning the quote so the next Price Check or collection
+        // refresh can use a keyed batch request instead of searching again.
+        identities.record(outcome, forKey: key)
+        identities.save()
         switch outcome {
         case let .price(price, _, _):
             return .lookup(.price(price))
@@ -136,6 +213,21 @@ final class PriceFallbackQuoteResolver {
         verifiedLookups(catalogID: card.providerID, variant: variant)
     }
 
+    /// Direct provider identifiers avoid a paid name/set search. Stamped
+    /// Pokémon releases have an app-maintained mapping; Magic cards can carry
+    /// the same TCGplayer product id in Scryfall's purchase metadata.
+    nonisolated static func directLookups(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?
+    ) -> [JustTCGBatchLookup] {
+        var lookups = verifiedLookups(card: card, variant: variant)
+        if case let .magic(magic) = card,
+           let tcgplayerID = magic.tcgplayerID {
+            lookups.append(.tcgplayerID(String(tcgplayerID)))
+        }
+        return lookups
+    }
+
     nonisolated static func verifiedLookups(
         catalogID: String,
         variant: PhysicalVariant?
@@ -153,14 +245,34 @@ final class PriceFallbackQuoteResolver {
         pokemonPrintRun: PokemonPrintRun?,
         vendorCardID: String?
     ) -> ProductPriceSubject? {
-        guard !card.name.isEmpty, !card.cardNumber.isEmpty else { return nil }
-        return ProductPriceSubject(
+        subject(
             game: card.game,
             catalogID: card.providerID,
             name: card.name,
             setName: card.setName,
             cardNumber: card.cardNumber,
-            japaneseSetID: japaneseSetID(forCatalogCardID: card.providerID),
+            pokemonPrintRun: pokemonPrintRun,
+            vendorCardID: vendorCardID
+        )
+    }
+
+    nonisolated static func subject(
+        game: CardGame,
+        catalogID: String?,
+        name: String,
+        setName: String,
+        cardNumber: String,
+        pokemonPrintRun: PokemonPrintRun?,
+        vendorCardID: String?
+    ) -> ProductPriceSubject? {
+        guard !name.isEmpty, !cardNumber.isEmpty else { return nil }
+        return ProductPriceSubject(
+            game: game,
+            catalogID: catalogID,
+            name: name,
+            setName: setName,
+            cardNumber: cardNumber,
+            japaneseSetID: catalogID.flatMap(japaneseSetID(forCatalogCardID:)),
             pokemonPrintRun: pokemonPrintRun,
             vendorCardID: vendorCardID
         )
@@ -183,7 +295,9 @@ final class PriceFallbackQuoteResolver {
 
     private func directQuote(
         for target: MarketPriceTarget,
-        lookup: JustTCGBatchLookup
+        lookup: JustTCGBatchLookup,
+        identities: ProductIdentityStore,
+        identityKey: String
     ) async -> PriceFallbackQuoteResolution {
         do {
             let client = JustTCGV1Client(transport: transport)
@@ -200,7 +314,14 @@ final class PriceFallbackQuoteResolver {
                 owners: [target],
                 response: response
             ) {
-            case let .matched(_, variant):
+            case let .matched(card, variant):
+                identities.recordBatchResolution(
+                    forKey: identityKey,
+                    cardID: card.uuid ?? card.id,
+                    variantID: variant.variantId,
+                    at: .now
+                )
+                identities.save()
                 // A returned exact listing without a usable amount is not an
                 // exact-listing miss. Match collection refresh by preserving a
                 // prior quote instead of converting missing market data into a
@@ -221,6 +342,13 @@ final class PriceFallbackQuoteResolver {
                     )
                 )
             case .noExactListing:
+                if let card = Self.card(for: lookup, in: response) {
+                    identities.record(
+                        .noListingForVariant(vendorCardID: card.uuid ?? card.id),
+                        forKey: identityKey
+                    )
+                    identities.save()
+                }
                 return .lookup(.unavailable(.justTCG))
             case .unresolved:
                 return .failed(.requestFailed)
@@ -240,6 +368,28 @@ final class PriceFallbackQuoteResolver {
             }
         } catch {
             return .failed(.requestFailed)
+        }
+    }
+
+    private static func card(
+        for lookup: JustTCGBatchLookup,
+        in response: JustTCGBatchResponse
+    ) -> JustTCGCard? {
+        switch lookup {
+        case let .cardID(id):
+            return response.data.first { $0.uuid == id || $0.id == id }
+        case let .tcgplayerID(id):
+            return response.data.first { $0.tcgplayerId == id }
+        case let .tcgplayerSKUID(id):
+            return response.data.first { card in
+                card.variants?.contains { $0.tcgplayerSkuId == id } == true
+            }
+        case let .scryfallID(id):
+            return response.data.first { $0.scryfallId == id }
+        case let .mtgjsonID(id):
+            return response.data.first { $0.mtgjsonId == id }
+        case .variantID:
+            return nil
         }
     }
 }

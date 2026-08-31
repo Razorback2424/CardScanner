@@ -129,10 +129,7 @@ struct PokemonTCGAPIService: Sendable {
         timeout: TimeInterval = 4
     ) async throws -> PokemonTCGAPICard? {
         let number = CatalogIdentityNormalization.localNumber(cardNumber)
-        // Card ids retain the printed zero padding (for example `sv10-085`),
-        // while identity comparison below intentionally ignores that padding.
-        let providerNumber = cardNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-        let providerID = "\(setID)-\(providerNumber)"
+        let providerID = Self.providerID(setID: setID, cardNumber: cardNumber)
         guard let encodedID = providerID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "https://api.pokemontcg.io/v2/cards/\(encodedID)") else {
             throw TCGdexError.invalidURL
@@ -141,16 +138,71 @@ struct PokemonTCGAPIService: Sendable {
         request.timeoutInterval = timeout
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse else { throw TCGdexError.badResponse }
-        if http.statusCode == 404 { return nil }
-        guard (200..<300).contains(http.statusCode) else { throw TCGdexError.badResponse }
+
+        guard let data = try await Self.dataRetryingTransientFailures(for: request) else {
+            return nil
+        }
         let card = try JSONDecoder().decode(PokemonTCGAPISingleResponse.self, from: data).data
         guard CatalogIdentityNormalization.localNumber(card.number) == number,
               card.set.id?.caseInsensitiveCompare(setID) == .orderedSame else {
             return nil
         }
         return card
+    }
+
+    /// This provider's card ids use the *unpadded* local number: `me1-25` is a
+    /// card and `me1-025` is a 404.
+    ///
+    /// TCGdex hands modern cards a zero-padded `localId`, and the scanner passes
+    /// that straight through. Building the id from the printed number therefore
+    /// asked for a record that cannot exist, so the fallback silently never
+    /// fired for exactly the cards most likely to be scanned.
+    static func providerID(setID: String, cardNumber: String) -> String {
+        "\(setID)-\(CatalogIdentityNormalization.localNumber(cardNumber))"
+    }
+
+    /// Attempt budget for one fallback lookup. This provider returned 5xx on
+    /// roughly two of every five requests when measured, and the same id
+    /// alternated 200 and 500 seconds apart — so one attempt throws away a
+    /// provider that usually works on the next try. Three attempts and short
+    /// backoffs keep the worst case inside a few seconds, because the fallback
+    /// runs while someone is holding a card in front of the camera.
+    private static let retryBackoff: [Duration] = [.milliseconds(250), .milliseconds(750)]
+
+    /// The response body, or `nil` when the provider says 404.
+    ///
+    /// 404 is terminal and never retried: a definitive "this provider does not
+    /// have that card" must not be churned into a looser answer. Only 5xx and
+    /// transport errors are worth a second look.
+    private static func dataRetryingTransientFailures(
+        for request: URLRequest
+    ) async throws -> Data? {
+        var lastError: Error = TCGdexError.badResponse
+
+        for attempt in 0...retryBackoff.count {
+            if attempt > 0 {
+                try await Task.sleep(for: retryBackoff[attempt - 1])
+            }
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                guard let http = response as? HTTPURLResponse else {
+                    throw TCGdexError.badResponse
+                }
+                if http.statusCode == 404 { return nil }
+                guard (200..<300).contains(http.statusCode) else {
+                    throw TCGdexError.badResponse
+                }
+                return data
+            } catch {
+                // Cancellation is the caller withdrawing the question, not the
+                // provider failing to answer it.
+                if error is CancellationError { throw error }
+                if Task.isCancelled { throw error }
+                lastError = error
+            }
+        }
+
+        throw lastError
     }
 
     func fetchArtwork(
