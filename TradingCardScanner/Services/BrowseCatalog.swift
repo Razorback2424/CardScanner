@@ -506,98 +506,93 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 from: rows,
                 excluding: pocketIDs
             )
-            let providers = try await fetchProviderSets(baseSets)
-            guard !Task.isCancelled else { return }
+            let orderedSets = baseSets.sorted(by: refreshOrder)
+            var workingSnapshot = pokemonSnapshot
 
-            let existing = pokemonSnapshot
-            var entries: [PokemonChecklistSnapshotEntry] = []
-            var checklists: [String: [CatalogCardSummary]] = [:]
-            for (baseSet, provider) in providers {
-                pokemonSetDetails[provider.id.lowercased()] = provider
-                let fingerprint = PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
-                let priorEntries = existing?.manifest.entries.filter {
-                    $0.providerID.caseInsensitiveCompare(baseSet.providerID) == .orderedSame
-                        && $0.providerFingerprint == fingerprint
-                } ?? []
-                let providerSets: [PokemonMasterSetChecklistBuilder.BuiltSet]
-                let expectedSetCount = PokemonMasterSetDefinition.virtualSets(
-                    baseSet,
-                    cardCount: provider.cardCount
-                ).count
-                if priorEntries.count == expectedSetCount,
-                   priorEntries.allSatisfy({ existing?.checklist(for: $0.set.catalogID) != nil }) {
-                    for entry in priorEntries {
-                        guard let cards = existing?.checklist(for: entry.set.catalogID) else { continue }
-                        entries.append(entry)
-                        checklists[entry.set.id] = cards
+            // Each iteration is its own commit. Set-level crawling is
+            // intentionally sequential: it preserves deterministic release
+            // ordering and makes each manifest update the only writer while
+            // still keeping the card-detail stage 8-wide within a set. This is
+            // the deliberate incrementality trade-off for refreshes.
+            for baseSet in orderedSets {
+                guard !Task.isCancelled else { return }
+                do {
+                    let provider = try await pokemonTransport.fetchSet(id: baseSet.providerID)
+                    pokemonSetDetails[provider.id.lowercased()] = provider
+                    let fingerprint = PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
+                    let priorEntries = workingSnapshot?.manifest.entries.filter {
+                        $0.providerID.caseInsensitiveCompare(baseSet.providerID) == .orderedSame
+                            && $0.providerFingerprint == fingerprint
+                    } ?? []
+                    let expectedSetCount = PokemonMasterSetDefinition.virtualSets(
+                        baseSet,
+                        cardCount: provider.cardCount
+                    ).count
+                    if priorEntries.count == expectedSetCount,
+                       priorEntries.allSatisfy({
+                           workingSnapshot?.checklist(for: $0.set.catalogID) != nil
+                       }) {
+                        continue
                     }
+
+                    let details = try await pokemonCardDetails(for: provider)
+                    let providerSets = try PokemonMasterSetChecklistBuilder.build(
+                        providerSet: provider,
+                        baseSet: baseSet,
+                        cardDetails: details
+                    )
+                    guard !providerSets.isEmpty else { continue }
+                    let setSnapshot = PokemonChecklistSnapshot.from(builtSets: providerSets)
+
+                    // This is the per-set commit point. The store writes all
+                    // resource files before replacing its manifest.
+                    try await checklistStore.publish(setSnapshot)
+                    guard !Task.isCancelled else { return }
+
+                    workingSnapshot = PokemonChecklistSnapshot.merged(
+                        bundled: workingSnapshot,
+                        downloaded: setSnapshot
+                    )
+                    pokemonSnapshot = workingSnapshot
+                    pokemonSnapshotLoaded = workingSnapshot != nil
+                    if let snapshot = workingSnapshot {
+                        setCache[.pokemon] = snapshot.sets
+                        installPokemonReleaseOrder(from: snapshot.sets, game: .pokemon)
+                    }
+                } catch is CancellationError {
+                    return
+                } catch {
+                    // A refresh is opportunistic. One malformed or unavailable
+                    // set must not prevent already completed sets from helping.
                     continue
                 }
-
-                let details = try await pokemonCardDetails(for: provider)
-                providerSets = try PokemonMasterSetChecklistBuilder.build(
-                    providerSet: provider,
-                    baseSet: baseSet,
-                    cardDetails: details
-                )
-                for value in providerSets {
-                    let resource = "sets/\(StableCatalogFingerprint.string(value.set.id + fingerprint)).json"
-                    let entry = PokemonChecklistSnapshotEntry(
-                        set: value.set,
-                        providerID: baseSet.providerID,
-                        providerFingerprint: fingerprint,
-                        resource: resource
-                    )
-                    entries.append(entry)
-                    checklists[value.set.id] = value.cards
-                }
             }
-
-            guard !entries.isEmpty, !Task.isCancelled else { return }
-            let manifest = PokemonChecklistSnapshotManifest(
-                schemaVersion: PokemonChecklistSnapshotVersion.schema,
-                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
-                generatedAt: .now,
-                directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(entries),
-                entries: entries
-            )
-            let snapshot = PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
-            // This is the commit point. The store writes all checklist files
-            // before its manifest; only then do we expose the new directory.
-            try await checklistStore.publish(snapshot)
-            guard !Task.isCancelled else { return }
-            pokemonSnapshot = snapshot
-            setCache[.pokemon] = snapshot.sets
-            installPokemonReleaseOrder(from: snapshot.sets, game: .pokemon)
         } catch is CancellationError {
             return
         } catch {
-            // A refresh is opportunistic. A failed build, malformed response,
-            // or timeout must leave the previous complete snapshot untouched.
+            // Directory failure is still all-or-nothing because there is no
+            // trustworthy set ordering or universe to crawl without it.
             return
         }
     }
 
-    private func fetchProviderSets(
-        _ baseSets: [CatalogSet]
-    ) async throws -> [(CatalogSet, TCGdexSetCatalog)] {
-        var iterator = baseSets.makeIterator()
-        var result: [(CatalogSet, TCGdexSetCatalog)] = []
-        try await withThrowingTaskGroup(of: (CatalogSet, TCGdexSetCatalog).self) { group in
-            // Three provider-set requests at a time keeps a refresh bounded
-            // even when the directory contains hundreds of expansions.
-            for _ in 0..<min(3, baseSets.count) {
-                guard let set = iterator.next() else { break }
-                group.addTask { (set, try await self.pokemonTransport.fetchSet(id: set.providerID)) }
-            }
-            while let value = try await group.next() {
-                result.append(value)
-                if let set = iterator.next() {
-                    group.addTask { (set, try await self.pokemonTransport.fetchSet(id: set.providerID)) }
-                }
-            }
+    private func refreshOrder(_ lhs: CatalogSet, _ rhs: CatalogSet) -> Bool {
+        let lhsModern = SetCodeMap.definitions.values.first {
+            $0.tcgdexSetID.caseInsensitiveCompare(lhs.providerID) == .orderedSame
         }
-        return result.sorted { $0.0.sortRank > $1.0.sortRank }
+        let rhsModern = SetCodeMap.definitions.values.first {
+            $0.tcgdexSetID.caseInsensitiveCompare(rhs.providerID) == .orderedSame
+        }
+        switch (lhsModern, rhsModern) {
+        case let (left?, right?):
+            return left.releaseIndex < right.releaseIndex
+        case (_?, nil):
+            return true
+        case (nil, _?):
+            return false
+        case (nil, nil):
+            return lhs.sortRank > rhs.sortRank
+        }
     }
 
     private func request(_ url: URL, scryfall: Bool = false) -> URLRequest {

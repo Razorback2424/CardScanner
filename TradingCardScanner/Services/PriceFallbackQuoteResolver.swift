@@ -11,6 +11,7 @@ enum PriceFallbackQuoteResolution: Equatable {
     case failed(Failure)
 
     enum Failure: Equatable {
+        case noExactPrice
         case disabled
         case missingCredentials
         case budgetReached(resetAt: Date)
@@ -163,9 +164,10 @@ final class PriceFallbackQuoteResolver {
         }
 
         // A previous definitive product mismatch is collection evidence, not a
-        // reason for Price Check to silently retry a broad search.
+        // reason for Price Check to silently retry a broad search. It remains a
+        // definitive no-exact-price answer, not a provider outage.
         guard identities.needsResolution(forKey: key) else {
-            return .failed(.requestFailed)
+            return .failed(.noExactPrice)
         }
         guard let subject = Self.subject(
             game: game,
@@ -195,7 +197,9 @@ final class PriceFallbackQuoteResolver {
             return .lookup(.price(price))
         case .noListingForVariant:
             return .lookup(.unavailable(.justTCG))
-        case .noProductMatch, .requestFailed:
+        case .noProductMatch:
+            return .failed(.noExactPrice)
+        case .requestFailed:
             return .failed(.requestFailed)
         case let .budgetReached(resetAt):
             return .failed(.budgetReached(resetAt: resetAt))

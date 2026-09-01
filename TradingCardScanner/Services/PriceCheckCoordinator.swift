@@ -1,9 +1,130 @@
 import Foundation
 import SwiftData
 
-enum PriceCheckRefreshOutcome {
+/// A refresh can fail for several user-visible reasons. Keeping these separate
+/// prevents a disabled fallback or an exhausted vendor budget from masquerading
+/// as proof that the card has no price.
+enum PriceCheckRefreshIssue: Equatable, Sendable {
+    case noExactPrice
+    case providerUnavailable
+    case fallbackDisabled
+    case fallbackUnconfigured
+    case rateLimited(retryAt: Date)
+    case budgetLimited(resetAt: Date)
+}
+
+/// The transient state of the Price Check sheet. `lastKnown` deliberately keeps
+/// its issue so a cached amount remains useful without being presented as current.
+enum PriceCheckQuoteState: Equatable, Sendable {
+    case checking
+    case current
+    case lastKnown(PriceCheckRefreshIssue)
+    case noExactPrice
+    case providerUnavailable
+    case fallbackDisabled
+    case fallbackUnconfigured
+    case rateLimited(retryAt: Date)
+    case budgetLimited(resetAt: Date)
+}
+
+enum PriceCheckRefreshOutcome: Equatable, Sendable {
     case quote(PriceLookup)
-    case failed(PriceFallbackQuoteResolution.Failure)
+    case failed(PriceCheckRefreshIssue)
+    /// Cancellation is an internal lifecycle result and is never presented as
+    /// provider failure. The view model ignores it when the request is stale.
+    case cancelled
+}
+
+/// Small seam around the network portion of Price Check. The live implementation
+/// preserves the provider order, while tests can exercise immediate/cached and
+/// cancellation behavior without a real network request.
+@MainActor
+protocol PriceCheckRefreshProvider {
+    func refresh(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceCheckRefreshOutcome
+}
+
+@MainActor
+private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
+    private let quoteService: PriceQuoteService
+    private let fallbackResolver: PriceFallbackQuoteResolver
+
+    init(
+        quoteService: PriceQuoteService = PriceQuoteService(),
+        fallbackResolver: PriceFallbackQuoteResolver
+    ) {
+        self.quoteService = quoteService
+        self.fallbackResolver = fallbackResolver
+    }
+
+    func refresh(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceCheckRefreshOutcome {
+        do {
+            let catalogQuote = try await quoteService.refresh(
+                card: card,
+                variant: variant,
+                pokemonPrintRun: pokemonPrintRun
+            )
+            if case .price = catalogQuote,
+               PriceCheckCoordinator.isUsableUSD(catalogQuote) {
+                return .quote(catalogQuote)
+            }
+            return await fallback(
+                card: card,
+                variant: variant,
+                pokemonPrintRun: pokemonPrintRun
+            )
+        } catch is CancellationError {
+            return .cancelled
+        } catch let error as URLError where error.code == .cancelled {
+            return .cancelled
+        } catch {
+            // JustTCG is deliberately sequential: it is consulted only after
+            // TCGdex fails or cannot provide a usable USD quote.
+            return await fallback(
+                card: card,
+                variant: variant,
+                pokemonPrintRun: pokemonPrintRun
+            )
+        }
+    }
+
+    private func fallback(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceCheckRefreshOutcome {
+        switch await fallbackResolver.resolve(
+            card: card,
+            variant: variant,
+            pokemonPrintRun: pokemonPrintRun
+        ) {
+        case let .lookup(.price(price)):
+            return .quote(.price(price))
+        case .lookup(.unavailable):
+            return .failed(.noExactPrice)
+        case .failed(.noExactPrice):
+            return .failed(.noExactPrice)
+        case .failed(.disabled):
+            return .failed(.fallbackDisabled)
+        case .failed(.missingCredentials):
+            return .failed(.fallbackUnconfigured)
+        case let .failed(.budgetReached(resetAt)):
+            return .failed(.budgetLimited(resetAt: resetAt))
+        case let .failed(.rateLimited(retryAt)):
+            return .failed(.rateLimited(retryAt: retryAt))
+        case .failed(.requestFailed):
+            return .failed(.providerUnavailable)
+        case .failed(.cancelled):
+            return .cancelled
+        }
+    }
 }
 
 /// The non-collection destination for a resolved scan. It owns only reference
@@ -12,13 +133,17 @@ enum PriceCheckRefreshOutcome {
 final class PriceCheckCoordinator {
     private let cache: QuoteCache
     private let collectionPrices: PriceStore
-    private let quoteService = PriceQuoteService()
-    private let fallbackResolver: PriceFallbackQuoteResolver
+    private let refreshProvider: PriceCheckRefreshProvider
 
-    init(context: ModelContext) {
+    init(
+        context: ModelContext,
+        refreshProvider: PriceCheckRefreshProvider? = nil
+    ) {
         cache = QuoteCache(context: context)
         collectionPrices = PriceStore(context: context)
-        fallbackResolver = PriceFallbackQuoteResolver(context: context)
+        let fallbackResolver = PriceFallbackQuoteResolver(context: context)
+        self.refreshProvider = refreshProvider
+            ?? LivePriceCheckRefreshProvider(fallbackResolver: fallbackResolver)
     }
 
     func present(_ resolvedScan: ResolvedScan) -> PriceCheckResult {
@@ -31,7 +156,16 @@ final class PriceCheckCoordinator {
 
         if Self.isUsableUSD(catalogQuote) {
             _ = cache.store(catalogQuote, game: key.game, printingID: key.printingID, variantID: key.variantID)
-            return PriceCheckResult(resolvedScan: resolvedScan, quote: catalogQuote, checkedAt: .now)
+            return PriceCheckResult(
+                resolvedScan: resolvedScan,
+                quote: catalogQuote,
+                checkedAt: .now,
+                quoteState: .current,
+                // This quote came from the successful provider response that
+                // resolved the scan. A second forced request would only add
+                // latency and could turn a fresh quote into a false outage.
+                shouldAutoRefresh: false
+            )
         }
 
         // Initial presentation is read-only with respect to collection pricing:
@@ -47,12 +181,14 @@ final class PriceCheckCoordinator {
             return PriceCheckResult(
                 resolvedScan: resolvedScan,
                 quote: .price(local.price),
-                checkedAt: local.retrievedAt
+                checkedAt: local.retrievedAt,
+                quoteState: .current
             )
         }
 
         // A non-USD catalog amount is useful to the collection, but is not a
-        // completed Price Check quote. Do not force a market call on present.
+        // completed USD Price Check quote. The view model presents this state
+        // immediately and schedules the one permitted background refresh.
         let source: PriceSource?
         switch catalogQuote {
         case let .unavailable(provider): source = provider
@@ -61,55 +197,31 @@ final class PriceCheckCoordinator {
         return PriceCheckResult(
             resolvedScan: resolvedScan,
             quote: .unavailable(source),
-            checkedAt: .now
+            checkedAt: .now,
+            quoteState: .checking
         )
     }
 
     func refresh(_ result: PriceCheckResult) async -> PriceCheckRefreshOutcome {
-        let resolvedScan = result.resolvedScan
-        let key = quoteKey(for: resolvedScan)
-        let catalogQuote: PriceLookup
-        do {
-            catalogQuote = try await quoteService.refresh(
-                card: result.card,
-                variant: result.resolved.variant,
-                pokemonPrintRun: result.pokemonPrintRun
-            )
-        } catch is CancellationError {
-            return .failed(.cancelled)
-        } catch {
-            // TCGdex being unavailable is exactly the case the configured
-            // JustTCG path is meant to cover. Do not discard the fallback merely
-            // because the primary catalog request threw before returning a quote.
-            switch await fallbackResolver.resolve(
-                card: result.card,
-                variant: result.resolved.variant,
-                pokemonPrintRun: result.pokemonPrintRun
-            ) {
-            case let .lookup(quote):
-                _ = cache.store(quote, game: key.game, printingID: key.printingID, variantID: key.variantID)
-                return .quote(quote)
-            case let .failed(reason):
-                return .failed(reason)
-            }
-        }
-
-        if Self.isUsableUSD(catalogQuote) {
-            _ = cache.store(catalogQuote, game: key.game, printingID: key.printingID, variantID: key.variantID)
-            return .quote(catalogQuote)
-        }
-
-        switch await fallbackResolver.resolve(
+        let outcome = await refreshProvider.refresh(
             card: result.card,
             variant: result.resolved.variant,
             pokemonPrintRun: result.pokemonPrintRun
-        ) {
-        case let .lookup(quote):
-            _ = cache.store(quote, game: key.game, printingID: key.printingID, variantID: key.variantID)
-            return .quote(quote)
-        case let .failed(reason):
-            return .failed(reason)
+        )
+        if case let .quote(quote) = outcome,
+           case .price = quote {
+            let key = quoteKey(for: result.resolvedScan)
+            _ = cache.store(
+                quote,
+                game: key.game,
+                printingID: key.printingID,
+                variantID: key.variantID
+            )
         }
+        if case .quote(.unavailable) = outcome {
+            return .failed(.noExactPrice)
+        }
+        return outcome
     }
 
     func recordRefreshFailure(for result: PriceCheckResult) {
@@ -203,7 +315,7 @@ final class PriceCheckCoordinator {
         )
     }
 
-    private static func isUsableUSD(_ quote: PriceLookup) -> Bool {
+    static func isUsableUSD(_ quote: PriceLookup) -> Bool {
         guard case let .price(price) = quote else { return false }
         return price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame
             && Money(rounding: price.unitMarketPriceUSD) != nil

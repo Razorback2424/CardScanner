@@ -179,11 +179,9 @@ enum CollectionCandidateRoutingPolicy {
     }
 }
 
-/// The held-card offer is allowed to name a previously committed presentation,
-/// but it may not become actionable for an encounter that has not committed yet
-/// unless that encounter is a re-encounter of the same suppression key. The
-/// latter is the intentional fallback for identical cards whose spatial exit
-/// evidence was lost between presentations.
+/// The held-card offer is allowed to name a committed presentation, but it may
+/// not become actionable for an encounter that has not committed yet. This keeps
+/// the prompt from racing the identification that makes it meaningful.
 struct HeldDuplicatePublicationHistoryEntry: Equatable, Sendable {
     let committed: CommittedSessionScan
     let suppressionKey: ScanSuppressionKey
@@ -204,17 +202,16 @@ enum HeldDuplicateOfferPublicationPolicy {
         encounterID: UUID,
         history: [HeldDuplicatePublicationHistoryEntry]
     ) -> HeldDuplicateOfferPublicationDecision {
-        if let current = history.last(where: { $0.committed.encounterID == encounterID }) {
-            return current.suppressionKey == suppressionKey
-                ? .publish(previous: current)
-                : .suppress
+        // A same-key historical commit is not enough to make the current
+        // encounter actionable. The card that owns this latch signal must have
+        // committed first; otherwise the prompt can race its own identification.
+        guard let current = history.last(where: { $0.committed.encounterID == encounterID }) else {
+            return .deferUntilCommit
         }
-
-        if let prior = history.last(where: { $0.suppressionKey == suppressionKey }) {
-            return .publish(previous: prior)
+        if current.suppressionKey == suppressionKey {
+            return .publish(previous: current)
         }
-
-        return .deferUntilCommit
+        return .suppress
     }
 }
 
@@ -301,12 +298,21 @@ struct PriceCheckResult: Identifiable {
     let resolvedScan: ResolvedScan
     var quote: PriceLookup
     var checkedAt: Date
+    var quoteState: PriceCheckQuoteState = .checking
+    /// Presentation state only. The coordinator never starts work by itself so
+    /// this flag lets the view model start exactly one refresh for this result.
+    var shouldAutoRefresh = true
     var refreshFailed = false
     var isRefreshing = false
 
     var card: IdentifiedCard { resolvedScan.card }
     var resolved: ResolvedVariant { resolvedScan.resolved }
     var pokemonPrintRun: PokemonPrintRun? { resolvedScan.pokemonPrintRun }
+
+    var hasUsableAmount: Bool {
+        guard case let .price(price) = quote else { return false }
+        return Money(rounding: price.unitMarketPriceUSD) != nil
+    }
 
     var display: PriceDisplay {
         switch quote {
@@ -617,6 +623,7 @@ final class ScannerViewModel: ObservableObject {
     private var activeIdentificationRequestID: UUID?
     private var resolutionTask: Task<Void, Never>?
     private var quoteRefreshTask: Task<Void, Never>?
+    private var activeQuoteRefreshID: UUID?
     private var scanGeneration = 0
     /// Proofs arrive independently of catalog resolution. A provisional proof
     /// is held by encounter id until its successful commit can associate it with
@@ -768,6 +775,9 @@ final class ScannerViewModel: ObservableObject {
         priceCheckCoordinator = PriceCheckCoordinator(context: context)
         fallbackQuoteResolver = PriceFallbackQuoteResolver(context: context)
         feedback.prepare()
+        // Decode the merged Pokémon checklist and resolved-card cache before
+        // the first confirmed frame needs either one.
+        Task { await catalog.prewarm() }
         scanner.start()
 
         // Magic's OCR vocabulary is its set directory, so the compiled-in
@@ -780,17 +790,12 @@ final class ScannerViewModel: ObservableObject {
 
     func viewDisappeared() {
         invalidatePendingScan()
-        quoteRefreshTask?.cancel()
         scanner.stop()
     }
 
     func scenePhaseChanged(isActive: Bool) {
         guard !isActive else { return }
         invalidatePendingScan()
-        quoteRefreshTask?.cancel()
-        if priceCheckResult?.isRefreshing == true {
-            priceCheckResult?.isRefreshing = false
-        }
     }
 
     private func cameraInterruptionStarted() {
@@ -812,7 +817,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func dismissPriceCheckResult() {
-        quoteRefreshTask?.cancel()
+        cancelPriceCheckRefresh()
         priceCheckResult = nil
         feedback.prepare()
         resumeRecognitionIfPossible()
@@ -835,6 +840,7 @@ final class ScannerViewModel: ObservableObject {
         // Existing completions are allowed to finish their network work but can
         // no longer affect any UI or destination.
         scanGeneration += 1
+        cancelPriceCheckRefresh()
         identificationTask?.cancel()
         activeIdentificationRequestID = nil
         isProcessingIdentification = false
@@ -887,8 +893,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     /// Turns the latch's one-time held signal into a nonblocking offer only
-    /// after the current encounter is acknowledged, or when it is a safe
-    /// same-key re-encounter fallback against an older committed presentation.
+    /// after the current encounter is acknowledged and the identification
+    /// pipeline is idle. An older same-key presentation is never enough on its
+    /// own because it could belong to an encounter still being resolved.
     /// The offer is a UI affordance; it does not itself change scanner state or
     /// collection quantity.
     private func offerHeldDuplicate(for identifier: ScanIdentifier, encounterID: UUID?) {
@@ -950,7 +957,9 @@ final class ScannerViewModel: ObservableObject {
               pendingChoice == nil,
               pendingPrintRunChoice == nil,
               pendingIdentityChoice == nil,
-              pendingDuplicateConfirmation == nil else { return }
+              pendingDuplicateConfirmation == nil,
+              identificationQueue.isEmpty,
+              !isProcessingIdentification else { return }
 
         heldDuplicateOffer = HeldDuplicateOffer(
             offerID: UUID(),
@@ -1406,6 +1415,7 @@ final class ScannerViewModel: ObservableObject {
             self.isProcessingIdentification = false
             self.identificationTask = nil
             self.activeIdentificationRequestID = nil
+            self.drainDeferredHeldDuplicateOfferIfPossible()
             self.processNextIdentificationIfPossible()
         }
     }
@@ -1613,17 +1623,11 @@ final class ScannerViewModel: ObservableObject {
         )
         successCount += 1
 
-        if let deferred = deferredHeldDuplicateOffer,
-           deferred.encounterID == candidate.encounterID,
-           deferred.identifier.suppressionKey == candidate.identifier.suppressionKey {
-            deferredHeldDuplicateOffer = nil
-            publishHeldDuplicateOffer(
-                for: deferred.identifier,
-                encounterID: deferred.encounterID,
-                previous: committed,
-                previousScan: scan
-            )
-        }
+        // The append is the persistence acknowledgement. The actual offer is
+        // drained once the identification state also becomes idle; an automatic
+        // commit reaches this method while `isProcessingIdentification` is still
+        // true, and the publication guard must remain effective there too.
+        drainDeferredHeldDuplicateOfferIfPossible()
 
         showReceipt(
             ScanReceipt(
@@ -1637,6 +1641,31 @@ final class ScannerViewModel: ObservableObject {
             )
         )
         feedback.added()
+    }
+
+    private func drainDeferredHeldDuplicateOfferIfPossible() {
+        guard identificationQueue.isEmpty,
+              !isProcessingIdentification,
+              pendingChoice == nil,
+              pendingPrintRunChoice == nil,
+              pendingIdentityChoice == nil,
+              pendingDuplicateConfirmation == nil,
+              let deferred = deferredHeldDuplicateOffer,
+              let committed = committedSessionHistory.last(where: {
+                  $0.encounterID == deferred.encounterID
+              }),
+              let scan = recent.first(where: { $0.id == committed.id }),
+              scan.identifier.suppressionKey == deferred.identifier.suppressionKey else {
+            return
+        }
+
+        deferredHeldDuplicateOffer = nil
+        publishHeldDuplicateOffer(
+            for: deferred.identifier,
+            encounterID: deferred.encounterID,
+            previous: committed,
+            previousScan: scan
+        )
     }
 
     enum CollectionCommitAuthorization {
@@ -1703,9 +1732,9 @@ final class ScannerViewModel: ObservableObject {
     /// detached authorization is matched to the exact previous committed
     /// presentation and the resolved canonical identity. This deliberately
     /// resolves by stable scan ID rather than `committedSessionHistory.last`:
-    /// the publication policy may authorize a safe same-key fallback against a
-    /// non-newest presentation, while foreign confirmations still terminate
-    /// the permit before this guard can authorize anything.
+    /// the detached permit owns its original presentation, while foreign
+    /// confirmations still terminate the permit before this guard can authorize
+    /// anything.
     private func routeHeldRepeatCandidate(
         _ candidate: CollectionCommitCandidate,
         authorizationID: UUID
@@ -1872,43 +1901,106 @@ final class ScannerViewModel: ObservableObject {
     /// The Price Check coordinator intentionally has no `CollectionStore`.
     private func presentPriceCheck(_ resolvedScan: ResolvedScan) {
         guard let priceCheckCoordinator, isCurrent(resolvedScan.request) else { return }
+        cancelPriceCheckRefresh()
         pendingChoice = nil
         pendingPrintRunChoice = nil
         pendingIdentityChoice = nil
         scanner.pauseRecognition()
-        priceCheckResult = priceCheckCoordinator.present(resolvedScan)
+        let result = priceCheckCoordinator.present(resolvedScan)
+        priceCheckResult = result
+        if result.shouldAutoRefresh {
+            refreshPriceCheckQuote()
+        }
     }
 
     func refreshPriceCheckQuote() {
         guard var result = priceCheckResult, !result.isRefreshing else { return }
         result.isRefreshing = true
+        result.shouldAutoRefresh = false
+        result.quoteState = .checking
         result.refreshFailed = false
         priceCheckResult = result
         let resultID = result.id
+        let refreshID = UUID()
+        activeQuoteRefreshID = refreshID
 
         quoteRefreshTask?.cancel()
         quoteRefreshTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            guard let priceCheckCoordinator = self.priceCheckCoordinator else { return }
+            defer {
+                if self.activeQuoteRefreshID == refreshID {
+                    self.quoteRefreshTask = nil
+                }
+            }
+            guard let priceCheckCoordinator = self.priceCheckCoordinator else {
+                guard self.activeQuoteRefreshID == refreshID,
+                      var latest = self.priceCheckResult,
+                      latest.id == resultID else { return }
+                latest.isRefreshing = false
+                latest.refreshFailed = true
+                latest.quoteState = latest.hasUsableAmount
+                    ? .lastKnown(.providerUnavailable)
+                    : .providerUnavailable
+                self.priceCheckResult = latest
+                return
+            }
             switch await priceCheckCoordinator.refresh(result) {
             case let .quote(refreshed):
                 guard !Task.isCancelled,
+                      self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
                 latest.quote = refreshed
                 latest.checkedAt = .now
                 latest.isRefreshing = false
                 latest.refreshFailed = false
+                latest.quoteState = .current
                 self.priceCheckResult = latest
-            case .failed(_):
+            case let .failed(issue):
                 guard !Task.isCancelled,
+                      self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
                 priceCheckCoordinator.recordRefreshFailure(for: latest)
+                latest.checkedAt = .now
                 latest.isRefreshing = false
                 latest.refreshFailed = true
+                latest.quoteState = latest.hasUsableAmount
+                    ? .lastKnown(issue)
+                    : Self.quoteState(for: issue)
+                self.priceCheckResult = latest
+            case .cancelled:
+                guard !Task.isCancelled,
+                      self.activeQuoteRefreshID == refreshID,
+                      var latest = self.priceCheckResult,
+                      latest.id == resultID else { return }
+                latest.isRefreshing = false
+                latest.refreshFailed = false
+                latest.quoteState = latest.hasUsableAmount ? .current : .checking
                 self.priceCheckResult = latest
             }
+        }
+    }
+
+    private func cancelPriceCheckRefresh() {
+        quoteRefreshTask?.cancel()
+        quoteRefreshTask = nil
+        activeQuoteRefreshID = nil
+        guard var result = priceCheckResult, result.isRefreshing else { return }
+        result.isRefreshing = false
+        result.refreshFailed = false
+        result.quoteState = result.hasUsableAmount ? .current : .checking
+        priceCheckResult = result
+    }
+
+    private static func quoteState(for issue: PriceCheckRefreshIssue) -> PriceCheckQuoteState {
+        switch issue {
+        case .noExactPrice: return .noExactPrice
+        case .providerUnavailable: return .providerUnavailable
+        case .fallbackDisabled: return .fallbackDisabled
+        case .fallbackUnconfigured: return .fallbackUnconfigured
+        case let .rateLimited(retryAt): return .rateLimited(retryAt: retryAt)
+        case let .budgetLimited(resetAt): return .budgetLimited(resetAt: resetAt)
         }
     }
 

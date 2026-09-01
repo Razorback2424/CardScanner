@@ -209,6 +209,18 @@ final class PriceRefreshController: ObservableObject {
     /// one retry, and the cost of being slow is minutes of timeouts.
     private static let unreachableThreshold = maxConcurrentRequests
 
+    /// The pass currently running, if any.
+    ///
+    /// Unstructured on purpose. A refresh is owned by this controller, not by
+    /// whichever view happened to start it: the automatic pass is kicked off
+    /// from a `task(id:)` whose identity is derived from the collection and its
+    /// price records, which is exactly what the refresh writes. Running the work
+    /// as a child of that task made every saved batch cancel the pass that
+    /// produced it, silently, partway through. Cancellation is still available
+    /// — `cancelRefresh()` — but it now means "the user left", which is the only
+    /// thing it was ever supposed to mean.
+    private var activeRefresh: Task<Void, Never>?
+
     private var isRefreshing: Bool {
         if case .refreshing = status { return true }
         return false
@@ -265,7 +277,35 @@ final class PriceRefreshController: ObservableObject {
 
     /// - Parameter targets: already in display order, so whatever the user is
     ///   looking at becomes fresh first.
+    ///
+    /// A second caller arriving while a pass is already running waits for that
+    /// pass instead of returning. Returning was a silent no-op: pulling to
+    /// refresh during the automatic startup check looked like a button that did
+    /// nothing.
     func refresh(_ targets: [PriceTarget], store: PriceStore) async {
+        if let activeRefresh {
+            await activeRefresh.value
+            return
+        }
+        guard !targets.isEmpty else { return }
+
+        let task = Task { @MainActor [weak self] in
+            guard let self else { return }
+            await self.performRefresh(targets, store: store)
+        }
+        activeRefresh = task
+        await task.value
+        activeRefresh = nil
+    }
+
+    /// Stops the pass in progress. The only legitimate reason is that the work
+    /// has genuinely been abandoned — never that its own writes changed the
+    /// data some view is keyed on.
+    func cancelRefresh() {
+        activeRefresh?.cancel()
+    }
+
+    private func performRefresh(_ targets: [PriceTarget], store: PriceStore) async {
         guard !isRefreshing, !targets.isEmpty else { return }
 
         // A sealed box or a graded slab has no catalog identity to look up, so
@@ -427,7 +467,13 @@ final class PriceRefreshController: ObservableObject {
                         FallbackCandidate(target: $0, card: nil)
                     })
                     consecutiveUnreachable += 1
-                    if consecutiveUnreachable >= Self.unreachableThreshold {
+                    // Latched on `providerUnreachable`, not just on the
+                    // threshold. `cursor` stops advancing the moment the outage
+                    // is declared, so every one of the still in-flight replies
+                    // would otherwise sweep in the *same* untouched tail again
+                    // — up to `maxConcurrentRequests` copies of the remaining
+                    // queue, each costing a paid identity request below.
+                    if !providerUnreachable, consecutiveUnreachable >= Self.unreachableThreshold {
                         providerUnreachable = true
                         // The remaining queue has not been asked yet. Include it
                         // in this fallback pass instead of waiting for another
@@ -454,6 +500,15 @@ final class PriceRefreshController: ObservableObject {
                 }
                 completed += 1
                 status = .refreshing(completed: completed, total: order.count)
+
+                // Checkpoint per answered printing, the same way the fallback
+                // stage checkpoints per batch. A pass over a few hundred cards
+                // is minutes long, and holding all of it unsaved meant any
+                // unrelated `ModelContext.rollback` in that window — a scan or
+                // an import that failed and took the context back — discarded
+                // the whole refresh along with itself. A save here is free next
+                // to the network round trip that produced it.
+                store.save()
 
                 if cursor < order.count, !providerUnreachable, !wasCancelled, !Task.isCancelled {
                     let next = order[cursor]
@@ -596,6 +651,32 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
+    /// Collapses candidates that name the same priced thing, preserving the
+    /// order the refresh queued them in so the user still sees what they are
+    /// looking at priced first.
+    private static func collapsingDuplicates(
+        _ candidates: [FallbackCandidate]
+    ) -> [FallbackCandidate] {
+        var byKey: [String: FallbackCandidate] = [:]
+        var order: [String] = []
+        for candidate in candidates {
+            let key = ProductIdentity.key(
+                game: candidate.target.game,
+                printingID: candidate.target.printingID,
+                variantID: candidate.target.variantID
+            )
+            guard let existing = byKey[key] else {
+                byKey[key] = candidate
+                order.append(key)
+                continue
+            }
+            if existing.card == nil, candidate.card != nil {
+                byKey[key] = candidate
+            }
+        }
+        return order.compactMap { byKey[$0] }
+    }
+
     /// Ask the vendor about everything the catalog left unfinished.
     ///
     /// Returns how many cards it managed to price. Anything it cannot answer is
@@ -612,11 +693,19 @@ final class PriceRefreshController: ObservableObject {
             fallbackStatus = .idle
             return 0
         }
-        let eligibleCandidates = candidates.filter {
+        // One row can reach this pass by more than one route — its catalog
+        // request failed *and* it was swept in when the provider was declared
+        // unreachable. The batched stage collapses duplicates on its own, but
+        // the identity stage below is one paid request per candidate and does
+        // not, so they are collapsed here where it is still free. A candidate
+        // that carries catalog identity wins over one that does not: it can
+        // batch, while the bare one would have to pay for a search.
+        let deduplicatedCandidates = Self.collapsingDuplicates(candidates)
+        let eligibleCandidates = deduplicatedCandidates.filter {
             Self.permitsVendorWork(for: $0.target, usesFallback: usesPriceFallback)
         }
         guard !eligibleCandidates.isEmpty else {
-            fallbackStatus = .disabled(pending: candidates.count)
+            fallbackStatus = .disabled(pending: deduplicatedCandidates.count)
             return 0
         }
         guard PriceVendorCredentials.hasKey else {
@@ -1141,9 +1230,14 @@ final class PriceRefreshController: ObservableObject {
                     // wrong edition turns a priceable card into an unreachable
                     // one.
                     locale: CatalogIdentityNormalization.locale(forCatalogCardID: printing.printingID),
-                    ignoringCache: true,
-                    timeout: 2.5
+                    ignoringCache: true
                 )
+                // The direct provider id is the exact printing identity. Keep
+                // this guard beside the fetch so a malformed or redirected
+                // response cannot be used to value a different collection row.
+                guard card.id.caseInsensitiveCompare(printing.printingID) == .orderedSame else {
+                    return PriceFetchOutcome(printing: printing, result: .failed)
+                }
                 return PriceFetchOutcome(printing: printing, result: .card(.pokemon(card, setCode: printing.setCode)))
             case .magic:
                 let card = try await scryfall.fetchCard(id: printing.printingID, ignoringCache: true)

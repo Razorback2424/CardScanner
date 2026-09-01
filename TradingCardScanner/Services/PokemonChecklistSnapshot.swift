@@ -26,10 +26,29 @@ struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
     let set: CatalogSet
     let providerID: String
     let providerFingerprint: String
+    /// The provider's printed denominator. This is intentionally separate from
+    /// `set.cardCount`, which is the expanded master-set count used by Browse.
+    /// Older manifests omit it and historical matching falls back to the
+    /// authoritative modern set map when one exists.
+    let officialCount: Int?
     /// Relative to the bundled snapshot directory or the protected overlay
     /// directory. Keeping this in the manifest makes resource names opaque to
     /// the provider and lets a future schema change use a new path safely.
     let resource: String
+
+    init(
+        set: CatalogSet,
+        providerID: String,
+        providerFingerprint: String,
+        officialCount: Int? = nil,
+        resource: String
+    ) {
+        self.set = set
+        self.providerID = providerID
+        self.providerFingerprint = providerFingerprint
+        self.officialCount = officialCount
+        self.resource = resource
+    }
 }
 
 struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
@@ -90,6 +109,32 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
         )
         return PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
     }
+
+    static func from(
+        builtSets: [PokemonMasterSetChecklistBuilder.BuiltSet],
+        generatedAt: Date = .now
+    ) -> PokemonChecklistSnapshot {
+        let entries = builtSets.map { value in
+            PokemonChecklistSnapshotEntry(
+                set: value.set,
+                providerID: value.set.providerID,
+                providerFingerprint: value.providerFingerprint,
+                officialCount: value.officialCount,
+                resource: "sets/\(StableCatalogFingerprint.string(value.set.id + value.providerFingerprint)).json"
+            )
+        }
+        let manifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+            generatedAt: generatedAt,
+            directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(entries),
+            entries: entries
+        )
+        return PokemonChecklistSnapshot(
+            manifest: manifest,
+            checklists: Dictionary(uniqueKeysWithValues: builtSets.map { ($0.set.id, $0.cards) })
+        )
+    }
 }
 
 /// Shared expansion logic for the live catalog and the release snapshot
@@ -100,6 +145,7 @@ enum PokemonMasterSetChecklistBuilder {
         let set: CatalogSet
         let cards: [CatalogCardSummary]
         let providerFingerprint: String
+        let officialCount: Int?
     }
 
     static func baseSets(
@@ -182,7 +228,8 @@ enum PokemonMasterSetChecklistBuilder {
             return BuiltSet(
                 set: set,
                 cards: summaries,
-                providerFingerprint: providerFingerprint
+                providerFingerprint: providerFingerprint,
+                officialCount: providerSet.cardCount?.official
             )
         }
     }
@@ -288,12 +335,15 @@ enum PokemonMasterSetChecklistBuilder {
 
 enum PokemonChecklistError: LocalizedError, Sendable {
     case incompleteProviderSet(String)
+    case missingModernSetCoverage([String])
     case malformedSnapshot
 
     var errorDescription: String? {
         switch self {
         case let .incompleteProviderSet(id):
             return "The Pokémon set \(id) did not contain all of its card details."
+        case let .missingModernSetCoverage(ids):
+            return "The Pokémon checklist is missing modern sets: \(ids.sorted().joined(separator: ", "))."
         case .malformedSnapshot:
             return "The bundled Pokémon checklist is unavailable."
         }
@@ -369,6 +419,8 @@ private struct PokemonBrowseSeriesSets: Decodable {
 actor PokemonChecklistStore {
     private let root: URL
     private let bundledRoot: URL?
+    private var downloadedCache: PokemonChecklistSnapshot?
+    private var didLoadDownloadedCache = false
 
     init(root: URL? = nil, bundle: Bundle? = .main, bundledRoot: URL? = nil) {
         if let root {
@@ -390,7 +442,10 @@ actor PokemonChecklistStore {
     }
 
     func downloadedSnapshot() -> PokemonChecklistSnapshot? {
-        loadSnapshot(from: root)
+        guard !didLoadDownloadedCache else { return downloadedCache }
+        didLoadDownloadedCache = true
+        downloadedCache = loadSnapshot(from: root)
+        return downloadedCache
     }
 
     func bundledSnapshot() -> PokemonChecklistSnapshot? {
@@ -412,10 +467,69 @@ actor PokemonChecklistStore {
     /// final write. A cancellation or malformed response cannot replace the
     /// last manifest because the caller only invokes this after full building.
     func publish(_ snapshot: PokemonChecklistSnapshot) throws {
+        try publish(snapshot, mergingExisting: true, removingStaleResources: false)
+    }
+
+    /// Replaces a generated snapshot directory exactly. Release generation is
+    /// not an incremental refresh: stale resources from an older partial run
+    /// must not survive beside the new manifest.
+    func replace(_ snapshot: PokemonChecklistSnapshot) throws {
+        try publish(snapshot, mergingExisting: false, removingStaleResources: true)
+    }
+
+    private func publish(
+        _ snapshot: PokemonChecklistSnapshot,
+        mergingExisting: Bool,
+        removingStaleResources: Bool
+    ) throws {
+        guard snapshot.manifest.isSupported,
+              !snapshot.manifest.entries.isEmpty else {
+            throw PokemonChecklistError.malformedSnapshot
+        }
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
 
+        // A refresh is allowed to publish one set at a time. Always merge that
+        // partial overlay with the last valid manifest before writing so a
+        // later set failure can never erase earlier progress. The generator
+        // opts out because its output must be an exact directory replacement.
+        let merged: PokemonChecklistSnapshot?
+        if mergingExisting {
+            merged = PokemonChecklistSnapshot.merged(
+                bundled: downloadedSnapshot(),
+                downloaded: snapshot
+            )
+        } else {
+            merged = snapshot
+        }
+        guard let merged else {
+            throw PokemonChecklistError.malformedSnapshot
+        }
+        let mergedManifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: merged.manifest.schemaVersion,
+            rulesVersion: merged.manifest.rulesVersion,
+            generatedAt: snapshot.manifest.generatedAt,
+            directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(
+                merged.manifest.entries
+            ),
+            entries: merged.manifest.entries
+        )
+        let publishable = PokemonChecklistSnapshot(
+            manifest: mergedManifest,
+            checklists: merged.checklists
+        )
+
+        if removingStaleResources {
+            let resourceDirectory = root.appendingPathComponent("sets", isDirectory: true)
+            if FileManager.default.fileExists(atPath: resourceDirectory.path) {
+                try FileManager.default.removeItem(at: resourceDirectory)
+            }
+        }
+
+        // Only the incoming overlay needs new resource bytes. Existing
+        // resources are already protected by the old manifest and remain in
+        // place, which keeps a per-set refresh from rewriting the full catalog.
         for entry in snapshot.manifest.entries {
             guard let cards = snapshot.checklists[entry.set.id] else {
                 throw PokemonChecklistError.malformedSnapshot
@@ -429,7 +543,29 @@ actor PokemonChecklistStore {
         }
 
         let manifestURL = root.appendingPathComponent("manifest.json")
-        try encoder.encode(snapshot.manifest).write(to: manifestURL, options: .atomic)
+        try encoder.encode(publishable.manifest).write(to: manifestURL, options: .atomic)
+        if !removingStaleResources {
+            removeUnreferencedResources(keeping: Set(publishable.manifest.entries.map(\.resource)))
+        }
+        downloadedCache = publishable
+        didLoadDownloadedCache = true
+    }
+
+    /// Remove superseded set resources only after the new manifest is durable.
+    /// A failed refresh therefore leaves the previous manifest and all of its
+    /// files usable, while a successful refresh cannot grow the directory
+    /// forever as provider fingerprints change.
+    private func removeUnreferencedResources(keeping resources: Set<String>) {
+        let resourceDirectory = root.appendingPathComponent("sets", isDirectory: true)
+        guard let files = try? FileManager.default.contentsOfDirectory(
+            at: resourceDirectory,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        ) else { return }
+
+        for file in files where !resources.contains("sets/" + file.lastPathComponent) {
+            try? FileManager.default.removeItem(at: file)
+        }
     }
 
     private func loadSnapshot(from directory: URL) -> PokemonChecklistSnapshot? {
@@ -442,16 +578,28 @@ actor PokemonChecklistStore {
             return nil
         }
 
+        var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
         for entry in manifest.entries {
             let file = directory.appendingPathComponent(entry.resource)
             guard let data = try? Data(contentsOf: file),
                   let cards = try? decoder.decode([CatalogCardSummary].self, from: data) else {
-                return nil
+                // One damaged or interrupted resource must not hide the rest of
+                // an otherwise useful offline catalog.
+                continue
             }
+            validEntries.append(entry)
             checklists[entry.set.id] = cards
         }
-        return PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
+        guard !validEntries.isEmpty else { return nil }
+        let validManifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: manifest.schemaVersion,
+            rulesVersion: manifest.rulesVersion,
+            generatedAt: manifest.generatedAt,
+            directoryFingerprint: manifest.directoryFingerprint,
+            entries: validEntries
+        )
+        return PokemonChecklistSnapshot(manifest: validManifest, checklists: checklists)
     }
 }
 
@@ -461,7 +609,8 @@ actor PokemonChecklistStore {
 enum PokemonChecklistSnapshotGenerator {
     static func generate(
         transport: any PokemonBrowseTransport,
-        outputDirectory: URL
+        outputDirectory: URL,
+        setIDs: Set<String>? = nil
     ) async throws {
         let rows = try await transport.fetchSetDirectory()
         let pocketIDs = (try? await transport.fetchPocketSetIDs()) ?? []
@@ -469,13 +618,25 @@ enum PokemonChecklistSnapshotGenerator {
             from: rows,
             excluding: pocketIDs
         )
+        let normalizedFilter = setIDs?.map { $0.lowercased() }
+        let selectedSets = normalizedFilter.map { filter in
+            baseSets.filter { filter.contains($0.providerID.lowercased()) }
+        } ?? baseSets
         let built = try await buildAll(
-            baseSets: baseSets,
+            baseSets: selectedSets,
             transport: transport
         )
-        let snapshot = makeSnapshot(built)
+        let snapshot = PokemonChecklistSnapshot.from(builtSets: built)
+        let requiredIDs = normalizedFilter ?? SetCodeMap.definitions.values.map {
+            $0.tcgdexSetID.lowercased()
+        }
+        let builtIDs = Set(built.map { $0.set.providerID.lowercased() })
+        let missing = Set(requiredIDs).subtracting(builtIDs)
+        guard missing.isEmpty else {
+            throw PokemonChecklistError.missingModernSetCoverage(Array(missing))
+        }
         let store = PokemonChecklistStore(root: outputDirectory, bundle: nil)
-        try await store.publish(snapshot)
+        try await store.replace(snapshot)
     }
 
     private static func buildAll(
@@ -525,28 +686,5 @@ enum PokemonChecklistSnapshotGenerator {
         )
     }
 
-    private static func makeSnapshot(
-        _ built: [PokemonMasterSetChecklistBuilder.BuiltSet]
-    ) -> PokemonChecklistSnapshot {
-        let entries = built.map { value in
-            return PokemonChecklistSnapshotEntry(
-                set: value.set,
-                providerID: value.set.providerID,
-                providerFingerprint: value.providerFingerprint,
-                resource: "sets/\(StableCatalogFingerprint.string(value.set.id + value.providerFingerprint)).json"
-            )
-        }
-        let manifest = PokemonChecklistSnapshotManifest(
-            schemaVersion: PokemonChecklistSnapshotVersion.schema,
-            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
-            generatedAt: .now,
-            directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(entries),
-            entries: entries
-        )
-        return PokemonChecklistSnapshot(
-            manifest: manifest,
-            checklists: Dictionary(uniqueKeysWithValues: built.map { ($0.set.id, $0.cards) })
-        )
-    }
 }
 #endif

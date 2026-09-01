@@ -565,7 +565,7 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
-    func testHeldOfferUsesOlderSameKeyPresentationWhenSpatialExitWasLost() {
+    func testHeldOfferDefersEvenWhenAnOlderSameKeyPresentationExists() {
         let card = pokemon(223)
         let olderPresentation = heldPublicationEntry(
             identity: "pokemon:obf-223",
@@ -584,7 +584,7 @@ final class CardLatchTests: XCTestCase {
                 encounterID: UUID(),
                 history: [olderPresentation, unrelatedLatest]
             ),
-            .publish(previous: olderPresentation)
+            .deferUntilCommit
         )
     }
 

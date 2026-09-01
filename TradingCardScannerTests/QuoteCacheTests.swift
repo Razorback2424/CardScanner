@@ -90,4 +90,163 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(request.purpose, .priceCheck)
         XCTAssertEqual(request.generation, 4)
     }
+
+    func testPriceCheckUsesCachedQuoteImmediatelyAndKeepsItWhenRefreshFails() async throws {
+        let context = try makeContext()
+        let scan = priceCheckScan()
+        let cached = quote(12.34, at: Date(timeIntervalSince1970: 1_700_000_000))
+        QuoteCache(context: context).store(
+            cached,
+            game: .pokemon,
+            printingID: "sv10-085",
+            variantID: nil
+        )
+        let provider = StubPriceCheckProvider(outcome: .failed(.providerUnavailable))
+        let coordinator = PriceCheckCoordinator(context: context, refreshProvider: provider)
+
+        let result = coordinator.present(scan)
+        XCTAssertEqual(result.display.amount, 12.34)
+        XCTAssertEqual(result.quoteState, .current)
+        XCTAssertTrue(result.shouldAutoRefresh)
+        XCTAssertNotNil(QuoteCache(context: context).quote(
+            game: .pokemon,
+            printingID: "sv10-085",
+            variantID: nil
+        ))
+
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.providerUnavailable))
+        // The coordinator never replaces a cached quote on a failed refresh.
+        XCTAssertEqual(result.display.amount, 12.34)
+    }
+
+    func testPriceCheckDoesNotRefetchAQuoteAlreadyReturnedByCardResolution() throws {
+        let context = try makeContext()
+        let card = TCGdexPricing(
+            tcgplayer: TCGPlayerPricing(
+                updated: nil,
+                normal: TCGPlayerPricePoint(marketPrice: 3.21),
+                holo: nil,
+                holofoil: nil,
+                reverse: nil,
+                reverseHolofoil: nil
+            ),
+            cardmarket: nil
+        )
+        let result = PriceCheckCoordinator(context: context).present(
+            priceCheckScan(variant: .normal, pricing: card)
+        )
+
+        XCTAssertEqual(result.display.amount, 3.21)
+        XCTAssertEqual(result.quoteState, .current)
+        XCTAssertFalse(result.shouldAutoRefresh)
+    }
+
+    func testPriceCheckStartsWithoutUnavailableStateWhenNoQuoteExists() throws {
+        let context = try makeContext()
+        let coordinator = PriceCheckCoordinator(
+            context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .failed(.noExactPrice))
+        )
+
+        let result = coordinator.present(priceCheckScan())
+        XCTAssertNil(result.display.amount)
+        XCTAssertEqual(result.quoteState, .checking)
+        XCTAssertTrue(result.shouldAutoRefresh)
+    }
+
+    func testPriceCheckSuccessfulRefreshIsCachedAsReferenceEvidence() async throws {
+        let context = try makeContext()
+        let refreshedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let refreshed = quote(4.56, at: refreshedAt)
+        let provider = StubPriceCheckProvider(outcome: .quote(refreshed))
+        let coordinator = PriceCheckCoordinator(context: context, refreshProvider: provider)
+        let result = coordinator.present(priceCheckScan())
+
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .quote(refreshed))
+        let cached = QuoteCache(context: context).quote(
+            game: .pokemon,
+            printingID: "sv10-085",
+            variantID: nil
+        )
+        XCTAssertEqual(cached?.amount, 4.56)
+        XCTAssertEqual(cached?.retrievedAt, refreshedAt)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+    }
+
+    func testPriceCheckPassesTheResolvedVariantToItsRefreshProvider() async throws {
+        let context = try makeContext()
+        let provider = StubPriceCheckProvider(outcome: .failed(.noExactPrice))
+        let coordinator = PriceCheckCoordinator(context: context, refreshProvider: provider)
+        let result = coordinator.present(priceCheckScan(variant: .reverse))
+
+        _ = await coordinator.refresh(result)
+
+        XCTAssertEqual(provider.lastVariant, .reverse)
+        XCTAssertEqual(provider.calls, 1)
+    }
+
+    private func priceCheckScan(
+        variant: PhysicalVariant? = nil,
+        pricing: TCGdexPricing? = nil
+    ) -> ResolvedScan {
+        let card = TCGdexCard(
+            id: "sv10-085",
+            localId: "085",
+            name: "Example Pokémon",
+            image: nil,
+            rarity: nil,
+            set: TCGdexSetBrief(
+                id: "sv10",
+                name: "Destined Rivals",
+                cardCount: TCGdexCardCount(total: 182, official: 182)
+            ),
+            variants: nil,
+            pricing: pricing,
+            variantsDetailed: nil
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: 182,
+            setDefinition: PokemonSetDefinition(
+                printedCode: "DRI",
+                tcgdexSetID: "sv10",
+                officialCount: 182,
+                releaseIndex: 1
+            )
+        )
+        return ResolvedScan(
+            request: ScanRequest(identifier: identifier, purpose: .priceCheck, generation: 0),
+            card: .pokemon(card, setCode: "DRI"),
+            resolved: ResolvedVariant(
+                variant: variant,
+                resolution: variant == nil ? .catalogSilent : .userConfirmed
+            ),
+            pokemonPrintRun: nil,
+            options: variant.map { [$0] } ?? []
+        )
+    }
+}
+
+@MainActor
+private final class StubPriceCheckProvider: PriceCheckRefreshProvider {
+    let outcome: PriceCheckRefreshOutcome
+    private(set) var calls = 0
+    private(set) var lastVariant: PhysicalVariant?
+
+    init(outcome: PriceCheckRefreshOutcome) {
+        self.outcome = outcome
+    }
+
+    func refresh(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceCheckRefreshOutcome {
+        calls += 1
+        lastVariant = variant
+        return outcome
+    }
 }

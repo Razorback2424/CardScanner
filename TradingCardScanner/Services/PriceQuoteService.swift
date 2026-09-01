@@ -29,11 +29,29 @@ struct PriceQuoteService {
             do {
                 returned = try await tcgdex.fetchCard(
                     id: card.providerID,
-                    ignoringCache: true,
-                    timeout: 2.5
+                    locale: CatalogIdentityNormalization.locale(forCatalogCardID: card.providerID),
+                    ignoringCache: true
                 )
+                // A successfully decoded full-card response proves that the
+                // host answered, even if its identity does not match the card
+                // being refreshed. Record transport health before validating
+                // identity so a bad redirect cannot leave the circuit open.
                 await tcgdexCircuit.recordSuccess()
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let error as TCGdexError {
+                // A missing card, malformed identifier, or identity mismatch is
+                // definitive card evidence, not a host outage. Do not open the
+                // shared provider circuit for those results.
+                switch error {
+                case .cardNotFound, .identityMismatch, .invalidURL:
+                    throw error
+                case .badResponse:
+                    await tcgdexCircuit.recordFailure(.serverError)
+                    throw error
+                }
             } catch {
+                guard Self.shouldRecordCircuitFailure(for: error) else { throw error }
                 await tcgdexCircuit.recordFailure(
                     Self.failureKind(for: error)
                 )
@@ -61,6 +79,22 @@ struct PriceQuoteService {
     static func failureKind(for error: Error) -> TCGdexCircuitBreaker.Failure {
         if case TCGdexError.badResponse = error { return .serverError }
         return .unreachable
+    }
+
+    static func shouldRecordCircuitFailure(for error: Error) -> Bool {
+        if error is CancellationError { return false }
+        if let urlError = error as? URLError, urlError.code == .cancelled {
+            return false
+        }
+        if let tcgdexError = error as? TCGdexError {
+            switch tcgdexError {
+            case .cardNotFound, .identityMismatch, .invalidURL:
+                return false
+            case .badResponse:
+                return true
+            }
+        }
+        return true
     }
 
     /// A direct provider id is authoritative, but the redundant stable card

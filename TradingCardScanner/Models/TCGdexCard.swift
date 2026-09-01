@@ -317,7 +317,11 @@ struct TCGdexDetailedVariant: Decodable, Sendable {
     /// scarcer parallel.
     var physicalVariant: PhysicalVariant? {
         if let foil, !foil.trimmingCharacters(in: .whitespaces).isEmpty {
-            return PhysicalVariant.pokemonFoilPattern(foil)
+            // Offline checklist rows can carry an already-serialized named
+            // variant, including stamped releases. Resolve those ids first so
+            // the persisted identity keeps its human-readable label. Unknown
+            // foil patterns still pass through unchanged below.
+            return PhysicalVariant.named(foil) ?? PhysicalVariant.pokemonFoilPattern(foil)
         }
         switch type {
         case "normal": return .normal

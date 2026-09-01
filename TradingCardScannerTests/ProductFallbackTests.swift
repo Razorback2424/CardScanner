@@ -702,4 +702,12 @@ final class PokemonCatalogFallbackTests: XCTestCase {
             .unreachable
         )
     }
+
+    func testDefinitiveTCGdexCardEvidenceDoesNotTripTheOutageBreaker() {
+        XCTAssertFalse(PriceQuoteService.shouldRecordCircuitFailure(for: TCGdexError.cardNotFound))
+        XCTAssertFalse(PriceQuoteService.shouldRecordCircuitFailure(for: TCGdexError.identityMismatch))
+        XCTAssertFalse(PriceQuoteService.shouldRecordCircuitFailure(for: TCGdexError.invalidURL))
+        XCTAssertFalse(PriceQuoteService.shouldRecordCircuitFailure(for: CancellationError()))
+        XCTAssertTrue(PriceQuoteService.shouldRecordCircuitFailure(for: TCGdexError.badResponse))
+    }
 }

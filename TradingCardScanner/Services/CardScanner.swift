@@ -514,16 +514,39 @@ struct ScanAssistance: Equatable {
 /// Conservative evidence counter. Uncalibrated or absent measurements never
 /// become a user-facing diagnosis.
 struct CaptureAssistanceMonitor {
+    /// How many consecutive frames without footer text an already-stable
+    /// presentation survives before it is released.
+    ///
+    /// OCR loses the identifier strip for a frame or two constantly — a hand
+    /// tremor, a glare band crossing it, the lens hunting focus. Collapsing to
+    /// `.unknown` on the first such frame restarted the confirmation sequence
+    /// every time and made a card that never actually moved look like it kept
+    /// arriving.
+    ///
+    /// Fixed, and deliberately not proportional to how long the card has been
+    /// stable: a card that sat still for a minute must be released as promptly
+    /// as one that arrived a second ago, or the scanner would keep describing a
+    /// card that has already left the frame.
+    private static let blankFrameGrace = 2
+
     private(set) var presentation: PresentationState = .unknown
     private var stableObservationCount = 0
+    private var blankObservationCount = 0
     private var candidateIssue: OpticalIssue = .none
     private var candidateCount = 0
 
     mutating func observe(_ assessment: CaptureAssessment, hasFooterText: Bool) -> ScanAssistance {
         if hasFooterText {
+            blankObservationCount = 0
             stableObservationCount += 1
             presentation = stableObservationCount >= 2 ? .cardStable : .cardEntering
+        } else if presentation == .cardStable, blankObservationCount < Self.blankFrameGrace {
+            // Hold the established presentation. The grace applies only once a
+            // card is actually stable — a presentation still entering has not
+            // earned the benefit of the doubt.
+            blankObservationCount += 1
         } else {
+            blankObservationCount = 0
             stableObservationCount = 0
             presentation = .unknown
         }

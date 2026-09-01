@@ -14,18 +14,44 @@ enum CatalogFailure: Equatable {
 
 enum PokemonHistoricalCatalogError: Error, Sendable {
     case ambiguous([PokemonCatalogCardIdentity])
-case unsupported
+    case unsupported
 }
 /// A small, identity-only Pokémon record assembled from the on-device Browse
 /// checklist. The checklist is authoritative for the set/card relationship, but
 /// it deliberately does not pretend to contain live market data.
 enum PokemonOfflineCardFactory {
     private static func makeCard(
-        summary: CatalogCardSummary,
+        summaries: [CatalogCardSummary],
         setName: String,
         providerSetID: String,
         officialCount: Int
     ) -> TCGdexCard {
+        // One numbered Pokémon card may occupy several checklist rows: normal,
+        // holo, reverse, and named parallels are all distinct physical objects.
+        // The offline snapshot has no live prices, but it does have authoritative
+        // variant evidence. Preserve that evidence so the same resolver used by
+        // collection scans can choose one variant or ask the user.
+        let variants = Set(summaries.compactMap(\.masterSetVariant))
+        let hasNormal = variants.contains(.normal)
+        let hasHolo = variants.contains(.holo)
+        let hasReverse = variants.contains(.reverse)
+        let hasFirstEdition = variants.contains(.firstEdition)
+        let namedVariants = variants.filter {
+            ![PhysicalVariant.normal, .holo, .reverse, .firstEdition].contains($0)
+        }
+        let detailedVariants = namedVariants.map { variant in
+            TCGdexDetailedVariant(
+                type: "reverse",
+                subtype: nil,
+                stamp: nil,
+                foil: variant.id,
+                size: nil,
+                variantId: nil,
+                pricing: nil,
+                languages: ["en"],
+                thirdParty: nil
+            )
+        }
         let count = TCGdexCardCount(
             total: max(officialCount, 0),
             official: max(officialCount, 0)
@@ -36,15 +62,23 @@ enum PokemonOfflineCardFactory {
             cardCount: count
         )
         return TCGdexCard(
-            id: summary.providerID,
-            localId: summary.collectorNumber,
-            name: summary.name,
-            image: imageBaseURL(for: summary.imageURL),
+            id: summaries[0].providerID,
+            localId: summaries[0].collectorNumber,
+            name: summaries[0].name,
+            image: summaries.compactMap { imageBaseURL(for: $0.imageURL) }.first,
             rarity: nil,
             set: brief,
-            variants: nil,
+            variants: variants.isEmpty
+                ? nil
+                : TCGdexVariants(
+                    firstEdition: hasFirstEdition,
+                    holo: hasHolo,
+                    normal: hasNormal,
+                    reverse: hasReverse,
+                    wPromo: nil
+                ),
             pricing: nil,
-            variantsDetailed: nil
+            variantsDetailed: detailedVariants.isEmpty ? nil : detailedVariants
         )
     }
 
@@ -67,19 +101,15 @@ enum PokemonOfflineCardFactory {
                     && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber)
                         == PokemonHistoricalIdentityResolver.canonicalLocalID(localID)
             }
-            guard let summary = matches.sorted(by: { $0.id < $1.id }).first else { continue }
-
-            // A downloaded checklist can be from an incompatible provider
-            // release. If it knows the official denominator, require the same
-            // printed denominator before using it for scan identity.
-            if let expectedOfficialCount,
-               let localCount = entry.set.cardCount,
-               localCount != expectedOfficialCount {
-                continue
+            let summaries = matches.sorted { left, right in
+                let leftVariant = left.masterSetVariant?.id ?? ""
+                let rightVariant = right.masterSetVariant?.id ?? ""
+                return (leftVariant, left.id) < (rightVariant, right.id)
             }
+            guard !summaries.isEmpty else { continue }
 
             return makeCard(
-                summary: summary,
+                summaries: summaries,
                 setName: entry.set.name,
                 providerSetID: providerSetID,
                 officialCount: expectedOfficialCount ?? entry.set.cardCount ?? 0
@@ -95,13 +125,18 @@ enum PokemonOfflineCardFactory {
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
         case .officialSet:
-            candidateSetIDs = Set(
-                snapshot.manifest.entries.compactMap { entry in
-                    entry.set.cardCount == evidence.number.denominator
-                        ? entry.providerID.lowercased()
-                        : nil
-                }
-            )
+            // `entry.set.cardCount` is the master-set count and may include
+            // secret rares/parallel rows. Use the provider denominator saved
+            // by the snapshot builder, with the modern map as a compatibility
+            // fallback for older manifests that predate this field.
+            candidateSetIDs = Set(snapshot.manifest.entries.compactMap { entry in
+                let officialCount = entry.officialCount ?? SetCodeMap.definitions.values.first {
+                    $0.tcgdexSetID.caseInsensitiveCompare(entry.providerID) == .orderedSame
+                }?.officialCount
+                return officialCount == evidence.number.denominator
+                    ? entry.providerID.lowercased()
+                    : nil
+            })
         case .subset:
             candidateSetIDs = Set(
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
@@ -140,7 +175,7 @@ enum PokemonOfflineCardFactory {
             }
             let officialCount = evidence.number.denominator
             let card = makeCard(
-                summary: value.summary,
+                summaries: [value.summary],
                 setName: identity.setName,
                 providerSetID: identity.setID,
                 officialCount: officialCount
@@ -171,6 +206,7 @@ actor PokemonOfflineCatalog {
     private let store: PokemonChecklistStore
     private var snapshot: PokemonChecklistSnapshot?
     private var didLoad = false
+    private var loadTask: Task<PokemonChecklistSnapshot?, Never>?
 
     init(store: PokemonChecklistStore = PokemonChecklistStore()) {
         self.store = store
@@ -209,9 +245,28 @@ actor PokemonOfflineCatalog {
         return PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)
     }
 
+    func prewarm() async {
+        await loadIfNeeded()
+    }
+
     private func loadIfNeeded() async {
         guard !didLoad else { return }
-        snapshot = await store.mergedSnapshot()
+        let task: Task<PokemonChecklistSnapshot?, Never>
+        if let existing = loadTask {
+            task = existing
+        } else {
+            let store = store
+            let newTask = Task<PokemonChecklistSnapshot?, Never> {
+                await store.mergedSnapshot()
+            }
+            loadTask = newTask
+            task = newTask
+        }
+
+        let loaded = await task.value
+        guard !Task.isCancelled else { return }
+        loadTask = nil
+        snapshot = loaded
         didLoad = true
     }
 }
@@ -296,6 +351,254 @@ actor TCGdexCircuitBreaker {
     }
 }
 
+/// The two provider calls used on the Pokémon scan path. Keeping them behind a
+/// single seam makes the fallback order testable without URL loading, while the
+/// concrete adapter preserves the production timeouts and retry behavior.
+protocol PokemonCardSource: Sendable {
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard?
+}
+
+struct LivePokemonCardSource: PokemonCardSource, Sendable {
+    private let tcgdex = TCGdexService()
+    private let pokemonTCG = PokemonTCGAPIService()
+
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
+        // Keep the service default. In particular, do not add a shorter scan
+        // timeout here; the provider default is the shared transport contract.
+        try await tcgdex.fetchCard(setID: setID, localID: localID)
+    }
+
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? {
+        try await pokemonTCG.fetchCard(setID: setID, cardNumber: cardNumber)
+    }
+}
+
+/// Identity-only disk cache for cards that are outside the bundled modern
+/// checklist. Prices and finish claims are deliberately excluded; a cache hit
+/// is enough to route the card into the existing finish/price flows, not to make
+/// a stale market-data claim.
+actor ResolvedPokemonCardCache {
+    private static let writeQueue = DispatchQueue(
+        label: "TradingCardScanner.ResolvedPokemonCardCache",
+        qos: .utility
+    )
+
+    private struct Entry: Codable, Sendable {
+        let key: String
+        let storedAt: Date
+        let cardID: String
+        let localID: String
+        let name: String
+        let image: String?
+        let rarity: String?
+        let setID: String
+        let setName: String
+        let officialCount: Int
+        let setCode: String
+        /// The cache must preserve the physical objects published by the
+        /// catalog. Older entries decode as an empty list and naturally retain
+        /// their previous, finish-silent behavior until they are refreshed.
+        let variants: [PhysicalVariant]
+
+        enum CodingKeys: String, CodingKey {
+            case key, storedAt, cardID, localID, name, image, rarity
+            case setID, setName, officialCount, setCode, variants
+        }
+
+        init(
+            key: String,
+            storedAt: Date,
+            cardID: String,
+            localID: String,
+            name: String,
+            image: String?,
+            rarity: String?,
+            setID: String,
+            setName: String,
+            officialCount: Int,
+            setCode: String,
+            variants: [PhysicalVariant]
+        ) {
+            self.key = key
+            self.storedAt = storedAt
+            self.cardID = cardID
+            self.localID = localID
+            self.name = name
+            self.image = image
+            self.rarity = rarity
+            self.setID = setID
+            self.setName = setName
+            self.officialCount = officialCount
+            self.setCode = setCode
+            self.variants = variants
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            key = try container.decode(String.self, forKey: .key)
+            storedAt = try container.decode(Date.self, forKey: .storedAt)
+            cardID = try container.decode(String.self, forKey: .cardID)
+            localID = try container.decode(String.self, forKey: .localID)
+            name = try container.decode(String.self, forKey: .name)
+            image = try container.decodeIfPresent(String.self, forKey: .image)
+            rarity = try container.decodeIfPresent(String.self, forKey: .rarity)
+            setID = try container.decode(String.self, forKey: .setID)
+            setName = try container.decode(String.self, forKey: .setName)
+            officialCount = try container.decode(Int.self, forKey: .officialCount)
+            setCode = try container.decode(String.self, forKey: .setCode)
+            variants = try container.decodeIfPresent([PhysicalVariant].self, forKey: .variants) ?? []
+        }
+    }
+
+    private struct File: Codable, Sendable {
+        let appVersion: String
+        let entries: [Entry]
+    }
+
+    private static let maxAge: TimeInterval = 28 * 24 * 60 * 60
+    private static let maxEntries = 512
+
+    private let fileURL: URL
+    private let appVersion: String
+    private var entries: [String: Entry] = [:]
+    private var didLoad = false
+
+    init(root: URL? = nil, appVersion: String? = nil) {
+        let cacheRoot = root ?? FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first!
+            .appendingPathComponent("BrowseCatalogCache", isDirectory: true)
+        self.fileURL = cacheRoot.appendingPathComponent("ResolvedPokemonCards.json")
+        self.appVersion = appVersion
+            ?? (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String)
+            ?? "development"
+    }
+
+    func prewarm() async {
+        loadIfNeeded()
+    }
+
+    func card(for key: String) -> (card: TCGdexCard, setCode: String)? {
+        loadIfNeeded()
+        guard let entry = entries[key] else { return nil }
+        guard Date.now.timeIntervalSince(entry.storedAt) <= Self.maxAge else {
+            entries[key] = nil
+            persist()
+            return nil
+        }
+        let count = TCGdexCardCount(total: entry.officialCount, official: entry.officialCount)
+        let card = TCGdexCard(
+            id: entry.cardID,
+            localId: entry.localID,
+            name: entry.name,
+            image: entry.image,
+            rarity: entry.rarity,
+            set: TCGdexSetBrief(id: entry.setID, name: entry.setName, cardCount: count),
+            variants: TCGdexVariants(
+                firstEdition: entry.variants.contains(.firstEdition),
+                holo: entry.variants.contains(.holo),
+                normal: entry.variants.contains(.normal),
+                reverse: entry.variants.contains(.reverse),
+                wPromo: nil
+            ),
+            pricing: nil,
+            variantsDetailed: entry.variants
+                .filter { ![.normal, .holo, .reverse, .firstEdition].contains($0) }
+                .map { variant in
+                    TCGdexDetailedVariant(
+                        type: "reverse",
+                        subtype: nil,
+                        stamp: nil,
+                        foil: variant.id,
+                        size: nil,
+                        variantId: nil,
+                        pricing: nil,
+                        languages: ["en"],
+                        thirdParty: nil
+                    )
+                }
+        )
+        return (card, entry.setCode)
+    }
+
+    func store(
+        card: TCGdexCard,
+        setCode: String,
+        key: String,
+        officialCount: Int? = nil
+    ) {
+        loadIfNeeded()
+        entries[key] = Entry(
+            key: key,
+            storedAt: .now,
+            cardID: card.id,
+            localID: card.localId,
+            name: card.name,
+            image: card.image,
+            rarity: card.rarity,
+            setID: card.set.id,
+            setName: card.set.name,
+            officialCount: officialCount ?? card.set.cardCount.official,
+            setCode: setCode,
+            variants: card.catalogVariants
+        )
+        if entries.count > Self.maxEntries {
+            let oldest = entries.values
+                .sorted { $0.storedAt < $1.storedAt }
+                .prefix(entries.count - Self.maxEntries)
+            for entry in oldest { entries[entry.key] = nil }
+        }
+        persist()
+    }
+
+    private func loadIfNeeded() {
+        guard !didLoad else { return }
+        didLoad = true
+        // A cold cache reader may be a new catalog instance racing the prior
+        // instance's background write. Flush the shared utility queue before
+        // reading, while resolution itself never awaits the write operation.
+        Self.writeQueue.sync {}
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let data = try? Data(contentsOf: fileURL),
+              let file = try? decoder.decode(File.self, from: data),
+              file.appVersion == appVersion else {
+            return
+        }
+        let cutoff = Date.now.addingTimeInterval(-Self.maxAge)
+        entries = file.entries.reduce(into: [:]) { values, entry in
+            guard !entry.key.isEmpty, entry.storedAt >= cutoff else { return }
+            // A partially recovered or hand-edited cache may contain duplicate
+            // keys. Keep the newest record rather than crashing the scanner
+            // while constructing a dictionary with uniqueKeysWithValues.
+            if let current = values[entry.key], current.storedAt >= entry.storedAt {
+                return
+            }
+            values[entry.key] = entry
+        }
+    }
+
+    private func persist() {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let file = File(appVersion: appVersion, entries: Array(entries.values))
+        guard let data = try? encoder.encode(file) else { return }
+        let fileURL = fileURL
+        Self.writeQueue.async {
+            do {
+                try FileManager.default.createDirectory(
+                    at: fileURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try data.write(to: fileURL, options: .atomic)
+            } catch {
+                // Disk cache failure must never affect identification.
+            }
+        }
+    }
+}
+
 /// Turns identifiers into catalog records, overlapping the network with OCR
 /// instead of waiting for one to finish before starting the other.
 ///
@@ -313,15 +616,56 @@ actor TCGdexCircuitBreaker {
 /// The session cache is the other half. A second copy of a printing already
 /// resolved this session needs no round trip at all.
 actor CardCatalog {
-    private let tcgdex = TCGdexService()
+    private let pokemonSource: any PokemonCardSource
+    private let offline: PokemonOfflineCatalog
+    private let resolvedDiskCache: ResolvedPokemonCardCache
+    private let tcgdexBreaker: TCGdexCircuitBreaker
     private let scryfall = ScryfallService()
     private let historicalPokemon = PokemonHistoricalCatalog()
+
+    /// One resolution plus where it came from.
+    ///
+    /// Provenance is what decides whether a result may be written to the
+    /// identity disk cache, and only a live primary-provider response
+    /// qualifies. The degraded outage-time fallback publishes no finishes and
+    /// no pricing, so persisting it would let one bad afternoon strip a card of
+    /// its variant question for the cache's whole 28-day life; the bundled
+    /// checklist is already on disk in a richer form than the cache can hold.
+    struct CatalogResolution: Sendable {
+        let card: IdentifiedCard
+        let isPersistable: Bool
+
+        init(_ card: IdentifiedCard, isPersistable: Bool = false) {
+            self.card = card
+            self.isPersistable = isPersistable
+        }
+    }
 
     /// Bounded: see `BoundedCache`. Large enough that re-scanning a stack never
     /// evicts anything the user is actually working through, small enough that
     /// unstable OCR cannot grow it without limit.
     private var resolved = BoundedCache<ScanIdentifier, IdentifiedCard>(capacity: 256)
-    private var inFlight: [ScanIdentifier: Task<IdentifiedCard, Error>] = [:]
+    private var inFlight: [ScanIdentifier: Task<CatalogResolution, Error>] = [:]
+
+    init(
+        source: any PokemonCardSource = LivePokemonCardSource(),
+        offline: PokemonOfflineCatalog = PokemonOfflineCatalog(),
+        resolvedDiskCache: ResolvedPokemonCardCache = ResolvedPokemonCardCache(),
+        tcgdexBreaker: TCGdexCircuitBreaker = .shared
+    ) {
+        self.pokemonSource = source
+        self.offline = offline
+        self.resolvedDiskCache = resolvedDiskCache
+        self.tcgdexBreaker = tcgdexBreaker
+    }
+
+    /// Starts loading both persistent sources before the camera begins feeding
+    /// candidates. The calls are independent and safe to repeat for a session.
+    func prewarm() async {
+        async let offlineWarm: Void = offline.prewarm()
+        async let diskWarm: Void = resolvedDiskCache.prewarm()
+        _ = await (offlineWarm, diskWarm)
+    }
 
     /// Start resolving an identifier that looks plausible but is not yet
     /// confirmed. Deliberately returns nothing: speculation must never be able to
@@ -362,51 +706,70 @@ actor CardCatalog {
         }
     }
 
-    private func start(_ identifier: ScanIdentifier) -> Task<IdentifiedCard, Error> {
-        let tcgdex = tcgdex
+    private func start(_ identifier: ScanIdentifier) -> Task<CatalogResolution, Error> {
+        let pokemonSource = pokemonSource
+        let offline = offline
+        let resolvedDiskCache = resolvedDiskCache
+        let tcgdexBreaker = tcgdexBreaker
         let scryfall = scryfall
         let historicalPokemon = historicalPokemon
-        let task = Task<IdentifiedCard, Error> {
+        let diskKey = Self.persistentKey(for: identifier)
+        let task = Task<CatalogResolution, Error> {
+            if let diskKey,
+               let cached = await resolvedDiskCache.card(for: diskKey) {
+                return CatalogResolution(.pokemon(cached.card, setCode: cached.setCode))
+            }
+
             switch identifier {
             case let .pokemon(setCode, cardNumber, printedTotal, setDefinition):
-                let card = try await tcgdex.fetchCard(
-                    setID: setDefinition.tcgdexSetID,
-                    localID: cardNumber
-                )
-                // A network response answers the question the card asked; it does
-                // not get to change the question. If the record disagrees with the
-                // printed denominator or number, the identification failed.
-                guard card.set.cardCount.official == printedTotal,
-                      PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
-                        == PokemonHistoricalIdentityResolver.canonicalLocalID(cardNumber) else {
-                    throw TCGdexError.identityMismatch
+                if let card = await offline.card(
+                    providerSetID: setDefinition.tcgdexSetID,
+                    localID: cardNumber,
+                    expectedOfficialCount: printedTotal
+                ) {
+                    return CatalogResolution(.pokemon(card, setCode: setCode))
                 }
-                return .pokemon(card, setCode: setCode)
+                return try await Self.resolveModernPokemon(
+                    setCode: setCode,
+                    cardNumber: cardNumber,
+                    setDefinition: setDefinition,
+                    source: pokemonSource,
+                    breaker: tcgdexBreaker
+                )
 
             case let .pokemonPromo(prefix, localID, setDefinition):
-                let card = try await tcgdex.fetchCard(
-                    setID: setDefinition.tcgdexSetID,
-                    localID: localID
-                )
-                guard card.set.id.caseInsensitiveCompare(setDefinition.tcgdexSetID) == .orderedSame,
-                      PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
-                        == PokemonHistoricalIdentityResolver.canonicalLocalID(localID) else {
-                    throw TCGdexError.identityMismatch
+                if let card = await offline.card(
+                    providerSetID: setDefinition.tcgdexSetID,
+                    localID: localID,
+                    expectedOfficialCount: nil
+                ) {
+                    return CatalogResolution(.pokemon(card, setCode: prefix))
                 }
-                return .pokemon(card, setCode: prefix)
+                return try await Self.resolvePromoPokemon(
+                    prefix: prefix,
+                    localID: localID,
+                    setDefinition: setDefinition,
+                    source: pokemonSource,
+                    breaker: tcgdexBreaker
+                )
 
             case let .pokemonHistorical(evidence):
-                return try await historicalPokemon.card(for: evidence)
+                if let card = await offline.historicalCard(for: evidence) {
+                    return CatalogResolution(card)
+                }
+                return CatalogResolution(try await historicalPokemon.card(for: evidence))
 
             case let .magic(setCode, collectorNumber, language, contentKind):
                 guard contentKind != .regular else {
                     // Unchanged fast path. An ordinary footer resolves exactly
                     // as it always has.
-                    return .magic(
-                        try await scryfall.fetchCard(
-                            setCode: setCode,
-                            collectorNumber: collectorNumber,
-                            language: language
+                    return CatalogResolution(
+                        .magic(
+                            try await scryfall.fetchCard(
+                                setCode: setCode,
+                                collectorNumber: collectorNumber,
+                                language: language
+                            )
                         )
                     )
                 }
@@ -442,25 +805,226 @@ actor CardCatalog {
                       contentKind.acceptedLayouts.contains(layout) else {
                     throw ScryfallError.identityMismatch
                 }
-                return .magic(card)
+                return CatalogResolution(.magic(card))
             }
         }
         inFlight[identifier] = task
         return task
     }
 
+    private static func persistentKey(for identifier: ScanIdentifier) -> String? {
+        switch identifier {
+        case let .pokemon(_, cardNumber, printedTotal, setDefinition):
+            return "pokemon|\(setDefinition.tcgdexSetID.lowercased())|\(PokemonHistoricalIdentityResolver.canonicalLocalID(cardNumber))|\(printedTotal)"
+        case let .pokemonPromo(prefix, localID, setDefinition):
+            return "pokemon-promo|\(prefix.uppercased())|\(setDefinition.tcgdexSetID.lowercased())|\(PokemonHistoricalIdentityResolver.canonicalLocalID(localID))"
+        case .pokemonHistorical:
+            // Historical identity is resolved from unstable OCR title evidence;
+            // there is no safe stable key before the catalog response arrives.
+            // Keep it session-cached only rather than poisoning the disk cache
+            // with one key per OCR spelling.
+            return nil
+        case .magic:
+            // The resolved disk cache is Pokémon-only. Never let a future
+            // caller accidentally reinterpret a Magic hit as a Pokémon card.
+            return nil
+        }
+    }
+
+    private static func validate(
+        _ card: TCGdexCard,
+        setID: String,
+        localID: String
+    ) throws {
+        guard card.set.id.caseInsensitiveCompare(setID) == .orderedSame,
+              PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
+                == PokemonHistoricalIdentityResolver.canonicalLocalID(localID) else {
+            throw TCGdexError.identityMismatch
+        }
+    }
+
+    private static func breakerFailure(for error: Error) -> TCGdexCircuitBreaker.Failure {
+        switch error {
+        case TCGdexError.badResponse:
+            return .serverError
+        default:
+            return .unreachable
+        }
+    }
+
+    private static func fallbackPokemonCard(
+        _ card: PokemonTCGAPICard,
+        requestedSetID: String,
+        requestedLocalID: String,
+        officialCount: Int? = nil
+    ) throws -> TCGdexCard {
+        guard card.set.id?.caseInsensitiveCompare(requestedSetID) == .orderedSame,
+              PokemonHistoricalIdentityResolver.canonicalLocalID(card.number)
+                == PokemonHistoricalIdentityResolver.canonicalLocalID(requestedLocalID) else {
+            throw TCGdexError.identityMismatch
+        }
+        let count = TCGdexCardCount(
+            total: officialCount ?? card.set.printedTotal ?? 0,
+            official: officialCount ?? card.set.printedTotal ?? 0
+        )
+        // pokemontcg.io uses unpadded ids (for example `sv10-85`) while
+        // TCGdex's exact-card endpoint uses the printed/padded local id (such
+        // as `sv10-085`). Keep the fallback result addressable by the primary
+        // provider so the next Price Check or collection refresh can reprice it.
+        return TCGdexCard(
+            id: "\(requestedSetID)-\(requestedLocalID)",
+            localId: requestedLocalID,
+            name: card.name,
+            image: card.images.large.absoluteString,
+            rarity: nil,
+            set: TCGdexSetBrief(
+                id: card.set.id ?? requestedSetID,
+                name: card.set.name,
+                cardCount: count
+            ),
+            variants: nil,
+            pricing: nil,
+            variantsDetailed: nil
+        )
+    }
+
+    private static func resolveModernPokemon(
+        setCode: String,
+        cardNumber: String,
+        setDefinition: PokemonSetDefinition,
+        source: any PokemonCardSource,
+        breaker: TCGdexCircuitBreaker
+    ) async throws -> CatalogResolution {
+        if await breaker.permitsRequest() {
+            do {
+                let card = try await source.fetchTCGdexCard(
+                    setID: setDefinition.tcgdexSetID,
+                    localID: cardNumber
+                )
+                // The provider returned a complete, decodable card. Preserve
+                // that host-health signal even when the card fails the exact
+                // requested identity check below.
+                await breaker.recordSuccess()
+                try validate(card, setID: setDefinition.tcgdexSetID, localID: cardNumber)
+                return CatalogResolution(
+                    .pokemon(card, setCode: setCode),
+                    isPersistable: true
+                )
+            } catch let error as TCGdexError {
+                switch error {
+                case .cardNotFound, .identityMismatch, .invalidURL:
+                    throw error
+                case .badResponse:
+                    await breaker.recordFailure(.serverError)
+                }
+            } catch {
+                if error is CancellationError || Task.isCancelled { throw error }
+                await breaker.recordFailure(Self.breakerFailure(for: error))
+            }
+        }
+
+        guard let fallback = try await source.fetchPokemonTCGCard(
+            setID: setDefinition.tcgdexSetID,
+            cardNumber: cardNumber
+        ) else {
+            throw TCGdexError.cardNotFound
+        }
+        let card = try fallbackPokemonCard(
+            fallback,
+            requestedSetID: setDefinition.tcgdexSetID,
+            requestedLocalID: cardNumber,
+            officialCount: setDefinition.officialCount
+        )
+        // Deliberately not persistable. This record exists only because the
+        // primary provider was unreachable, and it carries neither finishes nor
+        // pricing; the session cache is the right lifetime for it.
+        return CatalogResolution(.pokemon(card, setCode: setCode))
+    }
+
+    private static func resolvePromoPokemon(
+        prefix: String,
+        localID: String,
+        setDefinition: PokemonPromoSetDefinition,
+        source: any PokemonCardSource,
+        breaker: TCGdexCircuitBreaker
+    ) async throws -> CatalogResolution {
+        if await breaker.permitsRequest() {
+            do {
+                let card = try await source.fetchTCGdexCard(
+                    setID: setDefinition.tcgdexSetID,
+                    localID: localID
+                )
+                await breaker.recordSuccess()
+                try validate(card, setID: setDefinition.tcgdexSetID, localID: localID)
+                return CatalogResolution(
+                    .pokemon(card, setCode: prefix),
+                    isPersistable: true
+                )
+            } catch let error as TCGdexError {
+                switch error {
+                case .cardNotFound, .identityMismatch, .invalidURL:
+                    throw error
+                case .badResponse:
+                    await breaker.recordFailure(.serverError)
+                }
+            } catch {
+                if error is CancellationError || Task.isCancelled { throw error }
+                await breaker.recordFailure(Self.breakerFailure(for: error))
+            }
+        }
+
+        guard let fallback = try await source.fetchPokemonTCGCard(
+            setID: setDefinition.tcgdexSetID,
+            cardNumber: localID
+        ) else {
+            throw TCGdexError.cardNotFound
+        }
+        let card = try fallbackPokemonCard(
+            fallback,
+            requestedSetID: setDefinition.tcgdexSetID,
+            requestedLocalID: localID
+        )
+        // Outage-time evidence only. See `resolveModernPokemon`.
+        return CatalogResolution(.pokemon(card, setCode: prefix))
+    }
+
     private func complete(
         _ identifier: ScanIdentifier,
-        task: Task<IdentifiedCard, Error>
+        task: Task<CatalogResolution, Error>
     ) async -> Result<IdentifiedCard, Error> {
         let result = await task.result
-        if case let .success(card) = result {
+        if case let .success(resolution) = result {
+            let card = resolution.card
             resolved[identifier] = card
+            // Only a live primary-provider response is written through. A
+            // degraded fallback record would otherwise outlive the outage that
+            // produced it, and a bundled-checklist record is already on disk
+            // with the stamp and rarity detail this cache cannot represent.
+            if resolution.isPersistable,
+               case let .pokemon(pokemonCard, setCode) = card,
+               let diskKey = Self.persistentKey(for: identifier) {
+                let officialCount: Int?
+                switch identifier {
+                case let .pokemon(_, _, printedTotal, _): officialCount = printedTotal
+                case let .pokemonHistorical(evidence): officialCount = evidence.number.denominator
+                case .pokemonPromo, .magic: officialCount = nil
+                }
+                // The cache actor updates its entry and enqueues the file write,
+                // but does not wait for the filesystem operation itself. Awaiting
+                // this short actor hop ensures a cold catalog instance can see
+                // the queued write without putting atomic file I/O on this path.
+                await resolvedDiskCache.store(
+                    card: pokemonCard,
+                    setCode: setCode,
+                    key: diskKey,
+                    officialCount: officialCount
+                )
+            }
         }
         // Only successes are remembered. A failed lookup leaves no trace, so the
         // next attempt is a real attempt rather than a replayed failure.
         inFlight[identifier] = nil
-        return result
+        return result.map(\.card)
     }
 }
 

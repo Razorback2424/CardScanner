@@ -783,6 +783,8 @@ final class PortfolioReconciliationTests: XCTestCase {
                     imageURL: nil,
                     thumbnailURL: nil,
                     variant: nil,
+                    importedMarketPriceUSD: nil,
+                    importedPriceAsOf: nil,
                     quantity: 1,
                     dateAdded: Date(timeIntervalSince1970: 1_800_000_000)
                 )
@@ -808,7 +810,7 @@ final class PortfolioReconciliationTests: XCTestCase {
                     fetchedAt: refreshedAt
                 )
             ),
-            game: card.game,
+            game: CardGame(rawValue: card.game) ?? .pokemon,
             printingID: card.priceStorageID,
             variantID: card.variantID,
             at: refreshedAt

@@ -35,7 +35,6 @@ struct PriceCheckResultView: View {
                 }
             }
         }
-        .interactiveDismissDisabled(result.isRefreshing)
     }
 
     @ViewBuilder
@@ -96,22 +95,17 @@ struct PriceCheckResultView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
 
-                if result.refreshFailed {
-                    Label("Current price unavailable", systemImage: "exclamationmark.triangle")
+                if result.isRefreshing {
+                    Label("Updating current price…", systemImage: "arrow.triangle.2.circlepath")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                } else if case let .lastKnown(issue) = result.quoteState {
+                    Label(lastKnownMessage(for: issue), systemImage: "exclamationmark.triangle")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.orange)
                 }
             } else {
-                ContentUnavailableView(
-                    "Market price unavailable",
-                    systemImage: "dollarsign.circle",
-                    description: Text("No price is available for this exact variant.")
-                )
-                if result.refreshFailed {
-                    Label("Current price unavailable", systemImage: "exclamationmark.triangle")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.orange)
-                }
+                noQuoteState
             }
 
             Button {
@@ -132,14 +126,104 @@ struct PriceCheckResultView: View {
         .background(.quaternary.opacity(0.45), in: RoundedRectangle(cornerRadius: 16))
     }
 
+    @ViewBuilder
+    private var noQuoteState: some View {
+        switch result.quoteState {
+        case .checking where result.isRefreshing || result.shouldAutoRefresh:
+            VStack(spacing: 10) {
+                ProgressView()
+                Text("Checking current price…")
+                    .font(.headline)
+                Text("We’re checking the exact card and variant.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, minHeight: 120)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Checking current price")
+        case .checking:
+            ContentUnavailableView(
+                "Price check paused",
+                systemImage: "pause.circle",
+                description: Text("Tap Refresh Price to check this exact variant.")
+            )
+        case .noExactPrice:
+            ContentUnavailableView(
+                "No exact price published",
+                systemImage: "dollarsign.circle",
+                description: Text("No permitted source has a price for this exact variant.")
+            )
+        case .providerUnavailable:
+            ContentUnavailableView(
+                "Price provider unavailable",
+                systemImage: "wifi.exclamationmark",
+                description: Text("The price service could not be reached. Try again shortly.")
+            )
+        case .fallbackDisabled:
+            ContentUnavailableView(
+                "Price fallback is off",
+                systemImage: "gearshape",
+                description: Text("Enable the optional fallback provider in Settings to continue.")
+            )
+        case .fallbackUnconfigured:
+            ContentUnavailableView(
+                "Price fallback needs setup",
+                systemImage: "key.horizontal",
+                description: Text("Add the optional fallback provider credential in Settings.")
+            )
+        case let .rateLimited(retryAt):
+            ContentUnavailableView(
+                "Price check is rate limited",
+                systemImage: "hourglass",
+                description: Text("Try again \(retryAt.formatted(date: .abbreviated, time: .shortened)).")
+            )
+        case let .budgetLimited(resetAt):
+            ContentUnavailableView(
+                "Price fallback limit reached",
+                systemImage: "calendar.badge.clock",
+                description: Text("The optional fallback allowance resets \(resetAt.formatted(date: .abbreviated, time: .shortened)).")
+            )
+        case .current, .lastKnown(_):
+            ContentUnavailableView(
+                "No exact price published",
+                systemImage: "dollarsign.circle",
+                description: Text("No permitted source has a price for this exact variant.")
+            )
+        }
+    }
+
+    private func lastKnownMessage(for issue: PriceCheckRefreshIssue) -> String {
+        switch issue {
+        case .noExactPrice:
+            return "Exact current price not published — showing last known"
+        case .providerUnavailable:
+            return "Couldn’t update — showing last known"
+        case .fallbackDisabled:
+            return "Fallback is off — showing last known"
+        case .fallbackUnconfigured:
+            return "Fallback needs setup — showing last known"
+        case .rateLimited:
+            return "Rate limited — showing last known"
+        case .budgetLimited:
+            return "Fallback limit reached — showing last known"
+        }
+    }
+
     private func provenance(for display: PriceDisplay) -> String {
         let source = display.source?.label ?? "Source unavailable"
+        let prefix: String
+        if case .lastKnown(_) = result.quoteState {
+            prefix = "Last known "
+        } else {
+            prefix = ""
+        }
         if let asOf = display.sourceUpdatedAt {
-            return "\(result.refreshFailed ? "Last known " : "")\(source) · Updated \(asOf.formatted(date: .abbreviated, time: .shortened))"
+            return "\(prefix)\(source) · Updated \(asOf.formatted(date: .abbreviated, time: .shortened))"
         }
         if let retrieved = display.fetchedAt {
-            return "\(result.refreshFailed ? "Last known " : "")\(source) · Retrieved \(retrieved.formatted(date: .abbreviated, time: .shortened))"
+            return "\(prefix)\(source) · Retrieved \(retrieved.formatted(date: .abbreviated, time: .shortened))"
         }
-        return source
+        return "\(prefix)\(source)"
     }
 }

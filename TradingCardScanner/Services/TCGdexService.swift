@@ -1,6 +1,6 @@
 import Foundation
 
-enum TCGdexError: LocalizedError {
+enum TCGdexError: LocalizedError, Sendable {
     case invalidURL
     case cardNotFound
     case badResponse

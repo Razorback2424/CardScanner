@@ -134,6 +134,16 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertTrue(options.contains { $0.id == "trickOrTrade2023Holofoil" })
     }
 
+    func testSerializedStampedVariantKeepsItsReadableLabel() throws {
+        let detailed = try JSONDecoder().decode(
+            TCGdexDetailedVariant.self,
+            from: Data(#"{"type":"reverse","foil":"pokemonStamp|holo|set-logo|"}"#.utf8)
+        )
+
+        XCTAssertEqual(detailed.physicalVariant?.id, "pokemonStamp|holo|set-logo|")
+        XCTAssertEqual(detailed.physicalVariant?.label, "Holo · Set Logo")
+    }
+
     func testStampedCatalogHasOneExactMarketplaceProductPerDocumentedCard() {
         XCTAssertEqual(PokemonStampedReleaseCatalog.entries.count, 90)
         XCTAssertEqual(

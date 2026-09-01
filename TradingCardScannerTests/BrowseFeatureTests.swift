@@ -4,6 +4,34 @@ import XCTest
 
 final class BrowseFeatureTests: XCTestCase {
 #if DEBUG
+    func testBundledModernPokemonChecklistCoversEveryScannerSet() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(
+            root: root,
+            bundle: Bundle.main
+        )
+        let bundledSnapshot = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundledSnapshot)
+
+        for definition in SetCodeMap.definitions.values {
+            let entries = snapshot.manifest.entries.filter {
+                $0.providerID.caseInsensitiveCompare(definition.tcgdexSetID) == .orderedSame
+            }
+            XCTAssertFalse(entries.isEmpty, "Missing bundled set \(definition.tcgdexSetID)")
+            XCTAssertTrue(
+                entries.allSatisfy { !(snapshot.checklist(for: $0.set.catalogID)?.isEmpty ?? true) },
+                "Bundled set \(definition.tcgdexSetID) has no checklist"
+            )
+            XCTAssertTrue(
+                entries.allSatisfy { $0.officialCount != nil },
+                "Bundled set \(definition.tcgdexSetID) is missing its printed denominator"
+            )
+        }
+    }
+
+#endif
+#if DEBUG
     /// Developer-only release step. Set POKEMON_SNAPSHOT_OUTPUT to a checkout
     /// directory before running this test; normal unit-test runs are a no-op.
     func testGeneratePokemonChecklistSnapshotWhenRequested() async throws {
@@ -19,6 +47,24 @@ final class BrowseFeatureTests: XCTestCase {
         let snapshot = await store.downloadedSnapshot()
         XCTAssertNotNil(snapshot)
         XCTAssertFalse(snapshot?.manifest.entries.isEmpty == true)
+    }
+
+    func testSnapshotGeneratorRejectsMissingModernSetCoverage() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        do {
+            try await PokemonChecklistSnapshotGenerator.generate(
+                transport: FakePokemonBrowseTransport(),
+                outputDirectory: root
+            )
+            XCTFail("Expected the generator to reject incomplete modern coverage")
+        } catch let error as PokemonChecklistError {
+            guard case let .missingModernSetCoverage(ids) = error else {
+                return XCTFail("Unexpected generator error: \(error)")
+            }
+            XCTAssertEqual(ids.count, SetCodeMap.definitions.count)
+        }
     }
 #endif
 
@@ -948,7 +994,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
-    func testOfflinePokemonCardRejectsAStalePrintedDenominator() throws {
+    func testOfflinePokemonCardAllowsMasterCountDifferentFromPrintedDenominator() throws {
         let set = sampleSet(id: "sv10", name: "Destined Rivals")
         let summary = CatalogCardSummary(
             game: .pokemon,
@@ -977,12 +1023,423 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             checklists: [set.id: [summary]]
         )
 
-        XCTAssertNil(
+        XCTAssertNotNil(
             PokemonOfflineCardFactory.card(
                 in: snapshot,
                 providerSetID: "sv10",
                 localID: "085",
                 expectedOfficialCount: 181
+            )
+        )
+    }
+
+    func testOfflineHistoricalMatchingRejectsWrongPrintedDenominator() throws {
+        let set = sampleSet(id: "sv09", name: "Journey Together")
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv09-085",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Example Pokémon",
+            collectorNumber: "085",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: "sv09",
+                    providerFingerprint: "fixture",
+                    officialCount: 159,
+                    resource: "sets/sv09.json"
+                )]
+            ),
+            checklists: [set.id: [summary]]
+        )
+        let identifier = try XCTUnwrap(
+            PokemonHistoricalScanParser.parse(
+                numberLines: ["085/182"],
+                titleLines: ["Example Pokémon"]
+            )
+        )
+        guard case let .pokemonHistorical(evidence) = identifier else {
+            return XCTFail("Expected historical Pokémon evidence")
+        }
+
+        XCTAssertNil(
+            PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence),
+            "A same-number/title match from a set with the wrong denominator must not identify the card."
+        )
+    }
+
+    func testOfflinePokemonCardPreservesAllPublishedVariantRows() throws {
+        let set = sampleSet(id: "sv04", name: "Paradox Rift")
+        let variants: [PhysicalVariant] = [.normal, .holo, .reverse, PhysicalVariant(id: "energy", label: "Energy")]
+        let summaries = variants.map { variant in
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: "sv04-085",
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: "Example Pokémon",
+                collectorNumber: "085",
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: variant,
+                isExpandedMasterSetVariant: variant.id == "energy",
+                isSoleSlotForCard: false
+            )
+        }
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: "sv04",
+                    providerFingerprint: "fixture",
+                    resource: "sets/sv04.json"
+                )]
+            ),
+            checklists: [set.id: summaries]
+        )
+
+        let card = try XCTUnwrap(
+            PokemonOfflineCardFactory.card(
+                in: snapshot,
+                providerSetID: "sv04",
+                localID: "085",
+                expectedOfficialCount: 182
+            )
+        )
+        XCTAssertNil(card.pricing)
+        XCTAssertEqual(
+            Set(card.catalogVariants),
+            Set(variants)
+        )
+        switch VariantResolver.resolve(
+            IdentifiedCard.pokemon(card, setCode: "PAR").variantEvidence
+        ) {
+        case let .needsChoice(options, lockDidNotApply):
+            XCTAssertNil(lockDidNotApply)
+            XCTAssertEqual(Set(options), Set(variants))
+        case .resolved:
+            XCTFail("Multiple offline variant rows must remain a user choice.")
+        }
+    }
+
+    func testOfflineModernScanUsesZeroProviderRequestsEvenWhenMasterCountDiffers() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "sv04"),
+            name: "Paradox Rift",
+            code: "PAR",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 250,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let summaries = ["085", "182"].map { number in
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: "sv04-\(number)",
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: "Offline Card \(number)",
+                collectorNumber: number,
+                thumbnailURL: nil,
+                imageURL: nil
+            )
+        }
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: set.providerID,
+                    providerFingerprint: "fixture",
+                    resource: "sets/sv04.json"
+                )]
+            ),
+            checklists: [set.id: summaries]
+        )
+        try await PokemonChecklistStore(root: root, bundle: nil).publish(snapshot)
+
+        let source = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .failure(.badResponse)
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root, bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let definition = try XCTUnwrap(SetCodeMap.definitions["PAR"])
+        for number in ["085", "182"] {
+            let card = try await catalog.card(for: .pokemon(
+                setCode: "PAR",
+                cardNumber: number,
+                printedTotal: definition.officialCount,
+                setDefinition: definition
+            ))
+            XCTAssertEqual(card.name, "Offline Card \(number)")
+        }
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 0)
+        XCTAssertEqual(counts.fallback, 0)
+    }
+
+    func testPokemonFallbackUsesSecondaryProviderOnlyAfterRetryablePrimaryFailure() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .card(pokemonAPIResult(setID: "sv10", number: "85"))
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let card = try await catalog.card(for: .pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        ))
+
+        // The secondary provider returns `sv10-85`, but the resolved card must
+        // remain addressable by TCGdex as `sv10-085` for later repricing.
+        XCTAssertEqual(card.providerID, "sv10-085")
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 1)
+        XCTAssertEqual(counts.fallback, 1)
+    }
+
+    func testModernFallbackSuccessDoesNotClearTCGdexBreaker() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .card(pokemonAPIResult(setID: "sv10", number: "85"))
+        )
+        let breaker = TCGdexCircuitBreaker(cooldown: 60)
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: breaker
+        )
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+
+        _ = try await catalog.card(for: .pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        ))
+
+        let breakerPermitted = await breaker.permitsRequest(now: Date().addingTimeInterval(1))
+        XCTAssertFalse(breakerPermitted)
+    }
+
+    func testPromoFallbackSuccessDoesNotClearTCGdexBreaker() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .card(pokemonAPIResult(setID: "svp", number: "001"))
+        )
+        let breaker = TCGdexCircuitBreaker(cooldown: 60)
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: breaker
+        )
+        let definition = PokemonPromoSetDefinition(
+            printedPrefix: "SVP",
+            tcgdexSetID: "svp",
+            catalogLocalIDPrefix: ""
+        )
+
+        _ = try await catalog.card(for: .pokemonPromo(
+            prefix: "SVP",
+            localID: "001",
+            setDefinition: definition
+        ))
+
+        let breakerPermitted = await breaker.permitsRequest(now: Date().addingTimeInterval(1))
+        XCTAssertFalse(breakerPermitted)
+    }
+
+    func testNetworkPokemonLookupDoesNotRequireProviderDenominator() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(setID: "sv10", localID: "085")),
+            fallback: .failure(.badResponse)
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let card = try await catalog.card(for: .pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        ))
+
+        XCTAssertEqual(card.providerID, "sv10-085")
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 1)
+        XCTAssertEqual(counts.fallback, 0)
+    }
+
+    func testPokemonCardNotFoundDoesNotFallThroughToSecondaryProvider() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = CountingPokemonCardSource(
+            primary: .failure(.cardNotFound),
+            fallback: .card(pokemonAPIResult(setID: "sv10", number: "85"))
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+
+        do {
+            _ = try await catalog.card(for: .pokemon(
+                setCode: "DRI",
+                cardNumber: "085",
+                printedTotal: definition.officialCount,
+                setDefinition: definition
+            ))
+            XCTFail("Expected terminal card-not-found")
+        } catch {
+            XCTAssertEqual(CardCatalog.classify(error), .notInCatalog)
+        }
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 1)
+        XCTAssertEqual(counts.fallback, 0)
+    }
+
+    func testResolvedPokemonIdentitySurvivesAColdCatalogInstance() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cacheRoot = root.appendingPathComponent("resolved")
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let firstSource = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(setID: "sv10", localID: "085")),
+            fallback: .failure(.badResponse)
+        )
+        let first = CardCatalog(
+            source: firstSource,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test"),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+        _ = try await first.card(for: identifier)
+
+        let secondSource = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .failure(.badResponse)
+        )
+        let second = CardCatalog(
+            source: secondSource,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test"),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let card = try await second.card(for: identifier)
+
+        XCTAssertEqual(card.providerID, "sv10-085")
+        let counts = await secondSource.requestCounts()
+        XCTAssertEqual(counts.primary, 0)
+        XCTAssertEqual(counts.fallback, 0)
+    }
+
+    private func makeTCGdexCard(setID: String, localID: String) throws -> TCGdexCard {
+        try decode(TCGdexCard.self, from: """
+        {"id":"\(setID)-\(localID)","localId":"\(localID)","name":"Resolved Card","image":null,
+         "set":{"id":"\(setID)","name":"Resolved Set","cardCount":{"total":1,"official":1}}}
+        """)
+    }
+
+    private func pokemonAPIResult(setID: String, number: String) -> PokemonTCGAPICard {
+        PokemonTCGAPICard(
+            id: "\(setID)-\(CatalogIdentityNormalization.localNumber(number))",
+            name: "Fallback Card",
+            number: number,
+            set: PokemonTCGAPISet(id: setID, name: "Fallback Set", printedTotal: nil),
+            images: PokemonTCGAPIImages(
+                small: URL(string: "https://example.com/small.png")!,
+                large: URL(string: "https://example.com/large.png")!
             )
         )
     }
@@ -1213,6 +1670,81 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(sets.first?.name, "Prismatic Evolutions")
     }
 
+    func testRefreshPublishesSuccessfulSetsWhenALaterSetFails() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let rows = try (1...5).map { index in
+            try decode(TCGdexBrowseSet.self, from: """
+            {"id":"fixture\(index)","name":"Fixture \(index)","cardCount":{"total":1,"official":1}}
+            """)
+        }
+        var providers: [String: TCGdexSetCatalog] = [:]
+        var cards: [String: TCGdexCard] = [:]
+        for index in 1...5 {
+            let providerID = "fixture\(index)"
+            let cardID = "\(providerID)-001"
+            providers[providerID] = try decode(TCGdexSetCatalog.self, from: """
+            {"id":"\(providerID)","name":"Fixture \(index)","cards":[{"id":"\(cardID)","localId":"001","name":"Card \(index)","image":null}],"cardCount":{"total":1,"official":1}}
+            """)
+            cards[cardID] = try decode(TCGdexCard.self, from: """
+            {"id":"\(cardID)","localId":"001","name":"Card \(index)","image":null,
+             "set":{"id":"\(providerID)","name":"Fixture \(index)","cardCount":{"total":1,"official":1}}}
+            """)
+        }
+        let transport = FakePokemonBrowseTransport(
+            rows: rows,
+            sets: providers,
+            cards: cards,
+            failingSetIDs: ["fixture3"]
+        )
+        let store = PokemonChecklistStore(
+            root: root.appendingPathComponent("checklists"),
+            bundle: nil
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: store
+        )
+
+        await catalog.refreshCatalogNow()
+
+        let downloaded = await store.downloadedSnapshot()
+        let publishedIDs = Set(downloaded?.manifest.entries.map(\.providerID) ?? [])
+        XCTAssertTrue(publishedIDs.contains("fixture1"))
+        XCTAssertTrue(publishedIDs.contains("fixture2"))
+        XCTAssertFalse(publishedIDs.contains("fixture3"))
+        XCTAssertTrue(publishedIDs.contains("fixture4"))
+        XCTAssertTrue(publishedIDs.contains("fixture5"))
+    }
+
+    func testCorruptChecklistEntryDoesNotHideOtherValidEntries() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let first = sampleSet(id: "fixture1", name: "Fixture One")
+        let second = sampleSet(id: "fixture2", name: "Fixture Two")
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+        try await writeSnapshot(
+            [
+                first: [sampleSummary(set: first, name: "First")],
+                second: [sampleSummary(set: second, name: "Second")]
+            ],
+            to: root
+        )
+
+        let firstResource = root.appendingPathComponent(
+            "sets/\(StableCatalogFingerprint.string(first.id)).json"
+        )
+        try Data("not-json".utf8).write(to: firstResource, options: .atomic)
+
+        let loaded = await store.downloadedSnapshot()
+        XCTAssertEqual(
+            Set(loaded?.manifest.entries.map(\.providerID) ?? []),
+            Set(["fixture2"])
+        )
+        XCTAssertEqual(loaded?.checklist(for: second.catalogID)?.first?.name, "Second")
+    }
+
     private func writeSnapshot(
         _ values: [CatalogSet: [CatalogCardSummary]],
         to root: URL
@@ -1351,6 +1883,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     private let setValues: [String: TCGdexSetCatalog]
     private let cardValues: [String: TCGdexCard]
     private let setError: Error?
+    private let failingSetIDs: Set<String>
     private var directoryRequests = 0
     private var setRequests = 0
     private var cardRequests = 0
@@ -1359,12 +1892,14 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
         rows: [TCGdexBrowseSet] = [],
         sets: [String: TCGdexSetCatalog] = [:],
         cards: [String: TCGdexCard] = [:],
-        setError: Error? = nil
+        setError: Error? = nil,
+        failingSetIDs: Set<String> = []
     ) {
         self.rows = rows
         self.setValues = sets
         self.cardValues = cards
         self.setError = setError
+        self.failingSetIDs = Set(failingSetIDs.map { $0.lowercased() })
     }
 
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
@@ -1377,6 +1912,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     func fetchSet(id: String) async throws -> TCGdexSetCatalog {
         setRequests += 1
         if let setError { throw setError }
+        if failingSetIDs.contains(id.lowercased()) { throw TestError.failed }
         return try XCTUnwrap(setValues[id.lowercased()])
     }
 
@@ -1387,5 +1923,49 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
 
     func requestCounts() -> (directory: Int, set: Int, card: Int) {
         (directoryRequests, setRequests, cardRequests)
+    }
+}
+
+private actor CountingPokemonCardSource: PokemonCardSource {
+    enum PrimaryResponse: Sendable {
+        case card(TCGdexCard)
+        case failure(TCGdexError)
+    }
+
+    enum FallbackResponse: Sendable {
+        case card(PokemonTCGAPICard)
+        case failure(TCGdexError)
+        case empty
+    }
+
+    private let primaryResponse: PrimaryResponse
+    private let fallbackResponse: FallbackResponse
+    private var primaryRequests = 0
+    private var fallbackRequests = 0
+
+    init(primary: PrimaryResponse, fallback: FallbackResponse) {
+        self.primaryResponse = primary
+        self.fallbackResponse = fallback
+    }
+
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
+        primaryRequests += 1
+        switch primaryResponse {
+        case let .card(card): return card
+        case let .failure(error): throw error
+        }
+    }
+
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? {
+        fallbackRequests += 1
+        switch fallbackResponse {
+        case let .card(card): return card
+        case let .failure(error): throw error
+        case .empty: return nil
+        }
+    }
+
+    func requestCounts() -> (primary: Int, fallback: Int) {
+        (primaryRequests, fallbackRequests)
     }
 }

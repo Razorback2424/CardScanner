@@ -162,7 +162,13 @@ struct ContentView: View {
             guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
             portfolio.recompute(context: modelContext)
         }
-        .onDisappear { refreshStatusTask?.cancel() }
+        .onDisappear {
+            refreshStatusTask?.cancel()
+            // Real abandonment, which is the only thing that should stop a
+            // pass. The `task(id:)` above deliberately does not: its identity
+            // is derived from the price records the refresh itself writes.
+            refresh.cancelRefresh()
+        }
     }
 
     private var portfolioInputTaskID: Int {
@@ -307,6 +313,12 @@ struct ContentView: View {
         dismissRefreshStatusLater()
     }
 
+    /// Started from `task(id: portfolioInputTaskID)`, whose identity includes
+    /// every price record's value and freshness — the exact fields a refresh
+    /// writes. The controller therefore owns the pass rather than this task: a
+    /// saved batch still invalidates the id and cancels the caller here, but no
+    /// longer tears down the work partway through and leaves the collection
+    /// unrefreshed with `status` reset to idle.
     @MainActor
     private func refreshStalePricesIfNeeded() async {
         guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
