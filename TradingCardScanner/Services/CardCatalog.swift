@@ -397,8 +397,8 @@ actor ResolvedPokemonCardCache {
         let officialCount: Int
         let setCode: String
         /// The cache must preserve the physical objects published by the
-        /// catalog. Older entries decode as an empty list and naturally retain
-        /// their previous, finish-silent behavior until they are refreshed.
+        /// catalog. An empty list cannot answer the finish question and is
+        /// therefore never served as a cache hit.
         let variants: [PhysicalVariant]
 
         enum CodingKeys: String, CodingKey {
@@ -453,9 +453,17 @@ actor ResolvedPokemonCardCache {
 
     private struct File: Codable, Sendable {
         let appVersion: String
+        /// Bumped when cache validity rules change independently from the app
+        /// marketing version. Optional so pre-generation files decode and are
+        /// deliberately rejected by the reader below.
+        let schemaGeneration: Int?
         let entries: [Entry]
     }
 
+    /// Generation 2 discards entries written before the cache's provenance
+    /// gate. Those files cannot distinguish a complete primary-provider card
+    /// from outage-time fallback data that lacked variant evidence.
+    private static let schemaGeneration = 2
     private static let maxAge: TimeInterval = 28 * 24 * 60 * 60
     private static let maxEntries = 512
 
@@ -483,6 +491,15 @@ actor ResolvedPokemonCardCache {
         loadIfNeeded()
         guard let entry = entries[key] else { return nil }
         guard Date.now.timeIntervalSince(entry.storedAt) <= Self.maxAge else {
+            entries[key] = nil
+            persist()
+            return nil
+        }
+        // A cache hit that knows no finishes is worse than a miss: it shadows
+        // the bundled checklist and forces VariantResolver into
+        // `.catalogSilent`. Remove it so this scan falls through to richer
+        // offline or live catalog evidence.
+        guard !entry.variants.isEmpty else {
             entries[key] = nil
             persist()
             return nil
@@ -529,6 +546,14 @@ actor ResolvedPokemonCardCache {
         officialCount: Int? = nil
     ) {
         loadIfNeeded()
+        let variants = card.catalogVariants
+        guard !variants.isEmpty else {
+            // An incomplete live response is not evidence that an already
+            // cached, fully resolved card ceased to have finishes. Retain the
+            // complete entry and let this response fall through to the
+            // checklist or a later provider retry instead.
+            return
+        }
         entries[key] = Entry(
             key: key,
             storedAt: .now,
@@ -541,7 +566,7 @@ actor ResolvedPokemonCardCache {
             setName: card.set.name,
             officialCount: officialCount ?? card.set.cardCount.official,
             setCode: setCode,
-            variants: card.catalogVariants
+            variants: variants
         )
         if entries.count > Self.maxEntries {
             let oldest = entries.values
@@ -563,7 +588,8 @@ actor ResolvedPokemonCardCache {
         decoder.dateDecodingStrategy = .iso8601
         guard let data = try? Data(contentsOf: fileURL),
               let file = try? decoder.decode(File.self, from: data),
-              file.appVersion == appVersion else {
+              file.appVersion == appVersion,
+              file.schemaGeneration == Self.schemaGeneration else {
             return
         }
         let cutoff = Date.now.addingTimeInterval(-Self.maxAge)
@@ -582,7 +608,11 @@ actor ResolvedPokemonCardCache {
     private func persist() {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        let file = File(appVersion: appVersion, entries: Array(entries.values))
+        let file = File(
+            appVersion: appVersion,
+            schemaGeneration: Self.schemaGeneration,
+            entries: Array(entries.values)
+        )
         guard let data = try? encoder.encode(file) else { return }
         let fileURL = fileURL
         Self.writeQueue.async {
