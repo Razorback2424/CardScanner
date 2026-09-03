@@ -314,6 +314,19 @@ struct PriceCheckResult: Identifiable {
         return Money(rounding: price.unitMarketPriceUSD) != nil
     }
 
+    /// Settings can only resolve the two fallback availability states. Keep the
+    /// last-known variants in the same family so returning from Settings can
+    /// retry without requiring the user to discover Refresh Price first.
+    var isBlockedOnFallbackSettings: Bool {
+        switch quoteState {
+        case .fallbackDisabled, .fallbackUnconfigured,
+             .lastKnown(.fallbackDisabled), .lastKnown(.fallbackUnconfigured):
+            return true
+        default:
+            return false
+        }
+    }
+
     var display: PriceDisplay {
         switch quote {
         case let .price(price):
@@ -816,8 +829,22 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func resumeAfterPresentation() {
+        settingsDismissed()
+    }
+
+    /// Settings may be opened from either the scanner chrome or a nested Price
+    /// Check result sheet. Re-read the live preference and credential state
+    /// when either path closes; `shouldAutoRefresh` is intentionally one-shot
+    /// and cannot represent this later user action.
+    func settingsDismissed() {
         feedback.prepare()
         resumeRecognitionIfPossible()
+        guard let result = priceCheckResult,
+              !result.isRefreshing,
+              result.isBlockedOnFallbackSettings,
+              UserDefaults.standard.bool(forKey: "usesPriceFallback"),
+              PriceVendorCredentials.hasKey else { return }
+        refreshPriceCheckQuote()
     }
 
     func dismissPriceCheckResult() {
@@ -1988,7 +2015,12 @@ final class ScannerViewModel: ObservableObject {
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
-                priceCheckCoordinator.recordRefreshFailure(for: latest)
+                // A published exact miss is card evidence. Configuration,
+                // allowance, rate-limit, and transport outcomes are not, so
+                // they must not write a ReferenceQuote failure timestamp.
+                if issue == .noExactPrice {
+                    priceCheckCoordinator.recordRefreshFailure(for: latest)
+                }
                 latest.checkedAt = .now
                 latest.isRefreshing = false
                 latest.refreshFailed = true
@@ -2023,6 +2055,8 @@ final class ScannerViewModel: ObservableObject {
     private static func quoteState(for issue: PriceCheckRefreshIssue) -> PriceCheckQuoteState {
         switch issue {
         case .noExactPrice: return .noExactPrice
+        case .notMatched: return .notMatched
+        case .unsupportedFinish: return .unsupportedFinish
         case .providerUnavailable: return .providerUnavailable
         case .fallbackDisabled: return .fallbackDisabled
         case .fallbackUnconfigured: return .fallbackUnconfigured

@@ -74,7 +74,8 @@ final class ProductIdentity {
     /// could not.
     ///
     /// 1: initial text-search matching.
-    static let currentAttemptVersion = 1
+    /// 2: retry prior matcher misses while retaining resolved vendor handles.
+    static let currentAttemptVersion = 2
 
     var vendor: PriceSource? {
         PriceSource(rawValue: vendorRaw)
@@ -83,8 +84,11 @@ final class ProductIdentity {
     /// Whether this record still answers the question, or whether the resolver
     /// should look again.
     func isCurrent(now: Date = .now, retryUnmatchedAfter: TimeInterval = 30 * 24 * 60 * 60) -> Bool {
-        guard attemptVersion >= Self.currentAttemptVersion else { return false }
+        // A resolved handle remains valid across matcher revisions. Only a
+        // negative match needs reopening; invalidating handles would degrade
+        // batch refreshes into one paid search per card.
         if vendorCardID != nil { return true }
+        guard attemptVersion >= Self.currentAttemptVersion else { return false }
         guard let unmatchedAt else { return false }
         // A miss is not necessarily permanent — vendors add products. Re-ask
         // rarely rather than never, and far less often than a price refresh.
