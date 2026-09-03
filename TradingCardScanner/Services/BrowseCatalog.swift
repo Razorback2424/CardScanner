@@ -261,9 +261,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
         }
 
-        return Dictionary(uniqueKeysWithValues: cards.compactMap { card in
-            sortPriceCache[card.id].map { (card.id, $0) }
-        })
+        // Same reasoning as `countsByID`: checklist ids should be unique per
+        // set, but nothing here enforces it, and a trap is a poor way to find
+        // out otherwise.
+        return Dictionary(
+            cards.compactMap { card in sortPriceCache[card.id].map { (card.id, $0) } },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 
     private func sortPrice(for summary: CatalogCardSummary) async -> (id: String, price: Double?, resolved: Bool) {
@@ -298,9 +302,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
             from: rows,
             excluding: pocketIDs
         )
-        let countsByID = Dictionary(uniqueKeysWithValues: rows.compactMap { row in
-            row.cardCount.map { (row.id.lowercased(), $0) }
-        })
+        // `uniquingKeysWith:` rather than `uniqueKeysWithValues:`. These rows
+        // are a raw decode of the provider's set directory and are deduplicated
+        // nowhere in between, so two ids differing only in case — or one
+        // duplicated row, which providers do ship — would trap and take the app
+        // down on data nobody here controls. First wins: the directory arrives
+        // newest-first, and either count is equally defensible for a duplicate.
+        let countsByID = Dictionary(
+            rows.compactMap { row in row.cardCount.map { (row.id.lowercased(), $0) } },
+            uniquingKeysWith: { first, _ in first }
+        )
         let sets = baseSets.flatMap { set in
             PokemonMasterSetDefinition.virtualSets(
                 set,

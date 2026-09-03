@@ -1848,6 +1848,13 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 
+    /// A frame that cannot be described. Routed through the existing catch so a
+    /// malformed buffer counts as absence evidence for the latch and the
+    /// confirmation window, exactly like a failed Vision pass.
+    private enum CameraFrameError: Error {
+        case missingFormatDescription
+    }
+
     func captureOutput(
         _ output: AVCaptureOutput,
         didOutput sampleBuffer: CMSampleBuffer,
@@ -1872,9 +1879,14 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             )
             try handler.perform([footerRequest])
 
-            let dimensions = CMVideoFormatDescriptionGetDimensions(
-                CMSampleBufferGetFormatDescription(sampleBuffer)!
-            )
+            // Guarded like every other optional on this path. A buffer that
+            // already yielded an image buffer will essentially always carry a
+            // format description, but this is a nullable C API on the frame
+            // path and a trap here is not catchable by the enclosing `do`.
+            guard let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) else {
+                throw CameraFrameError.missingFormatDescription
+            }
+            let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
             // Vision measures the upright image, so the sensor's landscape
             // width/height swap for a quarter turn and stay put for a half turn.
             let sourceSize = CardFramingRegion.visionSourceSize(

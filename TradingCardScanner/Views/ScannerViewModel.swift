@@ -1113,6 +1113,19 @@ final class ScannerViewModel: ObservableObject {
     func choose(_ variant: PhysicalVariant) {
         guard let pending = pendingChoice else { return }
         feedback.choiceMade()
+        // Cleared here, the way every sibling `choose` clears its own pending
+        // state, rather than left for `route` to clear on its way past.
+        //
+        // Routing has eight terminal outcomes and only three of them used to
+        // clear this: an automatic commit that succeeded, the spatial-duplicate
+        // prompt, and Price Check. The other five — a suppressed re-scan, a
+        // commit that threw, and the three held-repeat rejections — left the
+        // finish bar on screen showing a question the user had already
+        // answered, with recognition still paused and the identification queue
+        // stalled behind the `pendingChoice == nil` guard in
+        // `processNextIdentificationIfPossible`. The answer has been consumed
+        // by the time we route, so this is where it stops being pending.
+        pendingChoice = nil
         route(
             ResolvedScan(
                 request: pending.request,
@@ -1122,6 +1135,9 @@ final class ScannerViewModel: ObservableObject {
                 options: pending.options
             )
         )
+        // No-ops if routing raised a new question of its own — the duplicate
+        // prompt, or a Price Check sheet. See `resumeRecognitionIfPossible`.
+        resumeRecognitionIfPossible()
         processNextIdentificationIfPossible()
     }
 

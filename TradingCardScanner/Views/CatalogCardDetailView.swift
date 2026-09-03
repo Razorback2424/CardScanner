@@ -14,6 +14,9 @@ struct CatalogCardDetailView: View {
     @State private var showsFinishChoice = false
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
+    /// Kept separate from `error`, which replaces the whole page with a load
+    /// failure. A failed add must not blank the card the user is looking at.
+    @State private var addFailure: String?
     @State private var fallbackQuoteTask: Task<Void, Never>?
     @State private var showsGradedPicker = false
     /// One transport per presentation, so the graded picker shares the app's
@@ -31,6 +34,18 @@ struct CatalogCardDetailView: View {
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            "Couldn't add to collection",
+            isPresented: Binding(
+                get: { addFailure != nil },
+                set: { if !$0 { addFailure = nil } }
+            ),
+            presenting: addFailure
+        ) { _ in
+            Button("OK", role: .cancel) { addFailure = nil }
+        } message: { detail in
+            Text(detail)
+        }
         .task { if details == nil { await load() } }
         .sheet(isPresented: $showsGradedPicker) {
             if let details {
@@ -170,14 +185,23 @@ struct CatalogCardDetailView: View {
     private func commit(_ resolved: ResolvedVariant) {
         guard let details else { return }
         let store = CollectionStore(context: modelContext)
-        guard let mutation = try? store.add(
-            details.card,
-            resolved: resolved,
-            pokemonPrintRun: summary.pokemonPrintRun,
-            identityResolution: .catalogSelected,
-            setReleaseOrder: details.set.releaseOrder,
-            matchCatalogAliases: true
-        ) else { return }
+        let mutation: CollectionMutation
+        do {
+            mutation = try store.add(
+                details.card,
+                resolved: resolved,
+                pokemonPrintRun: summary.pokemonPrintRun,
+                identityResolution: .catalogSelected,
+                setReleaseOrder: details.set.releaseOrder,
+                matchCatalogAliases: true
+            )
+        } catch {
+            // Everything below stages price and artwork metadata for a row that
+            // does not exist. Returning silently made the button a no-op the
+            // user had no way to distinguish from a successful add.
+            addFailure = error.localizedDescription
+            return
+        }
         let stored = store.card(forKey: mutation.collectionKey)
         let storageID = stored?.priceStorageID ?? details.card.providerID
         let prices = PriceStore(context: modelContext)

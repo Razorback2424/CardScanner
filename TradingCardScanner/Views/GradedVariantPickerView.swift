@@ -151,6 +151,7 @@ struct GradedSlabConfirmationView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State private var certificationNumber = ""
+    @State private var addFailure: String?
 
     var body: some View {
         List {
@@ -199,16 +200,36 @@ struct GradedSlabConfirmationView: View {
         }
         .navigationTitle(variant.displayName)
         .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            "Couldn't add this slab",
+            isPresented: Binding(
+                get: { addFailure != nil },
+                set: { if !$0 { addFailure = nil } }
+            ),
+            presenting: addFailure
+        ) { _ in
+            Button("OK", role: .cancel) { addFailure = nil }
+        } message: { detail in
+            Text(detail)
+        }
     }
 
     private func add() {
         let trimmed = certificationNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard (try? CollectionStore(context: modelContext).addGraded(
-            underlying: card,
-            variant: variant,
-            certificationNumber: trimmed.isEmpty ? nil : trimmed,
-            setReleaseOrder: setReleaseOrder
-        )) != nil else { return }
+        do {
+            // `onAdded` dismisses the picker and is the only confirmation there
+            // is. Returning silently on a throw left the sheet sitting there
+            // looking untouched, with the slab not in the collection.
+            _ = try CollectionStore(context: modelContext).addGraded(
+                underlying: card,
+                variant: variant,
+                certificationNumber: trimmed.isEmpty ? nil : trimmed,
+                setReleaseOrder: setReleaseOrder
+            )
+        } catch {
+            addFailure = error.localizedDescription
+            return
+        }
         onAdded(variant.displayName)
     }
 }

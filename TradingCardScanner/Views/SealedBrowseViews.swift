@@ -606,6 +606,7 @@ struct SealedProductDetailView: View {
     @Query private var owned: [CollectedCard]
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
+    @State private var addFailure: String?
 
     private var ownedQuantity: Int {
         owned
@@ -665,6 +666,18 @@ struct SealedProductDetailView: View {
             }
         }
         .onDisappear { undoTask?.cancel() }
+        .alert(
+            "Couldn't add to collection",
+            isPresented: Binding(
+                get: { addFailure != nil },
+                set: { if !$0 { addFailure = nil } }
+            ),
+            presenting: addFailure
+        ) { _ in
+            Button("OK", role: .cancel) { addFailure = nil }
+        } message: { detail in
+            Text(detail)
+        }
     }
 
     private var undoBanner: some View {
@@ -687,7 +700,16 @@ struct SealedProductDetailView: View {
     /// listing, and routine repricing happens later through a batch.
     private func add() {
         let store = CollectionStore(context: modelContext)
-        pendingMutation = try? store.addSealed(product, game: game)
+        do {
+            // The undo affordance is the only thing that says this worked, and
+            // it is gated on a non-nil mutation — so swallowing the error made a
+            // failed add indistinguishable from never having tapped the button.
+            // A sealed box is not something to lose silently.
+            pendingMutation = try store.addSealed(product, game: game)
+        } catch {
+            addFailure = error.localizedDescription
+            return
+        }
         undoTask?.cancel()
         undoTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(6))
