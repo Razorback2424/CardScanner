@@ -13,6 +13,16 @@ struct CardCenteringMeasurement: Equatable {
     var outer: CardCenteringEdges
     var inner: CardCenteringEdges
     var warnings: [String]
+    /// What the detector could not establish for itself, set once when the
+    /// measurement is made.
+    ///
+    /// Kept separate from `warnings` because those are recomputed from the
+    /// guide positions every time one is dragged, and a note about how the
+    /// guides were *found* must survive that. Without it a fallback reading
+    /// looks exactly like a confident one: the numbers stay self-consistent, so
+    /// the geometry checks below pass and the screen states a ratio it has no
+    /// grounds for.
+    var detectionNotes: [String] = []
 
     var leftBorder: Int { inner.left - outer.left }
     var rightBorder: Int { outer.right - inner.right }
@@ -28,7 +38,7 @@ struct CardCenteringMeasurement: Equatable {
     }
 
     mutating func refreshWarnings() {
-        var updated: [String] = []
+        var updated: [String] = detectionNotes
         if !(outer.left < inner.left && inner.left < inner.right && inner.right < outer.right) {
             updated.append("Check the left and right guide positions.")
         }

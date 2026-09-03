@@ -9,17 +9,12 @@ final class CardCenteringViewModel: ObservableObject {
     @Published var image: UIImage?
     @Published var measurement: CardCenteringMeasurement?
     @Published var rotationDegrees = 0.0
-    @Published var appliedRotationDegrees = 0.0
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
 
     private var sourceData: Data?
     private var loadGeneration = 0
     private var analysisGeneration = 0
-
-    var rotationIsPending: Bool {
-        abs(rotationDegrees - appliedRotationDegrees) >= 0.005
-    }
 
     func loadSelectedPhoto() async {
         guard let selectedPhoto else { return }
@@ -33,7 +28,6 @@ final class CardCenteringViewModel: ObservableObject {
             sourceData = data
             self.selectedPhoto = nil
             rotationDegrees = 0
-            appliedRotationDegrees = 0
             analyze(data, rotationDegrees: 0)
         } catch {
             guard requestID == loadGeneration, !Task.isCancelled else { return }
@@ -69,7 +63,6 @@ final class CardCenteringViewModel: ObservableObject {
         sourceData = data
         selectedPhoto = nil
         rotationDegrees = 0
-        appliedRotationDegrees = 0
         analyze(data, rotationDegrees: 0)
     }
 
@@ -78,30 +71,62 @@ final class CardCenteringViewModel: ObservableObject {
         rotationDegrees = min(45, max(-45, adjusted))
     }
 
-    func applyRotation() {
-        guard let sourceData else { return }
-        appliedRotationDegrees = rotationDegrees
-        analyze(sourceData, rotationDegrees: appliedRotationDegrees)
-    }
-
     func resetRotation() {
         rotationDegrees = 0
-        applyRotation()
     }
 
-    func updateOuter(_ keyPath: WritableKeyPath<CardCenteringEdges, Int>, to value: Int) {
+    func updateOuter(
+        _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
+        to value: Int,
+        within range: ClosedRange<Int>
+    ) {
         guard var measurement else { return }
-        measurement.outer[keyPath: keyPath] = value
+        measurement.outer[keyPath: keyPath] = min(range.upperBound, max(range.lowerBound, value))
         measurement.refreshWarnings()
         self.measurement = measurement
     }
 
-    func updateInner(_ keyPath: WritableKeyPath<CardCenteringEdges, Int>, to value: Int) {
+    func updateInner(
+        _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
+        to value: Int,
+        within range: ClosedRange<Int>
+    ) {
         guard var measurement else { return }
-        measurement.inner[keyPath: keyPath] = value
+        measurement.inner[keyPath: keyPath] = min(range.upperBound, max(range.lowerBound, value))
         measurement.refreshWarnings()
         self.measurement = measurement
     }
+
+#if DEBUG
+    /// Gives the screenshot route a stable, local image so the centering controls
+    /// can be checked without a Photos permission prompt or a camera session.
+    func loadDebugFixtureIfNeeded() {
+        guard sourceData == nil else { return }
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 360, height: 504), format: format).image { context in
+            UIColor(white: 0.94, alpha: 1).setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 360, height: 504))
+
+            UIColor(red: 0.10, green: 0.20, blue: 0.38, alpha: 1).setFill()
+            context.fill(CGRect(x: 38, y: 34, width: 284, height: 436))
+
+            UIColor(red: 0.95, green: 0.76, blue: 0.22, alpha: 1).setFill()
+            context.fill(CGRect(x: 64, y: 60, width: 232, height: 384))
+
+            UIColor(red: 0.16, green: 0.40, blue: 0.58, alpha: 1).setFill()
+            context.fill(CGRect(x: 92, y: 126, width: 176, height: 118))
+            UIColor.white.withAlphaComponent(0.9).setFill()
+            context.fill(CGRect(x: 110, y: 274, width: 140, height: 10))
+            context.fill(CGRect(x: 132, y: 296, width: 96, height: 8))
+        }
+
+        guard let data = image.pngData() else { return }
+        loadImageData(data)
+    }
+#endif
 
     /// Compose the current image, its guides and its figures into one PNG on
     /// disk, ready to hand to the share sheet.
@@ -115,9 +140,10 @@ final class CardCenteringViewModel: ObservableObject {
         let rendered = CardCenteringExport.render(
             image: image,
             measurement: measurement,
-            // The picture on screen reflects the rotation that was applied, not
-            // one typed but not yet applied, so the export must agree with it.
-            rotationDegrees: appliedRotationDegrees
+            // Rotation is a display adjustment. It does not rerun detection and
+            // it does not move either guide, so the export uses the same visual
+            // treatment as the preview.
+            rotationDegrees: rotationDegrees
         )
         guard let data = rendered.pngData() else {
             errorMessage = "The centering image could not be prepared for export."
@@ -149,6 +175,11 @@ final class CardCenteringViewModel: ObservableObject {
                 case let .success(analysis):
                     self.image = analysis.image
                     self.measurement = analysis.measurement
+                    // `analysis.image` is already straightened when the card was
+                    // skewed, and the measurement is in that image's
+                    // coordinates. `rotationDegrees` is the person's own display
+                    // adjustment and stays theirs — adding the correction to it
+                    // would rotate an already-level card a second time.
                 case let .failure(error):
                     self.errorMessage = error.localizedDescription
                 }
@@ -166,6 +197,8 @@ struct CardCenteringView: View {
     @State private var isShowingCamera = false
     @State private var isShowingSettings = false
     @State private var isShowingFileImporter = false
+    @State private var isOuterExpanded = ProcessInfo.processInfo.arguments.contains("CenteringExpanded")
+    @State private var isInnerExpanded = ProcessInfo.processInfo.arguments.contains("CenteringExpanded")
     /// The rendered export, prepared ahead of the tap so `ShareLink` can own the
     /// presentation. `ShareLink` anchors itself correctly as a popover in wide
     /// windows and as a sheet in narrow ones, which a hand-rolled
@@ -174,43 +207,89 @@ struct CardCenteringView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 18) {
-                    if let image = model.image, let measurement = model.measurement {
-                        imageReview(image, measurement: measurement)
-                        resultSummary(measurement)
-                        rotationControls
-                        guideControls(measurement)
-                    } else if model.isAnalyzing {
-                        ProgressView("Finding card edges…")
-                            .frame(maxWidth: .infinity, minHeight: 360)
-                    } else {
-                        ContentUnavailableView {
-                            Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
-                        } description: {
-                            Text("Choose a clear, straight-on card photo or scan.")
-                        } actions: {
-                            VStack(spacing: 10) {
-                                Button("Take Photo", systemImage: "camera") {
-                                    isShowingCamera = true
+            Group {
+                if let image = model.image, let measurement = model.measurement {
+                    VStack(spacing: 0) {
+                        GeometryReader { proxy in
+                            imageReview(image, measurement: measurement)
+                                .frame(width: proxy.size.width, height: proxy.size.height)
+                        }
+                        .frame(height: 300)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+
+                        Divider()
+
+                        ScrollViewReader { reader in
+                            ScrollView {
+                                VStack(spacing: 18) {
+                                    resultSummary(measurement)
+                                    rotationControls
+                                    guideControls(measurement)
+                                        .id("guide-controls")
+
+                                    if let errorMessage = model.errorMessage {
+                                        Text(errorMessage)
+                                            .font(.footnote)
+                                            .foregroundStyle(.red)
+                                    }
                                 }
-                                photoButton("Choose Photo")
-                                Button("Choose File", systemImage: "folder") {
-                                    isShowingFileImporter = true
+                                .padding(16)
+                                .padding(.bottom, 16)
+                                .contentWidthLimit(.standard)
+                            }
+                            .scrollIndicators(.visible)
+                            .safeAreaPadding(.bottom, 80)
+#if DEBUG
+                            .onAppear {
+                                let arguments = ProcessInfo.processInfo.arguments
+                                guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
+                                      arguments.indices.contains(routeIndex + 1),
+                                      arguments[routeIndex + 1] == "CenteringExpanded" else { return }
+                                DispatchQueue.main.async {
+                                    withAnimation(nil) {
+                                        reader.scrollTo("guide-controls", anchor: .top)
+                                    }
                                 }
                             }
+#endif
                         }
-                        .frame(minHeight: 460)
                     }
+                } else {
+                    ScrollView {
+                        VStack(spacing: 18) {
+                            if model.isAnalyzing {
+                                ProgressView("Finding card edges…")
+                                    .frame(maxWidth: .infinity, minHeight: 360)
+                            } else {
+                                ContentUnavailableView {
+                                    Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
+                                } description: {
+                                    Text("Choose a clear, straight-on card photo or scan.")
+                                } actions: {
+                                    VStack(spacing: 10) {
+                                        Button("Take Photo", systemImage: "camera") {
+                                            isShowingCamera = true
+                                        }
+                                        photoButton("Choose Photo")
+                                        Button("Choose File", systemImage: "folder") {
+                                            isShowingFileImporter = true
+                                        }
+                                    }
+                                }
+                                .frame(minHeight: 460)
+                            }
 
-                    if let errorMessage = model.errorMessage {
-                        Text(errorMessage)
-                            .font(.footnote)
-                            .foregroundStyle(.red)
+                            if let errorMessage = model.errorMessage {
+                                Text(errorMessage)
+                                    .font(.footnote)
+                                    .foregroundStyle(.red)
+                            }
+                        }
+                        .padding(16)
+                        .contentWidthLimit(.standard)
                     }
                 }
-                .padding(16)
-                .contentWidthLimit(.standard)
             }
             .navigationTitle("Centering")
             .toolbar {
@@ -258,6 +337,16 @@ struct CardCenteringView: View {
             .onChange(of: model.selectedPhoto) {
                 Task { await model.loadSelectedPhoto() }
             }
+#if DEBUG
+            .task {
+                let arguments = ProcessInfo.processInfo.arguments
+                guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
+                      arguments.indices.contains(routeIndex + 1) else { return }
+                let route = arguments[routeIndex + 1]
+                guard route.hasPrefix("Centering") else { return }
+                model.loadDebugFixtureIfNeeded()
+            }
+#endif
             .overlay {
                 if model.isAnalyzing, model.image != nil {
                     ZStack {
@@ -300,7 +389,7 @@ struct CardCenteringView: View {
     }
 
     private func imageReview(_ image: UIImage, measurement: CardCenteringMeasurement) -> some View {
-        CardCenteringImage(image: image, measurement: measurement)
+        CardCenteringImage(image: image, measurement: measurement, rotationDegrees: model.rotationDegrees)
             .scaleEffect(zoom)
             .offset(panOffset)
             .frame(maxWidth: .infinity)
@@ -408,15 +497,9 @@ struct CardCenteringView: View {
 
             HStack {
                 Button("Reset") { model.resetRotation() }
-                    .disabled(model.rotationDegrees == 0 && model.appliedRotationDegrees == 0)
+                    .disabled(model.rotationDegrees == 0)
                 Spacer()
-                Button("Apply & Redetect") { model.applyRotation() }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!model.rotationIsPending)
-            }
-
-            if model.rotationIsPending {
-                Text("Apply the rotation to update the guides.")
+                Text("Rotates photo only")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -443,22 +526,22 @@ struct CardCenteringView: View {
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            DisclosureGroup("Outer card edge") {
+            DisclosureGroup("Outer card edge", isExpanded: $isOuterExpanded) {
                 VStack(spacing: 10) {
-                    edgeStepper("Left", value: outerBinding(\.left), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Right", value: outerBinding(\.right), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Top", value: outerBinding(\.top), range: 0...(measurement.imageHeight - 1))
-                    edgeStepper("Bottom", value: outerBinding(\.bottom), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Left", value: outerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Right", value: outerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Top", value: outerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Bottom", value: outerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
                 }
                 .padding(.top, 10)
             }
 
-            DisclosureGroup("Inner frame") {
+            DisclosureGroup("Inner frame", isExpanded: $isInnerExpanded) {
                 VStack(spacing: 10) {
-                    edgeStepper("Left", value: innerBinding(\.left), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Right", value: innerBinding(\.right), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Top", value: innerBinding(\.top), range: 0...(measurement.imageHeight - 1))
-                    edgeStepper("Bottom", value: innerBinding(\.bottom), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Left", value: innerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Right", value: innerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Top", value: innerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Bottom", value: innerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
                 }
                 .padding(.top, 10)
             }
@@ -469,22 +552,40 @@ struct CardCenteringView: View {
 
     private func edgeStepper(_ label: String, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
         Stepper(value: value, in: range) {
-            LabeledContent(label, value: "\(value.wrappedValue) px")
-                .monospacedDigit()
+            HStack(spacing: 10) {
+                Text(label)
+                Spacer(minLength: 8)
+                TextField("0", value: value, format: .number)
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.trailing)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 82)
+                    .monospacedDigit()
+                    .accessibilityLabel("\(label) guide position")
+                    .accessibilityValue("\(value.wrappedValue) pixels")
+                Text("px")
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
-    private func outerBinding(_ keyPath: WritableKeyPath<CardCenteringEdges, Int>) -> Binding<Int> {
+    private func outerBinding(
+        _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
+        range: ClosedRange<Int>
+    ) -> Binding<Int> {
         Binding(
             get: { model.measurement?.outer[keyPath: keyPath] ?? 0 },
-            set: { model.updateOuter(keyPath, to: $0) }
+            set: { model.updateOuter(keyPath, to: $0, within: range) }
         )
     }
 
-    private func innerBinding(_ keyPath: WritableKeyPath<CardCenteringEdges, Int>) -> Binding<Int> {
+    private func innerBinding(
+        _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
+        range: ClosedRange<Int>
+    ) -> Binding<Int> {
         Binding(
             get: { model.measurement?.inner[keyPath: keyPath] ?? 0 },
-            set: { model.updateInner(keyPath, to: $0) }
+            set: { model.updateInner(keyPath, to: $0, within: range) }
         )
     }
 }
@@ -505,6 +606,7 @@ private struct CenteringMetric: View {
 private struct CardCenteringImage: View {
     let image: UIImage
     let measurement: CardCenteringMeasurement
+    let rotationDegrees: Double
 
     var body: some View {
         GeometryReader { proxy in
@@ -522,6 +624,7 @@ private struct CardCenteringImage: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: proxy.size.width, height: proxy.size.height)
+                .rotationEffect(.degrees(rotationDegrees))
 
             guideLines(measurement.outer, color: .red, origin: origin, size: fittedSize)
             guideLines(measurement.inner, color: .cyan, origin: origin, size: fittedSize)

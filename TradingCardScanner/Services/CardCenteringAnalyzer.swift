@@ -16,6 +16,10 @@ enum CardCenteringAnalyzerError: LocalizedError {
 struct CardCenteringAnalysis {
     let image: UIImage
     let measurement: CardCenteringMeasurement
+    /// The rotation the measurement was taken at. Non-zero when the analyzer
+    /// straightened the card itself, so the screen's rotation control can show
+    /// what was applied instead of claiming zero.
+    var appliedRotationDegrees: Double = 0
 }
 
 /// Native port of the tuned Python centering detector. It scores long color
@@ -36,11 +40,33 @@ enum CardCenteringAnalyzer {
 
     private struct CandidateSet {
         let candidates: [Candidate]
-        let baseline: Float
     }
 
+    /// Skew below this is left alone: it is within the noise of the edge fit,
+    /// and re-rendering costs a resample for no measurable gain.
+    private static let minimumCorrectableSkew = 0.35
+    /// Beyond this the card is not merely skewed, and a blind rotation would be
+    /// a guess. The measurement is still returned, at the given rotation.
+    private static let maximumCorrectableSkew = 25.0
+
     static func analyze(_ data: Data, rotationDegrees: Double = 0) throws -> CardCenteringAnalysis {
-        guard let source = UIImage(data: data), let prepared = prepare(source, rotationDegrees: rotationDegrees) else {
+        // Only an automatic pass may straighten the card. Once the person has
+        // touched the rotation control, that value is the answer.
+        try analyze(data, rotationDegrees: rotationDegrees, correctingSkew: rotationDegrees == 0)
+    }
+
+    private static func analyze(
+        _ data: Data,
+        rotationDegrees: Double,
+        correctingSkew: Bool,
+        padding: UIColor? = nil
+    ) throws -> CardCenteringAnalysis {
+        guard let source = UIImage(data: data),
+              let prepared = prepare(
+                  source,
+                  rotationDegrees: rotationDegrees,
+                  padding: padding ?? .white
+              ) else {
             throw CardCenteringAnalyzerError.unreadableImage
         }
         let pixels = try pixels(from: prepared)
@@ -102,12 +128,69 @@ enum CardCenteringAnalyzer {
             cardHeight: detectedHeight
         )
 
-        let outer = CardCenteringEdges(
-            left: silhouette?.left ?? leftOuterSet.candidates.first!.position,
-            top: outerTop,
-            right: silhouette?.right ?? rightOuterSet.candidates.last!.position,
-            bottom: outerBottom
-        )
+        // The card's own outline, when it can be found, outranks every gradient
+        // heuristic above.
+        //
+        // Those heuristics only look for the outer edges inside the outer 22% of
+        // the *image*, and take the most extreme peak they find there. Both
+        // assumptions fail on an ordinary photo: a card occupying the middle
+        // 40% of the frame has its top edge at 30%, outside the band entirely,
+        // so the scan finds nothing above threshold and falls back to the
+        // strongest index in a strip of pure background — which is noise. And a
+        // pale border against a pale background produces an outer edge weaker
+        // than the border-to-artwork edge just inside it, so the first peak past
+        // the threshold is the *inner* edge and every measurement downstream is
+        // taken from the wrong baseline.
+        //
+        // Neither failure is visible in the result: the numbers stay
+        // self-consistent, so `refreshWarnings` reports nothing and the screen
+        // states a wrong centering ratio with confidence.
+        let outline = cardOutline(lab: lab, width: width, height: height)
+        var notes: [String] = []
+        if outline == nil {
+            // The gradient scan below is a guess in exactly the conditions that
+            // defeat the outline: a card that does not stand out from what it is
+            // lying on, or one bled to the edges of the frame. Say so, rather
+            // than letting a guess wear the same face as a measurement.
+            notes.append("The card outline could not be found automatically — check the outer guides before reading the result.")
+        }
+
+        // Inner edges are found by averaging the gradient down whole columns
+        // and across whole rows, so a skewed card smears its border transition
+        // over as many pixels as the card drifts — about 22 on a 680px card at
+        // two degrees. There is no peak left to find, and the border prior then
+        // settles the answer on whatever narrow candidate is nearest. Rotating
+        // first is what makes the rest of this measurable, and it is the manual
+        // step this screen was making people perform by hand.
+        if correctingSkew,
+           let skew = outline?.skewDegrees,
+           abs(skew) >= minimumCorrectableSkew,
+           abs(skew) <= maximumCorrectableSkew {
+            return try analyze(
+                data,
+                rotationDegrees: -skew,
+                correctingSkew: false,
+                // Measured from this unrotated pass, where there are no corner
+                // wedges to contaminate it.
+                padding: borderColor(pixels: pixels, width: width, height: height)
+            )
+        }
+
+        // Past the correctable range this is no longer a lean to be taken out;
+        // it is a photo taken at an angle, and rotating by a fitted number would
+        // be a guess. Rotation on this screen is a display adjustment and does
+        // not re-run detection, so the person has to straighten the source.
+        if let skew = outline?.skewDegrees, abs(skew) > maximumCorrectableSkew {
+            notes.append("The card looks strongly rotated. Straighten the photo and load it again for an accurate reading.")
+        }
+
+        let outer = outline?.edges
+            ?? CardCenteringEdges(
+                left: silhouette?.left ?? leftOuterSet.candidates.first!.position,
+                top: outerTop,
+                right: silhouette?.right ?? rightOuterSet.candidates.last!.position,
+                bottom: outerBottom
+            )
 
         let cardWidth = max(1, outer.right - outer.left)
         let cardHeight = max(1, outer.bottom - outer.top)
@@ -132,50 +215,95 @@ enum CardCenteringAnalyzer {
             .bottom: candidates(horizontalScores(gy, width: width, height: height, yRange: bottomStartInner..<bottomEndInner, xRange: xRange), offset: bottomStartInner, madMultiplier: 1.1)
         ]
 
-        let firstPass: [Side: Candidate] = [
-            .left: innerSets[.left]!.candidates.first!,
-            .right: innerSets[.right]!.candidates.last!,
-            .top: innerSets[.top]!.candidates.first!,
-            .bottom: innerSets[.bottom]!.candidates.last!
-        ]
-        let firstBorders = Dictionary(uniqueKeysWithValues: Side.allCases.map {
-            ($0, border(for: $0, position: firstPass[$0]!.position, outer: outer))
-        })
-        let topSet = innerSets[.top]!
-        let topConfidence = firstPass[.top]!.strength / max(topSet.baseline, 0.000_001)
-        let topBorder = firstBorders[.top]!
-
-        var chosen: [Side: Candidate] = [:]
+        // Each side is chosen on its own evidence.
+        //
+        // This used to score candidates by how close their border width was to
+        // the *other* sides' — the top border specifically, when the top looked
+        // confident. That prior assumes the four borders are alike, which is
+        // the one thing a centering tool may not assume: a miscut card has
+        // unequal borders by definition, and the prior pulled every reading
+        // back toward the card being well centred. It failed hardest exactly
+        // where the measurement matters most. On a card with a thin top border
+        // and a banner just inside the artwork, the peer median sat nearer the
+        // banner than the truth and the top border read 49px instead of 15.
+        let searchDepths: [Side: Int] = [.left: maxX, .right: maxX, .top: maxY, .bottom: maxY]
+        var chosen: [Side: Int] = [:]
         for side in Side.allCases {
-            let peerBorders = firstBorders.filter { $0.key != side && $0.value > 0 }.map(\.value)
-            let expected = side != .top && topBorder > 0 && topConfidence >= 3
-                ? Double(topBorder)
-                : median(peerBorders.map(Double.init))
-            chosen[side] = chooseInner(side: side, set: innerSets[side]!, outer: outer, expectedBorder: expected)
+            let depth = searchDepths[side] ?? maxX
+            // Where the border colour stops is the measurement. Gradient
+            // strength only stands in for it, and stands in badly whenever the
+            // artwork behind the border is louder than the border itself — a
+            // black-bordered card on dark art has a faint outer transition and
+            // a brilliant banner a few pixels further in, and the loudest edge
+            // is then the wrong one by thirty pixels.
+            let minimum = side == .left || side == .right ? minX : minY
+            chosen[side] = borderEnd(
+                side: side,
+                lab: lab,
+                width: width,
+                height: height,
+                outer: outer,
+                minimum: minimum,
+                maximum: depth
+            ) ?? chooseInner(
+                side: side,
+                set: innerSets[side]!,
+                outer: outer
+            ).position
         }
 
         let inner = CardCenteringEdges(
-            left: chosen[.left]!.position,
-            top: chosen[.top]!.position,
-            right: chosen[.right]!.position,
-            bottom: chosen[.bottom]!.position
+            left: chosen[.left]!,
+            top: chosen[.top]!,
+            right: chosen[.right]!,
+            bottom: chosen[.bottom]!
         )
+        // A border that stopped at the very first pixel searched, or ran the
+        // whole depth without stopping, is not a border that was found — it is
+        // the search hitting its own limits. That happens when the outer edges
+        // are wrong, most notably on a card bled to the frame with no
+        // surrounding surface to recognise it against, where the outline lands
+        // on the artwork and the "borders" are measured inside the picture.
+        //
+        // Checked as one condition rather than diagnosed case by case: whatever
+        // the cause, a reading pinned to the end of its own range is one to look
+        // at before trusting. A genuinely extreme miscut trips it too, and that
+        // is the right outcome.
+        let pinned = [
+            (inner.left - outer.left, minX, maxX),
+            (outer.right - inner.right, minX, maxX),
+            (inner.top - outer.top, minY, maxY),
+            (outer.bottom - inner.bottom, minY, maxY)
+        ].contains { border, lower, upper in border <= lower || border >= upper }
+        if pinned, notes.isEmpty {
+            notes.append("The border edges could not be followed confidently — check all four guides before reading the result.")
+        }
+
         var measurement = CardCenteringMeasurement(
             imageWidth: width,
             imageHeight: height,
             outer: outer,
             inner: inner,
-            warnings: []
+            warnings: [],
+            detectionNotes: notes
         )
         measurement.refreshWarnings()
-        return CardCenteringAnalysis(image: prepared, measurement: measurement)
+        return CardCenteringAnalysis(
+            image: prepared,
+            measurement: measurement,
+            appliedRotationDegrees: rotationDegrees
+        )
     }
 
     private enum Side: CaseIterable, Hashable {
         case left, right, top, bottom
     }
 
-    private static func prepare(_ image: UIImage, rotationDegrees: Double) -> UIImage? {
+    private static func prepare(
+        _ image: UIImage,
+        rotationDegrees: Double,
+        padding: UIColor
+    ) -> UIImage? {
         guard image.cgImage != nil else { return nil }
         // Camera photos commonly carry their portrait rotation in
         // `imageOrientation` while the CGImage remains landscape. Using the raw
@@ -194,7 +322,12 @@ enum CardCenteringAnalyzer {
         format.scale = 1
         format.opaque = true
         return UIGraphicsImageRenderer(size: rotatedBounds.size, format: format).image { context in
-            UIColor.white.setFill()
+            // Whatever surrounds the card, not white. Rotation leaves wedges in
+            // the corners of the enlarged canvas, and filling them with a fixed
+            // colour makes them foreground against any darker background — so
+            // the silhouette grew to the whole canvas and the straightened pass
+            // measured worse than the crooked one it was correcting.
+            padding.setFill()
             context.fill(CGRect(origin: .zero, size: rotatedBounds.size))
             context.cgContext.translateBy(x: rotatedBounds.width / 2, y: rotatedBounds.height / 2)
             context.cgContext.rotate(by: radians)
@@ -268,7 +401,7 @@ enum CardCenteringAnalyzer {
     }
 
     private static func candidates(_ scores: [Float], offset: Int, madMultiplier: Float = 1.2) -> CandidateSet {
-        guard !scores.isEmpty else { return CandidateSet(candidates: [Candidate(position: offset, strength: 0)], baseline: 0) }
+        guard !scores.isEmpty else { return CandidateSet(candidates: [Candidate(position: offset, strength: 0)]) }
         let smoothed = scores.indices.map { index -> Float in
             let range = max(0, index - 2)...min(scores.count - 1, index + 2)
             return range.reduce(0) { $0 + scores[$1] } / Float(range.count)
@@ -292,8 +425,7 @@ enum CardCenteringAnalyzer {
             found[offset + strongest] = scores[strongest]
         }
         return CandidateSet(
-            candidates: found.map { Candidate(position: $0.key, strength: $0.value) }.sorted { $0.position < $1.position },
-            baseline: baseline
+            candidates: found.map { Candidate(position: $0.key, strength: $0.value) }.sorted { $0.position < $1.position }
         )
     }
 
@@ -361,6 +493,189 @@ enum CardCenteringAnalyzer {
         return (max(0, card.lower - 1), min(width - 1, card.upper))
     }
 
+    // MARK: - Card outline
+
+    /// The card's bounding box, from where it stops looking like the background.
+    ///
+    /// Background is estimated from a thin ring around the image and taken as a
+    /// median, so it survives a card that touches one or two edges. A pixel is
+    /// foreground when it differs from that background by more than the
+    /// background's own spread, which is what lets a near-white border be found
+    /// against a light table without also turning film grain into a card.
+    ///
+    /// Occupancy is compared against the strongest column and row rather than
+    /// against the image, because "how much of the frame does a card fill" is
+    /// exactly the thing that cannot be assumed here.
+    ///
+    /// Returns `nil` rather than a guess whenever the result is not shaped like
+    /// a card — a bled-to-the-edge scan, a busy background — and the caller
+    /// falls back to the gradient scan.
+    /// The median colour of a thin ring around the image — what the card is
+    /// sitting on. Taken in RGB so it can be used directly as a fill.
+    private static func borderColor(
+        pixels: [(Float, Float, Float)],
+        width: Int,
+        height: Int
+    ) -> UIColor {
+        let ring = ringWidth(width: width, height: height)
+        var red: [Float] = [], green: [Float] = [], blue: [Float] = []
+        for index in ringIndices(width: width, height: height, ring: ring) {
+            let pixel = pixels[index]
+            red.append(pixel.0); green.append(pixel.1); blue.append(pixel.2)
+        }
+        guard !red.isEmpty else { return .white }
+        return UIColor(
+            red: CGFloat(median(red)),
+            green: CGFloat(median(green)),
+            blue: CGFloat(median(blue)),
+            alpha: 1
+        )
+    }
+
+    private static func ringWidth(width: Int, height: Int) -> Int {
+        clamped(Int((Double(Swift.min(width, height)) * 0.01).rounded()), 2, 24)
+    }
+
+    /// Indices of the ring, sampled the same way for the colour and the mask so
+    /// the two always describe the same pixels.
+    private static func ringIndices(width: Int, height: Int, ring: Int) -> [Int] {
+        var indices: [Int] = []
+        indices.reserveCapacity((width + height) * ring)
+        for y in 0..<height {
+            if y < ring || y >= height - ring {
+                for x in stride(from: 0, to: width, by: 2) { indices.append(y * width + x) }
+            } else {
+                for x in 0..<ring { indices.append(y * width + x) }
+                for x in (width - ring)..<width { indices.append(y * width + x) }
+            }
+        }
+        return indices
+    }
+
+    private struct CardOutline {
+        let edges: CardCenteringEdges
+        /// Positive means the card leans clockwise in image coordinates.
+        let skewDegrees: Double
+    }
+
+    private static func cardOutline(
+        lab: [Pixel],
+        width: Int,
+        height: Int
+    ) -> CardOutline? {
+        let ring = ringWidth(width: width, height: height)
+        let samples = ringIndices(width: width, height: height, ring: ring).map { lab[$0] }
+        guard samples.count > 32 else { return nil }
+
+        let background = medianPixel(samples)
+        let spread = median(samples.map { distance($0, background) })
+        let threshold = Swift.max(5, spread * 3)
+
+        var columnCounts = [Int](repeating: 0, count: width)
+        var rowCounts = [Int](repeating: 0, count: height)
+        // Where the card starts and stops on each row, kept so the same single
+        // pass that finds the outline can also measure how far it leans.
+        var firstForeground = [Int](repeating: -1, count: height)
+        var lastForeground = [Int](repeating: -1, count: height)
+        for y in 0..<height {
+            let row = y * width
+            for x in 0..<width where distance(lab[row + x], background) >= threshold {
+                columnCounts[x] += 1
+                rowCounts[y] += 1
+                if firstForeground[y] < 0 { firstForeground[y] = x }
+                lastForeground[y] = x
+            }
+        }
+
+        guard let columns = longestRun(columnCounts),
+              let rows = longestRun(rowCounts) else { return nil }
+
+        let boxWidth = columns.upper - columns.lower
+        let boxHeight = rows.upper - rows.lower
+        guard boxWidth > 8, boxHeight > 8 else { return nil }
+
+        // A trading card is 2.5 x 3.5 inches, so 0.714 — either way up, because
+        // a card photographed sideways is still a card and every measurement
+        // below is stated per edge rather than per axis. The range is wide
+        // because a few degrees of skew and a tight crop both move it, but it
+        // still rejects a background that happened to form a long run.
+        let aspect = Double(boxWidth) / Double(boxHeight)
+        guard (0.50...1.00).contains(aspect) || (1.00...2.00).contains(aspect) else { return nil }
+
+        // Both vertical edges are fitted and averaged. One alone can be dragged
+        // by a shadow down one side; the two disagreeing is itself the signal
+        // that neither should be trusted, so the fit is discarded then.
+        let inset = Swift.max(2, Int((Double(boxHeight) * 0.1).rounded()))
+        let fitRows = (rows.lower + inset)...(rows.upper - inset)
+        guard fitRows.lowerBound < fitRows.upperBound else { return nil }
+
+        let leftSlope = slope(of: firstForeground, over: fitRows)
+        let rightSlope = slope(of: lastForeground, over: fitRows)
+        let skew: Double
+        if let leftSlope, let rightSlope, abs(leftSlope - rightSlope) <= 0.08 {
+            // `dx/dy` of the edges, negated. Image space has y increasing
+            // downward, so a card leaning clockwise puts its lower rows further
+            // *left* and the raw slope comes out negative; without the negation
+            // the corrective pass rotates the same way the card already leans
+            // and doubles the skew it was meant to remove.
+            skew = -atan((leftSlope + rightSlope) / 2) * 180 / .pi
+        } else {
+            skew = 0
+        }
+
+        return CardOutline(
+            edges: CardCenteringEdges(
+                left: columns.lower,
+                top: rows.lower,
+                right: columns.upper,
+                bottom: rows.upper
+            ),
+            skewDegrees: skew
+        )
+    }
+
+    /// Least-squares `dx/dy` of one card edge, ignoring rows where the mask
+    /// found nothing.
+    private static func slope(of positions: [Int], over rows: ClosedRange<Int>) -> Double? {
+        var n = 0.0, sumY = 0.0, sumX = 0.0, sumYY = 0.0, sumXY = 0.0
+        for y in rows where positions[y] >= 0 {
+            let dy = Double(y), dx = Double(positions[y])
+            n += 1; sumY += dy; sumX += dx; sumYY += dy * dy; sumXY += dx * dy
+        }
+        guard n >= 8 else { return nil }
+        let denominator = n * sumYY - sumY * sumY
+        guard abs(denominator) > .ulpOfOne else { return nil }
+        return (n * sumXY - sumY * sumX) / denominator
+    }
+
+    /// The longest run of indices whose count is a solid fraction of the
+    /// strongest one. Self-normalising, so it does not need to know how much of
+    /// the frame the card fills.
+    private static func longestRun(_ counts: [Int]) -> (lower: Int, upper: Int)? {
+        guard let peak = counts.max(), peak > 0 else { return nil }
+        let needed = Swift.max(1, Int((Double(peak) * 0.6).rounded()))
+        var best: (lower: Int, upper: Int)?
+        var start: Int?
+
+        func close(_ end: Int) {
+            guard let lower = start else { return }
+            if best == nil || (end - lower) > (best!.upper - best!.lower) {
+                best = (lower, end)
+            }
+            start = nil
+        }
+
+        for index in counts.indices {
+            if counts[index] >= needed {
+                if start == nil { start = index }
+            } else {
+                close(index - 1)
+            }
+        }
+        close(counts.count - 1)
+        return best
+    }
+
     private static func medianPixel(_ pixels: [Pixel]) -> Pixel {
         Pixel(
             l: median(pixels.map(\.l)),
@@ -369,19 +684,105 @@ enum CardCenteringAnalyzer {
         )
     }
 
-    private static func chooseInner(side: Side, set: CandidateSet, outer: CardCenteringEdges, expectedBorder: Double) -> Candidate {
-        let strongest = max(set.candidates.map(\.strength).max() ?? 0, 0.000_001)
-        let expected = max(4, expectedBorder)
-        func score(_ candidate: Candidate) -> Double {
-            let width = border(for: side, position: candidate.position, outer: outer)
-            guard width > 0 else { return -Double.greatestFiniteMagnitude }
-            let strength = Double(candidate.strength / strongest)
-            let distance = abs(Double(width) - expected) / expected
-            return strength - 0.8 * distance
+    /// Walks in from the cut edge until the border colour stops.
+    ///
+    /// The border is a flat printed region, so it can be recognised by what it
+    /// *is* rather than by how sharply it ends — which is what makes this work
+    /// where gradients do not. The colour is sampled from a thin strip just
+    /// inside the cut edge, and the tolerance comes from that strip's own
+    /// variation, so a faint border on dark art is followed just as well as a
+    /// bright one and a slightly uneven border is not mistaken for its end.
+    ///
+    /// Sampled across the middle of the card only, away from rounded corners
+    /// and edge wear. Returns `nil` — deferring to the gradient scan — when the
+    /// border does not end inside the search band, which is what happens if the
+    /// strip was never border in the first place.
+    private static func borderEnd(
+        side: Side,
+        lab: [Pixel],
+        width: Int,
+        height: Int,
+        outer: CardCenteringEdges,
+        minimum: Int,
+        maximum: Int
+    ) -> Int? {
+        let horizontal = side == .left || side == .right
+        // Positions to walk through, and the span to average each one over.
+        let spanLower: Int, spanUpper: Int
+        if horizontal {
+            let inset = Int(Double(outer.bottom - outer.top) * 0.2)
+            spanLower = clamped(outer.top + inset, 0, height - 1)
+            spanUpper = clamped(outer.bottom - inset, spanLower + 1, height)
+        } else {
+            let inset = Int(Double(outer.right - outer.left) * 0.2)
+            spanLower = clamped(outer.left + inset, 0, width - 1)
+            spanUpper = clamped(outer.right - inset, spanLower + 1, width)
         }
-        return set.candidates.max { lhs, rhs in
-            score(lhs) < score(rhs)
-        } ?? set.candidates[0]
+        guard spanUpper - spanLower >= 8 else { return nil }
+
+        func sample(depth: Int) -> [Pixel] {
+            let position: Int
+            switch side {
+            case .left: position = outer.left + depth
+            case .right: position = outer.right - depth
+            case .top: position = outer.top + depth
+            case .bottom: position = outer.bottom - depth
+            }
+            guard position >= 0 else { return [] }
+            if horizontal {
+                guard position < width else { return [] }
+                return (spanLower..<spanUpper).map { lab[$0 * width + position] }
+            }
+            guard position < height else { return [] }
+            return (spanLower..<spanUpper).map { lab[position * width + $0] }
+        }
+
+        // The border's own colour and its own unevenness, from a strip that is
+        // inside any border wide enough to be worth measuring.
+        var strip: [Pixel] = []
+        for depth in 1...3 { strip.append(contentsOf: sample(depth: depth)) }
+        guard strip.count >= 24 else { return nil }
+        let borderColor = medianPixel(strip)
+        let unevenness = median(strip.map { distance($0, borderColor) })
+        let tolerance = Swift.max(4, unevenness * 4)
+
+        for depth in minimum...maximum {
+            let line = sample(depth: depth)
+            guard !line.isEmpty else { return nil }
+            if distance(medianPixel(line), borderColor) > tolerance {
+                switch side {
+                case .left: return outer.left + depth
+                case .right: return outer.right - depth
+                case .top: return outer.top + depth
+                case .bottom: return outer.bottom - depth
+                }
+            }
+        }
+        return nil
+    }
+
+    /// The strongest transition in the band, used when `borderEnd` cannot
+    /// follow the border — an uneven or foiled one, mainly.
+    ///
+    /// Strength alone, deliberately. The previous rule scored candidates by how
+    /// close their border width came to the *other three sides'*, which assumes
+    /// the four borders are alike — the one thing a centering measurement may
+    /// not assume, since unequal borders are precisely what it exists to report.
+    /// It biased every reading toward the card being well centred.
+    ///
+    /// Nothing has replaced that prior. A shallowness preference was tried here
+    /// and removed again: it changed no measurement in any case that could be
+    /// constructed, and a weight that earns its keep in no test is a number
+    /// waiting to be wrong in a real one.
+    private static func chooseInner(
+        side: Side,
+        set: CandidateSet,
+        outer: CardCenteringEdges
+    ) -> Candidate {
+        set.candidates
+            .filter { border(for: side, position: $0.position, outer: outer) > 0 }
+            .max { $0.strength < $1.strength }
+            ?? set.candidates[0]
     }
 
     private static func border(for side: Side, position: Int, outer: CardCenteringEdges) -> Int {

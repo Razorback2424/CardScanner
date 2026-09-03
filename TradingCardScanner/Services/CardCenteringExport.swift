@@ -65,7 +65,16 @@ enum CardCenteringExport {
             context.fill(CGRect(x: 0, y: 0, width: canvasWidth, height: totalHeight))
 
             let photoRect = CGRect(x: 0, y: 0, width: canvasWidth, height: photoHeight)
-            image.draw(in: photoRect)
+            context.cgContext.saveGState()
+            context.cgContext.translateBy(x: photoRect.midX, y: photoRect.midY)
+            context.cgContext.rotate(by: CGFloat(rotationDegrees * .pi / 180))
+            image.draw(in: CGRect(
+                x: -photoRect.width / 2,
+                y: -photoRect.height / 2,
+                width: photoRect.width,
+                height: photoRect.height
+            ))
+            context.cgContext.restoreGState()
             drawGuides(measurement: measurement, in: photoRect, unit: unit, context: context.cgContext)
 
             Palette.divider.setFill()
