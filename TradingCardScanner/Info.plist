@@ -22,8 +22,18 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan card details and take card photos for centering checks.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.example.TradingCardScanner.priceRefresh.processing</string>
+		<string>com.example.TradingCardScanner.priceRefresh.appRefresh</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

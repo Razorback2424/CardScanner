@@ -231,6 +231,15 @@ struct SettingsView: View {
                     isShowingCSVExporter = true
                 }
                 .disabled(!cards.contains { $0.highImageURL == nil })
+
+#if DEBUG
+                Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
+                    Task {
+                        await BackgroundPriceRefresh.run(.processing, allowsForeground: true)
+                    }
+                }
+                .disabled(cards.isEmpty)
+#endif
             }
         }
     }
@@ -378,6 +387,23 @@ struct PriceFallbackSettingsSection: View {
             Text(hasVendorKey
                  ? "A key is saved in your keychain. Free-tier safety limits vendor traffic to 95 requests per UTC day; automatic price work stops at 75 to reserve 20 for sealed products and other direct actions."
                  : "Optional. Adds prices for cards TCGdex and Scryfall don't cover, such as Japanese sets, promos, tokens and art cards.")
+        }
+
+        Section {
+            LabeledContent(
+                "Background App Refresh",
+                value: BackgroundPriceRefresh.availability.label
+            )
+
+            if let detail = BackgroundPriceRefresh.availability.detail {
+                Text(detail)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("Automatic Price Refresh")
+        } footer: {
+            Text("Price updates run overnight when iOS permits background work.")
         }
     }
 

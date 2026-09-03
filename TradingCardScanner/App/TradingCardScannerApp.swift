@@ -3,15 +3,16 @@ import SwiftData
 
 @main
 struct TradingCardScannerApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var scannerModel = ScannerViewModel()
-    private let container = TradingCardScannerApp.makeContainer()
+    static let container = TradingCardScannerApp.makeContainer()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(scannerModel)
         }
-        .modelContainer(container)
+        .modelContainer(Self.container)
     }
 
     // Ownership and pricing are separate entities on purpose: a price is a

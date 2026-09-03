@@ -18,7 +18,7 @@ struct ContentView: View {
 
     @State private var selectedTab: Tab
     @StateObject private var portfolio = PortfolioEngine()
-    @StateObject private var refresh = PriceRefreshController()
+    @StateObject private var refresh: PriceRefreshController
     @StateObject private var history = PortfolioHistoryStore()
     /// One catalog actor is shared by every Collection/Browse route in this
     /// app session. Its protected checklist and in-memory caches therefore do
@@ -36,6 +36,7 @@ struct ContentView: View {
 #endif
 
     init() {
+        _refresh = StateObject(wrappedValue: PriceRefreshController.shared)
         _browseCatalog = State(initialValue: BrowseCatalog())
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
@@ -149,12 +150,18 @@ struct ContentView: View {
         .task { await recomputeAtDayRollover() }
         .task(id: scenePhase) {
             if scenePhase == .active {
+                await updateFallbackAvailability()
+                guard !Task.isCancelled else { return }
                 await browseCatalog.prepareCatalog()
             } else {
                 await browseCatalog.suspendCatalogRefresh()
             }
         }
         .onChange(of: scenePhase) { _, phase in
+            if phase == .background {
+                BackgroundPriceRefresh.schedule()
+                return
+            }
             guard phase == .active, portfolio.needsRecomputeForNewDay() else { return }
             portfolio.recompute(context: modelContext)
         }
@@ -165,6 +172,19 @@ struct ContentView: View {
             // is derived from the price records the refresh itself writes.
             refresh.cancelRefresh()
         }
+    }
+
+    @MainActor
+    private func updateFallbackAvailability() async {
+        let pending = PriceRefreshController.staleTargets(
+            from: PriceRefreshTargets.make(
+                cards: cards,
+                priceRecords: priceRecords,
+                usesPriceFallback: usesPriceFallback,
+                includeImported: true
+            )
+        ).count
+        await refresh.updateFallbackAvailability(pending: pending)
     }
 
     private var isBrowseDebugRoute: Bool {
@@ -187,10 +207,9 @@ struct ContentView: View {
     private func refreshAllPrices() async {
         refreshStatusTask?.cancel()
         let targets = PriceRefreshController.staleTargets(
-            from: makePriceTargets(
+            from: PriceRefreshTargets.make(
                 cards: cards,
                 priceRecords: priceRecords,
-                modelContext: modelContext,
                 usesPriceFallback: usesPriceFallback,
                 includeImported: true
             )
@@ -383,12 +402,11 @@ private struct PortfolioInputObserver: View {
         guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
         hasCheckedForStalePrices = true
         let targets = PriceRefreshController.staleTargets(
-            from: makePriceTargets(
+            from: PriceRefreshTargets.make(
                 cards: cards,
                 priceRecords: priceRecords,
-                modelContext: modelContext,
                 usesPriceFallback: usesPriceFallback,
-                includeImported: false
+                includeImported: true
             )
         )
         guard !targets.isEmpty else { return }
@@ -398,66 +416,4 @@ private struct PortfolioInputObserver: View {
         refresh.dismissTransientSuccessSummary()
         portfolio.recompute(context: modelContext)
     }
-}
-
-/// The priced things the collection currently contains.
-///
-/// File scope so the view that reacts to collection changes and the view that
-/// owns the manual refresh can both build it without either one having to
-/// observe the other's state.
-@MainActor
-private func makePriceTargets(
-    cards: [CollectedCard],
-    priceRecords: [PriceRecord],
-    modelContext: ModelContext,
-    usesPriceFallback: Bool,
-    includeImported: Bool
-) -> [PriceTarget] {
-    let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-    let projection = LogicalCollection.project(cards: cards, ledger: InventoryLedger(context: modelContext))
-    var seen = Set<String>()
-    var result: [PriceTarget] = []
-
-    for position in projection.positions {
-        let card = position.representative
-        if card.providerID.hasPrefix("csv:"), !includeImported { continue }
-        guard seen.insert(card.priceKey).inserted else { continue }
-        let record = PriceStore.record(for: card, in: recordsByKey)
-        var target = PriceTarget(
-            game: card.cardGame,
-            printingID: card.priceStorageID,
-            catalogPrintingID: card.catalogProviderID ?? card.providerID,
-            setCode: card.setCode,
-            variantID: card.variantID,
-            pokemonPrintRun: card.pokemonPrintRun,
-            importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
-                ? ImportedPriceIdentity(name: card.name, setName: card.setName, cardNumber: card.cardNumber)
-                : nil,
-            catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
-            lastFailureAt: record?.lastFailureAt,
-            hasPrice: PriceRefreshController.hasFinishedPrice(
-                amount: record?.effectiveUnitMarketPriceUSD,
-                currencyCode: record?.currencyCode,
-                usesFallback: usesPriceFallback
-            ),
-            lastCheckedAt: record?.lastCheckedAt,
-            itemKind: card.itemKind,
-            marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
-            needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
-            gradedIdentity: card.itemKind == .gradedCard
-                ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
-                : nil,
-            gradingCompany: card.gradingCompany,
-            grade: card.gradeRaw
-        )
-        target.fallbackIdentity = ImportedPriceIdentity(
-            name: card.name,
-            setName: card.setName,
-            cardNumber: card.cardNumber
-        )
-        target.justTCGCardID = card.justTCGCardID
-        target.tcgplayerProductID = card.tcgplayerProductID
-        result.append(target)
-    }
-    return result
 }

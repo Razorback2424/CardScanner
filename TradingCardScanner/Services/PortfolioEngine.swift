@@ -74,6 +74,10 @@ final class PortfolioEngine: ObservableObject {
     }
 
     @Published private(set) var status: Status = .idle
+    /// A replay is running or one more replay is queued behind it. This is
+    /// presentation state only: unlike `isAuthoritative`, it says nothing about
+    /// whether the derived history is safe to publish.
+    @Published private(set) var isRecomputing = false
     /// Monotonic signal for consumers whose derived inputs may change without
     /// changing the visible summary values (for example, a close revision or
     /// two offsetting market updates).
@@ -97,9 +101,12 @@ final class PortfolioEngine: ObservableObject {
     /// while work is still in flight.
     private var lastUsableSummary: PortfolioSummary?
     private var lastComputedDay: Date?
-    /// Guards against a slower earlier pass publishing over a fresher one.
-    private var computationSequence: UInt = 0
     private var computationTask: Task<Void, Never>?
+    /// Input changes can arrive in bursts while a refresh checkpoints its
+    /// answers. Keep only the newest request and replay once more after the
+    /// current pass publishes, rather than repeatedly cancelling work that was
+    /// about to update the value.
+    private var pendingRecompute: (context: ModelContext, now: Date)?
 
     var summary: PortfolioSummary? {
         if case let .ready(summary) = status { return summary }
@@ -155,27 +162,42 @@ final class PortfolioEngine: ObservableObject {
         // are themselves the evidence that no baseline is needed. Costs one
         // `UserDefaults` read once the epoch exists.
         retryEpochIfNeeded(context: context, now: now)
-        status = .computing
+
+        guard computationTask == nil else {
+            pendingRecompute = (context, now)
+            return
+        }
+
+        startRecompute(context: context, now: now)
+    }
+
+    private func startRecompute(context: ModelContext, now: Date) {
+        isRecomputing = true
+        // A retained summary remains the display value while its replacement is
+        // calculated. Only a genuine cold start has no honest value to show.
+        if lastUsableSummary == nil {
+            status = .computing
+        }
 
         let timeZone = PortfolioCalendar.timeZone()
 
-        computationSequence &+= 1
-        let sequence = computationSequence
         let container = context.container
         let epoch = PortfolioEpoch.startedAt() ?? now
 
-        computationTask?.cancel()
-        computationTask = Task { [weak self] in
+        computationTask = Task { @MainActor [weak self] in
             let actor = PortfolioComputationActor(modelContainer: container)
             let computation = await actor.compute(
                 epoch: epoch,
                 through: now,
                 timeZoneIdentifier: timeZone.identifier
             )
-            guard !Task.isCancelled else { return }
-            self?.apply(
+            guard let self else { return }
+            guard !Task.isCancelled else {
+                self.finishCancelledComputation()
+                return
+            }
+            self.apply(
                 computation,
-                sequence: sequence,
                 now: now,
                 timeZone: timeZone,
                 context: context
@@ -198,19 +220,23 @@ final class PortfolioEngine: ObservableObject {
     /// Recomputes and waits. Tests and any caller that needs the result before
     /// continuing use this; the app uses `recompute`.
     func recomputeAndWait(context: ModelContext, now: Date = .now) async {
+        let wasAlreadyRecomputing = computationTask != nil
         recompute(context: context, now: now)
+        // When a pass was already in flight, this request became its one
+        // trailing replay. Await both; work requested after that belongs to a
+        // later input change and must not keep a background caller waiting.
+        await computationTask?.value
+        guard wasAlreadyRecomputing else { return }
         await computationTask?.value
     }
 
     private func apply(
         _ computation: PortfolioReplaySnapshotBuilder.Computation,
-        sequence: UInt,
         now: Date,
         timeZone: TimeZone,
         context: ModelContext
     ) {
-        // A slower earlier pass must never overwrite a fresher one.
-        guard sequence == computationSequence else { return }
+        defer { finishAppliedComputation() }
 
         // A failed read must never replace a known-good summary with a
         // fabricated zero. Keep the last usable values visible, mark them
@@ -319,6 +345,21 @@ final class PortfolioEngine: ObservableObject {
         }
 
         status = .ready(summary)
+    }
+
+    private func finishAppliedComputation() {
+        computationTask = nil
+        isRecomputing = false
+
+        guard let pendingRecompute else { return }
+        self.pendingRecompute = nil
+        startRecompute(context: pendingRecompute.context, now: pendingRecompute.now)
+    }
+
+    private func finishCancelledComputation() {
+        computationTask = nil
+        pendingRecompute = nil
+        isRecomputing = false
     }
 
     // MARK: - Current value, measured independently of the walk

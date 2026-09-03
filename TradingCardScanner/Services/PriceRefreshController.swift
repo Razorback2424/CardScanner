@@ -135,6 +135,8 @@ struct ImportedPriceIdentity: Hashable, Sendable {
 /// - refreshing is per unique printing-and-variant, not per owned copy.
 @MainActor
 final class PriceRefreshController: ObservableObject {
+    static let shared = PriceRefreshController()
+
     enum FallbackStatus: Equatable {
         case idle
         case disabled(pending: Int)
@@ -296,6 +298,9 @@ final class PriceRefreshController: ObservableObject {
         activeRefresh = task
         await task.value
         activeRefresh = nil
+        if let pending = pendingFallbackWork {
+            await updateFallbackAvailability(pending: pending)
+        }
     }
 
     /// Stops the pass in progress. The only legitimate reason is that the work
@@ -1213,8 +1218,9 @@ final class PriceRefreshController: ObservableObject {
         status = .recentlyChecked
     }
 
-    /// Restores persisted budget/backoff state when Collection appears, before
-    /// the user spends a request discovering that today's allowance is gone.
+    /// Restores persisted budget/backoff state when the app becomes active,
+    /// before the user spends a request discovering that today's allowance is
+    /// gone.
     func updateFallbackAvailability(pending: Int) async {
         guard !isRefreshing else { return }
         guard pending > 0 else {
@@ -1239,6 +1245,15 @@ final class PriceRefreshController: ObservableObject {
             // Preserve the useful result of the most recent run.
         } else {
             fallbackStatus = .available(remainingToday: budget.remainingToday)
+        }
+    }
+
+    private var pendingFallbackWork: Int? {
+        switch fallbackStatus {
+        case let .budgetReached(pending, _), let .rateLimited(pending, _):
+            return pending
+        case .idle, .disabled, .unconfigured, .available, .running, .finished:
+            return nil
         }
     }
 

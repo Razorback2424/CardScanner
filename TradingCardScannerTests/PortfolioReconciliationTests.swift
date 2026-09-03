@@ -146,6 +146,92 @@ final class PortfolioReconciliationTests: XCTestCase {
         )
     }
 
+    private func waitForRecomputeToFinish(
+        _ engine: PortfolioEngine,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        for _ in 0..<10_000 {
+            guard engine.isRecomputing else { return }
+            await Task.yield()
+        }
+        XCTFail("Portfolio recompute did not finish", file: file, line: line)
+    }
+
+    // MARK: - Recompute presentation and coalescing
+
+    func testRecomputeRetainsTheLastUsableSummaryWhileUpdating() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: date))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: date)
+        let retainedSummary = try XCTUnwrap(engine.summary)
+
+        engine.recompute(context: context, now: date.addingTimeInterval(60))
+
+        XCTAssertEqual(engine.summary, retainedSummary)
+        XCTAssertTrue(engine.isRecomputing)
+        await waitForRecomputeToFinish(engine)
+        XCTAssertFalse(engine.isRecomputing)
+    }
+
+    func testColdStartStillLeavesSummaryUnavailableUntilItsFirstReplayFinishes() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: date))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        engine.recompute(context: context, now: date)
+
+        XCTAssertNil(engine.summary)
+        XCTAssertTrue(engine.isRecomputing)
+        await waitForRecomputeToFinish(engine)
+        XCTAssertNotNil(engine.summary)
+        XCTAssertFalse(engine.isRecomputing)
+    }
+
+    func testRapidRecomputesCoalesceToOneTrailingReplay() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: date))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: date)
+
+        engine.recompute(context: context, now: date.addingTimeInterval(60))
+        engine.recompute(context: context, now: date.addingTimeInterval(120))
+        engine.recompute(context: context, now: date.addingTimeInterval(180))
+
+        await waitForRecomputeToFinish(engine)
+
+        // One initial replay established the retained value; the three rapid
+        // requests above become the active pass plus one trailing pass.
+        XCTAssertEqual(engine.inputRevision, 3)
+    }
+
+    func testRecomputeAndWaitIncludesTheTrailingReplayItQueues() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(dateAdded: date))
+        try context.save()
+
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: date)
+
+        engine.recompute(context: context, now: date.addingTimeInterval(60))
+        await engine.recomputeAndWait(context: context, now: date.addingTimeInterval(120))
+
+        XCTAssertFalse(engine.isRecomputing)
+        // The initial result establishes the retained value. The direct call
+        // starts pass two; recomputeAndWait queues and waits for pass three.
+        XCTAssertEqual(engine.inputRevision, 3)
+    }
+
     // MARK: - Duplicate physical rows for one logical position
     //
     // Two devices adding the same card offline each pass their own local

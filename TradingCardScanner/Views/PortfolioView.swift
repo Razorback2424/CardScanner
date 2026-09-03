@@ -206,6 +206,60 @@ struct PortfolioView: View {
         return false
     }
 
+    private var portfolioValueAccessibilityLabel: String {
+        guard let summary = portfolio.summary else {
+            return portfolio.isRecomputing
+                ? "Collection value unavailable. Calculating portfolio."
+                : "Collection value unavailable"
+        }
+        let value = "Collection value, \(summary.currentValue.formatted())"
+        return portfolio.isRecomputing ? "\(value). Updating to latest prices." : value
+    }
+
+    private func fallbackResumeTime(_ date: Date) -> String {
+        Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: .now)
+            ? date.formatted(date: .omitted, time: .shortened)
+            : date.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    @ViewBuilder
+    private var portfolioRefreshActivity: some View {
+        if case let .refreshing(completed, total) = refresh.status {
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Checking \(completed) of \(total)")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .accessibilityLabel("Checking prices \(completed) of \(total)")
+        }
+
+        if portfolio.isRecomputing {
+            Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel("Updating portfolio value")
+        }
+
+        switch refresh.fallbackStatus {
+        case let .budgetReached(pending, resetAt):
+            Text(
+                "Vendor price checks reached their limit. \(pending) \(pending == 1 ? "check remains" : "checks remain"); resumes \(fallbackResumeTime(resetAt))."
+            )
+            .font(.caption)
+            .foregroundStyle(PortfolioPalette.attention)
+        case let .rateLimited(pending, retryAt):
+            Text(
+                "Vendor price checks are paused. \(pending) \(pending == 1 ? "check remains" : "checks remain"); retries \(fallbackResumeTime(retryAt))."
+            )
+            .font(.caption)
+            .foregroundStyle(PortfolioPalette.attention)
+        case .idle, .disabled, .unconfigured, .available, .running, .finished:
+            EmptyView()
+        }
+    }
+
     private var needsPortfolioAttention: Bool {
         guard let summary = portfolio.summary else {
             return !portfolio.integrityDefects.isEmpty
@@ -257,10 +311,7 @@ struct PortfolioView: View {
                     .minimumScaleFactor(0.65)
                     .contentTransition(.numericText())
                     .animation(.snappy, value: portfolio.summary?.currentValue)
-                    .accessibilityLabel(
-                        portfolio.summary.map { "Collection value, \($0.currentValue.formatted())" }
-                            ?? "Collection value unavailable"
-                    )
+                    .accessibilityLabel(portfolioValueAccessibilityLabel)
 
                 Button("Refresh Prices", systemImage: "arrow.clockwise") {
                     Task { await onRefresh() }
@@ -272,6 +323,8 @@ struct PortfolioView: View {
                 .disabled(isRefreshing)
                 .accessibilityLabel("Refresh prices")
             }
+
+            portfolioRefreshActivity
 
             if portfolio.summary?.isMigrationDay == true {
                 Text("Tracking started today")

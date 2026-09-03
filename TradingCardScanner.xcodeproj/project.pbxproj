@@ -74,6 +74,9 @@
 		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
+		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
+		A00100D1 /* BackgroundPriceRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D1 /* BackgroundPriceRefresh.swift */; };
+		A00100D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D2 /* AppDelegate.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
 		A00100A5 /* RemovalUndoBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100A5 /* RemovalUndoBanner.swift */; };
 		A0010093 /* TCGplayerLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010093 /* TCGplayerLink.swift */; };
@@ -216,6 +219,9 @@
 		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
+		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
+		B00100D1 /* BackgroundPriceRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPriceRefresh.swift; sourceTree = "<group>"; };
+		B00100D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
 		B00100A5 /* RemovalUndoBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemovalUndoBanner.swift; sourceTree = "<group>"; };
 		B0010093 /* TCGplayerLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGplayerLink.swift; sourceTree = "<group>"; };
@@ -337,6 +343,7 @@
 			isa = PBXGroup;
 			children = (
 				B0010001 /* TradingCardScannerApp.swift */,
+				B00100D2 /* AppDelegate.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -386,6 +393,8 @@
 				B0010031 /* PriceProvider.swift */,
 				B0010032 /* PriceStore.swift */,
 				B0010033 /* PriceRefreshController.swift */,
+				B00100D0 /* PriceRefreshTargets.swift */,
+				B00100D1 /* BackgroundPriceRefresh.swift */,
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
 				B0010042 /* CardCenteringAnalyzer.swift */,
@@ -627,6 +636,7 @@
 				A0010055 /* ProductIdentity.swift in Sources */,
 				A0010054 /* PriceVendorCredentials.swift in Sources */,
 				A0010001 /* TradingCardScannerApp.swift in Sources */,
+				A00100D2 /* AppDelegate.swift in Sources */,
 				A0010002 /* CollectedCard.swift in Sources */,
 				A0010003 /* TCGdexCard.swift in Sources */,
 				A0010004 /* SetCodeMap.swift in Sources */,
@@ -655,6 +665,8 @@
 				A0010031 /* PriceProvider.swift in Sources */,
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
+				A00100D0 /* PriceRefreshTargets.swift in Sources */,
+				A00100D1 /* BackgroundPriceRefresh.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
 				A00100A5 /* RemovalUndoBanner.swift in Sources */,
 				A0010093 /* TCGplayerLink.swift in Sources */,
