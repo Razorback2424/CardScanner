@@ -6,6 +6,7 @@ import UIKit
 struct PortfolioHistoryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var history: PortfolioHistoryStore
+    let onOpenDetails: (PortfolioHistoryResult) -> Void
 
     @State private var selectedPointID: String?
     @State private var lastHapticPointID: String?
@@ -13,9 +14,7 @@ struct PortfolioHistoryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let result = history.activeResult, !result.isEmpty {
-                if let point = selectedPoint(in: result) {
-                    pointInspector(point)
-                }
+                historyHeader(result)
                 historyChart(result)
                     .frame(height: 190)
 
@@ -34,6 +33,39 @@ struct PortfolioHistoryView: View {
         .padding(14)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
+        .onChange(of: history.range) { _, _ in
+            resetSelection()
+        }
+        .onDisappear {
+            resetSelection()
+        }
+    }
+
+    private func historyHeader(_ result: PortfolioHistoryResult) -> some View {
+        let point = selectedPoint(in: result)
+        let amount = point?.cumulativeMarketMovement ?? result.accounting?.market ?? .zero
+
+        return HStack(alignment: .firstTextBaseline, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(point.map(pointHeaderLabel) ?? "Market movement · \(result.range.rawValue)")
+                    .font(.headline)
+                Text(PortfolioHistoryDisplay.signedCurrency(amount))
+                    .font(.title2.bold().monospacedDigit())
+                    .foregroundStyle(PortfolioPalette.direction(amount))
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(point.map(pointHeaderLabel) ?? "Market movement · \(result.range.rawValue)")
+            .accessibilityValue(PortfolioHistoryDisplay.signedCurrency(amount))
+
+            Spacer(minLength: 8)
+
+            PortfolioInfoButton(label: "About market movement") {
+                PortfolioHistoryInfoPopover(
+                    result: result,
+                    onOpenDetails: onOpenDetails
+                )
+            }
+        }
     }
 
     @ViewBuilder
@@ -93,12 +125,11 @@ struct PortfolioHistoryView: View {
                     Rectangle()
                         .fill(.clear)
                         .contentShape(Rectangle())
-                        .simultaneousGesture(SpatialTapGesture().onEnded { gesture in
-                            selectPoint(gesture.location)
-                        })
                         .simultaneousGesture(DragGesture(minimumDistance: 8).onChanged { gesture in
                             guard abs(gesture.translation.width) > abs(gesture.translation.height) else { return }
                             selectPoint(gesture.location)
+                        }.onEnded { _ in
+                            resetSelection()
                         })
                 }
             }
@@ -107,10 +138,6 @@ struct PortfolioHistoryView: View {
         .accessibilityLabel("Market movement")
         .accessibilityValue(chartSummary(result))
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
-        .onAppear {
-            selectedPointID = selectionID
-            lastHapticPointID = selectionID
-        }
     }
 
     @ChartContentBuilder
@@ -128,8 +155,7 @@ struct PortfolioHistoryView: View {
         )
         .foregroundStyle(seriesColor(result))
 
-        let isSelected = point.id == selectionID
-        if isSelected {
+        if let selectionID, point.id == selectionID {
             PointMark(
                 x: .value("Date", point.instant),
                 y: .value(
@@ -149,17 +175,9 @@ struct PortfolioHistoryView: View {
         PortfolioPalette.direction(result.accounting?.market ?? .zero)
     }
 
-    /// The colour for one plotted point reflects the cumulative movement at
-    /// that point rather than the final period total.
-    private func pointColor(_ point: PortfolioHistoryPoint) -> Color {
-        PortfolioPalette.direction(point.cumulativeMarketMovement)
-    }
-
     private func selectedID(in result: PortfolioHistoryResult) -> String? {
         guard let selectedPointID,
-              result.points.contains(where: { $0.id == selectedPointID }) else {
-            return result.points.last?.id
-        }
+              result.points.contains(where: { $0.id == selectedPointID }) else { return nil }
         return selectedPointID
     }
 
@@ -174,34 +192,16 @@ struct PortfolioHistoryView: View {
         return last.timeIntervalSince(first) <= 7 * 24 * 60 * 60
     }
 
-    private func pointInspector(_ point: PortfolioHistoryPoint) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(pointLabel(point))
-                    .font(.caption.weight(.semibold))
-                Text("Cumulative market movement")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text(inspectorValue(point))
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(pointColor(point))
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(pointLabel(point))
-        .accessibilityValue(inspectorValue(point))
-    }
-
-    private func pointLabel(_ point: PortfolioHistoryPoint) -> String {
+    private func pointHeaderLabel(_ point: PortfolioHistoryPoint) -> String {
         if point.isLive {
-            return "Market movement through today"
+            return "Through today"
         }
-        return "Market movement through \(point.displayDay.formatted(date: .abbreviated, time: .omitted))"
+        return "Through \(point.displayDay.formatted(.dateTime.month(.abbreviated).day()))"
     }
 
-    private func inspectorValue(_ point: PortfolioHistoryPoint) -> String {
-        PortfolioHistoryDisplay.signedCurrency(point.cumulativeMarketMovement)
+    private func resetSelection() {
+        selectedPointID = nil
+        lastHapticPointID = nil
     }
 
     private func chartValue(_ point: PortfolioHistoryPoint) -> Double {
@@ -223,6 +223,26 @@ struct PortfolioHistoryView: View {
         return "From $0.00 to \(PortfolioHistoryDisplay.signedCurrency(accounting.market)). \(result.points.count) real points."
     }
 
+}
+
+private struct PortfolioHistoryInfoPopover: View {
+    let result: PortfolioHistoryResult
+    let onOpenDetails: (PortfolioHistoryResult) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Price changes only. Cards added or removed are excluded.")
+                .font(.body)
+            Button("Full accounting") {
+                dismiss()
+                onOpenDetails(result)
+            }
+            .font(.subheadline.weight(.semibold))
+        }
+        .frame(maxWidth: 280, alignment: .leading)
+        .padding()
+    }
 }
 
 private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {

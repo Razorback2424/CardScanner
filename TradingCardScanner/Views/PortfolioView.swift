@@ -26,6 +26,48 @@ enum PortfolioPalette {
     }
 }
 
+private let portfolioMoversExplanation = "Movers reflect market price changes while you owned these holdings. Added, removed, corrected, newly priced, and re-sourced values are excluded."
+
+struct PortfolioInfoButton<Content: View>: View {
+    let label: String
+    private let content: () -> Content
+    @State private var isPresented = false
+
+    init(label: String, @ViewBuilder content: @escaping () -> Content) {
+        self.label = label
+        self.content = content
+    }
+
+    var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            Image(systemName: "info.circle")
+                .imageScale(.small)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .popover(isPresented: $isPresented) {
+            content()
+                .presentationCompactAdaptation(.popover)
+        }
+    }
+}
+
+private struct PortfolioDetailsDestination: Identifiable, Hashable {
+    let id = UUID()
+    let summary: PortfolioSummary
+    let historyResult: PortfolioHistoryResult?
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
 /// The collection's home screen. It presents the value and accounting already
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
 struct PortfolioView: View {
@@ -37,6 +79,7 @@ struct PortfolioView: View {
     let onOpenCollectionSortedByPrice: @MainActor () -> Void
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
+    @State private var detailsDestination: PortfolioDetailsDestination?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var removalErrorMessage: String?
     @State private var isShowingQuantityRepairConfirmation = false
@@ -99,10 +142,15 @@ struct PortfolioView: View {
 
                         if summary.isAuthoritative {
                             periodControl
-                            periodSummary
 
                             PortfolioHistoryView(
-                                history: history
+                                history: history,
+                                onOpenDetails: { result in
+                                    detailsDestination = PortfolioDetailsDestination(
+                                        summary: summary,
+                                        historyResult: result
+                                    )
+                                }
                             )
 
                             biggestMovers()
@@ -129,15 +177,13 @@ struct PortfolioView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let summary = portfolio.summary {
-                        NavigationLink {
-                            PortfolioDetailsView(
+                        Button("Pricing and data details", systemImage: "info.circle") {
+                            detailsDestination = PortfolioDetailsDestination(
                                 summary: summary,
-                                refresh: refresh,
                                 historyResult: activeHistoryResult
                             )
-                        } label: {
-                            Image(systemName: "info.circle")
                         }
+                        .labelStyle(.iconOnly)
                         .accessibilityLabel(
                             needsPortfolioAttention
                                 ? "Pricing and data details, needs attention"
@@ -161,6 +207,13 @@ struct PortfolioView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $detailsDestination) { destination in
+                PortfolioDetailsView(
+                    summary: destination.summary,
+                    refresh: refresh,
+                    historyResult: destination.historyResult
+                )
+            }
             .navigationDestination(item: $contributorContext) { context in
                 PortfolioContributorsView(
                     context: context,
@@ -216,15 +269,10 @@ struct PortfolioView: View {
         return portfolio.isRecomputing ? "\(value). Updating to latest prices." : value
     }
 
-    private func fallbackResumeTime(_ date: Date) -> String {
-        Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: .now)
-            ? date.formatted(date: .omitted, time: .shortened)
-            : date.formatted(date: .abbreviated, time: .shortened)
-    }
-
     @ViewBuilder
     private var portfolioRefreshActivity: some View {
-        if case let .refreshing(completed, total) = refresh.status {
+        switch refresh.status {
+        case let .refreshing(completed, total):
             HStack(spacing: 6) {
                 ProgressView()
                     .controlSize(.small)
@@ -233,34 +281,26 @@ struct PortfolioView: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
             .accessibilityLabel("Checking prices \(completed) of \(total)")
-        }
-
-        if portfolio.isRecomputing {
-            Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .accessibilityLabel("Updating portfolio value")
-        }
-
-        switch refresh.fallbackStatus {
-        case let .budgetReached(pending, resetAt):
-            Text(
-                "Vendor price checks reached their limit. \(pending) \(pending == 1 ? "check remains" : "checks remain"); resumes \(fallbackResumeTime(resetAt))."
-            )
-            .font(.caption)
-            .foregroundStyle(PortfolioPalette.attention)
-        case let .rateLimited(pending, retryAt):
-            Text(
-                "Vendor price checks are paused. \(pending) \(pending == 1 ? "check remains" : "checks remain"); retries \(fallbackResumeTime(retryAt))."
-            )
-            .font(.caption)
-            .foregroundStyle(PortfolioPalette.attention)
-        case .idle, .disabled, .unconfigured, .available, .running, .finished:
-            EmptyView()
+        case .idle, .recentlyChecked, .finished:
+            if portfolio.isRecomputing {
+                Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel("Updating portfolio value")
+            } else {
+                EmptyView()
+            }
         }
     }
 
     private var needsPortfolioAttention: Bool {
+        switch refresh.fallbackStatus {
+        case .budgetReached, .rateLimited:
+            return true
+        case .idle, .disabled, .unconfigured, .available, .running, .finished:
+            break
+        }
+
         guard let summary = portfolio.summary else {
             return !portfolio.integrityDefects.isEmpty
         }
@@ -337,47 +377,6 @@ struct PortfolioView: View {
         .padding(.bottom, 8)
     }
 
-    /// The one period metric shown on the primary Portfolio screen.
-    ///
-    /// It is deliberately the same additive market movement used by the
-    /// chart and contributor rows. Full portfolio-value accounting remains one
-    /// explicit tap away in the details view.
-    @ViewBuilder
-    private var periodSummary: some View {
-        if let summary = portfolio.summary,
-           let result = activeHistoryResult,
-           let accounting = result.accounting {
-            let amount = accounting.market
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Market movement · \(historyRange.rawValue)")
-                            .font(.headline)
-                        Text(PortfolioHistoryDisplay.signedCurrency(amount))
-                            .font(.title2.bold().monospacedDigit())
-                            .foregroundStyle(PortfolioPalette.direction(amount))
-                    }
-                    Spacer(minLength: 8)
-                    NavigationLink {
-                        PortfolioDetailsView(
-                            summary: summary,
-                            refresh: refresh,
-                            historyResult: result
-                        )
-                    } label: {
-                        Text("Details")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .accessibilityHint("Shows the full portfolio value change and its accounting")
-                }
-                Text("Price changes only · cards added or removed are excluded")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .accessibilityElement(children: .contain)
-        }
-    }
-
     private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Label(
@@ -447,8 +446,16 @@ struct PortfolioView: View {
         } else {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text("Market movement by holding · \(historyRange.rawValue)")
-                        .font(.headline)
+                    HStack(spacing: 6) {
+                        Text("Market movement by holding")
+                            .font(.headline)
+                        PortfolioInfoButton(label: "About market movers") {
+                            Text(portfolioMoversExplanation)
+                                .font(.body)
+                                .frame(maxWidth: 280, alignment: .leading)
+                                .padding()
+                        }
+                    }
                     Spacer()
                     Button("See all") {
                         if let active {
@@ -766,7 +773,7 @@ private struct PortfolioContributorPreview: View {
                 PortfolioContributionRow(
                     row: row,
                     magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
-                    showsHoldingShare: true
+                    showsHoldingShare: false
                 )
             }
             .buttonStyle(.plain)
@@ -796,13 +803,22 @@ private struct PortfolioContributorsView: View {
         let maximum = rows.map(\.amount.magnitude).max() ?? .zero
         List {
             Section {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(context.title)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Text(PortfolioContributionPresentation.signed(context.total))
-                        .font(.title2.bold().monospacedDigit())
-                        .foregroundStyle(PortfolioContributionPresentation.color(context.total))
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(context.title)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text(PortfolioContributionPresentation.signed(context.total))
+                            .font(.title2.bold().monospacedDigit())
+                            .foregroundStyle(PortfolioContributionPresentation.color(context.total))
+                    }
+                    Spacer(minLength: 8)
+                    PortfolioInfoButton(label: "About market movers") {
+                        Text(portfolioMoversExplanation)
+                            .font(.body)
+                            .frame(maxWidth: 280, alignment: .leading)
+                            .padding()
+                    }
                 }
                 .padding(.vertical, 4)
             }
@@ -833,28 +849,22 @@ private struct PortfolioContributorsView: View {
                                 PortfolioContributionRow(
                                     row: row,
                                     magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
-                                    showsHoldingShare: false
+                                    showsHoldingShare: true
                                 )
                             }
                         } else {
                             PortfolioContributionRow(
                                 row: row,
                                 magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
-                                showsHoldingShare: false
+                                showsHoldingShare: true
                             )
                         }
                     }
                 }
             }
 
-            Section {
-                Label(
-                    "Movers reflect market price changes while you owned these holdings. Added, removed, corrected, newly priced, and re-sourced values are excluded.",
-                    systemImage: "info.circle"
-                )
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                if let coverage = context.coverageDescription {
+            if let coverage = context.coverageDescription {
+                Section {
                     Text(coverage)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -1144,21 +1154,42 @@ private struct PortfolioDetailsView: View {
 
     @ViewBuilder
     private var refreshStatus: some View {
-        switch refresh.status {
-        case let .refreshing(completed, total):
-            LabeledContent("Checking prices", value: "\(completed) of \(total)")
-        case let .finished(result):
-            Text(result.providerUnreachable
-                 ? "The card catalog is unreachable. Check your connection and try again."
-                 : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened)).")
-                .font(.subheadline)
-                .foregroundStyle(result.providerUnreachable || result.failed > 0 ? PortfolioPalette.attention : .secondary)
-        case .recentlyChecked:
-            Text("Prices were checked recently.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        case .idle:
-            EmptyView()
+        switch refresh.fallbackStatus {
+        case let .budgetReached(pending, resetAt):
+            Text(
+                "Vendor price checks reached their limit. \(pending) \(pending == 1 ? "check remains" : "checks remain"); resumes \(fallbackResumeTime(resetAt))."
+            )
+            .font(.subheadline)
+            .foregroundStyle(PortfolioPalette.attention)
+        case let .rateLimited(pending, retryAt):
+            Text(
+                "Vendor price checks are paused. \(pending) \(pending == 1 ? "check remains" : "checks remain"); retries \(fallbackResumeTime(retryAt))."
+            )
+            .font(.subheadline)
+            .foregroundStyle(PortfolioPalette.attention)
+        case .idle, .disabled, .unconfigured, .available, .running, .finished:
+            switch refresh.status {
+            case let .refreshing(completed, total):
+                LabeledContent("Checking prices", value: "\(completed) of \(total)")
+            case let .finished(result):
+                Text(result.providerUnreachable
+                     ? "The card catalog is unreachable. Check your connection and try again."
+                     : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened)).")
+                    .font(.subheadline)
+                    .foregroundStyle(result.providerUnreachable || result.failed > 0 ? PortfolioPalette.attention : .secondary)
+            case .recentlyChecked:
+                Text("Prices were checked recently.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            case .idle:
+                EmptyView()
+            }
         }
+    }
+
+    private func fallbackResumeTime(_ date: Date) -> String {
+        Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: .now)
+            ? date.formatted(date: .omitted, time: .shortened)
+            : date.formatted(date: .abbreviated, time: .shortened)
     }
 }
