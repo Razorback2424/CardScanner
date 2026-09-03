@@ -624,6 +624,10 @@ final class ScannerViewModel: ObservableObject {
     private var resolutionTask: Task<Void, Never>?
     private var quoteRefreshTask: Task<Void, Never>?
     private var activeQuoteRefreshID: UUID?
+    /// SwiftUI clears a `.sheet(item:)` binding before invoking its dismissal
+    /// callback. Retain the confirmed identity just long enough for that
+    /// callback to arm the delayed re-check latch, including swipe dismissal.
+    private var presentedPriceCheckIdentifier: ScanIdentifier?
     private var scanGeneration = 0
     /// Proofs arrive independently of catalog resolution. A provisional proof
     /// is held by encounter id until its successful commit can associate it with
@@ -817,8 +821,14 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func dismissPriceCheckResult() {
+        let dismissedIdentifier = priceCheckResult?.resolvedScan.request.identifier
+            ?? presentedPriceCheckIdentifier
         cancelPriceCheckRefresh()
         priceCheckResult = nil
+        presentedPriceCheckIdentifier = nil
+        if let dismissedIdentifier {
+            scanner.allowRecheck(of: dismissedIdentifier)
+        }
         feedback.prepare()
         resumeRecognitionIfPossible()
     }
@@ -1923,6 +1933,7 @@ final class ScannerViewModel: ObservableObject {
         pendingIdentityChoice = nil
         scanner.pauseRecognition()
         let result = priceCheckCoordinator.present(resolvedScan)
+        presentedPriceCheckIdentifier = resolvedScan.request.identifier
         priceCheckResult = result
         if result.shouldAutoRefresh {
             refreshPriceCheckQuote()

@@ -92,6 +92,11 @@ struct CardLatch: Equatable {
         /// Sticky once set. A printing that has genuinely been away has left,
         /// whatever is read afterwards — including a second copy of itself.
         var hasLeft = false
+        /// A Price Check dismissal may explicitly make this one printing
+        /// checkable again. The entry remains until a matching observation
+        /// arrives after this time, so an idle camera cannot accidentally
+        /// release a card while its result sheet is still closing.
+        var recheckEligibleAt: CFAbsoluteTime?
     }
 
     init(
@@ -165,10 +170,24 @@ struct CardLatch: Equatable {
     ) {
         let observedKey = observation?.suppressionKey
 
-        for index in consumed.indices {
+        var index = consumed.startIndex
+        while index < consumed.endIndex {
             if let observedKey, consumed[index].key == observedKey {
+                // This must precede the matching-read `continue`: a card held
+                // still beneath a resumed Price Check sheet otherwise refreshes
+                // `lastSeenAt` forever and never gets another confirmation.
+                if let recheckEligibleAt = consumed[index].recheckEligibleAt,
+                   now >= recheckEligibleAt {
+                    let releasedKey = consumed[index].key
+                    consumed.remove(at: index)
+                    if latched?.suppressionKey == releasedKey {
+                        release()
+                    }
+                    continue
+                }
                 consumed[index].lastSeenAt = now
                 consumed[index].consecutiveAbsences = 0
+                index = consumed.index(after: index)
                 continue
             }
 
@@ -186,6 +205,7 @@ struct CardLatch: Equatable {
             if bandWentEmpty || unreadFor >= presumedGoneAfter {
                 consumed[index].hasLeft = true
             }
+            index = consumed.index(after: index)
         }
     }
 
@@ -205,6 +225,20 @@ struct CardLatch: Equatable {
         heldMatchCount = 0
         consecutiveAbsences = 0
         remember(identifier, at: now)
+    }
+
+    /// Makes one already-consumed printing eligible for a deliberate Price
+    /// Check re-read after a short quiet period. Unlike `releaseAndForget()`,
+    /// this preserves every other consumed printing and all of their duplicate
+    /// protections.
+    mutating func armRecheck(
+        for identifier: ScanIdentifier,
+        at now: CFAbsoluteTime,
+        after delay: TimeInterval
+    ) {
+        let key = identifier.suppressionKey
+        guard let index = consumed.firstIndex(where: { $0.key == key }) else { return }
+        consumed[index].recheckEligibleAt = now + max(0, delay)
     }
 
     /// Releases the current latch while retaining consumed-card memory, then

@@ -308,6 +308,50 @@ final class CardLatchTests: XCTestCase {
         XCTAssertTrue(latch.admits(card))
     }
 
+    func testArmedRecheckBecomesAdmissibleOnlyAfterItsDelay() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+        latch.armRecheck(for: card, at: 0.5, after: 1.25)
+
+        XCTAssertEqual(latch.observe(card, at: 1.749), .holdingLatch)
+        XCTAssertFalse(latch.admits(card))
+
+        XCTAssertEqual(latch.observe(card, at: 1.75), .forward(card))
+        XCTAssertNil(latch.latched)
+        XCTAssertTrue(latch.admits(card))
+    }
+
+    func testArmedRecheckExpiresForAStationaryCardBeforeItsMatchingReadContinues() {
+        var latch = CardLatch()
+        let card = pokemon(223)
+        latch.engage(on: card, at: 0)
+        latch.armRecheck(for: card, at: 0, after: 1.25)
+
+        for time in stride(from: 0.25, through: 1.0, by: 0.25) {
+            XCTAssertEqual(latch.observe(card, at: time), .holdingLatch)
+            XCTAssertFalse(latch.admits(card))
+        }
+
+        // A matching reading used to take the `continue` above, refresh
+        // `lastSeenAt`, and keep the price-check latch engaged forever.
+        XCTAssertEqual(latch.observe(card, at: 1.25), .forward(card))
+        XCTAssertTrue(latch.admits(card))
+    }
+
+    func testArmingOneRecheckDoesNotForgetOtherConsumedPrintings() {
+        var latch = CardLatch()
+        let first = pokemon(223)
+        let second = pokemon(204, code: "PAL")
+        latch.engage(on: first, at: 0)
+        latch.engage(on: second, at: 0.25)
+        latch.armRecheck(for: first, at: 0.5, after: 1.25)
+
+        XCTAssertEqual(latch.observe(first, at: 1.75), .forward(first))
+        XCTAssertTrue(latch.admits(first))
+        XCTAssertFalse(latch.admits(second), "arming one Price Check re-read must keep other duplicate protection")
+    }
+
     func testHeldMatchCountTracksHowLongTheSameCardHasBeenSittingThere() {
         var latch = CardLatch()
         let card = pokemon(223)

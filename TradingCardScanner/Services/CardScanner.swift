@@ -684,6 +684,10 @@ final class CardScanner: NSObject, ObservableObject {
     private var currentLens: CameraLens = .standard
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var latch = CardLatch()
+    /// A Price Check result needs a short breather before the same stationary
+    /// card can be confirmed again. The confirmation window adds roughly half
+    /// a second after this delay before its sheet can return.
+    private static let priceCheckRecheckDelay: TimeInterval = 1.25
     private var didAnnounceLatchHold = false
     private var activeHeldRepeatAuthorization: HeldRepeatAuthorization?
     private var heldRepeatExpiryWorkItem: DispatchWorkItem?
@@ -983,6 +987,24 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self else { return }
             self.latch.releaseAndForget()
+            self.confirmationWindow.reset()
+            self.didAnnounceLatchHold = false
+            self.lastAnnouncedPlausible = nil
+        }
+    }
+
+    /// Lets a dismissed Price Check result be read again after its brief
+    /// confirmation-safe delay. This is intentionally narrower than
+    /// `allowImmediateRetry()`: the latter forgets every consumed printing and
+    /// is only safe when no card mutation or price-check history was written.
+    func allowRecheck(of identifier: ScanIdentifier) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.latch.armRecheck(
+                for: identifier,
+                at: CFAbsoluteTimeGetCurrent(),
+                after: Self.priceCheckRecheckDelay
+            )
             self.confirmationWindow.reset()
             self.didAnnounceLatchHold = false
             self.lastAnnouncedPlausible = nil
