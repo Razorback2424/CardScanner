@@ -5,7 +5,13 @@ import SwiftData
 /// prevents a disabled fallback or an exhausted vendor budget from masquerading
 /// as proof that the card has no price.
 enum PriceCheckRefreshIssue: Equatable, Sendable {
+    /// The provider matched the product but has no listing for its exact
+    /// finish. This is the only terminal absence claim about the price.
     case noExactPrice
+    /// The app could not match this card to a vendor product.
+    case notMatched
+    /// The app has no safe vendor mapping for this finish, so it did not ask.
+    case unsupportedFinish
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -20,6 +26,8 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case current
     case lastKnown(PriceCheckRefreshIssue)
     case noExactPrice
+    case notMatched
+    case unsupportedFinish
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -111,6 +119,10 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .failed(.noExactPrice)
         case .failed(.noExactPrice):
             return .failed(.noExactPrice)
+        case .failed(.notMatched):
+            return .failed(.notMatched)
+        case .failed(.unsupportedFinish):
+            return .failed(.unsupportedFinish)
         case .failed(.disabled):
             return .failed(.fallbackDisabled)
         case .failed(.missingCredentials):

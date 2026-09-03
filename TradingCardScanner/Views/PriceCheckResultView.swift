@@ -8,6 +8,7 @@ struct PriceCheckResultView: View {
     @EnvironmentObject private var model: ScannerViewModel
 
     let initialResult: PriceCheckResult
+    @State private var isShowingSettings = false
 
     private var result: PriceCheckResult {
         guard let live = model.priceCheckResult, live.id == initialResult.id else {
@@ -34,6 +35,10 @@ struct PriceCheckResultView: View {
                     Button("Done") { dismiss() }
                 }
             }
+        }
+        .sheet(isPresented: $isShowingSettings, onDismiss: model.settingsDismissed) {
+            SettingsView()
+                .environmentObject(model)
         }
     }
 
@@ -103,6 +108,9 @@ struct PriceCheckResultView: View {
                     Label(lastKnownMessage(for: issue), systemImage: "exclamationmark.triangle")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.orange)
+                    if issue.isFallbackSettingsIssue {
+                        openSettingsButton
+                    }
                 }
             } else {
                 noQuoteState
@@ -150,9 +158,21 @@ struct PriceCheckResultView: View {
             )
         case .noExactPrice:
             ContentUnavailableView(
-                "No exact price published",
+                "No listing for this finish",
                 systemImage: "dollarsign.circle",
-                description: Text("No permitted source has a price for this exact variant.")
+                description: Text("The price provider found this card but has no listing for its exact finish.")
+            )
+        case .notMatched:
+            ContentUnavailableView(
+                "Card not matched to a vendor product",
+                systemImage: "questionmark.folder",
+                description: Text("We couldn’t match this card to a product at the price provider. Try again later after the catalog match is updated.")
+            )
+        case .unsupportedFinish:
+            ContentUnavailableView(
+                "Finish not supported",
+                systemImage: "tag.slash",
+                description: Text("The optional fallback provider does not have a safe mapping for this finish, so it was not asked for a price.")
             )
         case .providerUnavailable:
             ContentUnavailableView(
@@ -161,16 +181,16 @@ struct PriceCheckResultView: View {
                 description: Text("The price service could not be reached. Try again shortly.")
             )
         case .fallbackDisabled:
-            ContentUnavailableView(
+            fallbackSettingsState(
                 "Price fallback is off",
                 systemImage: "gearshape",
-                description: Text("Enable the optional fallback provider in Settings to continue.")
+                description: "Enable the optional fallback provider in Settings to continue."
             )
         case .fallbackUnconfigured:
-            ContentUnavailableView(
+            fallbackSettingsState(
                 "Price fallback needs setup",
                 systemImage: "key.horizontal",
-                description: Text("Add the optional fallback provider credential in Settings.")
+                description: "Add the optional fallback provider credential in Settings."
             )
         case let .rateLimited(retryAt):
             ContentUnavailableView(
@@ -186,17 +206,44 @@ struct PriceCheckResultView: View {
             )
         case .current, .lastKnown(_):
             ContentUnavailableView(
-                "No exact price published",
+                "No listing for this finish",
                 systemImage: "dollarsign.circle",
-                description: Text("No permitted source has a price for this exact variant.")
+                description: Text("The price provider found this card but has no listing for its exact finish.")
             )
         }
+    }
+
+    private func fallbackSettingsState(
+        _ title: String,
+        systemImage: String,
+        description: String
+    ) -> some View {
+        VStack(spacing: 12) {
+            ContentUnavailableView(
+                title,
+                systemImage: systemImage,
+                description: Text(description)
+            )
+            openSettingsButton
+        }
+    }
+
+    private var openSettingsButton: some View {
+        Button("Open Settings", systemImage: "gearshape") {
+            isShowingSettings = true
+        }
+        .buttonStyle(.bordered)
+        .accessibilityHint("Opens Pricing Settings so you can enable and configure the fallback provider.")
     }
 
     private func lastKnownMessage(for issue: PriceCheckRefreshIssue) -> String {
         switch issue {
         case .noExactPrice:
-            return "Exact current price not published — showing last known"
+            return "No listing for this finish — showing last known"
+        case .notMatched:
+            return "Card not matched to a vendor product — showing last known"
+        case .unsupportedFinish:
+            return "Finish not supported by the fallback provider — showing last known"
         case .providerUnavailable:
             return "Couldn’t update — showing last known"
         case .fallbackDisabled:
@@ -225,5 +272,16 @@ struct PriceCheckResultView: View {
             return "\(prefix)\(source) · Retrieved \(retrieved.formatted(date: .abbreviated, time: .shortened))"
         }
         return "\(prefix)\(source)"
+    }
+}
+
+private extension PriceCheckRefreshIssue {
+    var isFallbackSettingsIssue: Bool {
+        switch self {
+        case .fallbackDisabled, .fallbackUnconfigured:
+            true
+        default:
+            false
+        }
     }
 }

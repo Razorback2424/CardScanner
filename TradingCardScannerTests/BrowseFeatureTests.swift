@@ -1438,6 +1438,154 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(counts.fallback, 0)
     }
 
+    func testVariantlessResolvedCacheFallsThroughToTheOfflineVariantChecklist() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cacheRoot = root.appendingPathComponent("resolved")
+        let offlineRoot = root.appendingPathComponent("offline")
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let key = "pokemon|sv10|085|\(definition.officialCount)"
+
+        // Simulate a cache entry with the right identity but no finish
+        // evidence, exactly as an outage-time fallback used to save.
+        try FileManager.default.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
+        let storedAt = ISO8601DateFormatter().string(from: .now)
+        let staleFile = """
+        {"appVersion":"test","schemaGeneration":2,"entries":[
+          {"key":"\(key)","storedAt":"\(storedAt)","cardID":"sv10-085","localID":"085","name":"Stale cache card","image":null,"rarity":null,"setID":"sv10","setName":"Destined Rivals","officialCount":\(definition.officialCount),"setCode":"DRI","variants":[]}
+        ]}
+        """
+        try Data(staleFile.utf8).write(to: cacheRoot.appendingPathComponent("ResolvedPokemonCards.json"))
+
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "sv10"),
+            name: "Destined Rivals",
+            code: "DRI",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: definition.officialCount,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let summaries: [CatalogCardSummary] = [.normal, .reverse].map { variant in
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: "sv10-085",
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: "Checklist card",
+                collectorNumber: "085",
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: variant,
+                isExpandedMasterSetVariant: false,
+                isSoleSlotForCard: false
+            )
+        }
+        try await writeSnapshot([set: summaries], to: offlineRoot)
+
+        let source = CountingPokemonCardSource(
+            primary: .failure(.badResponse),
+            fallback: .failure(.badResponse)
+        )
+        let cache = ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test")
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: offlineRoot, bundle: nil)
+            ),
+            resolvedDiskCache: cache,
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+
+        let card = try await catalog.card(for: identifier)
+
+        XCTAssertEqual(card.name, "Checklist card")
+        XCTAssertEqual(Set(card.variantEvidence.catalogVariants), Set([.normal, .reverse]))
+        switch VariantResolver.resolve(card.variantEvidence) {
+        case let .needsChoice(options, _):
+            XCTAssertEqual(Set(options), Set([.normal, .reverse]))
+        case .resolved:
+            XCTFail("A richer offline checklist must reopen the finish picker.")
+        }
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 0)
+        XCTAssertEqual(counts.fallback, 0)
+        let healedCacheEntry = await cache.card(for: key)
+        XCTAssertNil(healedCacheEntry, "variant-less entries self-heal on the next scan")
+    }
+
+    func testPriorGenerationResolvedCacheIsIgnored() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cacheRoot = root.appendingPathComponent("resolved")
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let key = "pokemon|sv10|085|\(definition.officialCount)"
+
+        // A complete entry from the prior format must not survive the schema
+        // invalidation merely because it contains usable variant evidence.
+        try FileManager.default.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
+        let storedAt = ISO8601DateFormatter().string(from: .now)
+        let oldGenerationFile = """
+        {"appVersion":"test","schemaGeneration":1,"entries":[
+          {"key":"\(key)","storedAt":"\(storedAt)","cardID":"sv10-085","localID":"085","name":"Old generation card","image":null,"rarity":null,"setID":"sv10","setName":"Destined Rivals","officialCount":\(definition.officialCount),"setCode":"DRI","variants":[{"id":"normal","label":"Non-Holo"},{"id":"reverse","label":"Reverse Holo"}]}
+        ]}
+        """
+        try Data(oldGenerationFile.utf8).write(
+            to: cacheRoot.appendingPathComponent("ResolvedPokemonCards.json")
+        )
+
+        let cache = ResolvedPokemonCardCache(root: cacheRoot, appVersion: "test")
+        let cachedEntry = await cache.card(for: key)
+
+        XCTAssertNil(cachedEntry, "A prior cache generation must always be treated as a miss.")
+    }
+
+    func testVariantlessStorePreservesAnExistingResolvedCard() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let key = "pokemon|sv10|085|\(definition.officialCount)"
+        let cache = ResolvedPokemonCardCache(
+            root: root.appendingPathComponent("resolved"),
+            appVersion: "test"
+        )
+        let completeCard = try makeTCGdexCard(setID: "sv10", localID: "085")
+        let incompleteCard = try decode(TCGdexCard.self, from: """
+        {"id":"sv10-085","localId":"085","name":"Incomplete Card","image":null,
+         "set":{"id":"sv10","name":"Destined Rivals","cardCount":{"total":\(definition.officialCount),"official":\(definition.officialCount)}}}
+        """)
+
+        await cache.store(
+            card: completeCard,
+            setCode: "DRI",
+            key: key,
+            officialCount: definition.officialCount
+        )
+        await cache.store(
+            card: incompleteCard,
+            setCode: "DRI",
+            key: key,
+            officialCount: definition.officialCount
+        )
+        let storedEntry = await cache.card(for: key)
+        let cachedEntry = try XCTUnwrap(storedEntry)
+
+        XCTAssertEqual(cachedEntry.card.name, "Resolved Card")
+        XCTAssertEqual(
+            Set(cachedEntry.card.catalogVariants),
+            Set([.normal, .reverse]),
+            "A variant-less response must not evict an existing complete cache entry."
+        )
+    }
+
     func testResolvedPokemonIdentitySurvivesAColdCatalogInstance() async throws {
         let root = try temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -1486,7 +1634,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
     private func makeTCGdexCard(setID: String, localID: String) throws -> TCGdexCard {
         try decode(TCGdexCard.self, from: """
         {"id":"\(setID)-\(localID)","localId":"\(localID)","name":"Resolved Card","image":null,
-         "set":{"id":"\(setID)","name":"Resolved Set","cardCount":{"total":1,"official":1}}}
+         "set":{"id":"\(setID)","name":"Resolved Set","cardCount":{"total":1,"official":1}},
+         "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true}}
         """)
     }
 

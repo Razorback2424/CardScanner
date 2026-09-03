@@ -60,18 +60,42 @@ final class ProductIdentityTests: XCTestCase {
         XCTAssertFalse(identity.isCurrent())
     }
 
-    /// The same escape hatch as `catalogMetadataVersion`: when the matcher
-    /// improves, everything it previously gave up on is asked again.
-    func testVersionBumpRetriesEverything() {
-        let stale = ProductIdentity(
-            key: "k",
+    /// Matcher revisions reopen stored misses, but a verified vendor handle is
+    /// still valid and must stay batchable instead of paying for a new search.
+    func testVersionBumpRetriesMissesWhileKeepingResolvedHandlesCurrent() {
+        let resolved = ProductIdentity(
+            key: "resolved",
             vendor: .justTCG,
             vendorCardID: "some-card",
             resolvedAt: .now,
             attemptVersion: ProductIdentity.currentAttemptVersion - 1
         )
+        let missed = ProductIdentity(
+            key: "missed",
+            vendor: .justTCG,
+            unmatchedAt: .now,
+            attemptVersion: ProductIdentity.currentAttemptVersion - 1
+        )
 
-        XCTAssertFalse(stale.isCurrent())
+        XCTAssertTrue(resolved.isCurrent())
+        XCTAssertFalse(missed.isCurrent())
+    }
+
+    func testStoredMissStillSuppressesTheBackgroundResolutionGate() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        store.record(.noProductMatch, forKey: "missed")
+
+        XCTAssertFalse(store.needsResolution(forKey: "missed"))
+    }
+
+    func testUnsupportedFinishDoesNotCreateANegativeIdentity() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        store.record(.unsupportedFinish, forKey: "unsupported")
+
+        XCTAssertNil(store.identity(forKey: "unsupported"))
+        XCTAssertTrue(store.needsResolution(forKey: "unsupported"))
     }
 
     func testRecordPersistsAndReadsBack() throws {

@@ -324,6 +324,27 @@ final class ProductFallbackTests: XCTestCase {
         XCTAssertEqual(ProductFinish.requirement(for: .holo), .printings(["Holofoil"]))
     }
 
+    func testUnsupportedFinishIsDistinctBeforeCredentialsOrNetwork() async {
+        let subject = ProductPriceSubject(
+            game: .pokemon,
+            catalogID: "sv08.5-001",
+            name: "Example Pokémon",
+            setName: "Prismatic Evolutions",
+            cardNumber: "001",
+            japaneseSetID: nil,
+            pokemonPrintRun: nil,
+            vendorCardID: nil
+        )
+
+        let outcome = await ProductPriceService().quote(
+            for: subject,
+            variant: .masterBall,
+            lane: .interactive
+        )
+
+        XCTAssertEqual(outcome, .unsupportedFinish)
+    }
+
     // MARK: - Vendor-native rows
 
     /// A sealed box has no TCGdex or Scryfall identity, so it must not be sent

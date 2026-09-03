@@ -187,6 +187,27 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(provider.calls, 1)
     }
 
+    func testPriceCheckPreservesMatcherAndFinishFailuresAsDistinctIssues() async throws {
+        let context = try makeContext()
+        let scan = priceCheckScan()
+
+        let notMatchedCoordinator = PriceCheckCoordinator(
+            context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .failed(.notMatched))
+        )
+        let notMatched = await notMatchedCoordinator.refresh(notMatchedCoordinator.present(scan))
+        XCTAssertEqual(notMatched, .failed(.notMatched))
+
+        let unsupportedFinishCoordinator = PriceCheckCoordinator(
+            context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .failed(.unsupportedFinish))
+        )
+        let unsupportedFinish = await unsupportedFinishCoordinator.refresh(
+            unsupportedFinishCoordinator.present(scan)
+        )
+        XCTAssertEqual(unsupportedFinish, .failed(.unsupportedFinish))
+    }
+
     private func priceCheckScan(
         variant: PhysicalVariant? = nil,
         pricing: TCGdexPricing? = nil

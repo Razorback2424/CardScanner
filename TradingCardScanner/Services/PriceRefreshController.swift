@@ -925,7 +925,7 @@ final class PriceRefreshController: ObservableObject {
                     pending: eligibleCandidates.count - completed,
                     retryAt: retryAt
                 )
-            case .noListingForVariant, .noProductMatch, .requestFailed:
+            case .noListingForVariant, .noProductMatch, .unsupportedFinish, .requestFailed:
                 break
             }
 

@@ -72,7 +72,7 @@ struct ProductIdentityStore {
         at date: Date = .now
     ) {
         switch outcome {
-        case .requestFailed, .budgetReached, .rateLimited:
+        case .requestFailed, .unsupportedFinish, .budgetReached, .rateLimited:
             return
         case .price, .noListingForVariant, .noProductMatch:
             break
@@ -109,7 +109,7 @@ struct ProductIdentityStore {
             identity.resolvedAt = nil
             identity.unmatchedAt = date
 
-        case .requestFailed, .budgetReached, .rateLimited:
+        case .requestFailed, .unsupportedFinish, .budgetReached, .rateLimited:
             break
         }
     }

@@ -19,6 +19,9 @@ enum ProductPriceOutcome: Equatable, Sendable {
     case noListingForVariant(vendorCardID: String?)
     /// Nothing came back that passed identity checking.
     case noProductMatch
+    /// The app does not have a safe spelling for this finish, so no vendor
+    /// request was made. This is neither a product miss nor a price miss.
+    case unsupportedFinish
     /// No request was made because today's persisted allowance was exhausted.
     /// This is scheduling state, not evidence about the card.
     case budgetReached(resetAt: Date)
@@ -29,7 +32,7 @@ enum ProductPriceOutcome: Equatable, Sendable {
     var vendorCardID: String? {
         switch self {
         case let .price(_, id, _), let .noListingForVariant(id): return id
-        case .noProductMatch, .budgetReached, .rateLimited, .requestFailed: return nil
+        case .noProductMatch, .unsupportedFinish, .budgetReached, .rateLimited, .requestFailed: return nil
         }
     }
 
@@ -126,7 +129,7 @@ actor ProductPriceService {
             printRun: subject.pokemonPrintRun,
             isJapanese: game == .pokemonJapan
         ) else {
-            return .noListingForVariant(vendorCardID: subject.vendorCardID)
+            return .unsupportedFinish
         }
         guard PriceVendorCredentials.hasKey else { return .requestFailed }
 
