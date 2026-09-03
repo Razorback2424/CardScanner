@@ -51,7 +51,13 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     var collectionKey: String
     var name: String
     var detail: String
+    /// A local visual override, shared with Collection. Its filename is only
+    /// meaningful on the device that stores the underlying artwork.
+    var userArtworkFilename: String?
+    /// The preferred catalog artwork URL for a compact Portfolio thumbnail.
     var artworkURL: URL?
+    /// Retried only when the preferred artwork cannot load.
+    var artworkFallbackURL: URL?
     var quantity: Int
     var currentValue: Money?
 

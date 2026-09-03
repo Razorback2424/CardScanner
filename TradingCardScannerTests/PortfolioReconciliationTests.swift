@@ -232,6 +232,51 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.inputRevision, 3)
     }
 
+    func testHoldingSnapshotPreservesLocalArtworkAndCatalogFallback() throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        let ownedCard = card(dateAdded: date)
+        ownedCard.userArtworkFilename = "custom-artwork.image"
+        ownedCard.imageURL = "https://images.example.test/cards/portfolio-card"
+        ownedCard.thumbnailURL = "https://images.example.test/cards/portfolio-card/low.png"
+        context.insert(ownedCard)
+        try context.save()
+
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context,
+            epoch: date,
+            through: date,
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
+        let holding = try XCTUnwrap(computation.holdings.first)
+
+        XCTAssertEqual(holding.userArtworkFilename, "custom-artwork.image")
+        XCTAssertEqual(holding.artworkURL, URL(string: "https://images.example.test/cards/portfolio-card/high.png"))
+        XCTAssertEqual(holding.artworkFallbackURL, URL(string: "https://images.example.test/cards/portfolio-card/low.png"))
+    }
+
+    func testHoldingSnapshotDoesNotRetryAnIdenticalDirectArtworkURL() throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 2_000_000_000)
+        let ownedCard = card(dateAdded: date)
+        let directArtworkURL = "https://images.example.test/cards/portfolio-card.jpg"
+        ownedCard.imageURL = directArtworkURL
+        ownedCard.thumbnailURL = directArtworkURL
+        context.insert(ownedCard)
+        try context.save()
+
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context,
+            epoch: date,
+            through: date,
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
+        let holding = try XCTUnwrap(computation.holdings.first)
+
+        XCTAssertEqual(holding.artworkURL, URL(string: directArtworkURL))
+        XCTAssertNil(holding.artworkFallbackURL)
+    }
+
     // MARK: - Duplicate physical rows for one logical position
     //
     // Two devices adding the same card offline each pass their own local

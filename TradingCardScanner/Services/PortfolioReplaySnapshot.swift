@@ -107,11 +107,15 @@ enum PortfolioReplaySnapshotBuilder {
             let price = valuations.valuation(for: position.priceStorageKey).unitPrice
             let detailParts = [card.setName, card.variantLabel ?? card.itemKindLabel]
                 .filter { !$0.isEmpty }
+            let artworkURL = card.highImageURL
+            let artworkFallbackURL = card.lowImageURL == artworkURL ? nil : card.lowImageURL
             return PortfolioHoldingSnapshot(
                 collectionKey: position.collectionKey,
                 name: card.name,
                 detail: detailParts.joined(separator: " · "),
-                artworkURL: URL(string: card.thumbnailURL ?? card.imageURL ?? ""),
+                userArtworkFilename: card.userArtworkFilename,
+                artworkURL: artworkURL,
+                artworkFallbackURL: artworkFallbackURL,
                 quantity: position.quantity,
                 currentValue: price.map { $0 * position.quantity }
             )

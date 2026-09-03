@@ -875,7 +875,7 @@ private struct PortfolioContributionRow: View {
         VStack(spacing: 5) {
             HStack(spacing: 10) {
                 if let holding = row.holding {
-                    PortfolioArtwork(url: holding.artworkURL)
+                    PortfolioArtwork(holding: holding)
                 } else {
                     Image(systemName: "clock.arrow.circlepath")
                         .foregroundStyle(.secondary)
@@ -920,7 +920,7 @@ private struct PortfolioHoldingRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            PortfolioArtwork(url: holding.artworkURL)
+            PortfolioArtwork(holding: holding)
             VStack(alignment: .leading, spacing: 2) {
                 Text(holding.name).foregroundStyle(.primary)
                 Text([holding.detail, holding.quantity > 1 ? "×\(holding.quantity)" : nil]
@@ -967,24 +967,20 @@ private struct PortfolioMagnitudeBar: View {
 }
 
 private struct PortfolioArtwork: View {
-    let url: URL?
+    let holding: PortfolioHoldingSnapshot
 
     var body: some View {
         Group {
-            if let url {
-                AsyncImage(url: url) { phase in
-                    if case let .success(image) = phase {
-                        image.resizable().scaledToFill()
-                    } else {
-                        RoundedRectangle(cornerRadius: 5, style: .continuous)
-                            .fill(.quaternary)
-                            .overlay(Image(systemName: "rectangle.stack").foregroundStyle(.secondary))
-                    }
-                }
+            if let image = CollectionArtworkStore.image(filename: holding.userArtworkFilename) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
             } else {
-                RoundedRectangle(cornerRadius: 5, style: .continuous)
-                    .fill(.quaternary)
-                    .overlay(Image(systemName: "rectangle.stack").foregroundStyle(.secondary))
+                CatalogCachedImage(
+                    url: holding.artworkURL,
+                    fallbackURL: holding.artworkFallbackURL,
+                    placeholderSymbol: "rectangle.stack"
+                )
             }
         }
         .frame(width: 34, height: 46)
