@@ -499,6 +499,102 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(magicProfile.parse(["MH3 • 001 • EN"])?.displayIdentifier, "MH3 1 EN")
     }
 
+    func testMagicPreservesCollectorNumberLetterSuffixes() {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIN", printedSize: nil)
+        ])
+
+        for number in ["523B", "523b", "523 B"] {
+            XCTAssertEqual(
+                profile.parse([number, "FIN • EN"])?.displayIdentifier,
+                "FIN 523b EN",
+                "OCR spelling \(number) must not collapse to FIN 523"
+            )
+        }
+
+        XCTAssertEqual(
+            profile.parse(["FIN • 523 B • EN"])?.displayIdentifier,
+            "FIN 523b EN"
+        )
+    }
+
+    func testMagicDoesNotDropAnAmbiguousSeparatedCSuffix() {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIN", printedSize: nil)
+        ])
+
+        XCTAssertEqual(
+            profile.parse(["0004 C", "FIN • EN"])?.displayIdentifier,
+            "FIN 4c EN"
+        )
+    }
+
+    func testMagicStillStripsUnambiguousSeparatedRarityLetters() {
+        for rarity in ["U", "R", "M", "S", "L", "P"] {
+            XCTAssertEqual(
+                magicProfile.parse(["0218 \(rarity)", "ECL • EN"])?.displayIdentifier,
+                "ECL 218 EN",
+                "\(rarity) is a rarity marker, not a collector suffix"
+            )
+        }
+    }
+
+    func testMagicRejectsMixedCaseCopyrightTextAsACollectorCandidate() {
+        XCTAssertNil(magicProfile.parse(["ECL • EN", "© 2026 Wizards of the Coast"]))
+    }
+
+    func testMagicIgnoresMixedCaseCopyrightTextBesideAValidFooter() {
+        XCTAssertEqual(
+            magicProfile.parse(["ECL • 0218 • EN", "© 2026 Wizards of the Coast"])?.displayIdentifier,
+            "ECL 218 EN"
+        )
+    }
+
+    func testMagicAcceptsAnExplicitStarCollectorNumber() {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIN", printedSize: nil)
+        ])
+
+        XCTAssertEqual(
+            profile.parse(["★", "FIN", "EN"])?.displayIdentifier,
+            "FIN ★ EN"
+        )
+    }
+
+    func testMagicRejectsAnAmbiguousStarCollectorNumberByGeometry() {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIN", printedSize: nil)
+        ])
+        let lines = [
+            recognized("FIN • EN", x: 0.10, width: 0.20),
+            recognized("★", x: 0.82, width: 0.08)
+        ]
+
+        XCTAssertEqual(profile.parseOutcome(lines), .spatiallyRejectedCollector)
+        XCTAssertNil(profile.parseOutcome(lines).identifier)
+    }
+
+    func testScryfallCollectorNumberURLEncodesStarAsOnePathSegment() {
+        let url = ScryfallService.cardLookupURL(
+            setCode: "FIN",
+            collectorNumber: "★",
+            language: "EN"
+        )
+
+        XCTAssertNotNil(url)
+        XCTAssertTrue(url?.absoluteString.contains("%E2%98%85") == true)
+        XCTAssertEqual(url?.pathComponents.filter { $0 != "/" }, ["cards", "fin", "★", "en"])
+    }
+
+    func testScryfallIdentityCanonicalizationOnlyCorrectsOCROnTheScannedSide() {
+        XCTAssertEqual(ScryfallService.canonicalScannedCollectorNumber("001L"), "11")
+        XCTAssertEqual(ScryfallService.canonicalProviderCollectorNumber("001L"), "1l")
+        XCTAssertNotEqual(
+            ScryfallService.canonicalScannedCollectorNumber("001L"),
+            ScryfallService.canonicalProviderCollectorNumber("001L")
+        )
+    }
+
     // MARK: - Vision splits the footer differently every frame
 
     func testMagicReadsAFullySplitFooter() {

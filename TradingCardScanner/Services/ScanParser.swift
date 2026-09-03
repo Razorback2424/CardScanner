@@ -591,33 +591,52 @@ struct MagicScanProfile: Sendable {
     /// every frame.
     private let setCodeRegex: NSRegularExpression
     private static let collectorNumberRegex = try! NSRegularExpression(
-        pattern: #"(?<![A-Z0-9])([0-9OIL]{1,4})(?:\s*/\s*([0-9OIL]{1,4}))?(?![A-Z0-9])"#,
+        // Keep a one-letter collector suffix attached to the numeric stem. The
+        // optional whitespace is intentional: Vision sometimes separates the
+        // suffix (`523 B`) even though it is printed as one token (`523b`).
+        // The boundary after the suffix prevents this from stealing the first
+        // letter of an annotation such as `FFVII`.
+        pattern: #"(?<![A-Za-z0-9])([0-9OIL]{1,4}(?:\s*[A-Za-z★])?|★)(?:\s*/\s*([0-9OIL]{1,4}))?(?![A-Za-z0-9])"#,
         options: []
     )
     /// A collector-number line, allowing the rarity letter Magic prints on
     /// either side and an unrelated short print annotation after the number.
     /// Final Fantasy cards, for example, can print `0036 FFVII` above `FIN • EN`.
     /// The parser deliberately discards `FFVII`; only the known set-code match
-    /// (`FIN`) participates in identity.
+    /// (`FIN`) participates in identity. A one-letter suffix attached to the
+    /// number is retained, including when OCR inserts a space before it.
     /// Group 1 is the leading letter, now **captured** rather than skipped.
     ///
     /// It used to be `(?:[A-Z]\s+)?` — matched and thrown away — which is what
     /// made `T 0017` and `0017` indistinguishable, and why scanning a Clue token
     /// silently added Invisible Woman instead. The letter is either a content
     /// marker (`T`) or a rarity letter, and only the parser can tell which.
+    /// This whole-line pattern intentionally remains uppercase-oriented because
+    /// `parseOutcome` uppercases OCR text before examination. The inline pattern
+    /// is mixed-case defensive because it scans substrings directly; both paths
+    /// still canonicalize their captured value to the same provider form.
     private static let strictCollectorNumberRegex = try! NSRegularExpression(
-        pattern: #"^\s*(?:([A-Z])\s+)?([0-9OIL]{1,4})(?:\s*/\s*([0-9OIL]{1,4}))?(?:\s+[A-Z0-9]{2,6})?(?:\s+[A-Z])?\s*$"#,
+        pattern: #"^\s*(?:([A-Z])\s+)?([0-9OIL]{1,4}(?:\s*[A-Z★])?|★)(?:\s*/\s*([0-9OIL]{1,4}))?(?:\s+[A-Z0-9]{2,6})?(?:\s+[A-Z])?\s*$"#,
         options: []
     )
     /// The same marker when it leads a full footer line, e.g. `T 0017 MSH EN`.
     private static let markerPrefixRegex = try! NSRegularExpression(
-        pattern: #"^\s*([A-Z])\s+(?=[0-9OIL])"#,
+        pattern: #"^\s*([A-Z])\s+(?=[0-9OIL★])"#,
         options: []
     )
     private static let englishMarkerRegex = try! NSRegularExpression(
         pattern: #"(?<![A-Z])EN(?![A-Z])"#,
         options: []
     )
+    /// Single-letter rarity markers that may follow a numeric collector number
+    /// as a separate OCR token. Other letters are treated as collector-number
+    /// suffixes, so `523 B` cannot silently become `523`.
+    /// `C` is deliberately absent. In a spaced token it is ambiguous between
+    /// common rarity and a real `c` collector suffix (notably art cards), so
+    /// retaining it is safer than collapsing it to the numeric prefix.
+    private static let unambiguousSeparatedRarityMarkers: Set<Character> = [
+        "U", "R", "M", "S", "L", "P"
+    ]
 
     init(definitions: [MagicSetDefinition]) {
         let keyed = Dictionary(
@@ -696,7 +715,14 @@ struct MagicScanProfile: Sendable {
     }
 
     private struct CollectorNumberReading: Equatable {
-        let card: Int
+        /// Canonical provider-facing collector number. Numeric stems are
+        /// unpadded, OCR `O/I/L` confusion is corrected, and a real suffix is
+        /// retained (`523b`, `1c`, `★`).
+        let collectorNumber: String
+        /// Numeric stem used only for denominator and copyright validation.
+        /// A standalone star has no numeric stem and is valid only as the
+        /// explicitly recognized collector token.
+        let numericCard: Int?
         let denominator: Int?
         /// The printed content marker, when one led the number.
         var marker: MagicPrintedMarker?
@@ -765,7 +791,7 @@ struct MagicScanProfile: Sendable {
             .map {
                 ScanIdentifier.magic(
                     setCode: codes[0],
-                    collectorNumber: String($0.card),
+                    collectorNumber: $0.collectorNumber,
                     language: "en",
                     contentKind: $0.contentKind
                 )
@@ -832,23 +858,28 @@ struct MagicScanProfile: Sendable {
             in: text,
             sourceBounds: sourceBounds,
             numberGroup: 2,
-            markerGroup: 1
+            markerGroup: 1,
+            denominatorGroup: 3
         )
     }
 
     /// - Parameter numberGroup: which capture group holds the collector number.
     ///   The strict pattern captures the marker first, so its number is group 2;
     ///   the inline pattern has no marker group and keeps the number at 1.
+    /// - Parameter denominatorGroup: which capture group holds the denominator.
     private func reading(
         from match: NSTextCheckingResult,
         in text: String,
         sourceBounds: CGRect?,
         numberGroup: Int = 1,
         markerGroup: Int? = nil,
+        denominatorGroup: Int = 2,
         fallbackMarker: MagicPrintedMarker? = nil
     ) -> CollectorNumberReading? {
         guard let cardRange = Range(match.range(at: numberGroup), in: text),
-              let card = ScanText.normalizedInteger(String(text[cardRange])) else { return nil }
+              let (collectorNumber, numericCard) = Self.canonicalCollectorNumber(
+                String(text[cardRange])
+              ) else { return nil }
         var marker = fallbackMarker
         if let markerGroup,
            let range = Range(match.range(at: markerGroup), in: text) {
@@ -856,10 +887,11 @@ struct MagicScanProfile: Sendable {
             // is ignored, exactly as before.
             marker = MagicPrintedMarker.marker(for: String(text[range])) ?? marker
         }
-        let denominator = Range(match.range(at: numberGroup + 1), in: text)
+        let denominator = Range(match.range(at: denominatorGroup), in: text)
             .flatMap { ScanText.normalizedInteger(String(text[$0])) }
         return CollectorNumberReading(
-            card: card,
+            collectorNumber: collectorNumber,
+            numericCard: numericCard,
             denominator: denominator,
             marker: marker,
             sourceBounds: sourceBounds
@@ -867,7 +899,13 @@ struct MagicScanProfile: Sendable {
     }
 
     private func isValid(_ number: CollectorNumberReading, for definition: MagicSetDefinition) -> Bool {
-        guard number.card > 0 else { return false }
+        guard let card = number.numericCard else {
+            // A star is a real Scryfall collector-number value. It is accepted
+            // only as the complete token; a star plus a denominator is not a
+            // shape this parser can identify safely.
+            return number.collectorNumber == "★" && number.denominator == nil
+        }
+        guard card > 0 else { return false }
 
         if let denominator = number.denominator {
             // A denominator is useful independent evidence, but only where
@@ -879,7 +917,64 @@ struct MagicScanProfile: Sendable {
             return true
         }
 
-        return !Self.plausibleCopyrightYears.contains(number.card)
+        // A four-digit number with a collector suffix is an identity, not a
+        // bare copyright year.
+        return !Self.plausibleCopyrightYears.contains(card)
+            || number.collectorNumber != String(card)
+    }
+
+    private static func canonicalCollectorNumber(_ token: String) -> (String, Int?)? {
+        let compact = token.filter { !$0.isWhitespace }
+        guard !compact.isEmpty else { return nil }
+        if compact == "★" { return ("★", nil) }
+
+        let numericCharacters = Set("0123456789OIL")
+        let parts = token.split(whereSeparator: { $0.isWhitespace })
+        var numericText: String
+        var rawSuffix: String
+        var suffixWasSeparated = false
+
+        // Split the whitespace before normalising O/I/L. Otherwise a printed
+        // rarity such as `0218 L` is indistinguishable from the OCR reading
+        // `0218L`, and L is converted to numeric 1 before the rarity decision.
+        if parts.count == 2,
+           parts[0].allSatisfy({ numericCharacters.contains($0) }),
+           parts[1].count == 1,
+           let character = parts[1].first,
+           character.isLetter || character == "★" {
+            numericText = String(parts[0])
+            rawSuffix = String(parts[1])
+            suffixWasSeparated = true
+        } else {
+            numericText = ""
+            for character in compact {
+                guard numericCharacters.contains(character) else { break }
+                numericText.append(character)
+            }
+            rawSuffix = String(compact.dropFirst(numericText.count))
+        }
+        guard !numericText.isEmpty,
+              let numericCard = ScanText.normalizedInteger(numericText) else {
+            return nil
+        }
+
+        guard rawSuffix.isEmpty || rawSuffix.count == 1,
+              rawSuffix.allSatisfy({ $0.isLetter || $0 == "★" }) else {
+            return nil
+        }
+
+        // `0218 U` is the established rarity shape. A different separated
+        // letter is a collector suffix (`523 B`), and must not be discarded.
+        let suffix: String
+        if suffixWasSeparated,
+           rawSuffix.count == 1,
+           let character = rawSuffix.first,
+           unambiguousSeparatedRarityMarkers.contains(character) {
+            suffix = ""
+        } else {
+            suffix = rawSuffix.lowercased()
+        }
+        return (String(numericCard) + suffix, numericCard)
     }
 }
 

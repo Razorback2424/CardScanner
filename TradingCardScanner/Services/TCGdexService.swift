@@ -418,7 +418,7 @@ struct ScryfallService: Sendable {
 
     /// Direct lookup by Scryfall id, for refreshing an owned printing.
     func fetchCard(id: String, ignoringCache: Bool = false) async throws -> ScryfallCard {
-        guard let encoded = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+        guard let encoded = Self.encodedPathSegment(id),
               let url = URL(string: "https://api.scryfall.com/cards/\(encoded)") else {
             throw ScryfallError.invalidURL
         }
@@ -438,7 +438,11 @@ struct ScryfallService: Sendable {
     ) async throws -> ScryfallCard {
         let normalizedSet = setCode.lowercased()
         let normalizedLanguage = language.lowercased()
-        guard let url = URL(string: "https://api.scryfall.com/cards/\(normalizedSet)/\(collectorNumber)/\(normalizedLanguage)") else {
+        guard let url = Self.cardLookupURL(
+            setCode: normalizedSet,
+            collectorNumber: collectorNumber,
+            language: normalizedLanguage
+        ) else {
             throw ScryfallError.invalidURL
         }
         let (data, response) = try await URLSession.shared.data(
@@ -450,7 +454,8 @@ struct ScryfallService: Sendable {
 
         let card = try JSONDecoder().decode(ScryfallCard.self, from: data)
         guard card.setCode.lowercased() == normalizedSet,
-              canonicalNumber(card.collectorNumber) == canonicalNumber(collectorNumber),
+              Self.canonicalProviderCollectorNumber(card.collectorNumber)
+                == Self.canonicalScannedCollectorNumber(collectorNumber),
               card.language.lowercased() == normalizedLanguage,
               !card.digital else {
             throw ScryfallError.identityMismatch
@@ -487,9 +492,65 @@ struct ScryfallService: Sendable {
         return request
     }
 
-    private func canonicalNumber(_ value: String) -> String {
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return Int(trimmed).map(String.init) ?? trimmed
+    /// Constructs a lookup URL from path segments rather than interpolating
+    /// collector text into a raw URL. This matters for literal Scryfall values
+    /// such as `★`, spaces inserted by OCR, and any future collector-number
+    /// punctuation that must not become a second path segment.
+    static func cardLookupURL(
+        setCode: String,
+        collectorNumber: String,
+        language: String
+    ) -> URL? {
+        guard let set = encodedPathSegment(setCode.lowercased()),
+              let number = encodedPathSegment(collectorNumber),
+              let language = encodedPathSegment(language.lowercased()) else {
+            return nil
+        }
+        return URL(string: "https://api.scryfall.com/cards/\(set)/\(number)/\(language)")
+    }
+
+    private static func encodedPathSegment(_ value: String) -> String? {
+        let allowed = CharacterSet.urlPathAllowed.subtracting(
+            CharacterSet(charactersIn: "/?#")
+        )
+        return value.addingPercentEncoding(withAllowedCharacters: allowed)
+    }
+
+    /// Canonicalises text produced by OCR. O/I/L are the known numeric
+    /// confusions, so they are corrected only on this side of the identity
+    /// comparison.
+    static func canonicalScannedCollectorNumber(_ value: String) -> String {
+        canonicalNumber(value, correctingOCR: true)
+    }
+
+    /// Canonicalises Scryfall's authoritative collector number without applying
+    /// OCR corrections. Leading zeroes and case are presentation differences;
+    /// O/I/L in the provider value are data and must remain data.
+    static func canonicalProviderCollectorNumber(_ value: String) -> String {
+        canonicalNumber(value, correctingOCR: false)
+    }
+
+    private static func canonicalNumber(_ value: String, correctingOCR: Bool) -> String {
+        let compact = value.filter { !$0.isWhitespace }
+        guard !compact.isEmpty else { return compact }
+
+        let numericCharacters = correctingOCR
+            ? Set("0123456789OILoil")
+            : Set("0123456789")
+        var numericText = ""
+        for character in compact {
+            guard numericCharacters.contains(character) else { break }
+            numericText.append(character)
+        }
+        guard !numericText.isEmpty else {
+            return compact.lowercased()
+        }
+
+        let numeric = correctingOCR
+            ? ScanText.normalizedInteger(numericText.uppercased())
+            : Int(numericText)
+        guard let numeric else { return compact.lowercased() }
+        return String(numeric) + compact.dropFirst(numericText.count).lowercased()
     }
 }
 
