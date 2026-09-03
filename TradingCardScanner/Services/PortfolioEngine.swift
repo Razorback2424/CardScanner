@@ -106,16 +106,27 @@ final class PortfolioEngine: ObservableObject {
         return nil
     }
 
+    /// Set when `establishIfNeeded` could not open the books yet. `start` runs
+    /// once per launch, so without a retry a deferred or failed baseline would
+    /// stay unwritten for the whole session.
+    private var needsEpochRetry = false
+
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
         do {
             try PortfolioEpoch.establishIfNeeded(context: context, at: now)
+            needsEpochRetry = false
         } catch {
             // A failed baseline save must not transition the UI into the
             // migration-day "tracking started" state. Recompute can still
-            // show the current collection value; a later start retries the
-            // durable epoch transaction.
+            // show the current collection value; the retry below re-attempts
+            // the durable epoch transaction.
+            //
+            // This also covers `awaitingInitialSync`, where the books are
+            // deliberately held shut until CloudKit has finished delivering a
+            // collection whose ledger has not arrived yet.
+            needsEpochRetry = true
             recompute(context: context, now: now)
             return
         }
@@ -139,6 +150,11 @@ final class PortfolioEngine: ObservableObject {
     /// `PortfolioComputationActor`. Only the small act of building the summary
     /// and writing at most a few hundred close rows happens here.
     func recompute(context: ModelContext, now: Date = .now) {
+        // Recompute is what runs when the inputs change, which is exactly when
+        // a deferred baseline becomes decidable: the arriving inventory events
+        // are themselves the evidence that no baseline is needed. Costs one
+        // `UserDefaults` read once the epoch exists.
+        retryEpochIfNeeded(context: context, now: now)
         status = .computing
 
         let timeZone = PortfolioCalendar.timeZone()
@@ -164,6 +180,18 @@ final class PortfolioEngine: ObservableObject {
                 timeZone: timeZone,
                 context: context
             )
+        }
+    }
+
+    private func retryEpochIfNeeded(context: ModelContext, now: Date) {
+        guard needsEpochRetry else { return }
+        do {
+            try PortfolioEpoch.establishIfNeeded(context: context, at: now)
+            needsEpochRetry = false
+            PriceObservationLog(context: context).backfillFromRecords(receivedAt: now)
+        } catch {
+            // Still waiting, or still failing. Either way the recomputation
+            // below proceeds and shows the collection's current value.
         }
     }
 

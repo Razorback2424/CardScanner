@@ -17,6 +17,16 @@ struct MarketPriceTarget: Hashable, Sendable {
     let lookupCandidates: [JustTCGBatchLookup]
     let currentAmount: Double?
     let lastCheckedAt: Date?
+    /// This row has never had a complete answer from the vendor, so "unchanged
+    /// since the cutoff" tells it nothing.
+    ///
+    /// `updated_after` is only meaningful for a row that already holds what the
+    /// response would be confirming. For a row with no price yet, or a sealed
+    /// product still waiting on its artwork, an omitted variant is
+    /// indistinguishable from one that was never fetched — which is the exact
+    /// ambiguity the delta clock is supposed to prevent. Such a row forces its
+    /// whole chunk to ask for a full response.
+    var requiresFullResponse: Bool = false
 
     /// The single identifier this target should be sent as.
     var lookup: JustTCGBatchLookup? {
@@ -113,6 +123,7 @@ struct JustTCGRefreshCoordinator {
         useDelta: Bool = false,
         onProgress: (MarketRefreshReport) -> Void = { _ in },
         apply: (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) -> Void,
+        unmatched: ([MarketPriceTarget]) -> Void = { _ in },
         checkpoint: () -> Void
     ) async -> MarketRefreshReport {
         let (batched, unresolved) = Self.deduplicate(targets)
@@ -132,7 +143,14 @@ struct JustTCGRefreshCoordinator {
         // `updated_after` is only safe once a complete pass has succeeded.
         // Before that a variant absent from the response is indistinguishable
         // from one that was never fetched at all.
-        let cutoff = useDelta
+        //
+        // The game-level clock is not sufficient on its own: it is advanced by
+        // whatever pass happened to succeed, and a pass only ever covers the
+        // rows that were stale that minute. A row added afterwards would then be
+        // asked with a cutoff it has no evidence behind. So the clock decides
+        // whether delta is *available*, and each chunk decides whether delta is
+        // *usable* for the rows it actually carries.
+        let clock = useDelta
             ? syncLedger.deltaCutoff(game: game, apiVersion: JustTCGV1Client.apiVersion)
             : nil
 
@@ -141,6 +159,13 @@ struct JustTCGRefreshCoordinator {
                 report.stoppedReason = .cancelled
                 return report
             }
+
+            let chunkOwners = chunk.flatMap { batched[$0] ?? [] }
+            // One row with nothing to compare against makes the whole chunk ask
+            // for a full response. A full request costs exactly the same single
+            // request as a delta one — `updated_after` narrows the response, not
+            // the batch — so this buys correctness for no quota at all.
+            let cutoff = chunkOwners.contains(where: \.requiresFullResponse) ? nil : clock
 
             do {
                 let response = try await client.batchCards(
@@ -165,10 +190,20 @@ struct JustTCGRefreshCoordinator {
                             response: response
                         ) else {
                             // Absent from a delta response means "unchanged", and a
-                            // cached price must never be cleared because of it. In a
-                            // full response absence is ambiguous — unresolved or
-                            // unavailable — and is likewise left alone rather than
-                            // guessed at.
+                            // cached price must never be cleared because of it — so
+                            // nothing is reported for those.
+                            //
+                            // A full response is different. The vendor was asked
+                            // about this exact variant and returned no listing for
+                            // it, which is a real, current answer. Reporting it lets
+                            // the caller record that the question was asked; without
+                            // that, a row whose only outstanding need is something a
+                            // non-match can never supply — sealed artwork — stays
+                            // stale forever and spends a request on every refresh
+                            // for the life of the collection.
+                            //
+                            // The value is still left exactly as it was either way.
+                            if cutoff == nil { unmatched(finishOwners) }
                             continue
                         }
                         apply(card, variant, finishOwners)

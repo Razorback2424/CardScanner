@@ -501,14 +501,21 @@ final class PriceRefreshController: ObservableObject {
                 completed += 1
                 status = .refreshing(completed: completed, total: order.count)
 
-                // Checkpoint per answered printing, the same way the fallback
-                // stage checkpoints per batch. A pass over a few hundred cards
-                // is minutes long, and holding all of it unsaved meant any
-                // unrelated `ModelContext.rollback` in that window — a scan or
-                // an import that failed and took the context back — discarded
-                // the whole refresh along with itself. A save here is free next
-                // to the network round trip that produced it.
-                store.save()
+                // Checkpoint periodically, matching the fallback stage's own
+                // interval. A pass over a few hundred cards is minutes long,
+                // and holding all of it unsaved meant any unrelated
+                // `ModelContext.rollback` in that window — a scan or an import
+                // that failed and took the context back — discarded the whole
+                // refresh along with itself.
+                //
+                // Deliberately not once per printing. Every save republishes
+                // the collection's `@Query`s, and each republish costs a full
+                // pass over the observed tables; ten printings keeps the
+                // exposure window to seconds while leaving that churn an order
+                // of magnitude smaller.
+                if completed.isMultiple(of: Self.catalogCheckpointInterval) {
+                    store.save()
+                }
 
                 if cursor < order.count, !providerUnreachable, !wasCancelled, !Task.isCancelled {
                     let next = order[cursor]
@@ -781,7 +788,14 @@ final class PriceRefreshController: ObservableObject {
                     marketVariantID: cachedVariant,
                     lookupCandidates: external,
                     currentAmount: nil,
-                    lastCheckedAt: candidate.target.lastCheckedAt
+                    lastCheckedAt: candidate.target.lastCheckedAt,
+                    // Nothing to compare a delta against: either the row has
+                    // never been priced, or it is a sealed product still
+                    // missing the artwork only a returned listing can supply.
+                    // "Unchanged" would be an answer to a question it has not
+                    // yet been able to ask.
+                    requiresFullResponse: !candidate.target.hasPrice
+                        || candidate.target.needsArtwork
                 )
             )
         }
@@ -818,6 +832,12 @@ final class PriceRefreshController: ObservableObject {
                         owners: owners,
                         store: store,
                         identities: identities,
+                        rowsByPriceKey: artworkPending
+                    )
+                },
+                unmatched: { owners in
+                    Self.recordSealedArtworkMiss(
+                        for: owners,
                         rowsByPriceKey: artworkPending
                     )
                 },
@@ -1047,6 +1067,27 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
+    /// A full response that carried no listing for the exact variant asked
+    /// about. The vendor was asked and published nothing, which is the terminal
+    /// artwork fact — stamped so the row stops re-entering every refresh.
+    ///
+    /// Only ever called for a non-delta response, where absence is a real
+    /// answer rather than "unchanged since the cutoff". No price is touched: a
+    /// missing listing is not evidence that a stored amount is wrong.
+    static func recordSealedArtworkMiss(
+        for owners: [MarketPriceTarget],
+        rowsByPriceKey: [String: [CollectedCard]],
+        checkedAt: Date = .now
+    ) {
+        for owner in owners where owner.itemKind == .sealedProduct {
+            for row in rowsByPriceKey[owner.priceKey] ?? []
+            where row.itemKind == .sealedProduct && row.imageURL == nil {
+                row.catalogMetadataCheckedAt = checkedAt
+                row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+            }
+        }
+    }
+
     /// One matched vendor response, applied in dependency order. Identity and
     /// artwork deliberately happen before the optional price so a null market
     /// amount cannot discard valid product metadata.
@@ -1117,6 +1158,8 @@ final class PriceRefreshController: ObservableObject {
 
     /// How often the fallback commits progress mid-run.
     private static let fallbackCheckpointInterval = 10
+    /// The catalog pass's equivalent, in answered printings.
+    private static let catalogCheckpointInterval = 10
 
     /// A check that returns the same market timestamp is not an update, and
     /// saying "prices updated" when nothing moved is the kind of small lie that

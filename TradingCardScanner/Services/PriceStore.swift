@@ -230,6 +230,27 @@ struct PriceStore {
         return candidates.first(where: { $0.effectiveUnitMarketPriceUSD != nil }) ?? primary
     }
 
+    /// The key of the record `record(for:in:)` would choose.
+    ///
+    /// Sits beside it deliberately: a position's instrument and the price shown
+    /// for that position must be one decision, not two rules that drift. The
+    /// bulk form exists because the ledger's `priceStorageKey(for:)` answers the
+    /// same question with two predicate fetches per candidate key, which is fine
+    /// for a one-off write path and ruinous inside a view's `body`.
+    nonisolated static func priceStorageKey(
+        for card: CollectedCard,
+        in recordsByKey: [String: PriceRecord]
+    ) -> String {
+        let keys = card.priceLookupKeys
+        guard let primaryKey = keys.first(where: { recordsByKey[$0] != nil }) else {
+            return keys.first ?? card.priceKey
+        }
+        // An invalidated canonical record is authoritative; falling through to a
+        // legacy key would attribute the position to the value it withdrew.
+        if recordsByKey[primaryKey]?.isInvalidated == true { return primaryKey }
+        return keys.first { recordsByKey[$0]?.effectiveUnitMarketPriceUSD != nil } ?? primaryKey
+    }
+
     func importedCardsByProviderID() -> [String: [CollectedCard]] {
         let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
         return Dictionary(

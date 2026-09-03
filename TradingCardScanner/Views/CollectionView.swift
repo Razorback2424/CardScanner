@@ -475,10 +475,21 @@ struct CollectionView: View {
         // One collection key can legitimately have more than one row, so what
         // is owned comes from the shared projection rather than from whichever
         // row this fetch happened to return first. See `LogicalCollection`.
-        let projection = LogicalCollection.project(
-            cards: cards,
-            ledger: InventoryLedger(context: modelContext)
-        )
+        //
+        // The closure overload, not the `ledger:` one. That form resolves each
+        // position's instrument by asking the ledger, and the ledger answers
+        // with two predicate fetches per candidate key — so projecting this way
+        // cost several thousand fetches per render on a large collection, on
+        // the main thread, for a field this view never reads. `body` re-runs on
+        // every keystroke in the search field, which is what made it bite.
+        //
+        // Answered from the price records already in hand instead. This is the
+        // same rule `PriceStore.record(for:in:)` uses to pick the record whose
+        // price is displayed below, so the instrument a position is attributed
+        // to and the number shown for it now come from one decision.
+        let projection = LogicalCollection.project(cards: cards) { card in
+            PriceStore.priceStorageKey(for: card, in: recordsByKey)
+        }
         let cardsByKey = projection.byKey.mapValues(\.representative)
 
         let all = projection.positions.map { position in

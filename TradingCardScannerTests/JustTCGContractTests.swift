@@ -996,4 +996,228 @@ final class JustTCGContractTests: XCTestCase {
     }
 
     private struct EmptyJustTCGResponse: Decodable {}
+
+    // MARK: - Delta safety
+
+    /// Records every outbound request so a test can assert on `updated_after`.
+    private final class RecordingURLProtocol: URLProtocol, @unchecked Sendable {
+        nonisolated(unsafe) static var requestedURLs: [URL] = []
+        nonisolated(unsafe) static var body = Data(#"{"data":[]}"#.utf8)
+        private static let lock = NSLock()
+
+        static func reset(body newBody: String = #"{"data":[]}"#) {
+            lock.lock(); defer { lock.unlock() }
+            requestedURLs = []
+            body = Data(newBody.utf8)
+        }
+
+        static func recorded() -> [URL] {
+            lock.lock(); defer { lock.unlock() }
+            return requestedURLs
+        }
+
+        override class func canInit(with request: URLRequest) -> Bool { true }
+        override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+        override func startLoading() {
+            if let url = request.url {
+                Self.lock.lock()
+                Self.requestedURLs.append(url)
+                Self.lock.unlock()
+            }
+            let response = HTTPURLResponse(
+                url: request.url ?? URL(string: "https://example.invalid")!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: ["Content-Type": "application/json"]
+            )!
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            Self.lock.lock()
+            let payload = Self.body
+            Self.lock.unlock()
+            client?.urlProtocol(self, didLoad: payload)
+            client?.urlProtocolDidFinishLoading(self)
+        }
+
+        override func stopLoading() {}
+    }
+
+    @MainActor
+    private func makeCoordinator(
+        defaults: UserDefaults
+    ) -> (JustTCGRefreshCoordinator, JustTCGSyncLedger) {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [RecordingURLProtocol.self]
+
+        var transportConfiguration = JustTCGTransport.Configuration()
+        transportConfiguration.baseURL = URL(string: "https://justtcg.test")!
+        transportConfiguration.minimumRequestInterval = 0
+
+        let transport = JustTCGTransport(
+            configuration: transportConfiguration,
+            session: URLSession(configuration: configuration),
+            ledger: JustTCGRequestLedger(defaults: defaults),
+            pacer: JustTCGPacer(),
+            apiKeyOverride: "justtcg-test-key"
+        )
+        let syncLedger = JustTCGSyncLedger(defaults: defaults)
+        return (
+            JustTCGRefreshCoordinator(
+                client: JustTCGV1Client(transport: transport),
+                syncLedger: syncLedger
+            ),
+            syncLedger
+        )
+    }
+
+    private func target(
+        key: String,
+        variant: String,
+        requiresFullResponse: Bool,
+        itemKind: CollectionItemKind = .rawCard
+    ) -> MarketPriceTarget {
+        MarketPriceTarget(
+            priceKey: key,
+            game: .pokemon,
+            printingID: "sv08.5-001",
+            variantID: "normal",
+            itemKind: itemKind,
+            marketVariantID: variant,
+            lookupCandidates: [],
+            currentAmount: nil,
+            lastCheckedAt: nil,
+            requiresFullResponse: requiresFullResponse
+        )
+    }
+
+    /// The delta clock is per game, but it is advanced by whatever narrow pass
+    /// happened to succeed. A row that has never had a complete answer must
+    /// therefore still be asked with a full request, or "absent" and "never
+    /// fetched" become the same response — the exact ambiguity `updated_after`
+    /// is documented as unsafe under.
+    @MainActor
+    func testChunkCarryingAnUnansweredRowAsksForAFullResponse() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        syncLedger.recordCompleteSync(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+        XCTAssertNotNil(
+            syncLedger.deltaCutoff(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion),
+            "precondition: the clock is set, so delta is available"
+        )
+
+        _ = await coordinator.refresh(
+            [
+                target(key: "priced", variant: "variant-priced", requiresFullResponse: false),
+                target(key: "never-answered", variant: "variant-new", requiresFullResponse: true)
+            ],
+            game: .pokemon,
+            useDelta: true,
+            apply: { _, _, _ in },
+            checkpoint: {}
+        )
+
+        let urls = RecordingURLProtocol.recorded()
+        XCTAssertEqual(urls.count, 1, "both lookups fit one chunk")
+        XCTAssertFalse(
+            urls[0].query?.contains("updated_after") ?? false,
+            "one row with nothing to compare against makes the whole chunk ask in full"
+        )
+    }
+
+    /// The delta is still used where it is safe, so the gate above cannot be
+    /// satisfied by simply never sending one.
+    @MainActor
+    func testChunkOfAlreadyAnsweredRowsStillUsesTheDelta() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        syncLedger.recordCompleteSync(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+
+        _ = await coordinator.refresh(
+            [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
+            game: .pokemon,
+            useDelta: true,
+            apply: { _, _, _ in },
+            checkpoint: {}
+        )
+
+        let urls = RecordingURLProtocol.recorded()
+        XCTAssertEqual(urls.count, 1)
+        XCTAssertTrue(
+            urls[0].query?.contains("updated_after") ?? false,
+            "a row that already holds a value can be asked for changes only"
+        )
+    }
+
+    /// A full response that carries no listing for the requested variant is a
+    /// real answer and must be reported. Without it a sealed row waiting on
+    /// artwork never learns the vendor has none, stays permanently stale, and
+    /// spends one request on every refresh for the life of the collection.
+    @MainActor
+    func testFullResponseMissIsReportedSoArtworkCanBecomeTerminal() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, _) = makeCoordinator(defaults: defaults)
+        var missed: [MarketPriceTarget] = []
+
+        _ = await coordinator.refresh(
+            [
+                target(
+                    key: "sealed",
+                    variant: "variant-sealed",
+                    requiresFullResponse: true,
+                    itemKind: .sealedProduct
+                )
+            ],
+            game: .pokemon,
+            useDelta: false,
+            apply: { _, _, _ in },
+            unmatched: { missed.append(contentsOf: $0) },
+            checkpoint: {}
+        )
+
+        XCTAssertEqual(missed.map(\.priceKey), ["sealed"])
+    }
+
+    /// The mirror image: absence from a *delta* response means "unchanged", not
+    /// "the vendor has nothing", and must never be reported as an answer.
+    @MainActor
+    func testDeltaResponseMissIsNotReported() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        syncLedger.recordCompleteSync(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+        var missed: [MarketPriceTarget] = []
+
+        _ = await coordinator.refresh(
+            [
+                target(
+                    key: "sealed",
+                    variant: "variant-sealed",
+                    requiresFullResponse: false,
+                    itemKind: .sealedProduct
+                )
+            ],
+            game: .pokemon,
+            useDelta: true,
+            apply: { _, _, _ in },
+            unmatched: { missed.append(contentsOf: $0) },
+            checkpoint: {}
+        )
+
+        XCTAssertTrue(missed.isEmpty, "unchanged is not an answer about artwork")
+    }
 }

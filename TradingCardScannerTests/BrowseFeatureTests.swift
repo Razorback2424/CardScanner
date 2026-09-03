@@ -437,6 +437,65 @@ final class BrowseCollectionTests: XCTestCase {
         )
     }
 
+    /// The instrument a position is attributed to and the record whose price is
+    /// shown for it must be one decision. `CollectionView` projects the whole
+    /// collection through this on every render, so it also has to answer without
+    /// touching the store — the ledger's equivalent costs two predicate fetches
+    /// per candidate key, which is what made the grid re-fetch thousands of rows
+    /// per keystroke.
+    func testPriceStorageKeyAgreesWithTheRecordThatSuppliesThePrice() {
+        let card = completionCard(number: "001", variant: .firstEdition)
+        let legacyKey = PriceRecord.key(
+            game: .pokemon,
+            printingID: card.providerID,
+            variantID: PhysicalVariant.firstEdition.id
+        )
+        XCTAssertNotEqual(card.priceKey, legacyKey)
+
+        // No records at all: the canonical key, never a legacy one.
+        XCTAssertEqual(PriceStore.priceStorageKey(for: card, in: [:]), card.priceKey)
+
+        // Only the legacy key holds a value, so that is the instrument in force
+        // — matching the record `record(for:in:)` hands back for display.
+        let legacyRecord = PriceRecord(
+            key: legacyKey,
+            game: .pokemon,
+            printingID: card.providerID,
+            variantID: PhysicalVariant.firstEdition.id
+        )
+        legacyRecord.applyImported(amount: 125, sourceUpdatedAt: nil)
+        let legacyOnly = [legacyKey: legacyRecord]
+        XCTAssertEqual(PriceStore.priceStorageKey(for: card, in: legacyOnly), legacyKey)
+        XCTAssertEqual(
+            PriceStore.record(for: card, in: legacyOnly)?.key,
+            PriceStore.priceStorageKey(for: card, in: legacyOnly)
+        )
+
+        // Once the canonical key carries its own value it wins outright.
+        let canonical = PriceRecord(
+            key: card.priceKey,
+            game: .pokemon,
+            printingID: card.providerID,
+            variantID: card.variantID
+        )
+        canonical.applyImported(amount: 200, sourceUpdatedAt: nil)
+        let both = [legacyKey: legacyRecord, card.priceKey: canonical]
+        XCTAssertEqual(PriceStore.priceStorageKey(for: card, in: both), card.priceKey)
+        XCTAssertEqual(
+            PriceStore.record(for: card, in: both)?.key,
+            PriceStore.priceStorageKey(for: card, in: both)
+        )
+
+        // An invalidated canonical record is authoritative: the position must
+        // not fall through to the legacy value the invalidation withdrew.
+        canonical.invalidate(at: .now)
+        XCTAssertEqual(PriceStore.priceStorageKey(for: card, in: both), card.priceKey)
+        XCTAssertEqual(
+            PriceStore.record(for: card, in: both)?.key,
+            PriceStore.priceStorageKey(for: card, in: both)
+        )
+    }
+
     func testImportedPrintRunMetadataIndexUsesStableProviderID() throws {
         let context = try makeContext()
         let card = completionCard(number: "001", variant: .holo)

@@ -187,7 +187,11 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         let defaults = UserDefaults(suiteName: "PortfolioEpochTests.\(UUID().uuidString)")!
         defer { defaults.removePersistentDomain(forName: defaults.description) }
-        try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults)
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            isCloudSyncing: false
+        )
 
         let ledger = InventoryLedger(context: context)
         let events = ledger.allEvents()
@@ -382,6 +386,7 @@ final class PortfolioReconciliationTests: XCTestCase {
                 context: context,
                 defaults: defaults,
                 at: now,
+                isCloudSyncing: false,
                 save: { _ in throw ExpectedFailure.save }
             )
         )
@@ -389,7 +394,12 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertTrue(InventoryLedger(context: context).allEvents().isEmpty)
 
         XCTAssertEqual(
-            try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults, at: now),
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: now,
+                isCloudSyncing: false
+            ),
             now
         )
         XCTAssertEqual(InventoryLedger(context: context).allEvents().count, 1)
@@ -441,7 +451,12 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         XCTAssertNil(PortfolioEpoch.startedAt(context: context, defaults: defaults))
         XCTAssertEqual(
-            try PortfolioEpoch.establishIfNeeded(context: context, defaults: defaults, at: now),
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: now,
+                isCloudSyncing: false
+            ),
             now
         )
     }
@@ -1190,5 +1205,167 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(scalar.unitPrice, money(42))
         XCTAssertEqual(scalar.source, .justTCG)
         XCTAssertEqual(bulk.valuation(for: "instrument"), scalar)
+    }
+
+    // MARK: - Initial-sync deferral
+
+    private func epochDefaults(_ name: String) -> UserDefaults {
+        let suite = "PortfolioEpochSync.\(name).\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+        return defaults
+    }
+
+    /// A local-only device cannot be waiting on anything, so a collection with
+    /// no ledger is genuine pre-ledger history and must be baselined at once.
+    /// This is the upgrade path for everyone who used the app before the ledger
+    /// existed, and it must not be delayed.
+    func testLocalOnlyCollectionIsBaselinedImmediately() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(key: "local", quantity: 2, dateAdded: now))
+        try context.save()
+
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: now,
+            isCloudSyncing: false
+        )
+
+        let events = InventoryLedger(context: context).allEvents()
+        XCTAssertEqual(events.map(\.kind), [.initialBalance])
+        XCTAssertEqual(events.first?.deltaQuantity, 2)
+        XCTAssertNotNil(PortfolioEpoch.startedAt(defaults: defaults))
+    }
+
+    /// The race this exists to close: `CollectedCard` rows have arrived from
+    /// another device but their `InventoryEvent`s have not. Baselining here
+    /// would write an `initialBalance` beside an `acquire` that is still in
+    /// flight — and the deterministic baseline id only dedupes against another
+    /// baseline, never against a real acquisition, so the collection would be
+    /// counted twice.
+    func testSyncingDeviceDefersBaselineWhileTheLedgerIsStillEmpty() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(key: "remote", quantity: 3, dateAdded: now))
+        try context.save()
+
+        XCTAssertThrowsError(
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: now,
+                isCloudSyncing: true
+            )
+        ) { error in
+            guard case .awaitingInitialSync? = error as? PortfolioEpoch.EstablishmentError else {
+                XCTFail("expected awaitingInitialSync, got \(error)")
+                return
+            }
+        }
+
+        XCTAssertTrue(
+            InventoryLedger(context: context).allEvents().isEmpty,
+            "nothing may be written while the ledger is still arriving"
+        )
+        XCTAssertNil(
+            PortfolioEpoch.startedAt(defaults: defaults),
+            "the epoch is the public claim that the books are open"
+        )
+    }
+
+    /// The wait is bounded. A collection whose events are never coming — a
+    /// pre-ledger install on a signed-in device — still opens its books.
+    func testDeferralExpiresSoAPreLedgerCollectionStillOpens() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let start = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(key: "legacy", quantity: 1, dateAdded: start))
+        try context.save()
+
+        XCTAssertThrowsError(
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: start,
+                isCloudSyncing: true
+            )
+        )
+
+        let afterGrace = start.addingTimeInterval(PortfolioEpoch.initialSyncGrace + 1)
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: afterGrace,
+            isCloudSyncing: true
+        )
+
+        XCTAssertEqual(
+            InventoryLedger(context: context).allEvents().map(\.kind),
+            [.initialBalance]
+        )
+        XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), afterGrace)
+    }
+
+    /// The ordinary resolution, and the one that happens in practice: the
+    /// events arrive, which is itself proof that no baseline is needed. It must
+    /// not wait out the grace period to notice.
+    func testArrivingLedgerEndsTheDeferralWithoutWriting() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let row = card(key: "remote", quantity: 1, dateAdded: now)
+        context.insert(row)
+        try context.save()
+
+        XCTAssertThrowsError(
+            try PortfolioEpoch.establishIfNeeded(
+                context: context,
+                defaults: defaults,
+                at: now,
+                isCloudSyncing: true
+            )
+        )
+
+        // CloudKit delivers the acquisition that explains the row.
+        _ = InventoryLedger(context: context).record(
+            row,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 1,
+            occurredAt: now
+        )
+        try context.save()
+
+        let opened = now.addingTimeInterval(1)
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: opened,
+            isCloudSyncing: true
+        )
+
+        let kinds = InventoryLedger(context: context).allEvents().map(\.kind)
+        XCTAssertEqual(kinds, [.acquire], "no baseline may be added beside it")
+        XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), opened)
+    }
+
+    /// A fresh install has nothing to protect and must not be delayed.
+    func testEmptyCollectionOnASyncingDeviceOpensImmediately() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: now,
+            isCloudSyncing: true
+        )
+
+        XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), now)
     }
 }

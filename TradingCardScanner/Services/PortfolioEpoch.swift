@@ -21,14 +21,32 @@ enum PortfolioEpoch {
 
     enum EstablishmentError: LocalizedError {
         case baselineWriteFailed(String)
+        /// The collection has rows but the ledger is empty, on a device where
+        /// CloudKit may still be delivering. Not a failure — a reason to wait.
+        case awaitingInitialSync
 
         var errorDescription: String? {
             switch self {
             case let .baselineWriteFailed(detail):
                 return "Portfolio baseline could not be recorded: \(detail)"
+            case .awaitingInitialSync:
+                return "Portfolio tracking is waiting for iCloud to finish delivering this collection."
             }
         }
     }
+
+    /// When this device first saw a collection it could not yet explain.
+    static let deferralKey = "portfolioEpochDeferredSince"
+
+    /// How long a collection-without-a-ledger is treated as an unfinished
+    /// import rather than as a genuine pre-ledger collection.
+    ///
+    /// The wait almost never runs to completion: the moment any inventory event
+    /// arrives, the ordinary "ownership accounting already exists" path takes
+    /// over. The bound exists for the case the events are never coming — an
+    /// install that predates the ledger — where the baseline is correct and
+    /// must not be withheld forever.
+    static let initialSyncGrace: TimeInterval = 120
 
     /// Namespace for the deterministic baseline ids. Two devices that both
     /// establish an epoch before sync catches up must produce the *same*
@@ -71,6 +89,10 @@ enum PortfolioEpoch {
         context: ModelContext,
         defaults: UserDefaults = .standard,
         at date: Date = .now,
+        // Injected rather than read inline so the deferral is testable without a
+        // keychain. This is the same condition `makeContainer()` uses to decide
+        // whether SwiftData gets a mirrored configuration.
+        isCloudSyncing: Bool = AppleAccountCredentials.isSignedIn,
         save: (ModelContext) throws -> Void = { try $0.save() }
     ) throws -> Date {
         let ledger = InventoryLedger(context: context)
@@ -85,8 +107,31 @@ enum PortfolioEpoch {
         // device starts local history today and does not add another baseline.
         let hasAnyEvent = try ledger.hasAnyEvent()
         guard !hasAnyEvent else {
+            defaults.removeObject(forKey: deferralKey)
             defaults.set(date.timeIntervalSince1970, forKey: defaultsKey)
             return date
+        }
+
+        // An empty ledger is only evidence that no ownership accounting exists
+        // *anywhere* on a device that syncs nothing. Where CloudKit is
+        // mirroring, it also describes an import that has delivered
+        // `CollectedCard` rows but not yet the `InventoryEvent` rows that
+        // explain them — the two are separate record types and either can
+        // arrive first. Baselining in that window writes an `initialBalance`
+        // for a position whose real acquisition is still in flight, and the
+        // deterministic baseline id cannot dedupe against it: it only matches
+        // another baseline, never a genuine `acquire`. The collection would
+        // then be counted twice.
+        //
+        // So a collection with no ledger at all is given a bounded chance to
+        // finish arriving before it is treated as pre-ledger history.
+        if isAwaitingInitialSync(
+            context: context,
+            defaults: defaults,
+            at: date,
+            isCloudSyncing: isCloudSyncing
+        ) {
+            throw EstablishmentError.awaitingInitialSync
         }
 
         // Pins the portfolio timezone at the same moment, so the zone and the
@@ -126,6 +171,7 @@ enum PortfolioEpoch {
                 }
             }
             try save(context)
+            defaults.removeObject(forKey: deferralKey)
         } catch {
             // The epoch flag is the public claim that the books are open. If
             // the baseline transaction did not commit, roll its inserted rows
@@ -138,6 +184,48 @@ enum PortfolioEpoch {
     }
 
     // MARK: -
+
+    /// Whether an empty ledger beside a non-empty collection should still be
+    /// read as an unfinished CloudKit import.
+    ///
+    /// Gated on being signed in because that is the same condition
+    /// `TradingCardScannerApp.makeContainer()` uses to decide whether to hand
+    /// SwiftData a mirrored configuration. A local-only device cannot be
+    /// waiting on anything, and must not be delayed.
+    @MainActor
+    private static func isAwaitingInitialSync(
+        context: ModelContext,
+        defaults: UserDefaults,
+        at date: Date,
+        isCloudSyncing: Bool
+    ) -> Bool {
+        guard isCloudSyncing else {
+            defaults.removeObject(forKey: deferralKey)
+            return false
+        }
+        var descriptor = FetchDescriptor<CollectedCard>()
+        descriptor.fetchLimit = 1
+        // No collection means nothing to baseline and nothing to protect. The
+        // epoch opens now, exactly as it always did on a fresh install.
+        guard let hasAnyCard = try? context.fetch(descriptor).isEmpty == false,
+              hasAnyCard else {
+            defaults.removeObject(forKey: deferralKey)
+            return false
+        }
+
+        let started = defaults.double(forKey: deferralKey)
+        guard started > 0 else {
+            defaults.set(date.timeIntervalSince1970, forKey: deferralKey)
+            return true
+        }
+        // A clock that moved backwards must not extend the wait indefinitely.
+        let elapsed = date.timeIntervalSince(Date(timeIntervalSince1970: started))
+        guard elapsed >= 0, elapsed < initialSyncGrace else {
+            defaults.removeObject(forKey: deferralKey)
+            return false
+        }
+        return true
+    }
 
     @MainActor
     private static func earliestBaseline(in context: ModelContext) -> Date? {

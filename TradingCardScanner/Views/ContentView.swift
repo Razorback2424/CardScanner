@@ -7,8 +7,6 @@ struct ContentView: View {
 
     @Query(sort: \CollectedCard.dateAdded, order: .reverse)
     private var cards: [CollectedCard]
-    @Query private var inventoryEvents: [InventoryEvent]
-    @Query private var collectionActivities: [CollectionActivity]
     @Query private var priceRecords: [PriceRecord]
 
     private enum Tab: Hashable {
@@ -28,7 +26,6 @@ struct ContentView: View {
     @State private var browseCatalog: BrowseCatalog
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var collectionSort: CollectionSort = .priceHighToLow
-    @State private var hasCheckedForStalePrices = false
     /// The mutation observer can start before the separate launch task. Keep it
     /// behind portfolio initialization so it cannot replay a populated
     /// collection before `PortfolioEpoch` has written its baseline.
@@ -50,6 +47,7 @@ struct ContentView: View {
         case "Browse", "SealedArtwork", "CardMovement": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck": initialTab = .scan
+        case "Centering", "CenteringExpanded": initialTab = .centering
         default: initialTab = .portfolio
         }
         _selectedTab = State(initialValue: initialTab)
@@ -133,23 +131,21 @@ struct ContentView: View {
         }
 #endif
         // Portfolio truth is app-scoped: scanning or importing must recompute it
-        // even if Collection has never been selected in this app session. The
-        // ledger is synced separately from collection rows, so both tables are
-        // part of the trigger; CloudKit can deliver either one first.
-        .task(id: portfolioInputTaskID) {
-            guard hasStartedPortfolio else { return }
-            portfolio.recompute(context: modelContext)
-            await refreshStalePricesIfNeeded()
-        }
-        .task(id: portfolioHistoryTaskID) {
-            guard hasStartedPortfolio else { return }
-            history.recompute(
-                context: modelContext,
-                summary: portfolio.summary,
-                factors: portfolio.performanceFactors,
-                contributions: portfolio.contributionIndex
+        // even if Collection has never been selected in this app session. This
+        // lives in its own view rather than here because deciding whether the
+        // inputs changed means walking every row of four tables, and this view
+        // re-renders for reasons that have nothing to do with them — most of
+        // all a running refresh, which republishes its progress once per
+        // answered printing. Down there it observes only what it actually
+        // reacts to.
+        .background(
+            PortfolioInputObserver(
+                portfolio: portfolio,
+                history: history,
+                refresh: refresh,
+                hasStartedPortfolio: hasStartedPortfolio
             )
-        }
+        )
         .task { await recomputeAtDayRollover() }
         .task(id: scenePhase) {
             if scenePhase == .active {
@@ -169,6 +165,153 @@ struct ContentView: View {
             // is derived from the price records the refresh itself writes.
             refresh.cancelRefresh()
         }
+    }
+
+    private var isBrowseDebugRoute: Bool {
+#if DEBUG
+        return debugRoute == "Browse"
+#else
+        return false
+#endif
+    }
+
+    private var isMovementDebugRoute: Bool {
+#if DEBUG
+        return debugRoute == "CardMovement"
+#else
+        return false
+#endif
+    }
+
+    @MainActor
+    private func refreshAllPrices() async {
+        refreshStatusTask?.cancel()
+        let targets = PriceRefreshController.staleTargets(
+            from: makePriceTargets(
+                cards: cards,
+                priceRecords: priceRecords,
+                modelContext: modelContext,
+                usesPriceFallback: usesPriceFallback,
+                includeImported: true
+            )
+        )
+        guard !targets.isEmpty else {
+            refresh.markRecentlyChecked()
+            dismissRefreshStatusLater()
+            return
+        }
+        await refresh.refresh(targets, store: PriceStore(context: modelContext))
+        portfolio.recompute(context: modelContext)
+        dismissRefreshStatusLater()
+    }
+
+    /// Success fades; an unresolved failure does not.
+    private func dismissRefreshStatusLater() {
+        refreshStatusTask = Task { @MainActor in
+            try? await Task.sleep(for: .seconds(10))
+            guard !Task.isCancelled else { return }
+            refresh.dismissTransientSuccessSummary()
+        }
+    }
+
+    @MainActor
+    private func recomputeAtDayRollover() async {
+        while !Task.isCancelled {
+            let timeZone = PortfolioCalendar.timeZone()
+            let today = PortfolioCalendar.day(containing: .now, in: timeZone)
+            let next = PortfolioCalendar.boundary(afterDay: today, in: timeZone)
+            try? await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow + 0.5)))
+            guard !Task.isCancelled else { return }
+            portfolio.recompute(context: modelContext)
+        }
+    }
+
+#if DEBUG
+    @MainActor
+    private func seedSealedArtworkQA() {
+        let store = CollectionStore(context: modelContext)
+        let artworkURL = URL(
+            string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
+        )
+        _ = try? store.addSealed(
+            SealedProductSummary(
+                id: "ui-artwork-product",
+                name: "Legendary Treasures Booster Box",
+                setName: "Legendary Treasures",
+                variantID: "ui-artwork-variant",
+                marketPriceUSD: 18_750,
+                updatedAt: .now,
+                imageURL: artworkURL
+            ),
+            game: .pokemon
+        )
+
+        guard let unavailable = try? store.addSealed(
+            SealedProductSummary(
+                id: "ui-no-artwork-product",
+                name: "Provider Artwork Missing",
+                setName: "Artwork Diagnostics",
+                variantID: "ui-no-artwork-variant",
+                marketPriceUSD: 25,
+                updatedAt: .now,
+                imageURL: nil
+            ),
+            game: .pokemon
+        ) else { return }
+        if let row = store.card(forKey: unavailable.collectionKey) {
+            row.catalogMetadataCheckedAt = .now
+            row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+        }
+        try? modelContext.save()
+    }
+#endif
+}
+
+/// Watches the collection's inputs and drives the recomputes that depend on
+/// them.
+///
+/// Its own view precisely so that deciding "did anything change?" is not paid
+/// for on every unrelated redraw. Answering that means walking every row of
+/// four tables, and the parent re-renders whenever a refresh publishes its
+/// progress — once per answered printing, hundreds of times a pass. The
+/// controller is therefore held as a plain reference rather than an
+/// `ObservedObject`: this view calls it, but must never re-render because of it.
+private struct PortfolioInputObserver: View {
+    @Environment(\.modelContext) private var modelContext
+
+    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
+    private var cards: [CollectedCard]
+    @Query private var inventoryEvents: [InventoryEvent]
+    @Query private var collectionActivities: [CollectionActivity]
+    @Query private var priceRecords: [PriceRecord]
+
+    @ObservedObject var portfolio: PortfolioEngine
+    @ObservedObject var history: PortfolioHistoryStore
+    /// Deliberately unobserved. See the type's note.
+    let refresh: PriceRefreshController
+    let hasStartedPortfolio: Bool
+
+    @AppStorage("usesPriceFallback") private var usesPriceFallback = false
+    @State private var hasCheckedForStalePrices = false
+
+    var body: some View {
+        Color.clear
+            // The ledger is synced separately from collection rows, so both
+            // tables are part of the trigger; CloudKit can deliver either first.
+            .task(id: portfolioInputTaskID) {
+                guard hasStartedPortfolio else { return }
+                portfolio.recompute(context: modelContext)
+                await refreshStalePricesIfNeeded()
+            }
+            .task(id: portfolioHistoryTaskID) {
+                guard hasStartedPortfolio else { return }
+                history.recompute(
+                    context: modelContext,
+                    summary: portfolio.summary,
+                    factors: portfolio.performanceFactors,
+                    contributions: portfolio.contributionIndex
+                )
+            }
     }
 
     private var portfolioInputTaskID: Int {
@@ -232,98 +375,22 @@ struct ContentView: View {
         "\(portfolio.inputRevision)-\(history.mode.rawValue)-\(history.range.rawValue)"
     }
 
-    private var isBrowseDebugRoute: Bool {
-#if DEBUG
-        return debugRoute == "Browse"
-#else
-        return false
-#endif
-    }
-
-    private var isMovementDebugRoute: Bool {
-#if DEBUG
-        return debugRoute == "CardMovement"
-#else
-        return false
-#endif
-    }
-
-    @MainActor
-    private func priceTargets(includeImported: Bool) -> [PriceTarget] {
-        let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-        let projection = LogicalCollection.project(cards: cards, ledger: InventoryLedger(context: modelContext))
-        var seen = Set<String>()
-        var result: [PriceTarget] = []
-
-        for position in projection.positions {
-            let card = position.representative
-            if card.providerID.hasPrefix("csv:"), !includeImported { continue }
-            guard seen.insert(card.priceKey).inserted else { continue }
-            let record = PriceStore.record(for: card, in: recordsByKey)
-            var target = PriceTarget(
-                game: card.cardGame,
-                printingID: card.priceStorageID,
-                catalogPrintingID: card.catalogProviderID ?? card.providerID,
-                setCode: card.setCode,
-                variantID: card.variantID,
-                pokemonPrintRun: card.pokemonPrintRun,
-                importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
-                    ? ImportedPriceIdentity(name: card.name, setName: card.setName, cardNumber: card.cardNumber)
-                    : nil,
-                catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
-                lastFailureAt: record?.lastFailureAt,
-                hasPrice: PriceRefreshController.hasFinishedPrice(
-                    amount: record?.effectiveUnitMarketPriceUSD,
-                    currencyCode: record?.currencyCode,
-                    usesFallback: usesPriceFallback
-                ),
-                lastCheckedAt: record?.lastCheckedAt,
-                itemKind: card.itemKind,
-                marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
-                needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
-                gradedIdentity: card.itemKind == .gradedCard
-                    ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
-                    : nil,
-                gradingCompany: card.gradingCompany,
-                grade: card.gradeRaw
-            )
-            target.fallbackIdentity = ImportedPriceIdentity(
-                name: card.name,
-                setName: card.setName,
-                cardNumber: card.cardNumber
-            )
-            target.justTCGCardID = card.justTCGCardID
-            target.tcgplayerProductID = card.tcgplayerProductID
-            result.append(target)
-        }
-        return result
-    }
-
-    @MainActor
-    private func refreshAllPrices() async {
-        refreshStatusTask?.cancel()
-        let targets = PriceRefreshController.staleTargets(from: priceTargets(includeImported: true))
-        guard !targets.isEmpty else {
-            refresh.markRecentlyChecked()
-            dismissRefreshStatusLater()
-            return
-        }
-        await refresh.refresh(targets, store: PriceStore(context: modelContext))
-        portfolio.recompute(context: modelContext)
-        dismissRefreshStatusLater()
-    }
-
-    /// Started from `task(id: portfolioInputTaskID)`, whose identity includes
-    /// every price record's value and freshness — the exact fields a refresh
-    /// writes. The controller therefore owns the pass rather than this task: a
-    /// saved batch still invalidates the id and cancels the caller here, but no
-    /// longer tears down the work partway through and leaves the collection
-    /// unrefreshed with `status` reset to idle.
+    /// The controller owns the pass this starts, so a saved batch invalidating
+    /// the id above cancels this caller without tearing the work down partway
+    /// through and leaving the collection unrefreshed.
     @MainActor
     private func refreshStalePricesIfNeeded() async {
         guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
         hasCheckedForStalePrices = true
-        let targets = PriceRefreshController.staleTargets(from: priceTargets(includeImported: false))
+        let targets = PriceRefreshController.staleTargets(
+            from: makePriceTargets(
+                cards: cards,
+                priceRecords: priceRecords,
+                modelContext: modelContext,
+                usesPriceFallback: usesPriceFallback,
+                includeImported: false
+            )
+        )
         guard !targets.isEmpty else { return }
         await refresh.refresh(targets, store: PriceStore(context: modelContext))
         // The automatic stale check is silent when it works. When it does not,
@@ -331,65 +398,66 @@ struct ContentView: View {
         refresh.dismissTransientSuccessSummary()
         portfolio.recompute(context: modelContext)
     }
+}
 
-    /// Success fades; an unresolved failure does not.
-    private func dismissRefreshStatusLater() {
-        refreshStatusTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(10))
-            guard !Task.isCancelled else { return }
-            refresh.dismissTransientSuccessSummary()
-        }
-    }
+/// The priced things the collection currently contains.
+///
+/// File scope so the view that reacts to collection changes and the view that
+/// owns the manual refresh can both build it without either one having to
+/// observe the other's state.
+@MainActor
+private func makePriceTargets(
+    cards: [CollectedCard],
+    priceRecords: [PriceRecord],
+    modelContext: ModelContext,
+    usesPriceFallback: Bool,
+    includeImported: Bool
+) -> [PriceTarget] {
+    let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
+    let projection = LogicalCollection.project(cards: cards, ledger: InventoryLedger(context: modelContext))
+    var seen = Set<String>()
+    var result: [PriceTarget] = []
 
-    @MainActor
-    private func recomputeAtDayRollover() async {
-        while !Task.isCancelled {
-            let timeZone = PortfolioCalendar.timeZone()
-            let today = PortfolioCalendar.day(containing: .now, in: timeZone)
-            let next = PortfolioCalendar.boundary(afterDay: today, in: timeZone)
-            try? await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow + 0.5)))
-            guard !Task.isCancelled else { return }
-            portfolio.recompute(context: modelContext)
-        }
-    }
-
-#if DEBUG
-    @MainActor
-    private func seedSealedArtworkQA() {
-        let store = CollectionStore(context: modelContext)
-        let artworkURL = URL(
-            string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
-        )
-        _ = try? store.addSealed(
-            SealedProductSummary(
-                id: "ui-artwork-product",
-                name: "Legendary Treasures Booster Box",
-                setName: "Legendary Treasures",
-                variantID: "ui-artwork-variant",
-                marketPriceUSD: 18_750,
-                updatedAt: .now,
-                imageURL: artworkURL
+    for position in projection.positions {
+        let card = position.representative
+        if card.providerID.hasPrefix("csv:"), !includeImported { continue }
+        guard seen.insert(card.priceKey).inserted else { continue }
+        let record = PriceStore.record(for: card, in: recordsByKey)
+        var target = PriceTarget(
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            catalogPrintingID: card.catalogProviderID ?? card.providerID,
+            setCode: card.setCode,
+            variantID: card.variantID,
+            pokemonPrintRun: card.pokemonPrintRun,
+            importedIdentity: card.providerID.hasPrefix("csv:") && card.catalogProviderID == nil
+                ? ImportedPriceIdentity(name: card.name, setName: card.setName, cardNumber: card.cardNumber)
+                : nil,
+            catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
+            lastFailureAt: record?.lastFailureAt,
+            hasPrice: PriceRefreshController.hasFinishedPrice(
+                amount: record?.effectiveUnitMarketPriceUSD,
+                currencyCode: record?.currencyCode,
+                usesFallback: usesPriceFallback
             ),
-            game: .pokemon
+            lastCheckedAt: record?.lastCheckedAt,
+            itemKind: card.itemKind,
+            marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
+            needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),
+            gradedIdentity: card.itemKind == .gradedCard
+                ? GradedCardIdentity(name: card.name, setName: card.setName, collectorNumber: card.cardNumber)
+                : nil,
+            gradingCompany: card.gradingCompany,
+            grade: card.gradeRaw
         )
-
-        guard let unavailable = try? store.addSealed(
-            SealedProductSummary(
-                id: "ui-no-artwork-product",
-                name: "Provider Artwork Missing",
-                setName: "Artwork Diagnostics",
-                variantID: "ui-no-artwork-variant",
-                marketPriceUSD: 25,
-                updatedAt: .now,
-                imageURL: nil
-            ),
-            game: .pokemon
-        ) else { return }
-        if let row = store.card(forKey: unavailable.collectionKey) {
-            row.catalogMetadataCheckedAt = .now
-            row.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
-        }
-        try? modelContext.save()
+        target.fallbackIdentity = ImportedPriceIdentity(
+            name: card.name,
+            setName: card.setName,
+            cardNumber: card.cardNumber
+        )
+        target.justTCGCardID = card.justTCGCardID
+        target.tcgplayerProductID = card.tcgplayerProductID
+        result.append(target)
     }
-#endif
+    return result
 }

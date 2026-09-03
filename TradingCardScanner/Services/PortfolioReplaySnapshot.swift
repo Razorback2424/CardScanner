@@ -311,7 +311,21 @@ actor PortfolioComputationActor {
         through: Date,
         timeZoneIdentifier: String
     ) -> PortfolioReplaySnapshotBuilder.Computation {
-        PortfolioReplaySnapshotBuilder.compute(
+        // Seed observations for any instrument that has a usable price but no
+        // local observation, before the replay reads them.
+        //
+        // Observations are device-local by design while `PriceRecord`s sync, so
+        // a record arriving from another device values the collection — the
+        // valuation index falls back to the record — while contributing no
+        // price transition to the walk. The difference then surfaces as
+        // Unexplained, which is a true statement about the walk but a false one
+        // about the portfolio. Launch-time backfill alone left that gap open
+        // for the whole session; running it here closes it on the pass that
+        // would otherwise report the gap, and off the main actor, which is the
+        // reason this type exists.
+        PriceObservationLog(context: modelContext).backfillFromRecords()
+
+        return PortfolioReplaySnapshotBuilder.compute(
             context: modelContext,
             epoch: epoch,
             through: through,
