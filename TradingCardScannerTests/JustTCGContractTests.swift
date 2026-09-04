@@ -349,6 +349,48 @@ final class JustTCGContractTests: XCTestCase {
         }
     }
 
+    func testTreatmentQualifiedVendorListingIsNotAcceptedAsExact() throws {
+        let json = """
+        { "data": [ { "uuid": "card-1", "variants": [
+          { "uuid": "variant-1", "condition": "Near Mint", "printing": "Foil", "price": 8.0 }
+        ] } ] }
+        """
+        let response = try JSONDecoder().decode(
+            JustTCGBatchResponse.self,
+            from: Data(json.utf8)
+        )
+        func target(treatmentIDs: [String]) -> MarketPriceTarget {
+            MarketPriceTarget(
+                priceKey: "key",
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                itemKind: .rawCard,
+                marketVariantID: nil,
+                lookupCandidates: [.cardID("card-1")],
+                currentAmount: nil,
+                lastCheckedAt: nil,
+                magicTreatmentIDsRaw: treatmentIDs
+            )
+        }
+
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .cardID("card-1"),
+            owners: [target(treatmentIDs: ["surgefoil"])],
+            response: response
+        ) else {
+            return XCTFail("a generic Foil listing must not answer Surge Foil")
+        }
+
+        guard case .matched = JustTCGRefreshCoordinator.exactListing(
+            lookup: .cardID("card-1"),
+            owners: [target(treatmentIDs: [])],
+            response: response
+        ) else {
+            return XCTFail("the same ordinary Foil listing should remain usable")
+        }
+    }
+
     // MARK: - Which identifier the vendor can actually resolve
 
     /// Verified live, one batch, two identifiers:

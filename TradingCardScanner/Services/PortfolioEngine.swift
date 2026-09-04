@@ -587,7 +587,7 @@ final class PortfolioEngine: ObservableObject {
             // Non-USD is normalised away here rather than deep in the walk, so
             // exactly one place in the app decides what "not in the total"
             // means.
-            amount: row.currencyCode == "USD" ? row.amount : nil,
+            amount: row.effectiveUSDAmount,
             receivedAt: row.receivedAt
         )
     }

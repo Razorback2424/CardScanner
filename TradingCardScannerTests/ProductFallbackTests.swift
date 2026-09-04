@@ -333,7 +333,8 @@ final class ProductFallbackTests: XCTestCase {
             cardNumber: "001",
             japaneseSetID: nil,
             pokemonPrintRun: nil,
-            vendorCardID: nil
+            vendorCardID: nil,
+            magicTreatmentIDsRaw: []
         )
 
         let outcome = await ProductPriceService().quote(
@@ -343,6 +344,31 @@ final class ProductFallbackTests: XCTestCase {
         )
 
         XCTAssertEqual(outcome, .unsupportedFinish)
+    }
+
+    func testMagicTreatmentIsUnsupportedBeforeCredentialsOrNetwork() async {
+        let subject = ProductPriceSubject(
+            game: .magic,
+            catalogID: "scryfall-printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            cardNumber: "10",
+            japaneseSetID: nil,
+            pokemonPrintRun: nil,
+            vendorCardID: "generic-card",
+            magicTreatmentIDsRaw: ["surgefoil"]
+        )
+
+        let outcome = await ProductPriceService().quote(
+            for: subject,
+            variant: .foil,
+            lane: .interactive
+        )
+
+        // This assertion also proves the guard happens before credentials,
+        // networking, or a cached generic vendor handle can answer the row.
+        // Capability gaps are not vendor misses and must not be cached as one.
+        XCTAssertEqual(outcome, .unsupportedTreatment)
     }
 
     // MARK: - Vendor-native rows

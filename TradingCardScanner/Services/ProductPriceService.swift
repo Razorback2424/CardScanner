@@ -22,6 +22,10 @@ enum ProductPriceOutcome: Equatable, Sendable {
     /// The app does not have a safe spelling for this finish, so no vendor
     /// request was made. This is neither a product miss nor a price miss.
     case unsupportedFinish
+    /// The app does not have a vendor identity that proves this treatment, so
+    /// no vendor request was made. This is not evidence that the product is
+    /// absent and must not create a cached negative identity.
+    case unsupportedTreatment
     /// No request was made because today's persisted allowance was exhausted.
     /// This is scheduling state, not evidence about the card.
     case budgetReached(resetAt: Date)
@@ -32,7 +36,7 @@ enum ProductPriceOutcome: Equatable, Sendable {
     var vendorCardID: String? {
         switch self {
         case let .price(_, id, _), let .noListingForVariant(id): return id
-        case .noProductMatch, .unsupportedFinish, .budgetReached, .rateLimited, .requestFailed: return nil
+        case .noProductMatch, .unsupportedFinish, .unsupportedTreatment, .budgetReached, .rateLimited, .requestFailed: return nil
         }
     }
 
@@ -60,6 +64,33 @@ struct ProductPriceSubject: Sendable {
     /// A previously resolved vendor handle. Present means the search has already
     /// been paid for once and this refresh is a cheap keyed lookup.
     let vendorCardID: String?
+    /// Treatment identity is part of the app's price key. The current vendor
+    /// product schema exposes finish, but no reviewed treatment-specific handle,
+    /// so a non-empty value is a matching negative rather than permission to use
+    /// the generic foil product.
+    let magicTreatmentIDsRaw: [String]
+
+    init(
+        game: CardGame,
+        catalogID: String?,
+        name: String,
+        setName: String,
+        cardNumber: String,
+        japaneseSetID: String?,
+        pokemonPrintRun: PokemonPrintRun?,
+        vendorCardID: String?,
+        magicTreatmentIDsRaw: [String]
+    ) {
+        self.game = game
+        self.catalogID = catalogID
+        self.name = name
+        self.setName = setName
+        self.cardNumber = cardNumber
+        self.japaneseSetID = japaneseSetID
+        self.pokemonPrintRun = pokemonPrintRun
+        self.vendorCardID = vendorCardID
+        self.magicTreatmentIDsRaw = magicTreatmentIDsRaw
+    }
 }
 
 /// The product-level price fallback.
@@ -130,6 +161,13 @@ actor ProductPriceService {
             isJapanese: game == .pokemonJapan
         ) else {
             return .unsupportedFinish
+        }
+        guard !(subject.game == .magic && !subject.magicTreatmentIDsRaw.isEmpty) else {
+            // JustTCG has no treatment-specific product identity in this wire
+            // model. This is a capability boundary, not a failed search: a
+            // generic Foil listing cannot prove Surge Foil or Neon Ink, and
+            // the caller must not cache the result as a vendor miss.
+            return .unsupportedTreatment
         }
         guard PriceVendorCredentials.hasKey else { return .requestFailed }
 

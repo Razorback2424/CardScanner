@@ -69,6 +69,7 @@ struct PriceQuoteService {
         return CardPricing.price(
             for: refreshed,
             variant: variant,
+            magicTreatments: refreshed.magicTreatments(for: variant),
             pokemonPrintRun: pokemonPrintRun,
             at: .now
         )

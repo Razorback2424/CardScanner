@@ -12,10 +12,12 @@ final class TCGplayerLinkTests: XCTestCase {
         variant: PhysicalVariant? = .reverse,
         productID: String? = nil,
         skuID: String? = nil,
-        providerURL: String? = nil
+        providerURL: String? = nil,
+        treatmentIDs: [String] = [],
+        collectionKey: String = "key"
     ) -> CollectedCard {
         let card = CollectedCard(
-            collectionKey: "key",
+            collectionKey: collectionKey,
             game: game,
             providerID: "provider",
             name: name,
@@ -31,6 +33,7 @@ final class TCGplayerLinkTests: XCTestCase {
         card.tcgplayerProductID = productID
         card.tcgplayerSKUID = skuID
         card.tcgplayerURL = providerURL
+        card.magicTreatmentIDsRaw = treatmentIDs
         return card
     }
 
@@ -67,6 +70,34 @@ final class TCGplayerLinkTests: XCTestCase {
         )
 
         XCTAssertEqual(url?.absoluteString, "https://www.tcgplayer.com/product/555?Printing=Foil")
+    }
+
+    func testTreatmentRowDoesNotOpenAGenericMarketplaceProduct() {
+        let exactCardURL = "https://www.tcgplayer.com/product/1234567?page=1"
+        XCTAssertNil(
+            TCGplayerLinkBuilder.url(
+                for: card(
+                    game: .magic,
+                    variant: .foil,
+                    productID: "1234567",
+                    providerURL: exactCardURL,
+                    treatmentIDs: ["surgefoil"]
+                )
+            )
+        )
+    }
+
+    func testTreatmentMarkerInCollectionKeyAlsoSuppressesGenericMarketplaceProduct() {
+        XCTAssertNil(
+            TCGplayerLinkBuilder.url(
+                for: card(
+                    game: .magic,
+                    variant: .foil,
+                    productID: "1234567",
+                    collectionKey: "magic:printing#foil#treatment=surgefoil"
+                )
+            )
+        )
     }
 
     func testKnownPrintingsMapToTCGplayersOwnVocabulary() {

@@ -101,6 +101,31 @@ final class QuoteCacheTests: XCTestCase {
         )
     }
 
+    func testPreviouslyStoredGenericMagicTreatmentQuoteIsNotLocalEvidence() throws {
+        let context = try makeContext()
+        let quote = QuoteCache(context: context).store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 48.12,
+                    currencyCode: "USD",
+                    source: .scryfall,
+                    sourceVariantID: "usd_foil",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: .now
+                )
+            ),
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["surgefoil"]
+        )
+
+        XCTAssertEqual(quote.amount, 48.12)
+        XCTAssertTrue(quote.isUnprovenMagicTreatmentQuote)
+        XCTAssertNil(quote.effectiveAmount)
+        XCTAssertNil(quote.display.amount)
+    }
+
     func testFailedRefreshKeepsLastKnownQuoteAndItsFreshness() throws {
         let context = try makeContext()
         let cache = QuoteCache(context: context)

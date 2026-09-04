@@ -12,6 +12,9 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
     case notMatched
     /// The app has no safe vendor mapping for this finish, so it did not ask.
     case unsupportedFinish
+    /// The fallback provider has no treatment-specific identity, so it did not
+    /// ask and the result is not evidence that the card is absent.
+    case unsupportedTreatment
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -28,6 +31,7 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case noExactPrice
     case notMatched
     case unsupportedFinish
+    case unsupportedTreatment
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -123,6 +127,8 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .failed(.notMatched)
         case .failed(.unsupportedFinish):
             return .failed(.unsupportedFinish)
+        case .failed(.unsupportedTreatment):
+            return .failed(.unsupportedTreatment)
         case .failed(.disabled):
             return .failed(.fallbackDisabled)
         case .failed(.missingCredentials):
@@ -162,6 +168,7 @@ final class PriceCheckCoordinator {
         let catalogQuote = CardPricing.price(
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
+            magicTreatments: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant),
             pokemonPrintRun: resolvedScan.pokemonPrintRun
         )
         let key = quoteKey(for: resolvedScan)
@@ -329,7 +336,7 @@ final class PriceCheckCoordinator {
     }
 
     private static func evidence(from quote: ReferenceQuote) -> LocalEvidence? {
-        guard let amount = quote.amount,
+        guard let amount = quote.effectiveAmount,
               Money(rounding: amount) != nil,
               let source = quote.source,
               let sourceVariantID = quote.sourceVariantID,

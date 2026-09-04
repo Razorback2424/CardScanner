@@ -56,6 +56,54 @@ final class ProductIdentityTests: XCTestCase {
         )
     }
 
+    func testMagicTreatmentMissDoesNotSuppressTheOrdinaryFoilIdentity() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        let genericKey = ProductIdentity.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id
+        )
+        let treatmentKey = ProductIdentity.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["surgefoil"]
+        )
+
+        store.record(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 6.40,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: "vendor-foil",
+                    sourceUpdatedAt: nil,
+                    fetchedAt: .now
+                ),
+                vendorCardID: "generic-card",
+                vendorVariantID: "vendor-foil"
+            ),
+            forKey: genericKey
+        )
+        store.record(
+            .noProductMatch,
+            forKey: treatmentKey,
+            treatmentIDs: ["surgefoil"]
+        )
+
+        XCTAssertFalse(store.needsResolution(forKey: genericKey))
+        XCTAssertEqual(store.cachedCardID(forKey: genericKey), "generic-card")
+        XCTAssertEqual(store.cachedVariantID(forKey: genericKey), "vendor-foil")
+        XCTAssertFalse(store.needsResolution(forKey: treatmentKey))
+        XCTAssertNil(store.cachedCardID(forKey: treatmentKey))
+        XCTAssertNil(store.cachedVariantID(forKey: treatmentKey))
+        XCTAssertEqual(
+            store.identity(forKey: treatmentKey)?.magicTreatmentIDsRaw,
+            ["surgefoil"]
+        )
+    }
+
     func testUnknownTreatmentIdentityRoundTripsWithoutCreatingGenericAlias() throws {
         let context = try makeContext()
         let key = ProductIdentity.key(
@@ -160,6 +208,19 @@ final class ProductIdentityTests: XCTestCase {
 
         XCTAssertNil(store.identity(forKey: "unsupported"))
         XCTAssertTrue(store.needsResolution(forKey: "unsupported"))
+    }
+
+    func testUnsupportedTreatmentDoesNotCreateANegativeIdentity() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        store.record(
+            .unsupportedTreatment,
+            forKey: "magic:printing:foil:treatment=surgefoil",
+            treatmentIDs: ["surgefoil"]
+        )
+
+        XCTAssertNil(store.identity(forKey: "magic:printing:foil:treatment=surgefoil"))
+        XCTAssertTrue(store.needsResolution(forKey: "magic:printing:foil:treatment=surgefoil"))
     }
 
     func testRecordPersistsAndReadsBack() throws {

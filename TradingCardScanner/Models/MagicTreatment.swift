@@ -251,6 +251,13 @@ enum MagicTreatmentKeyCodec {
         appendPriceSuffix(to: base, ids: canonicalIDs(from: rawIDs))
     }
 
+    /// Price, quote, and vendor-identity keys use this literal marker before
+    /// the encoded treatment value. Treat the vendor-native portion before the
+    /// marker as opaque: it may itself contain additional colon segments.
+    static func containsPriceTreatmentSuffix(in key: String) -> Bool {
+        key.range(of: ":treatment=", options: [.caseInsensitive]) != nil
+    }
+
     /// Builds the raw collection identity while preserving the bare key when
     /// no finish is known. A treatment cannot be keyed without a selected
     /// finish because the known treatment relationship is finish-dependent.
