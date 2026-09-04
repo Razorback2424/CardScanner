@@ -403,6 +403,43 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertEqual(ArtworkDiagnostics.reason(for: row), .providerHasNoArtwork)
     }
 
+    func testVendorBatchHitPersistsMarketplaceIdentityForIllustratedRows() throws {
+        let context = try makeContext()
+        let row = rawCard()
+        row.imageURL = "https://example.com/already-illustrated.png"
+        context.insert(row)
+        try context.save()
+
+        let hit = try sealedBatchHit(tcgplayerID: "98580", price: 25)
+        let owner = MarketPriceTarget(
+            priceKey: row.priceKey,
+            game: row.cardGame,
+            printingID: row.priceStorageID,
+            variantID: row.variantID,
+            itemKind: .rawCard,
+            marketVariantID: nil,
+            lookupCandidates: [],
+            currentAmount: nil,
+            lastCheckedAt: nil
+        )
+
+        PriceRefreshController.applyVendorBatchHit(
+            card: hit.card,
+            variant: hit.variant,
+            owners: [owner],
+            store: PriceStore(context: context),
+            identities: ProductIdentityStore(context: context),
+            rowsByPriceKey: [row.priceKey: [row]],
+            fetchedAt: Date(timeIntervalSince1970: 1_000)
+        )
+
+        XCTAssertEqual(row.tcgplayerProductID, "98580")
+        XCTAssertNotNil(
+            TCGplayerLinkBuilder.url(for: row),
+            "an illustrated row still needs the exact marketplace identity returned by the batch"
+        )
+    }
+
     func testExistingSealedRowFromOlderArtworkRulesGetsOneBackfill() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)

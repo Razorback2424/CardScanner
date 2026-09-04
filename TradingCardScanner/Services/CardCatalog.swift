@@ -204,11 +204,11 @@ enum PokemonOfflineCardFactory {
 
 actor PokemonOfflineCatalog {
     private let store: PokemonChecklistStore
-    private var snapshot: PokemonChecklistSnapshot?
+    private var entries: [PokemonChecklistSnapshotEntry] = []
     private var didLoad = false
-    private var loadTask: Task<PokemonChecklistSnapshot?, Never>?
+    private var loadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
 
-    init(store: PokemonChecklistStore = PokemonChecklistStore()) {
+    init(store: PokemonChecklistStore = .shared) {
         self.store = store
     }
 
@@ -218,13 +218,21 @@ actor PokemonOfflineCatalog {
         expectedOfficialCount: Int?
     ) async -> TCGdexCard? {
         await loadIfNeeded()
-        guard let snapshot else { return nil }
-        return PokemonOfflineCardFactory.card(
-            in: snapshot,
-            providerSetID: providerSetID,
-            localID: localID,
-            expectedOfficialCount: expectedOfficialCount
-        )
+        for entry in entries where
+            entry.providerID.caseInsensitiveCompare(providerSetID) == .orderedSame
+            && entry.set.pokemonPrintRun == nil {
+            guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
+            let snapshot = snapshot(entry: entry, cards: cards)
+            if let card = PokemonOfflineCardFactory.card(
+                in: snapshot,
+                providerSetID: providerSetID,
+                localID: localID,
+                expectedOfficialCount: expectedOfficialCount
+            ) {
+                return card
+            }
+        }
+        return nil
     }
 
     func contains(
@@ -241,7 +249,43 @@ actor PokemonOfflineCatalog {
 
     func historicalCard(for evidence: PokemonHistoricalScanEvidence) async -> IdentifiedCard? {
         await loadIfNeeded()
-        guard let snapshot else { return nil }
+        let candidateSetIDs: Set<String>
+        switch evidence.number.scheme {
+        case .officialSet:
+            candidateSetIDs = Set(entries.compactMap { entry in
+                let officialCount = entry.officialCount ?? SetCodeMap.definitions.values.first {
+                    $0.tcgdexSetID.caseInsensitiveCompare(entry.providerID) == .orderedSame
+                }?.officialCount
+                return officialCount == evidence.number.denominator
+                    ? entry.providerID.lowercased()
+                    : nil
+            })
+        case .subset:
+            candidateSetIDs = Set(
+                PokemonHistoricalIdentityResolver.candidateSetIDs(
+                    for: evidence.number,
+                    in: []
+                )
+            )
+        }
+        guard !candidateSetIDs.isEmpty else { return nil }
+
+        var matchingEntries: [PokemonChecklistSnapshotEntry] = []
+        var checklists: [String: [CatalogCardSummary]] = [:]
+        for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased()) {
+            guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
+            matchingEntries.append(entry)
+            checklists[entry.set.id] = cards
+        }
+        guard !matchingEntries.isEmpty else { return nil }
+        let manifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+            generatedAt: .now,
+            directoryFingerprint: "lazy",
+            entries: matchingEntries
+        )
+        let snapshot = PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
         return PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)
     }
 
@@ -251,13 +295,13 @@ actor PokemonOfflineCatalog {
 
     private func loadIfNeeded() async {
         guard !didLoad else { return }
-        let task: Task<PokemonChecklistSnapshot?, Never>
+        let task: Task<[PokemonChecklistSnapshotEntry], Never>
         if let existing = loadTask {
             task = existing
         } else {
             let store = store
-            let newTask = Task<PokemonChecklistSnapshot?, Never> {
-                await store.mergedSnapshot()
+            let newTask = Task<[PokemonChecklistSnapshotEntry], Never> {
+                await store.mergedEntries()
             }
             loadTask = newTask
             task = newTask
@@ -266,8 +310,24 @@ actor PokemonOfflineCatalog {
         let loaded = await task.value
         guard !Task.isCancelled else { return }
         loadTask = nil
-        snapshot = loaded
+        entries = loaded
         didLoad = true
+    }
+
+    private func snapshot(
+        entry: PokemonChecklistSnapshotEntry,
+        cards: [CatalogCardSummary]
+    ) -> PokemonChecklistSnapshot {
+        PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "lazy",
+                entries: [entry]
+            ),
+            checklists: [entry.set.id: cards]
+        )
     }
 }
 

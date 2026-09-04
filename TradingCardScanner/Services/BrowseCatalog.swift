@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 enum BrowseCatalogError: LocalizedError {
     case invalidURL
@@ -46,39 +47,43 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
     private var pokemonSetCardDetails: [String: [String: TCGdexCard]] = [:]
-    /// Runtime-derived checklists are keyed by the full catalog id because a
-    /// WotC provider set has one checklist per virtual print run. The provider
-    /// card details that feed all of those projections live separately above.
-    private var pokemonSetSummaries: [String: [CatalogCardSummary]] = [:]
-    private var pokemonSnapshot: PokemonChecklistSnapshot?
+    private var pokemonSnapshotEntries: [PokemonChecklistSnapshotEntry] = []
     private var pokemonSnapshotLoaded = false
     /// The read is shared across re-entrant actor calls. It is intentionally
     /// unstructured: cancelling one Browse caller must not cancel the snapshot
     /// load that another caller may still need.
-    private var pokemonSnapshotLoadTask: Task<PokemonChecklistSnapshot?, Never>?
+    private var pokemonSnapshotLoadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
     private var refreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var sortPriceCache: [String: Double] = [:]
     private var resolvedSortPrices: Set<String> = []
     private var refreshingSetDirectories: Set<CardGame> = []
+    private var memoryWarningObserver: NSObjectProtocol?
 
     init(
         cache: CatalogCacheStore = .shared,
         pokemonTransport: any PokemonBrowseTransport = TCGdexBrowseTransport(),
-        checklistStore: PokemonChecklistStore = PokemonChecklistStore()
+        checklistStore: PokemonChecklistStore = .shared
     ) {
         self.cache = cache
         self.pokemonTransport = pokemonTransport
         self.checklistStore = checklistStore
     }
 
+    deinit {
+        if let memoryWarningObserver {
+            NotificationCenter.default.removeObserver(memoryWarningObserver)
+        }
+    }
+
     func sets(for game: CardGame) async throws -> [CatalogSet] {
+        installMemoryWarningObserverIfNeeded()
         if let cached = setCache[game] { return cached }
 
         if game == .pokemon {
             await loadPokemonSnapshotIfNeeded()
-            if let snapshot = pokemonSnapshot {
-                let sets = snapshot.sets
+            if !pokemonSnapshotEntries.isEmpty {
+                let sets = pokemonSnapshotEntries.map(\.set)
                 setCache[game] = sets
                 installPokemonReleaseOrder(from: sets, game: game)
                 return sets
@@ -98,8 +103,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// The snapshot is loaded synchronously first so the first Browse render
     /// can use local data, while the network work remains low priority.
     func prepareCatalog() async {
+        installMemoryWarningObserverIfNeeded()
         await loadPokemonSnapshotIfNeeded()
-        guard refreshTask == nil else { return }
+        if let existingTask = refreshTask {
+            // Suspension cancels cooperatively. Keep the task reference until
+            // it has unwound so an immediate inactive → active transition
+            // cannot start a second crawl over the first one's writes.
+            guard existingTask.isCancelled else { return }
+            await existingTask.value
+            refreshTask = nil
+        }
+        guard await checklistStore.shouldRefresh() else { return }
         let token = UUID()
         refreshToken = token
         refreshTask = Task(priority: .utility) { [weak self] in
@@ -120,7 +134,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func suspendCatalogRefresh() {
         refreshToken = UUID()
         refreshTask?.cancel()
-        refreshTask = nil
     }
 
     private func finishRefreshTask(token: UUID) {
@@ -153,18 +166,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        installMemoryWarningObserverIfNeeded()
         let page: CatalogPage<CatalogCardSummary>
         switch set.game {
         case .pokemon:
             await loadPokemonSnapshotIfNeeded()
-            if let cached = pokemonSetSummaries[set.id] {
-                return CatalogPage(items: cached, nextCursor: nil)
-            }
             // Snapshot lookup deliberately precedes the ordinary page cache.
             // A bundled or protected checklist is the authoritative offline
             // source and must not be displaced by an older partial page.
-            if let local = pokemonSnapshot?.checklist(for: set.catalogID) {
-                pokemonSetSummaries[set.id] = local
+            if let local = await checklistStore.mergedChecklist(for: set.catalogID) {
                 return CatalogPage(items: local, nextCursor: nil)
             }
             let summaries = try await livePokemonSummaries(for: set)
@@ -187,6 +197,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         setIDs: Set<CatalogSetID>,
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary> {
+        installMemoryWarningObserverIfNeeded()
         let normalized = CardNameSearch.normalize(query)
         guard normalized.count >= 2 else { return CatalogPage(items: [], nextCursor: nil) }
 
@@ -220,6 +231,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        installMemoryWarningObserverIfNeeded()
         if let cached = detailCache[summary.id] { return cached }
         let details: CatalogCardDetails
         switch summary.game {
@@ -243,6 +255,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] {
+        installMemoryWarningObserverIfNeeded()
         let pending = cards.filter { !resolvedSortPrices.contains($0.id) }
         var iterator = pending.makeIterator()
 
@@ -330,6 +343,28 @@ actor BrowseCatalog: BrowseCatalogProviding {
             values[set.providerID.lowercased()] = set.sortRank
         }
         PokemonCatalogReleaseOrder.install(values)
+    }
+
+    /// Browse keeps a few decoded provider responses outside the shared
+    /// checklist store. Release those copies on the same memory-warning signal;
+    /// checklist pages are bounded and evicted by `PokemonChecklistStore`.
+    private func discardDecodedCaches() {
+        pokemonSetDetails.removeAll()
+        pokemonSetCardDetails.removeAll()
+        detailCache.removeAll()
+        sortPriceCache.removeAll()
+        resolvedSortPrices.removeAll()
+    }
+
+    private func installMemoryWarningObserverIfNeeded() {
+        guard memoryWarningObserver == nil else { return }
+        memoryWarningObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil,
+            queue: nil
+        ) { [weak self] _ in
+            Task { await self?.discardDecodedCaches() }
+        }
     }
 
     private func magicSets() async throws -> [CatalogSet] {
@@ -437,7 +472,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             cardDetails: details
         )
         for value in built {
-            pokemonSetSummaries[value.set.id] = value.cards
             for summary in value.cards {
                 guard let card = details[summary.providerID] else { continue }
                 detailCache[summary.id] = CatalogCardDetails(
@@ -483,39 +517,60 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func loadPokemonSnapshotIfNeeded() async {
         guard !pokemonSnapshotLoaded else { return }
-        let loadTask: Task<PokemonChecklistSnapshot?, Never>
+        let loadTask: Task<[PokemonChecklistSnapshotEntry], Never>
         if let existing = pokemonSnapshotLoadTask {
             loadTask = existing
         } else {
             let checklistStore = checklistStore
-            let task = Task<PokemonChecklistSnapshot?, Never> {
-                let bundled = await checklistStore.bundledSnapshot()
-                let downloaded = await checklistStore.downloadedSnapshot()
-                return PokemonChecklistSnapshot.merged(
-                    bundled: bundled,
-                    downloaded: downloaded
-                )
+            let task = Task<[PokemonChecklistSnapshotEntry], Never> {
+                await checklistStore.mergedEntries()
             }
             pokemonSnapshotLoadTask = task
             loadTask = task
         }
 
-        let snapshot = await loadTask.value
+        let entries = await loadTask.value
         // Do not turn a cancelled or unsuccessful request into a completed
         // latch. A nil result must remain retryable if both snapshot sources
         // were temporarily unavailable.
         guard !Task.isCancelled else { return }
         pokemonSnapshotLoadTask = nil
-        pokemonSnapshotLoaded = snapshot != nil
-        pokemonSnapshot = snapshot
-        if let snapshot {
-            let sets = snapshot.sets
+        pokemonSnapshotLoaded = !entries.isEmpty
+        pokemonSnapshotEntries = entries
+        if !entries.isEmpty {
+            let sets = entries.map(\.set)
             setCache[.pokemon] = sets
             installPokemonReleaseOrder(from: sets, game: .pokemon)
         }
     }
 
+    /// How a crawl ended, which is what decides the next one's cadence.
+    private enum PokemonSnapshotRefreshOutcome {
+        /// Reached the end of the directory with nothing outstanding.
+        case sweptCleanly
+        /// Reached the end of the directory with sets still failing.
+        case sweptWithFailures
+        /// Could not start: the set directory itself was unreachable.
+        case directoryUnavailable
+        /// The user left. Per-set progress is already durable, and nothing was
+        /// learned about the provider, so this must not arm any backoff.
+        case cancelled
+    }
+
     private func refreshPokemonSnapshot() async {
+        switch await performPokemonSnapshotRefresh() {
+        case .sweptCleanly:
+            await checklistStore.markRefreshSucceeded()
+        case .sweptWithFailures:
+            await checklistStore.markRefreshSwept()
+        case .directoryUnavailable:
+            await checklistStore.markRefreshAttempted()
+        case .cancelled:
+            break
+        }
+    }
+
+    private func performPokemonSnapshotRefresh() async -> PokemonSnapshotRefreshOutcome {
         do {
             let rows = try await pokemonTransport.fetchSetDirectory()
             let pocketIDs = (try? await pokemonTransport.fetchPocketSetIDs()) ?? []
@@ -524,31 +579,79 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 excluding: pocketIDs
             )
             let orderedSets = baseSets.sorted(by: refreshOrder)
-            var workingSnapshot = pokemonSnapshot
+            var workingEntries = pokemonSnapshotEntries
+            // The cursor is an optimisation for an interrupted crawl, not a
+            // permanent position. Once the last completed sweep has aged past
+            // the refresh interval the whole directory is re-checked, so a set
+            // that fails every time cannot hold the cursor at the end and stop
+            // every other set from ever being looked at again.
+            let needsFullSweep = await checklistStore.needsFullSweep()
+            let resumeAfterProviderID = needsFullSweep
+                ? nil
+                : await checklistStore.refreshResumeAfterProviderID()
+            let failedProviderIDs = await checklistStore.refreshFailedProviderIDs()
+            let resumeIndex = resumeAfterProviderID.flatMap { resumeID in
+                orderedSets.firstIndex {
+                    $0.providerID.caseInsensitiveCompare(resumeID) == .orderedSame
+                }
+            }
+            let firstIndex = resumeIndex.map { $0 + 1 } ?? 0
+            let knownFailedIDs = Set(
+                failedProviderIDs.filter { failedID in
+                    orderedSets.contains { $0.providerID.caseInsensitiveCompare(failedID) == .orderedSame }
+                }
+            )
+            var unresolvedFailureIDs = knownFailedIDs
+
+            // Resume the ordinary cursor first. A failure from an earlier
+            // portion of the directory is retried only after the resumed
+            // work, so it cannot rewind the cursor or monopolize the next
+            // crawl's first request.
+            let setsToProcess = orderedSets.enumerated().compactMap { index, set in
+                index >= firstIndex ? set : nil
+            }
+            let deferredRetrySets = orderedSets.enumerated().compactMap { index, set in
+                index < firstIndex && knownFailedIDs.contains(set.providerID.lowercased())
+                    ? set
+                    : nil
+            }
+            let deferredRetryIDs = Set(deferredRetrySets.map { $0.providerID.lowercased() })
 
             // Each iteration is its own commit. Set-level crawling is
             // intentionally sequential: it preserves deterministic release
             // ordering and makes each manifest update the only writer while
             // still keeping the card-detail stage 8-wide within a set. This is
             // the deliberate incrementality trade-off for refreshes.
-            for baseSet in orderedSets {
-                guard !Task.isCancelled else { return }
+            for baseSet in setsToProcess + deferredRetrySets {
+                guard !Task.isCancelled else { return .cancelled }
+                let isDeferredRetry = deferredRetryIDs.contains(baseSet.providerID.lowercased())
                 do {
                     let provider = try await pokemonTransport.fetchSet(id: baseSet.providerID)
                     pokemonSetDetails[provider.id.lowercased()] = provider
                     let fingerprint = PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
-                    let priorEntries = workingSnapshot?.manifest.entries.filter {
+                    let priorEntries = workingEntries.filter {
                         $0.providerID.caseInsensitiveCompare(baseSet.providerID) == .orderedSame
                             && $0.providerFingerprint == fingerprint
-                    } ?? []
+                    }
                     let expectedSetCount = PokemonMasterSetDefinition.virtualSets(
                         baseSet,
                         cardCount: provider.cardCount
                     ).count
-                    if priorEntries.count == expectedSetCount,
-                       priorEntries.allSatisfy({
-                           workingSnapshot?.checklist(for: $0.set.catalogID) != nil
-                       }) {
+                    var priorChecklistsAreAvailable = priorEntries.count == expectedSetCount
+                    if priorChecklistsAreAvailable {
+                        for entry in priorEntries {
+                            if !(await checklistStore.hasMergedChecklist(for: entry.set.catalogID)) {
+                                priorChecklistsAreAvailable = false
+                                break
+                            }
+                        }
+                    }
+                    if priorChecklistsAreAvailable {
+                        unresolvedFailureIDs.remove(baseSet.providerID.lowercased())
+                        await checklistStore.recordRefreshProgress(
+                            after: baseSet.providerID,
+                            advancesCursor: !isDeferredRetry
+                        )
                         continue
                     }
 
@@ -558,38 +661,54 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         baseSet: baseSet,
                         cardDetails: details
                     )
-                    guard !providerSets.isEmpty else { continue }
+                    guard !providerSets.isEmpty else {
+                        unresolvedFailureIDs.remove(baseSet.providerID.lowercased())
+                        await checklistStore.recordRefreshProgress(
+                            after: baseSet.providerID,
+                            advancesCursor: !isDeferredRetry
+                        )
+                        continue
+                    }
                     let setSnapshot = PokemonChecklistSnapshot.from(builtSets: providerSets)
 
                     // This is the per-set commit point. The store writes all
                     // resource files before replacing its manifest.
                     try await checklistStore.publish(setSnapshot)
-                    guard !Task.isCancelled else { return }
+                    guard !Task.isCancelled else { return .cancelled }
 
-                    workingSnapshot = PokemonChecklistSnapshot.merged(
-                        bundled: workingSnapshot,
-                        downloaded: setSnapshot
+                    workingEntries = await checklistStore.mergedEntries()
+                    pokemonSnapshotEntries = workingEntries
+                    pokemonSnapshotLoaded = !workingEntries.isEmpty
+                    let sets = workingEntries.map(\.set)
+                    setCache[.pokemon] = sets
+                    installPokemonReleaseOrder(from: sets, game: .pokemon)
+                    unresolvedFailureIDs.remove(baseSet.providerID.lowercased())
+                    await checklistStore.recordRefreshProgress(
+                        after: baseSet.providerID,
+                        advancesCursor: !isDeferredRetry
                     )
-                    pokemonSnapshot = workingSnapshot
-                    pokemonSnapshotLoaded = workingSnapshot != nil
-                    if let snapshot = workingSnapshot {
-                        setCache[.pokemon] = snapshot.sets
-                        installPokemonReleaseOrder(from: snapshot.sets, game: .pokemon)
-                    }
                 } catch is CancellationError {
-                    return
+                    return .cancelled
                 } catch {
                     // A refresh is opportunistic. One malformed or unavailable
                     // set must not prevent already completed sets from helping.
+                    unresolvedFailureIDs.insert(baseSet.providerID.lowercased())
+                    await checklistStore.recordRefreshProgress(
+                        after: baseSet.providerID,
+                        failed: true,
+                        advancesCursor: !isDeferredRetry
+                    )
                     continue
                 }
             }
+            guard !Task.isCancelled else { return .cancelled }
+            return unresolvedFailureIDs.isEmpty ? .sweptCleanly : .sweptWithFailures
         } catch is CancellationError {
-            return
+            return .cancelled
         } catch {
             // Directory failure is still all-or-nothing because there is no
             // trustworthy set ordering or universe to crawl without it.
-            return
+            return .directoryUnavailable
         }
     }
 

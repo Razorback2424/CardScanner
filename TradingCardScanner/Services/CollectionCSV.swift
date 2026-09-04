@@ -220,7 +220,8 @@ enum CollectionCSV {
     /// Four decimal places, so an exported figure round-trips exactly rather
     /// than arriving back rounded to the cent.
     private static func amount(_ money: Money) -> String {
-        String(format: "%.4f", money.doubleValue)
+        guard money.isValid else { return "" }
+        return String(format: "%.4f", money.doubleValue)
     }
 
     /// Formatted in the zone the day was *measured* in. Rendering a boundary
@@ -399,7 +400,13 @@ enum CollectionCSV {
 
             for entry in parsed {
                 if var existing = entriesByKey[entry.collectionKey] {
-                    existing.quantity += entry.quantity
+                    if isCertified(entry) || isCertified(existing) {
+                        // A certificate identifies one physical slab. Duplicate
+                        // export rows must not turn that slab into a stack.
+                        existing.quantity = 1
+                    } else {
+                        existing.quantity += entry.quantity
+                    }
                     entriesByKey[entry.collectionKey] = existing
                 } else {
                     entriesByKey[entry.collectionKey] = entry
@@ -423,12 +430,21 @@ enum CollectionCSV {
             let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
             let priceStore = PriceStore(context: context)
             let ledger = InventoryLedger(context: context)
+            let priceRecords = try context.fetch(FetchDescriptor<PriceRecord>())
+            let priceObservations = try context.fetch(FetchDescriptor<PriceObservation>())
+            let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
+                observations: priceObservations,
+                records: priceRecords
+            )
             // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key, and a
             // duplicate `collectionKey` is a state CloudKit produces on its own —
             // so importing a CSV into a collection that had ever synced a duplicate
             // crashed. Merging into the projection's representative row adds the
             // imported copies to the position exactly once.
-            var cardsByKey = LogicalCollection.project(cards: storedCards, ledger: ledger)
+            let storedProjection = LogicalCollection.project(cards: storedCards) {
+                valuations.priceStorageKey(for: $0)
+            }
+            var cardsByKey = storedProjection
                 .byKey
                 .mapValues(\.representative)
             // A pre-Slice-5 export has only the finish-qualified key. If the
@@ -438,7 +454,7 @@ enum CollectionCSV {
             // treatments sharing one legacy identity must not be guessed into
             // one another.
             var ambiguousLegacyKeys = Set<String>()
-            for position in LogicalCollection.project(cards: storedCards, ledger: ledger).positions {
+            for position in storedProjection.positions {
                 for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
                     for: position.collectionKey
                 ) {
@@ -461,6 +477,7 @@ enum CollectionCSV {
 
             for entry in plan.entries {
                 let storedCard: CollectedCard
+                var deltaQuantity = 0
                 // A newer CSV can carry a treatment-qualified key while the
                 // destination store still has its treatment-free row. Let the
                 // same read-through/repair path used by scanning adopt it
@@ -475,7 +492,14 @@ enum CollectionCSV {
                     )
                 }
                 if let existing {
-                    existing.quantity += entry.quantity
+                    if !existing.allowsQuantityAggregation || isCertified(entry) {
+                        // A non-aggregating row is one physical object. A
+                        // repeated import is metadata refresh, never a second
+                        // ownership event and never a silent quantity repair.
+                    } else {
+                        existing.quantity += entry.quantity
+                        deltaQuantity = entry.quantity
+                    }
                     existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
                     if existing.imageURL == nil { existing.imageURL = entry.imageURL }
                     if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
@@ -540,6 +564,7 @@ enum CollectionCSV {
                     context.insert(card)
                     cardsByKey[entry.collectionKey] = card
                     storedCard = card
+                    deltaQuantity = entry.quantity
                     inserted += 1
                 }
 
@@ -565,34 +590,36 @@ enum CollectionCSV {
                 // lie about what the system knows. The CSV's own acquisition date
                 // is kept as `acquiredAt`; recorded and acquired are not the same
                 // fact.
-                let operationID = UUID()
-                let outcome = ledger.record(
-                    storedCard,
-                    kind: .recordExisting,
-                    source: .csvImport,
-                    deltaQuantity: entry.quantity,
-                    operationID: operationID,
-                    occurredAt: recordedAt,
-                    acquiredAt: entry.dateAdded
-                )
-                switch outcome {
-                case .appended:
-                    break
-                case .duplicate:
-                    throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
-                case let .conflict(defect):
-                    throw CollectionStoreError.ledgerConflict(defect.detail)
-                case let .unreadableStore(defect):
-                    throw CollectionStoreError.ledgerConflict(defect.detail)
+                if deltaQuantity > 0 {
+                    let operationID = UUID()
+                    let outcome = ledger.record(
+                        storedCard,
+                        kind: .recordExisting,
+                        source: .csvImport,
+                        deltaQuantity: deltaQuantity,
+                        operationID: operationID,
+                        occurredAt: recordedAt,
+                        acquiredAt: entry.dateAdded
+                    )
+                    switch outcome {
+                    case .appended:
+                        break
+                    case .duplicate:
+                        throw CollectionStoreError.ledgerConflict("CSV import operation already exists")
+                    case let .conflict(defect):
+                        throw CollectionStoreError.ledgerConflict(defect.detail)
+                    case let .unreadableStore(defect):
+                        throw CollectionStoreError.ledgerConflict(defect.detail)
+                    }
+                    _ = try CollectionStore(context: context).appendActivity(
+                        storedCard,
+                        source: .csvImport,
+                        kind: .added,
+                        deltaQuantity: deltaQuantity,
+                        ledgerOperationIDs: [operationID],
+                        occurredAt: recordedAt
+                    )
                 }
-                _ = try CollectionStore(context: context).appendActivity(
-                    storedCard,
-                    source: .csvImport,
-                    kind: .added,
-                    deltaQuantity: entry.quantity,
-                    ledgerOperationIDs: [operationID],
-                    occurredAt: recordedAt
-                )
             }
 
             try context.save()
@@ -842,6 +869,10 @@ enum CollectionCSV {
         let resolvedTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
             from: magicTreatmentQualifiers
         ).filter { resolvedTreatmentIDsSet.contains($0.key) }
+        let resolvedCertificationNumber = nonempty(certificationNumber)
+        let resolvedQuantity = itemKind == .gradedCard && resolvedCertificationNumber != nil
+            ? 1
+            : quantity
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
         let key: String
         switch itemKind {
@@ -865,14 +896,17 @@ enum CollectionCSV {
                     game: game,
                     underlyingPrintingID: providerID,
                     variantUUID: justTCGVariantID,
-                    certificationNumber: certificationNumber,
+                    certificationNumber: resolvedCertificationNumber,
                     magicTreatments: treatmentModels
                 )
             } else {
                 let fragment = gradingCompany.map { company in
                     "\(company.rawValue)|\(grade?.identityFragment ?? "")"
                 } ?? "unknown"
-                let base = "graded:\(baseKey)#\(fragment)"
+                var base = "graded:\(baseKey)#\(fragment)"
+                if let resolvedCertificationNumber {
+                    base += ":cert:\(resolvedCertificationNumber)"
+                }
                 key = game == .magic
                     ? MagicTreatmentKeyCodec.appendCollectionSuffix(
                         to: base,
@@ -920,7 +954,7 @@ enum CollectionCSV {
             magicContentKindRaw: magicContentKindRaw,
             importedMarketPriceUSD: importedMarketPriceUSD,
             importedPriceAsOf: importedPriceAsOf,
-            quantity: quantity,
+            quantity: resolvedQuantity,
             dateAdded: dateAdded,
             itemKind: itemKind,
             gradingCompany: gradingCompany,
@@ -929,7 +963,7 @@ enum CollectionCSV {
             justTCGCardID: justTCGCardID,
             justTCGVariantID: justTCGVariantID,
             justTCGAPIVersion: justTCGAPIVersion,
-            certificationNumber: certificationNumber,
+            certificationNumber: resolvedCertificationNumber,
             marketRegionRaw: marketRegionRaw
         )
     }
@@ -1138,6 +1172,11 @@ enum CollectionCSV {
 
     private static func positiveInt(_ value: String?) -> Int {
         max(0, Int(value ?? "") ?? 0)
+    }
+
+    private static func isCertified(_ entry: CollectionCSVEntry) -> Bool {
+        entry.itemKind == .gradedCard
+            && !(entry.certificationNumber?.isEmpty ?? true)
     }
 
     private static func encodedTreatmentIDs(_ ids: [String]) -> String {

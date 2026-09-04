@@ -200,6 +200,22 @@ enum MagicTreatmentMigration {
             }
         }
 
+        // The migration runs on the main actor before portfolio startup. Keep
+        // its planning phase linear in the collection size: the exact-id and
+        // legacy-key indexes replace repeated scans of `candidates` below.
+        let candidateObjectIDs = Set(candidates.map(ObjectIdentifier.init))
+        var candidatesByExactID: [String: [CollectedCard]] = [:]
+        var pendingLegacyCounts: [String: Int] = [:]
+        for card in candidates {
+            guard let parts = descriptors[ObjectIdentifier(card)] else { continue }
+            if let exactID = parts.exactPrintingID {
+                candidatesByExactID[exactID.lowercased(), default: []].append(card)
+            }
+            if !parts.isTreatmentQualified {
+                pendingLegacyCounts[card.collectionKey, default: 0] += 1
+            }
+        }
+
         let catalog = MagicTreatmentCatalogStore.bundledDefault
         var exactIDs: Set<String> = []
         for card in candidates {
@@ -216,10 +232,7 @@ enum MagicTreatmentMigration {
         var failedExactIDs: Set<String> = []
         var remoteExactIDs: [String] = []
         for exactID in exactIDs.sorted() {
-            let rows = candidates.filter {
-                descriptors[ObjectIdentifier($0)]?.exactPrintingID
-                    .map { $0.caseInsensitiveCompare(exactID) == .orderedSame } == true
-            }
+            let rows = candidatesByExactID[exactID.lowercased()] ?? []
             let requiresProviderFinish = rows.contains { row in
                 let rowParts = descriptors[ObjectIdentifier(row)]
                 return row.itemKind == .gradedCard
@@ -318,7 +331,7 @@ enum MagicTreatmentMigration {
         var plans: [MigrationPair: PairPlan] = [:]
         for card in cards where card.cardGame == .magic {
             guard let parts = descriptors[ObjectIdentifier(card)] else {
-                if candidates.contains(where: { $0 === card }) {
+                if candidateObjectIDs.contains(ObjectIdentifier(card)) {
                     report.fail("Unrecognised Magic collection key: \(card.collectionKey)")
                 }
                 continue
@@ -328,9 +341,7 @@ enum MagicTreatmentMigration {
             // It still participates in collision repair and metadata hydration,
             // but it never needs a network request.
             if parts.isTreatmentQualified {
-                let hasPendingLegacyRow = candidates.contains {
-                    $0 !== card && $0.collectionKey == parts.baseKey
-                }
+                let hasPendingLegacyRow = pendingLegacyCounts[parts.baseKey, default: 0] > 0
                 guard card.magicTreatmentMigrationVersion < currentVersion
                     || hasPendingLegacyRow else {
                     continue
@@ -363,7 +374,7 @@ enum MagicTreatmentMigration {
                 continue
             }
 
-            guard candidates.contains(where: { $0 === card }) else { continue }
+            guard candidateObjectIDs.contains(ObjectIdentifier(card)) else { continue }
 
             let existingIDs = existingTreatmentIDs(for: card)
             if !existingIDs.isEmpty {
@@ -1668,10 +1679,37 @@ private extension MagicCollectionKeyParts {
 ///
 /// Network enrichment deliberately runs after portfolio startup, but the rows
 /// it enriches can still be rekeyed while a foreground or background price
-/// refresh is being planned. Keeping the migration task here gives every app
-/// entry point one gate: target construction happens only after the network
-/// phase has finished, so a refresh cannot write a generic price through a
-/// treatment-qualified row's superseded key.
+/// refresh is running. This coordinator is the mutual-exclusion point for both
+/// operations: migration waits for an active refresh, and a refresh owns the
+/// gate while its target snapshot and writes are in flight.
+private final class MagicTreatmentPriceRefreshGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var released = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        await withCheckedContinuation { continuation in
+            lock.lock()
+            if released {
+                lock.unlock()
+                continuation.resume()
+            } else {
+                waiters.append(continuation)
+                lock.unlock()
+            }
+        }
+    }
+
+    func release() {
+        lock.lock()
+        released = true
+        let continuations = waiters
+        waiters.removeAll()
+        lock.unlock()
+        continuations.forEach { $0.resume() }
+    }
+}
+
 @MainActor
 final class MagicTreatmentMigrationCoordinator {
     typealias NetworkRunner = @MainActor (
@@ -1689,6 +1727,8 @@ final class MagicTreatmentMigrationCoordinator {
     private var localReport: MagicTreatmentMigration.Report?
     private var networkReport: MagicTreatmentMigration.Report?
     private var collectionRevision = 0
+    private var activePriceRefresh: MagicTreatmentPriceRefreshGate?
+    private static let maximumRevisionRetries = 1
 
     init(
         networkRunner: @escaping NetworkRunner = { context, now in
@@ -1708,6 +1748,13 @@ final class MagicTreatmentMigrationCoordinator {
         networkReport = nil
     }
 
+    /// Whether this process has already finished deferred network enrichment.
+    /// Diagnostic only: it must never gate whether pricing happens at all, because
+    /// a background launch is normally a fresh process where it is always false.
+    var hasCompletedNetworkMigration: Bool {
+        networkReport?.isComplete == true
+    }
+
     /// Runs the local phase once for all callers currently waiting on it.
     /// A network caller also waits for this phase, so the two migration phases
     /// can never mutate the same collection concurrently.
@@ -1716,6 +1763,15 @@ final class MagicTreatmentMigrationCoordinator {
         in context: ModelContext,
         now: Date = .now
     ) async -> MagicTreatmentMigration.Report {
+        await waitForPriceRefresh()
+        return await runLocalCore(in: context, now: now)
+    }
+
+    private func runLocalCore(
+        in context: ModelContext,
+        now: Date
+    ) async -> MagicTreatmentMigration.Report {
+        var revisionRetries = 0
         while true {
             if let localReport {
                 return localReport
@@ -1723,13 +1779,21 @@ final class MagicTreatmentMigrationCoordinator {
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
-                guard taskRevision == collectionRevision else { continue }
+                guard taskRevision == collectionRevision else {
+                    guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                    revisionRetries += 1
+                    continue
+                }
                 return report
             }
             if let localTask {
                 let taskRevision = localTaskRevision ?? collectionRevision
                 let report = await localTask.value
-                guard taskRevision == collectionRevision else { continue }
+                guard taskRevision == collectionRevision else {
+                    guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                    revisionRetries += 1
+                    continue
+                }
                 return report
             }
 
@@ -1742,7 +1806,11 @@ final class MagicTreatmentMigrationCoordinator {
             let report = await task.value
             localTask = nil
             localTaskRevision = nil
-            guard taskRevision == collectionRevision else { continue }
+            guard taskRevision == collectionRevision else {
+                guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                revisionRetries += 1
+                continue
+            }
             localReport = report
             return report
         }
@@ -1757,6 +1825,15 @@ final class MagicTreatmentMigrationCoordinator {
         in context: ModelContext,
         now: Date = .now
     ) async -> MagicTreatmentMigration.Report {
+        await waitForPriceRefresh()
+        return await runNetworkCore(in: context, now: now)
+    }
+
+    private func runNetworkCore(
+        in context: ModelContext,
+        now: Date
+    ) async -> MagicTreatmentMigration.Report {
+        var revisionRetries = 0
         while true {
             if let networkReport {
                 return networkReport
@@ -1764,18 +1841,26 @@ final class MagicTreatmentMigrationCoordinator {
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
-                guard taskRevision == collectionRevision else { continue }
+                guard taskRevision == collectionRevision else {
+                    guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                    revisionRetries += 1
+                    continue
+                }
                 return report
             }
 
-            _ = await runLocal(in: context, now: now)
+            _ = await runLocalCore(in: context, now: now)
             if let networkReport {
                 return networkReport
             }
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
-                guard taskRevision == collectionRevision else { continue }
+                guard taskRevision == collectionRevision else {
+                    guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                    revisionRetries += 1
+                    continue
+                }
                 return report
             }
 
@@ -1789,22 +1874,58 @@ final class MagicTreatmentMigrationCoordinator {
             let report = await task.value
             networkTask = nil
             networkTaskRevision = nil
-            guard taskRevision == collectionRevision else { continue }
+            guard taskRevision == collectionRevision else {
+                guard revisionRetries < Self.maximumRevisionRetries else { return report }
+                revisionRetries += 1
+                continue
+            }
             networkReport = report
             return report
         }
     }
 
-    /// Builds and executes a price refresh only after treatment migration has
-    /// finished. The operation closure is intentionally inside the gate: its
-    /// target snapshot must be made after rekeying, not merely its network
-    /// writes.
+    private func waitForPriceRefresh() async {
+        while let activePriceRefresh {
+            await activePriceRefresh.wait()
+        }
+    }
+
+    /// Builds and executes a price refresh while holding the migration gate.
+    ///
+    /// The operation closure is intentionally inside the gate: its target
+    /// snapshot must be made after rekeying, not merely its network writes.
+    ///
+    /// - Parameter runsNetworkMigration: whether deferred Scryfall enrichment
+    ///   must complete before the operation runs. Foreground callers want it;
+    ///   Background Tasks does not, because its window is small and
+    ///   non-renewable. Skipping it is safe for correctness — holding the gate
+    ///   is what guarantees no rekeying happens while the operation is in
+    ///   flight, and pricing a not-yet-enriched row under its *current* key is
+    ///   exactly what happens when no migration is pending at all.
     func withPriceRefresh<Result>(
         in context: ModelContext,
         now: Date = .now,
+        runsNetworkMigration: Bool = true,
         operation: @escaping @MainActor () async -> Result
     ) async -> Result {
-        _ = await runNetwork(in: context, now: now)
+        await waitForPriceRefresh()
+        let gate = MagicTreatmentPriceRefreshGate()
+        activePriceRefresh = gate
+        defer {
+            activePriceRefresh = nil
+            gate.release()
+        }
+
+        // The refresh owns the gate, so call the cores directly. Calling the
+        // public methods here would wait on the gate it just acquired.
+        if runsNetworkMigration {
+            _ = await runNetworkCore(in: context, now: now)
+        } else {
+            // Local repairs are bounded and must still precede pricing: they
+            // are the phase that can rekey a row from an identity already
+            // proven by its own collection key.
+            _ = await runLocalCore(in: context, now: now)
+        }
         return await operation()
     }
 }

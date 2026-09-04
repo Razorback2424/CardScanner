@@ -41,6 +41,110 @@ private actor PortfolioComputationGate {
 final class PortfolioReconciliationTests: XCTestCase {
     private var container: ModelContainer?
 
+    /// Epoch establishment resolves each position's price key through the bulk
+    /// valuation index rather than `InventoryLedger`, which costs two predicate
+    /// fetches per candidate key per card. The point of that change was speed,
+    /// but the thing that could silently break is *correctness*: the two
+    /// resolvers must choose the same instrument, or the baseline opens valuing
+    /// positions through a different price than the collection grid shows.
+    ///
+    /// A timing assertion was tried here and deliberately rejected — against an
+    /// in-memory store the two implementations measure 2.6s and 3.0s for 1,500
+    /// positions, so any bound that is not flaky also does not detect the
+    /// regression. This pins the equivalence instead, which is deterministic
+    /// and is the property that actually matters.
+    func testEpochResolvesTheSamePriceKeyAsTheLedgerResolver() throws {
+        let context = try makeContext()
+
+        // A first-edition raw card reads through a legacy price key, so the two
+        // resolvers have a real choice to disagree about rather than a single
+        // candidate. One position holds its value on the legacy key only, one
+        // on the canonical key, and one has no price at all.
+        let legacyOnly = card(key: "legacy-only")
+        legacyOnly.variantID = PhysicalVariant.firstEdition.id
+        legacyOnly.variantLabel = PhysicalVariant.firstEdition.label
+        let canonical = card(key: "canonical")
+        let unpriced = card(key: "unpriced")
+        unpriced.variantID = PhysicalVariant.firstEdition.id
+        unpriced.variantLabel = PhysicalVariant.firstEdition.label
+        for row in [legacyOnly, canonical, unpriced] { context.insert(row) }
+
+        for (row, key) in [
+            (legacyOnly, legacyOnly.legacyPriceKeys.first),
+            (canonical, canonical.priceKey)
+        ] {
+            guard let key else { continue }
+            let record = PriceRecord(
+                key: key,
+                game: row.cardGame,
+                printingID: row.priceStorageID,
+                variantID: row.variantID
+            )
+            _ = record.apply(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 4.25,
+                    currencyCode: "USD",
+                    source: .tcgplayer,
+                    sourceVariantID: key,
+                    sourceUpdatedAt: nil,
+                    fetchedAt: Date(timeIntervalSince1970: 100)
+                )
+            )
+            context.insert(record)
+        }
+        try context.save()
+
+        let ledger = InventoryLedger(context: context)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+
+        // The equivalence the refactor rests on, asserted directly.
+        for row in cards {
+            XCTAssertEqual(
+                valuations.priceStorageKey(for: row),
+                ledger.priceStorageKey(for: row),
+                "Bulk and scalar resolvers disagree for \(row.collectionKey)"
+            )
+        }
+        // Not vacuous: the legacy read-through really is in play here.
+        XCTAssertEqual(
+            valuations.priceStorageKey(for: legacyOnly),
+            legacyOnly.legacyPriceKeys.first
+        )
+        XCTAssertNotEqual(
+            valuations.priceStorageKey(for: legacyOnly),
+            legacyOnly.priceKey
+        )
+
+        let defaults = UserDefaults(suiteName: "PortfolioEpochTests.\(UUID().uuidString)")!
+        defer { defaults.removePersistentDomain(forName: defaults.description) }
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            isCloudSyncing: false
+        )
+
+        // And the baseline events carry that same instrument, so the books open
+        // valuing each position through the price the collection displays.
+        let events = ledger.allEvents()
+        XCTAssertEqual(events.count, cards.count)
+        for event in events {
+            guard let row = cards.first(where: { $0.collectionKey == event.collectionKey }) else {
+                XCTFail("Baseline event for an unknown position \(event.collectionKey)")
+                continue
+            }
+            XCTAssertEqual(event.kind, .initialBalance)
+            XCTAssertEqual(event.priceStorageKey, ledger.priceStorageKey(for: row))
+        }
+        XCTAssertEqual(
+            events.first { $0.collectionKey == "unpriced" }?.unitPrice,
+            nil
+        )
+    }
+
     private func makeContext() throws -> ModelContext {
         let syncedSchema = Schema([
             CollectedCard.self,
@@ -175,6 +279,185 @@ final class PortfolioReconciliationTests: XCTestCase {
             quantity: quantity,
             dateAdded: Date(timeIntervalSince1970: 500)
         )
+    }
+
+    func testReimportingACertifiedSlabDoesNotChangeQuantityOrWriteAnEvent() throws {
+        let context = try makeContext()
+        let entry = CollectionCSVEntry(
+            collectionKey: "graded:pokemon:printing:PSA|10:cert:ABC123",
+            game: .pokemon,
+            providerID: "printing",
+            name: "Certified Test Card",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: 1,
+            dateAdded: Date(timeIntervalSince1970: 500),
+            itemKind: .gradedCard,
+            gradingCompany: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "ABC123"
+        )
+        let plan = CollectionCSVImportPlan(
+            entries: [entry],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+
+        let first = try CollectionCSV.apply(plan, to: context)
+        let second = try CollectionCSV.apply(plan, to: context)
+
+        XCTAssertEqual(first.insertedEntries, 1)
+        XCTAssertEqual(second.mergedEntries, 1)
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<CollectedCard>()).first?.quantity,
+            1
+        )
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<InventoryEvent>()).count,
+            1,
+            "a repeated certified import is metadata refresh, not ownership"
+        )
+    }
+
+    func testImportLeavesAPreexistingOverQuantityCertifiedRowAlone() throws {
+        let context = try makeContext()
+        let key = "graded:pokemon:printing:PSA|10:cert:ABC123"
+        let existing = card(key: key, quantity: 3)
+        existing.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        existing.gradingCompanyRaw = GradingCompany.psa.rawValue
+        existing.gradeRaw = "10"
+        existing.certificationNumber = "ABC123"
+        context.insert(existing)
+        try context.save()
+
+        let entry = CollectionCSVEntry(
+            collectionKey: key,
+            game: .pokemon,
+            providerID: "printing",
+            name: "Certified Test Card",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: 1,
+            dateAdded: Date(timeIntervalSince1970: 500),
+            itemKind: .gradedCard,
+            gradingCompany: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "ABC123"
+        )
+        let plan = CollectionCSVImportPlan(
+            entries: [entry],
+            skippedRows: 0,
+            skippedCSVText: nil
+        )
+
+        let beforeEvents = try context.fetch(FetchDescriptor<InventoryEvent>()).count
+        _ = try CollectionCSV.apply(plan, to: context)
+
+        XCTAssertEqual(existing.quantity, 3)
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<InventoryEvent>()).count,
+            beforeEvents,
+            "a pre-existing quantity defect is diagnostic, not silently repaired"
+        )
+    }
+
+    func testImportDoesNotRewriteQuantityForARowWithAnEmptyCertificateString() throws {
+        let context = try makeContext()
+        let key = "graded:pokemon:printing:PSA|10"
+        let existing = card(key: key, quantity: 3)
+        existing.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        existing.gradingCompanyRaw = GradingCompany.psa.rawValue
+        existing.gradeRaw = "10"
+        existing.certificationNumber = ""
+        context.insert(existing)
+        try context.save()
+
+        let entry = CollectionCSVEntry(
+            collectionKey: key,
+            game: .pokemon,
+            providerID: "printing",
+            name: "Unnumbered Slab",
+            setName: "Test Set",
+            setCode: "TST",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: 1,
+            dateAdded: Date(timeIntervalSince1970: 500),
+            itemKind: .gradedCard,
+            gradingCompany: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: ""
+        )
+
+        _ = try CollectionCSV.apply(
+            CollectionCSVImportPlan(entries: [entry], skippedRows: 0, skippedCSVText: nil),
+            to: context
+        )
+
+        XCTAssertEqual(existing.quantity, 3)
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<InventoryEvent>()).isEmpty,
+            "an empty certificate is still a non-aggregating row and cannot create an un-evented quantity change"
+        )
+    }
+
+    func testCSVRoundTripKeepsDistinctCertificatesApart() throws {
+        func slab(certificationNumber: String) -> CollectedCard {
+            let card = CollectedCard(
+                collectionKey: "source-(certificationNumber)",
+                game: .pokemon,
+                providerID: "printing",
+                name: "Certified Test Card",
+                setName: "Test Set",
+                setCode: "TST",
+                cardNumber: "1",
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: nil,
+                variantResolution: .imported
+            )
+            card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            card.gradingCompanyRaw = GradingCompany.psa.rawValue
+            card.gradeRaw = "10"
+            card.certificationNumber = certificationNumber
+            return card
+        }
+
+        let exported = CollectionCSV.export([
+            slab(certificationNumber: "ABC123"),
+            slab(certificationNumber: "XYZ789")
+        ])
+        let plan = try CollectionCSV.parse(Data(exported.text.utf8))
+        let context = try makeContext()
+
+        let result = try CollectionCSV.apply(plan, to: context)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+
+        XCTAssertEqual(result.insertedEntries, 2)
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Set(rows.compactMap(\.certificationNumber)), Set(["ABC123", "XYZ789"]))
+        XCTAssertEqual(rows.map(\.quantity), [1, 1])
+        XCTAssertEqual(Set(rows.map(\.collectionKey)).count, 2)
     }
 
     private func waitForRecomputeToFinish(
@@ -639,6 +922,74 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(
             PriceObservationLog(context: context).newestObservation(instrumentKey: "instrument")?.receivedAt,
             localLearned
+        )
+    }
+
+    func testBackfillReusesSuppliedObservationsWithoutInsertingADuplicate() throws {
+        let context = try makeContext()
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "v",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        context.insert(record)
+
+        let supplied = PriceObservation(
+            instrumentKey: "instrument",
+            kind: .marketUpdate,
+            amount: money(42),
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "v",
+            marketVariantID: nil,
+            effectiveAt: Date(timeIntervalSince1970: 100),
+            receivedAt: Date(timeIntervalSince1970: 200),
+            isSourceStamped: false
+        )
+
+        XCTAssertEqual(
+            PriceObservationLog(context: context).backfillFromRecords(
+                existingObservations: [supplied]
+            ),
+            0
+        )
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty,
+            "the supplied snapshot is authoritative for this pass"
+        )
+    }
+
+    func testBackfillDoesNotSeedWhenTheObservationLogCannotBeRead() throws {
+        let context = try makeContext()
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "v",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 100)
+            )
+        )
+        context.insert(record)
+
+        enum ObservationReadError: Error { case unavailable }
+        XCTAssertEqual(
+            PriceObservationLog(context: context).backfillFromRecordsForTesting {
+                throw ObservationReadError.unavailable
+            },
+            0
+        )
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty,
+            "an unreadable observation table is not an empty baseline"
         )
     }
 

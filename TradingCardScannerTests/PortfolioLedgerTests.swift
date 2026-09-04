@@ -106,6 +106,17 @@ final class PortfolioLedgerTests: XCTestCase {
         XCTAssertEqual(Money(rounding: 0.03)! * 999, Money(tenThousandths: 299_700))
     }
 
+    func testMoneyEqualityIgnoresOverflowFlagSoComparableStaysTotal() {
+        let clean = Money(tenThousandths: 42)
+        let overflowed = Money(tenThousandths: 42, isOverflowed: true)
+
+        XCTAssertEqual(clean, overflowed)
+        XCTAssertFalse(clean < overflowed)
+        XCTAssertFalse(overflowed < clean)
+        XCTAssertEqual(clean.hashValue, overflowed.hashValue)
+        XCTAssertEqual(Set([clean, overflowed]).count, 1)
+    }
+
     // MARK: - When an observation is worth writing
 
     func testUnchangedValueAndProvenanceWritesNoObservation() {

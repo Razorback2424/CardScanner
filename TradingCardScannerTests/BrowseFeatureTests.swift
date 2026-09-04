@@ -2114,14 +2114,15 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         {"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":1,"official":1}}
         """)
         let transport = FakePokemonBrowseTransport(rows: [row], setError: TestError.failed)
+        let store = PokemonChecklistStore(
+            root: root.appendingPathComponent("downloaded"),
+            bundle: nil,
+            bundledRoot: bundledRoot
+        )
         let catalog = BrowseCatalog(
             cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
             pokemonTransport: transport,
-            checklistStore: PokemonChecklistStore(
-                root: root.appendingPathComponent("downloaded"),
-                bundle: nil,
-                bundledRoot: bundledRoot
-            )
+            checklistStore: store
         )
 
         await catalog.refreshCatalogNow()
@@ -2129,6 +2130,12 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(page.items, [card])
         let sets = try await catalog.sets(for: .pokemon)
         XCTAssertEqual(sets.first?.name, "Prismatic Evolutions")
+        let shouldRefreshImmediately = await store.shouldRefresh(now: .now)
+        let shouldRefreshAfterBackoff = await store.shouldRefresh(
+            now: .now.addingTimeInterval(PokemonChecklistStore.failedRefreshBackoff + 1)
+        )
+        XCTAssertFalse(shouldRefreshImmediately)
+        XCTAssertTrue(shouldRefreshAfterBackoff)
     }
 
     func testRefreshPublishesSuccessfulSetsWhenALaterSetFails() async throws {
@@ -2177,6 +2184,18 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertFalse(publishedIDs.contains("fixture3"))
         XCTAssertTrue(publishedIDs.contains("fixture4"))
         XCTAssertTrue(publishedIDs.contains("fixture5"))
+
+        await catalog.refreshCatalogNow()
+        let fixture1Requests = await transport.setRequestCount("fixture1")
+        let fixture2Requests = await transport.setRequestCount("fixture2")
+        let fixture3Requests = await transport.setRequestCount("fixture3")
+        let fixture4Requests = await transport.setRequestCount("fixture4")
+        let fixture5Requests = await transport.setRequestCount("fixture5")
+        XCTAssertEqual(fixture1Requests, 1)
+        XCTAssertEqual(fixture2Requests, 1)
+        XCTAssertEqual(fixture3Requests, 2)
+        XCTAssertEqual(fixture4Requests, 1)
+        XCTAssertEqual(fixture5Requests, 1)
     }
 
     func testCorruptChecklistEntryDoesNotHideOtherValidEntries() async throws {
@@ -2204,6 +2223,172 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             Set(["fixture2"])
         )
         XCTAssertEqual(loaded?.checklist(for: second.catalogID)?.first?.name, "Second")
+        let firstIsReadable = await store.hasMergedChecklist(for: first.catalogID)
+        XCTAssertFalse(firstIsReadable)
+    }
+
+    /// The shipping configuration has *both* tiers: the bundle ships every set
+    /// and the overlay holds whatever has been refreshed. A readable bundled
+    /// copy must not mask a corrupt overlay, or the crawl skips the set as
+    /// healthy and the app serves older bundled data for it forever.
+    func testCorruptChecklistResourceIsRepublishedByTheNextRefresh() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = sampleSet(id: "fixture1", name: "Fixture One")
+        let bundledRoot = root.appendingPathComponent("bundled")
+        let checklistRoot = root.appendingPathComponent("checklists")
+        try await writeSnapshot(
+            [set: [sampleSummary(set: set, name: "Bundled Card")]],
+            to: bundledRoot
+        )
+        try await writeSnapshot(
+            [set: [sampleSummary(set: set, name: "Old Card")]],
+            to: checklistRoot
+        )
+        let resource = checklistRoot.appendingPathComponent(
+            "sets/\(StableCatalogFingerprint.string(set.id)).json"
+        )
+        try Data("not-json".utf8).write(to: resource, options: .atomic)
+
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"fixture1","name":"Fixture One","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"fixture1","name":"Fixture One","cards":[{"id":"fixture1-001","localId":"001","name":"New Card","image":null}],"cardCount":{"total":1,"official":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {"id":"fixture1-001","localId":"001","name":"New Card","image":null,
+         "set":{"id":"fixture1","name":"Fixture One","cardCount":{"total":1,"official":1}}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["fixture1": provider],
+            cards: [detail.id: detail]
+        )
+        let store = PokemonChecklistStore(
+            root: checklistRoot,
+            bundle: nil,
+            bundledRoot: bundledRoot
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: store
+        )
+
+        // The overlay owns the merged entry, so its corruption is what decides
+        // health — even though a reader can still be served bundled data.
+        let isIntactBeforeRefresh = await store.hasMergedChecklist(for: set.catalogID)
+        XCTAssertFalse(isIntactBeforeRefresh)
+        let servedBeforeRefresh = await store.mergedChecklist(for: set.catalogID)?.first?.name
+        XCTAssertEqual(servedBeforeRefresh, "Bundled Card")
+
+        await catalog.refreshCatalogNow()
+
+        let setRequests = await transport.setRequestCount("fixture1")
+        let cardName = await store.mergedChecklist(for: set.catalogID)?.first?.name
+        let isIntactAfterRefresh = await store.hasMergedChecklist(for: set.catalogID)
+        XCTAssertEqual(setRequests, 1)
+        XCTAssertEqual(cardName, "New Card")
+        XCTAssertTrue(isIntactAfterRefresh)
+    }
+
+    func testATransientReadFailureDoesNotPermanentlyMarkASetUnreadable() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = sampleSet(id: "fixture1", name: "Fixture One")
+        let card = sampleSummary(set: set, name: "Card")
+        try await writeSnapshot([set: [card]], to: root)
+
+        let resource = root.appendingPathComponent(
+            "sets/\(StableCatalogFingerprint.string(set.id)).json"
+        )
+        // Keep the manifest entry present, but make the resource temporarily
+        // unreadable in the same way an interrupted file operation can.
+        try FileManager.default.removeItem(at: resource)
+        try FileManager.default.createDirectory(at: resource, withIntermediateDirectories: false)
+
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+        let unreadableChecklist = await store.mergedChecklist(for: set.catalogID)
+        XCTAssertNil(unreadableChecklist)
+
+        try FileManager.default.removeItem(at: resource)
+        try JSONEncoder().encode([card]).write(to: resource, options: .atomic)
+
+        let recoveredChecklist = await store.mergedChecklist(for: set.catalogID)
+        XCTAssertEqual(
+            recoveredChecklist?.first?.name,
+            "Card",
+            "a transient read failure must be retried without publishing the set"
+        )
+    }
+
+    // MARK: - Refresh cadence
+
+    /// A set that fails every crawl must not hold the resume cursor at the end
+    /// of the directory forever. Within the interval the next crawl retries
+    /// only what is outstanding; past it, the whole directory is swept again.
+    func testASweepWithFailuresStillExpiresItsResumeCursor() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = sampleSet(id: "fixture1", name: "Fixture One")
+        try await writeSnapshot([set: [sampleSummary(set: set, name: "Card")]], to: root)
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+
+        await store.recordRefreshProgress(after: "fixture1", failed: true)
+        await store.markRefreshSwept()
+
+        let resumeCursor = await store.refreshResumeAfterProviderID()
+        XCTAssertEqual(resumeCursor, "fixture1")
+        let sweepsImmediately = await store.needsFullSweep(now: .now)
+        XCTAssertFalse(sweepsImmediately)
+        let sweepsAfterInterval = await store.needsFullSweep(
+            now: .now.addingTimeInterval(PokemonChecklistStore.refreshInterval + 1)
+        )
+        XCTAssertTrue(sweepsAfterInterval)
+        // The failure is still recorded, so the expired sweep retries it as
+        // part of the ordinary pass rather than forgetting it happened.
+        let failed = await store.refreshFailedProviderIDs()
+        XCTAssertEqual(failed, Set(["fixture1"]))
+    }
+
+    /// Ordinary progress is not a failed attempt. The crawl is cancelled by
+    /// every `inactive` scene transition, and a user who opened the app for two
+    /// seconds must not be locked out of refreshing for an hour.
+    func testProgressWithoutFailureDoesNotArmTheFailureBackoff() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = sampleSet(id: "fixture1", name: "Fixture One")
+        try await writeSnapshot([set: [sampleSummary(set: set, name: "Card")]], to: root)
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+
+        await store.recordRefreshProgress(after: "fixture1")
+        let shouldRefreshAfterProgress = await store.shouldRefresh(now: .now)
+        XCTAssertTrue(shouldRefreshAfterProgress)
+
+        await store.recordRefreshProgress(after: "fixture2", failed: true)
+        let shouldRefreshAfterFailure = await store.shouldRefresh(now: .now)
+        XCTAssertFalse(shouldRefreshAfterFailure)
+    }
+
+    /// A timestamp in the future means the device clock moved backwards. That
+    /// is a reason to distrust the state, never a reason to call the catalog
+    /// fresh — the old polarity suppressed every refresh until wall-clock time
+    /// caught up.
+    func testAFutureTimestampDoesNotSuppressRefreshing() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = sampleSet(id: "fixture1", name: "Fixture One")
+        try await writeSnapshot([set: [sampleSummary(set: set, name: "Card")]], to: root)
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+
+        let future = Date.now.addingTimeInterval(60 * 60 * 24 * 30)
+        await store.markRefreshSucceeded(at: future)
+
+        let shouldRefresh = await store.shouldRefresh(now: .now)
+        XCTAssertTrue(shouldRefresh)
+        let needsFullSweep = await store.needsFullSweep(now: .now)
+        XCTAssertTrue(needsFullSweep)
     }
 
     private func writeSnapshot(
@@ -2348,6 +2533,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     private var directoryRequests = 0
     private var setRequests = 0
     private var cardRequests = 0
+    private var setRequestIDs: [String: Int] = [:]
 
     init(
         rows: [TCGdexBrowseSet] = [],
@@ -2372,9 +2558,11 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
 
     func fetchSet(id: String) async throws -> TCGdexSetCatalog {
         setRequests += 1
+        let key = id.lowercased()
+        setRequestIDs[key, default: 0] += 1
         if let setError { throw setError }
-        if failingSetIDs.contains(id.lowercased()) { throw TestError.failed }
-        return try XCTUnwrap(setValues[id.lowercased()])
+        if failingSetIDs.contains(key) { throw TestError.failed }
+        return try XCTUnwrap(setValues[key])
     }
 
     func fetchCard(id: String) async throws -> TCGdexCard {
@@ -2384,6 +2572,10 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
 
     func requestCounts() -> (directory: Int, set: Int, card: Int) {
         (directoryRequests, setRequests, cardRequests)
+    }
+
+    func setRequestCount(_ id: String) -> Int {
+        setRequestIDs[id.lowercased(), default: 0]
     }
 }
 

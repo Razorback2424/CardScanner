@@ -76,22 +76,42 @@ enum PortfolioReplaySnapshotBuilder {
         context: ModelContext,
         epoch: Date,
         through: Date,
-        timeZone: TimeZone
+        timeZone: TimeZone,
+        existingObservations: [PriceObservation]? = nil
     ) -> Computation {
-        let snapshot = make(context: context, epoch: epoch, through: through, timeZone: timeZone)
-        return Computation(
-            valuation: PortfolioEngine.currentValuation(
+        let snapshot = make(
+            context: context,
+            epoch: epoch,
+            through: through,
+            timeZone: timeZone,
+            existingObservations: existingObservations
+        )
+        let valuation = PortfolioEngine.currentValuation(
+            projection: snapshot.projection,
+            valuations: snapshot.valuations,
+            otherCurrencyInstruments: snapshot.otherCurrencyInstruments
+        )
+        let replay = PortfolioReplayEngine.replay(snapshot.input)
+        var defects = snapshot.defects
+            + PortfolioEngine.reconcile(
                 projection: snapshot.projection,
-                valuations: snapshot.valuations,
-                otherCurrencyInstruments: snapshot.otherCurrencyInstruments
-            ),
-            defects: snapshot.defects
-                + PortfolioEngine.reconcile(
-                    projection: snapshot.projection,
-                    events: snapshot.input.events
-                ),
-            isAuthoritative: snapshot.isAuthoritative,
-            replay: PortfolioReplayEngine.replay(snapshot.input),
+                events: snapshot.input.events
+            )
+        if valuation.hasArithmeticOverflow || replay.hasArithmeticOverflow {
+            defects.append(
+                LedgerIntegrityDefect(
+                    reason: .moneyArithmeticOverflow,
+                    collectionKey: "portfolio",
+                    detail: "At least one portfolio calculation exceeded Int64's safe money range.",
+                    canRepairQuantity: false
+                )
+            )
+        }
+        return Computation(
+            valuation: valuation,
+            defects: defects,
+            isAuthoritative: snapshot.isAuthoritative && defects.isEmpty,
+            replay: replay,
             coverage: snapshot.input.coverage,
             holdings: holdingSnapshots(projection: snapshot.projection, valuations: snapshot.valuations)
         )
@@ -117,7 +137,7 @@ enum PortfolioReplaySnapshotBuilder {
                 artworkURL: artworkURL,
                 artworkFallbackURL: artworkFallbackURL,
                 quantity: position.quantity,
-                currentValue: price.map { $0 * position.quantity }
+                currentValue: price?.multiplied(by: position.quantity)
             )
         }
     }
@@ -126,7 +146,8 @@ enum PortfolioReplaySnapshotBuilder {
         context: ModelContext,
         epoch: Date,
         through: Date,
-        timeZone: TimeZone
+        timeZone: TimeZone,
+        existingObservations: [PriceObservation]? = nil
     ) -> Snapshot {
         let ledger = InventoryLedger(context: context)
         let reading = ledger.read()
@@ -156,15 +177,19 @@ enum PortfolioReplaySnapshotBuilder {
         // log twice — once to replay and once to value the collection — doubled
         // the dominant cost of the whole recomputation.
         let rows: [PriceObservation]
-        do {
-            rows = try context.fetch(
-                FetchDescriptor<PriceObservation>(
-                    sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+        if let existingObservations {
+            rows = existingObservations
+        } else {
+            do {
+                rows = try context.fetch(
+                    FetchDescriptor<PriceObservation>(
+                        sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+                    )
                 )
-            )
-        } catch {
-            rows = []
-            defects.append(Self.unreadableDefect(for: "PriceObservation", error: error))
+            } catch {
+                rows = []
+                defects.append(Self.unreadableDefect(for: "PriceObservation", error: error))
+            }
         }
         let observations = rows.map { PortfolioEngine.observationEntry(from: $0) }
         let records: [PriceRecord]
@@ -327,13 +352,35 @@ actor PortfolioComputationActor {
         // for the whole session; running it here closes it on the pass that
         // would otherwise report the gap, and off the main actor, which is the
         // reason this type exists.
-        PriceObservationLog(context: modelContext).backfillFromRecords()
+        let observations: [PriceObservation]
+        do {
+            let existing = try modelContext.fetch(
+                FetchDescriptor<PriceObservation>(
+                    sortBy: [SortDescriptor(\.receivedAt, order: .forward)]
+                )
+            )
+            observations = PriceObservationLog(context: modelContext)
+                .backfillFromRecordsAndReturnObservations(
+                    existingObservations: existing
+                )
+        } catch {
+            // Preserve the builder's unreadable-store diagnosis if the initial
+            // bulk read fails; passing an empty array would incorrectly turn a
+            // failed fetch into a successful empty log.
+            return PortfolioReplaySnapshotBuilder.compute(
+                context: modelContext,
+                epoch: epoch,
+                through: through,
+                timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current
+            )
+        }
 
         return PortfolioReplaySnapshotBuilder.compute(
             context: modelContext,
             epoch: epoch,
             through: through,
-            timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current
+            timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current,
+            existingObservations: observations
         )
     }
 }

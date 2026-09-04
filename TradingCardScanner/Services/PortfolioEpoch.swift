@@ -148,10 +148,25 @@ enum PortfolioEpoch {
             // abort rather than being interpreted as an empty collection or
             // an absent event.
             let cards = try context.fetch(FetchDescriptor<CollectedCard>())
-            let projection = LogicalCollection.project(cards: cards, ledger: ledger)
+            // Resolve every candidate price key from one in-memory evidence
+            // index. The ledger overload performs two SwiftData fetches per
+            // candidate key, which is acceptable for one event but turns epoch
+            // establishment into thousands of main-actor fetches for a large
+            // collection.
+            let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+            let records = try context.fetch(FetchDescriptor<PriceRecord>())
+            let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
+                observations: observations,
+                records: records
+            )
+            let projection = LogicalCollection.project(cards: cards) {
+                valuations.priceStorageKey(for: $0)
+            }
             for position in projection.positions where position.quantity != 0 {
                 let outcome = ledger.record(
-                    position.representative,
+                    collectionKey: position.collectionKey,
+                    priceStorageKey: position.priceStorageKey,
+                    valuation: valuations.valuation(for: position.priceStorageKey),
                     kind: .initialBalance,
                     source: .catalog,
                     deltaQuantity: position.quantity,

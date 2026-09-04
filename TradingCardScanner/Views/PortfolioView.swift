@@ -726,13 +726,21 @@ private enum PortfolioContributionPresentation {
     static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 
     static func magnitudeFraction(_ amount: Money, maximum: Money) -> CGFloat {
-        guard maximum.tenThousandths > 0 else { return 0 }
-        return min(1, CGFloat(amount.magnitude.doubleValue / maximum.doubleValue))
+        guard amount.isValid,
+              maximum.isValid,
+              maximum.tenThousandths > 0 else { return 0 }
+        let fraction = amount.magnitude.doubleValue / maximum.doubleValue
+        guard fraction.isFinite else { return 0 }
+        return min(1, CGFloat(fraction))
     }
 
     static func shareOfCurrentHolding(_ row: PortfolioContributionRowModel) -> Double? {
-        guard let value = row.holding?.currentValue, !value.isZero else { return nil }
-        return row.amount.magnitude.doubleValue / value.doubleValue
+        guard let value = row.holding?.currentValue,
+              value.isValid,
+              !value.isZero,
+              row.amount.isValid else { return nil }
+        let share = row.amount.magnitude.doubleValue / value.doubleValue
+        return share.isFinite ? share : nil
     }
 }
 

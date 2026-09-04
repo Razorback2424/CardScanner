@@ -111,12 +111,16 @@ final class CollectionCatalogNormalizer: ObservableObject {
             uniquingKeysWith: { first, _ in first }
         ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
 
-        guard !requests.isEmpty else { return }
+        guard !requests.isEmpty else {
+            requestsAnotherPass = false
+            return
+        }
         status = .normalizing(total: requests.count)
 
         let resolution = await resolver.resolve(Array(requests))
         let matches = resolution.matches
         guard !Task.isCancelled else {
+            requestsAnotherPass = false
             status = .idle
             return
         }
@@ -189,6 +193,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 await normalizeImportedCards(in: context)
             }
         } catch {
+            requestsAnotherPass = false
             status = .failed
             Task { @MainActor [weak self] in
                 try? await Task.sleep(for: .seconds(8))

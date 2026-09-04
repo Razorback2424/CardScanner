@@ -161,12 +161,12 @@ final class InventoryEvent {
     }
 
     var unitPrice: Money? {
-        unitPriceUSDTenThousandths.map(Money.init(tenThousandths:))
+        unitPriceUSDTenThousandths.map { Money(tenThousandths: $0) }
     }
 
     /// The signed value this event moved, or `nil` when the copy was unpriced.
     var signedValue: Money? {
-        unitPrice.map { $0 * deltaQuantity }
+        unitPrice?.multiplied(by: deltaQuantity)
     }
 
     /// Everything dedupe compares. Two rows sharing an idempotency key but
