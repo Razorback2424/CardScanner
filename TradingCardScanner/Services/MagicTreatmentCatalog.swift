@@ -110,6 +110,20 @@ enum MagicTreatmentCatalogError: LocalizedError, Equatable, Sendable {
     }
 }
 
+/// Whether the optional enrichment resource was actually loaded. An empty
+/// catalog is still a safe runtime fallback, but it is not equivalent to a
+/// valid catalog: callers such as diagnostics and support tooling need to
+/// distinguish "no reviewed treatment" from "the artifact could not be read".
+enum MagicTreatmentCatalogLoadStatus: Equatable, Sendable {
+    case ready
+    case fallback(MagicTreatmentCatalogError)
+
+    var error: MagicTreatmentCatalogError? {
+        guard case let .fallback(error) = self else { return nil }
+        return error
+    }
+}
+
 /// Validated exact-printing lookup used by the live Scryfall response model.
 struct MagicTreatmentCatalog: Equatable, Sendable {
     static let schemaVersion = 2
@@ -275,9 +289,21 @@ enum MagicTreatmentCatalogStore {
     /// Production code remains resilient to a missing or damaged optional
     /// enrichment resource. Treatment signals from the live card still work,
     /// while the compact catalog's manual qualifiers simply become unavailable.
-    static let bundledDefault: MagicTreatmentCatalog = {
-        (try? bundled()) ?? .empty
+    private static let defaultLoad: (
+        catalog: MagicTreatmentCatalog,
+        status: MagicTreatmentCatalogLoadStatus
+    ) = {
+        do {
+            return (try bundled(), .ready)
+        } catch let error as MagicTreatmentCatalogError {
+            return (.empty, .fallback(error))
+        } catch {
+            return (.empty, .fallback(.malformedArtifact))
+        }
     }()
+
+    static let bundledDefault: MagicTreatmentCatalog = defaultLoad.catalog
+    static let bundledDefaultStatus: MagicTreatmentCatalogLoadStatus = defaultLoad.status
 
     static func bundled(bundle: Bundle = .main) throws -> MagicTreatmentCatalog {
         guard let root = bundle.url(

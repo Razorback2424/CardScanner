@@ -41,14 +41,22 @@ struct ProductIdentityStore {
         forKey key: String,
         cardID: String?,
         variantID: String?,
+        treatmentIDs: [String] = [],
         at date: Date = .now
     ) {
         guard cardID != nil || variantID != nil else { return }
         let identity = self.identity(forKey: key) ?? {
-            let created = ProductIdentity(key: key, vendor: .justTCG)
+            let created = ProductIdentity(
+                key: key,
+                vendor: .justTCG,
+                magicTreatmentIDs: treatmentIDs
+            )
             context.insert(created)
             return created
         }()
+        if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
+            identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
+        }
         identity.attemptVersion = ProductIdentity.currentAttemptVersion
         if let cardID { identity.vendorCardID = cardID }
         if let variantID { identity.vendorVariantID = variantID }
@@ -69,6 +77,7 @@ struct ProductIdentityStore {
     func record(
         _ outcome: ProductPriceOutcome,
         forKey key: String,
+        treatmentIDs: [String] = [],
         at date: Date = .now
     ) {
         switch outcome {
@@ -79,10 +88,17 @@ struct ProductIdentityStore {
         }
 
         let identity = self.identity(forKey: key) ?? {
-            let created = ProductIdentity(key: key, vendor: .justTCG)
+            let created = ProductIdentity(
+                key: key,
+                vendor: .justTCG,
+                magicTreatmentIDs: treatmentIDs
+            )
             context.insert(created)
             return created
         }()
+        if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
+            identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
+        }
 
         identity.attemptVersion = ProductIdentity.currentAttemptVersion
 

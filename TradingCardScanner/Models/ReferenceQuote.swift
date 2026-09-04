@@ -13,6 +13,9 @@ final class ReferenceQuote {
     var game: String = ""
     var printingID: String = ""
     var variantID: String?
+    /// A reference quote is keyed at the same treatment-aware granularity as a
+    /// collection price. The default keeps pre-treatment cache rows readable.
+    var magicTreatmentIDsRaw: [String] = []
 
     var amount: Double?
     var currencyCode: String = "USD"
@@ -23,15 +26,32 @@ final class ReferenceQuote {
     var lastCheckedAt: Date?
     var lastFailureAt: Date?
 
-    init(key: String, game: CardGame, printingID: String, variantID: String?) {
+    init(
+        key: String,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        magicTreatmentIDs: [String] = []
+    ) {
         self.key = key
         self.game = game.rawValue
         self.printingID = printingID
         self.variantID = variantID
+        self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)
     }
 
-    static func key(game: CardGame, printingID: String, variantID: String?) -> String {
-        "\(game.rawValue):\(printingID):\(variantID ?? "-")"
+    static func key(
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String] = []
+    ) -> String {
+        PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
     }
 
     var source: PriceSource? { sourceRaw.flatMap(PriceSource.init(rawValue:)) }

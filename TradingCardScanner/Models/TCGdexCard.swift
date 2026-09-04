@@ -668,9 +668,19 @@ enum IdentifiedCard: Identifiable, Sendable {
     func collectionKey(variant: PhysicalVariant?) -> String {
         switch self {
         case let .pokemon(card, _):
-            return variant.map { "\(card.id)#\($0.id)" } ?? card.id
+            return MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: card.id,
+                game: .pokemon,
+                finish: variant
+            )
         case let .magic(card):
-            return variant.map { "magic:\(card.id)#\($0.id)" } ?? "magic:\(card.id)"
+            let base = "magic:\(card.id)"
+            return MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: base,
+                game: .magic,
+                finish: variant,
+                treatments: card.magicTreatmentEvidence.applicableTreatments(for: variant)
+            )
         }
     }
 
@@ -792,6 +802,26 @@ enum IdentifiedCard: Identifiable, Sendable {
         case .pokemon: return MagicTreatmentEvidence(treatments: [])
         case let .magic(card): return card.magicTreatmentEvidence
         }
+    }
+
+    /// The treatment axis shared by display and identity. Known treatments are
+    /// filtered against the selected finish; an unknown treatment remains
+    /// unclassified evidence rather than being guessed into a finish.
+    func magicTreatments(for finish: PhysicalVariant?) -> [MagicTreatment] {
+        magicTreatmentEvidence.applicableTreatments(for: finish)
+    }
+
+    /// A graded entry has no raw finish selector in the vendor's graded
+    /// response. It may still carry a treatment when the exact printing has one
+    /// and publishes exactly one finish; dual-finish printings remain
+    /// intentionally unqualified until a finish-bearing identity exists.
+    var unambiguousMagicTreatments: [MagicTreatment] {
+        guard case let .magic(card) = self,
+              card.catalogVariants.count == 1,
+              let finish = card.catalogVariants.first else {
+            return []
+        }
+        return card.magicTreatmentEvidence.applicableTreatments(for: finish)
     }
 
     func finishAndTreatmentDisplayLabel(for finish: PhysicalVariant?) -> String {

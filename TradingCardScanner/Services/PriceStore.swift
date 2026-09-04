@@ -186,20 +186,29 @@ struct PriceStore {
         key: String,
         game: CardGame,
         printingID: String,
-        variantID: String?
+        variantID: String?,
+        treatmentIDs: [String] = []
     ) -> PriceRecord? {
         do {
             let matches = try context.fetch(
                 FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key })
             )
             guard matches.count <= 1 else { return nil }
-            if let existing = matches.first { return existing }
+            if let existing = matches.first {
+                if existing.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
+                    existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                        from: treatmentIDs
+                    )
+                }
+                return existing
+            }
 
             let created = PriceRecord(
                 key: key,
                 game: game,
                 printingID: printingID,
-                variantID: variantID
+                variantID: variantID,
+                magicTreatmentIDs: treatmentIDs
             )
             context.insert(created)
             return created
@@ -278,14 +287,21 @@ struct PriceStore {
         printingID: String,
         variantID: String?,
         marketVariantID: String? = nil,
-        at date: Date = .now
+        at date: Date = .now,
+        treatmentIDs: [String] = []
     ) {
-        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
         guard let record = recordForWrite(
             key: key,
             game: game,
             printingID: printingID,
-            variantID: variantID
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
         ) else { return }
 
         let observationDecision = PriceObservationLog(context: context).ingest(
@@ -323,15 +339,22 @@ struct PriceStore {
         game: CardGame,
         printingID: String,
         variantID: String?,
-        at importedAt: Date = .now
+        at importedAt: Date = .now,
+        treatmentIDs: [String] = []
     ) {
         guard Money(rounding: amount) != nil else { return }
-        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
         guard let record = recordForWrite(
             key: key,
             game: game,
             printingID: printingID,
-            variantID: variantID
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
         ) else { return }
         guard record.effectiveUnitMarketPriceUSD == nil else { return }
 
@@ -367,14 +390,21 @@ struct PriceStore {
         game: CardGame,
         printingID: String,
         variantID: String?,
-        at date: Date = .now
+        at date: Date = .now,
+        treatmentIDs: [String] = []
     ) {
-        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID)
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
         guard let record = recordForWrite(
             key: key,
             game: game,
             printingID: printingID,
-            variantID: variantID
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
         ) else { return }
         record.recordFailure(at: date)
     }

@@ -530,7 +530,8 @@ struct CollectionActivityEditor: View {
                 let identityKey = ProductIdentity.key(
                     game: card.cardGame,
                     printingID: card.priceStorageID,
-                    variantID: card.variantID
+                    variantID: card.variantID,
+                    treatmentIDs: card.priceTreatmentIDs
                 )
                 let marketVariantID = ProductIdentityStore(context: prices.context)
                     .cachedVariantID(forKey: identityKey)
@@ -539,7 +540,8 @@ struct CollectionActivityEditor: View {
                     game: card.cardGame,
                     printingID: card.priceStorageID,
                     variantID: card.variantID,
-                    marketVariantID: marketVariantID
+                    marketVariantID: marketVariantID,
+                    treatmentIDs: card.priceTreatmentIDs
                 )
                 prices.save()
             case .failed:

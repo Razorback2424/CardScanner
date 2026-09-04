@@ -52,6 +52,9 @@ struct CollectionCSVEntry: Sendable {
     let imageURL: String?
     let thumbnailURL: String?
     let variant: PhysicalVariant?
+    /// JSON in the CSV cell keeps the treatment axis lossless even when an
+    /// unclassified future id contains punctuation or whitespace.
+    var magicTreatmentIDsRaw: [String] = []
     let importedMarketPriceUSD: Double?
     let importedPriceAsOf: Date?
     var quantity: Int
@@ -97,7 +100,7 @@ enum CollectionCSV {
         "item_kind", "justtcg_card_id", "justtcg_variant_id",
         "justtcg_api_version", "grading_company", "grade", "grade_label",
         "grading_qualifier", "certification_number", "market_region",
-        "pokemon_print_run"
+        "pokemon_print_run", "magic_treatment_ids"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -134,7 +137,8 @@ enum CollectionCSV {
                 card.gradingQualifier ?? "",
                 card.certificationNumber ?? "",
                 card.marketRegionRaw ?? "",
-                card.pokemonPrintRun?.rawValue ?? ""
+                card.pokemonPrintRun?.rawValue ?? "",
+                encodedTreatmentIDs(card.magicTreatmentIDsRaw)
             ]
         }
 
@@ -271,7 +275,8 @@ enum CollectionCSV {
             "set_name", "set_code", "card_number", "finish", "finish_name",
             "quantity", "diagnostic", "price_status", "price_usd", "price_source",
             "price_listing", "last_price_check", "price_refresh_failed",
-            "image_url", "thumbnail_url", "catalog_metadata_checked_at"
+            "image_url", "thumbnail_url", "catalog_metadata_checked_at",
+            "magic_treatment_ids"
         ]
         let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
             let record = PriceStore.record(for: card, in: recordsByKey)
@@ -295,7 +300,8 @@ enum CollectionCSV {
                 record?.lastFailureAt == nil ? "false" : "true",
                 card.imageURL ?? "",
                 card.thumbnailURL ?? "",
-                card.catalogMetadataCheckedAt.map { formatter.string(from: $0) } ?? ""
+                card.catalogMetadataCheckedAt.map { formatter.string(from: $0) } ?? "",
+                encodedTreatmentIDs(card.magicTreatmentIDsRaw)
             ]
         }
         let text = ([headers] + rows)
@@ -418,6 +424,11 @@ enum CollectionCSV {
                     if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
                     if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
                     if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
+                    if existing.magicTreatmentIDsRaw.isEmpty {
+                        existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                            from: entry.magicTreatmentIDsRaw
+                        )
+                    }
                     storedCard = existing
                     merged += 1
                 } else {
@@ -436,7 +447,8 @@ enum CollectionCSV {
                         variantResolution: .imported,
                         identityResolution: .imported,
                         quantity: entry.quantity,
-                        dateAdded: entry.dateAdded
+                        dateAdded: entry.dateAdded,
+                        magicTreatments: entry.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
                     )
                     // What kind of object this is, and — for a slab — the grade the
                     // export stated. The vendor's variant UUID is not known from a
@@ -465,7 +477,8 @@ enum CollectionCSV {
                         game: entry.game,
                         printingID: storedCard.priceStorageID,
                         variantID: storedCard.variantID,
-                        at: recordedAt
+                        at: recordedAt,
+                        treatmentIDs: storedCard.priceTreatmentIDs
                     )
                 }
 
@@ -550,12 +563,14 @@ enum CollectionCSV {
             var result: [CollectionCSVEntry] = []
             let nonfoilQuantity = positiveInt(value(["quantity"], in: row))
             let foilQuantity = positiveInt(value(["foil_quantity"], in: row))
+            let treatmentIDs = decodedTreatmentIDs(value(["magic_treatment_ids"], in: row))
             if nonfoilQuantity > 0 {
                 result.append(makeEntry(
                     game: game, providerID: providerID, name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
-                    variant: .nonfoil, quantity: nonfoilQuantity, dateAdded: importedDate
+                    variant: .nonfoil, quantity: nonfoilQuantity, dateAdded: importedDate,
+                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .nonfoil)
                 ))
             }
             if foilQuantity > 0 {
@@ -563,7 +578,8 @@ enum CollectionCSV {
                     game: game, providerID: providerID, name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
-                    variant: .foil, quantity: foilQuantity, dateAdded: importedDate
+                    variant: .foil, quantity: foilQuantity, dateAdded: importedDate,
+                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .foil)
                 ))
             }
             return result
@@ -581,6 +597,7 @@ enum CollectionCSV {
         let marketAPIVersion = value(["justtcg_api_version"], in: row)
         let certificationNumber = value(["certification_number"], in: row)
         let marketRegion = value(["market_region"], in: row)
+        let treatmentIDs = decodedTreatmentIDs(value(["magic_treatment_ids"], in: row))
         let itemKind = CollectionItemKind(
             rawValue: value(["item_kind"], in: row) ?? ""
         ) ?? .rawCard
@@ -605,7 +622,8 @@ enum CollectionCSV {
             justTCGVariantID: marketVariantID,
             justTCGAPIVersion: marketAPIVersion,
             certificationNumber: certificationNumber,
-            marketRegionRaw: marketRegion
+            marketRegionRaw: marketRegion,
+            magicTreatmentIDs: treatmentIDs
         )]
     }
 
@@ -708,17 +726,33 @@ enum CollectionCSV {
         justTCGVariantID: String? = nil,
         justTCGAPIVersion: String? = nil,
         certificationNumber: String? = nil,
-        marketRegionRaw: String? = nil
+        marketRegionRaw: String? = nil,
+        magicTreatmentIDs: [String] = []
     ) -> CollectionCSVEntry {
         let resolvedPrintRun = pokemonPrintRun
             ?? (variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
         let resolvedVariant = variant?.id == PhysicalVariant.firstEdition.id ? nil : variant
+        let resolvedTreatmentIDs: [String]
+        switch itemKind {
+        case .rawCard:
+            resolvedTreatmentIDs = resolvedVariant.map {
+                applicableTreatmentIDs(magicTreatmentIDs, for: $0)
+            } ?? []
+        case .gradedCard, .sealedProduct:
+            resolvedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)
+        }
+        let treatmentModels = resolvedTreatmentIDs.compactMap(MagicTreatment.init(id:))
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
         let key: String
         switch itemKind {
         case .rawCard:
             // Unchanged. Every row imported before this existed keeps its key.
-            let finishKey = resolvedVariant.map { "\(baseKey)#\($0.id)" } ?? baseKey
+            let finishKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: baseKey,
+                game: game,
+                finish: resolvedVariant,
+                treatments: treatmentModels
+            )
             key = resolvedPrintRun.map { "\(finishKey)@\($0.rawValue)" } ?? finishKey
 
         case .gradedCard:
@@ -731,13 +765,20 @@ enum CollectionCSV {
                     game: game,
                     underlyingPrintingID: providerID,
                     variantUUID: justTCGVariantID,
-                    certificationNumber: certificationNumber
+                    certificationNumber: certificationNumber,
+                    magicTreatments: treatmentModels
                 )
             } else {
                 let fragment = gradingCompany.map { company in
                     "\(company.rawValue)|\(grade?.identityFragment ?? "")"
                 } ?? "unknown"
-                key = "graded:\(baseKey)#\(fragment)"
+                let base = "graded:\(baseKey)#\(fragment)"
+                key = game == .magic
+                    ? MagicTreatmentKeyCodec.appendCollectionSuffix(
+                        to: base,
+                        treatments: treatmentModels
+                    )
+                    : base
             }
 
         case .sealedProduct:
@@ -748,10 +789,17 @@ enum CollectionCSV {
                 key = CollectedCard.sealedCollectionKey(
                     game: game,
                     productUUID: justTCGCardID,
-                    variantUUID: justTCGVariantID ?? justTCGCardID
+                    variantUUID: justTCGVariantID ?? justTCGCardID,
+                    magicTreatments: treatmentModels
                 )
             } else {
-                key = "sealed:\(baseKey)"
+                let base = "sealed:\(baseKey)"
+                key = game == .magic
+                    ? MagicTreatmentKeyCodec.appendCollectionSuffix(
+                        to: base,
+                        treatments: treatmentModels
+                    )
+                    : base
             }
         }
 
@@ -767,6 +815,7 @@ enum CollectionCSV {
             imageURL: imageURL,
             thumbnailURL: thumbnailURL,
             variant: resolvedVariant,
+            magicTreatmentIDsRaw: resolvedTreatmentIDs,
             importedMarketPriceUSD: importedMarketPriceUSD,
             importedPriceAsOf: importedPriceAsOf,
             quantity: quantity,
@@ -987,6 +1036,36 @@ enum CollectionCSV {
 
     private static func positiveInt(_ value: String?) -> Int {
         max(0, Int(value ?? "") ?? 0)
+    }
+
+    private static func encodedTreatmentIDs(_ ids: [String]) -> String {
+        let normalized = MagicTreatmentKeyCodec.storedIDs(from: ids)
+        guard let data = try? JSONEncoder().encode(normalized) else { return "[]" }
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    private static func decodedTreatmentIDs(_ value: String?) -> [String] {
+        guard let value = nonempty(value),
+              let data = value.data(using: .utf8),
+              let ids = try? JSONDecoder().decode([String].self, from: data) else {
+            return []
+        }
+        return MagicTreatmentKeyCodec.storedIDs(from: ids)
+    }
+
+    /// Applies the one shared finish relationship to ids carried by an import.
+    /// A raw treatment cannot survive without a selected finish; graded and
+    /// sealed callers intentionally use the unfiltered storage path because
+    /// their vendor-native namespace has no raw finish selector.
+    private static func applicableTreatmentIDs(
+        _ ids: [String],
+        for finish: PhysicalVariant
+    ) -> [String] {
+        let treatments = ids.compactMap(MagicTreatment.init(id:))
+        return MagicTreatmentKeyCodec.storedIDs(
+            from: MagicTreatmentEvidence(treatments: treatments)
+                .applicableTreatments(for: finish)
+        )
     }
 
     private static func nonempty(_ value: String?) -> String? {

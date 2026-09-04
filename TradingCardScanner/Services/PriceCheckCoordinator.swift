@@ -167,7 +167,13 @@ final class PriceCheckCoordinator {
         let key = quoteKey(for: resolvedScan)
 
         if Self.isUsableUSD(catalogQuote) {
-            _ = cache.store(catalogQuote, game: key.game, printingID: key.printingID, variantID: key.variantID)
+            _ = cache.store(
+                catalogQuote,
+                game: key.game,
+                printingID: key.printingID,
+                variantID: key.variantID,
+                treatmentIDs: key.treatmentIDs
+            )
             return PriceCheckResult(
                 resolvedScan: resolvedScan,
                 quote: catalogQuote,
@@ -188,7 +194,8 @@ final class PriceCheckCoordinator {
                 game: key.game,
                 printingID: key.printingID,
                 variantID: key.variantID,
-                at: local.retrievedAt
+                at: local.retrievedAt,
+                treatmentIDs: key.treatmentIDs
             )
             return PriceCheckResult(
                 resolvedScan: resolvedScan,
@@ -227,7 +234,8 @@ final class PriceCheckCoordinator {
                 quote,
                 game: key.game,
                 printingID: key.printingID,
-                variantID: key.variantID
+                variantID: key.variantID,
+                treatmentIDs: key.treatmentIDs
             )
         }
         if case .quote(.unavailable) = outcome {
@@ -238,13 +246,19 @@ final class PriceCheckCoordinator {
 
     func recordRefreshFailure(for result: PriceCheckResult) {
         let key = quoteKey(for: result.resolvedScan)
-        _ = cache.recordFailure(game: key.game, printingID: key.printingID, variantID: key.variantID)
+        _ = cache.recordFailure(
+            game: key.game,
+            printingID: key.printingID,
+            variantID: key.variantID,
+            treatmentIDs: key.treatmentIDs
+        )
     }
 
     private struct QuoteKey {
         let game: CardGame
         let printingID: String
         let variantID: String?
+        let treatmentIDs: [String]
     }
 
     private struct LocalEvidence {
@@ -259,7 +273,10 @@ final class PriceCheckCoordinator {
                 for: resolvedScan.card,
                 pokemonPrintRun: resolvedScan.pokemonPrintRun
             ),
-            variantID: resolvedScan.resolved.variant?.id
+            variantID: resolvedScan.resolved.variant?.id,
+            treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                from: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant)
+            )
         )
     }
 
@@ -267,12 +284,18 @@ final class PriceCheckCoordinator {
     /// consistently favor the quote cache Price Check already owns.
     private func newestLocalEvidence(for key: QuoteKey) -> LocalEvidence? {
         let record = collectionPrices.record(
-            forKey: PriceRecord.key(game: key.game, printingID: key.printingID, variantID: key.variantID)
+            forKey: PriceRecord.key(
+                game: key.game,
+                printingID: key.printingID,
+                variantID: key.variantID,
+                treatmentIDs: key.treatmentIDs
+            )
         ).flatMap(Self.evidence(from:))
         let reference = cache.quote(
             game: key.game,
             printingID: key.printingID,
-            variantID: key.variantID
+            variantID: key.variantID,
+            treatmentIDs: key.treatmentIDs
         ).flatMap(Self.evidence(from:))
 
         switch (record, reference) {

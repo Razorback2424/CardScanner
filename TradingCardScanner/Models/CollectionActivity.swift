@@ -98,6 +98,9 @@ final class CollectionActivity {
     var cardNumber: String = ""
     var variantID: String?
     var variantLabel: String?
+    /// Stored independently from the finish so history preserves the exact
+    /// treatment-qualified collection identity it describes.
+    var magicTreatmentIDsRaw: [String] = []
     var pokemonPrintRunRaw: String?
     /// Kept for lightweight migration compatibility with the acquisition-only
     /// model. New code reads `deltaQuantity`; it is the unsigned legacy mirror.
@@ -141,6 +144,7 @@ final class CollectionActivity {
         cardNumber = card.cardNumber
         variantID = card.variantID
         variantLabel = card.variantLabel
+        magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
         pokemonPrintRunRaw = card.pokemonPrintRun?.rawValue
         self.quantity = quantity
         let defaultDelta: Int

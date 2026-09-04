@@ -240,11 +240,15 @@ struct CatalogCardDetailView: View {
             variant: resolved.variant,
             pokemonPrintRun: summary.pokemonPrintRun
         )
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: details.card.magicTreatments(for: resolved.variant)
+        )
         prices.store(
             catalogLookup,
             game: details.card.game,
             printingID: storageID,
-            variantID: resolved.variant?.id
+            variantID: resolved.variant?.id,
+            treatmentIDs: treatmentIDs
         )
         prices.save()
         queueFallbackPrice(
@@ -287,7 +291,10 @@ struct CatalogCardDetailView: View {
                 let identityKey = ProductIdentity.key(
                     game: card.game,
                     printingID: printingID,
-                    variantID: variant?.id
+                    variantID: variant?.id,
+                    treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                        from: card.magicTreatments(for: variant)
+                    )
                 )
                 let marketVariantID = ProductIdentityStore(context: prices.context)
                     .cachedVariantID(forKey: identityKey)
@@ -296,7 +303,10 @@ struct CatalogCardDetailView: View {
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
-                    marketVariantID: marketVariantID
+                    marketVariantID: marketVariantID,
+                    treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                        from: card.magicTreatments(for: variant)
+                    )
                 )
                 prices.save()
             case .failed:

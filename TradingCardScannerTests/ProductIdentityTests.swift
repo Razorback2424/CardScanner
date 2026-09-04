@@ -29,6 +29,70 @@ final class ProductIdentityTests: XCTestCase {
         XCTAssertNotEqual(pokeBall, masterBall)
     }
 
+    func testMagicTreatmentGetsItsOwnPriceAndVendorIdentityKey() {
+        let generic = ProductIdentity.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id
+        )
+        let treated = ProductIdentity.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["SurgeFoil"]
+        )
+
+        XCTAssertEqual(generic, "magic:printing:foil")
+        XCTAssertEqual(treated, "magic:printing:foil:treatment=surgefoil")
+        XCTAssertNotEqual(generic, treated)
+        XCTAssertEqual(
+            PriceRecord.key(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                treatmentIDs: ["surgefoil"]
+            ),
+            treated
+        )
+    }
+
+    func testUnknownTreatmentIdentityRoundTripsWithoutCreatingGenericAlias() throws {
+        let context = try makeContext()
+        let key = ProductIdentity.key(
+            game: .magic,
+            printingID: "printing",
+            variantID: PhysicalVariant.foil.id,
+            treatmentIDs: ["Future Foil"]
+        )
+        let identity = ProductIdentity(
+            key: key,
+            vendor: .justTCG,
+            vendorCardID: "card",
+            resolvedAt: .now,
+            magicTreatmentIDs: ["Future Foil"]
+        )
+        context.insert(identity)
+        try context.save()
+
+        let stored = try XCTUnwrap(
+            context.fetch(FetchDescriptor<ProductIdentity>()).first
+        )
+        XCTAssertEqual(stored.magicTreatmentIDsRaw, ["Future Foil"])
+        XCTAssertEqual(
+            stored.key,
+            "magic:printing:foil:treatment=future%20foil"
+        )
+        XCTAssertEqual(
+            ProductIdentity.key(
+                game: .magic,
+                printingID: "printing",
+                variantID: PhysicalVariant.foil.id,
+                treatmentIDs: stored.magicTreatmentIDsRaw
+            ),
+            stored.key
+        )
+    }
+
     func testResolvedRecordIsCurrent() {
         let identity = ProductIdentity(
             key: "k",

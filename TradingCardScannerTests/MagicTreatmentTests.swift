@@ -138,6 +138,182 @@ final class MagicTreatmentTests: XCTestCase {
         )
     }
 
+    func testMagicScanFlowsThroughCatalogToFinishQualifiedTreatmentKey() throws {
+        let profile = MagicScanProfile(definitions: [
+            .init(code: "FIC", printedSize: nil)
+        ])
+        let identifier = try XCTUnwrap(profile.parse(["FIC • EN", "0010"]))
+        XCTAssertEqual(identifier.displayIdentifier, "FIC 10 EN")
+
+        let appBundle = try XCTUnwrap(Bundle(identifier: "com.example.TradingCardScanner"))
+        let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
+        let card = try decodeMagic(
+            id: "cb82d614-13d8-40ec-9213-8e6852d37c9c",
+            setCode: "fic",
+            collectorNumber: "10",
+            finishes: ["foil", "nonfoil"],
+            promoTypes: ["surgefoil"]
+        )
+        XCTAssertEqual(
+            try XCTUnwrap(catalog.entry(forCardID: card.id)).decodedTreatments,
+            [.surgeFoil]
+        )
+
+        let identified = IdentifiedCard.magic(card)
+        let evidence = card.magicTreatmentEvidence(using: catalog)
+        XCTAssertEqual(
+            evidence.displayLabel(with: .nonfoil),
+            "Nonfoil"
+        )
+        XCTAssertEqual(
+            identified.collectionKey(variant: .nonfoil),
+            "magic:cb82d614-13d8-40ec-9213-8e6852d37c9c#nonfoil"
+        )
+        XCTAssertEqual(
+            evidence.displayLabel(with: .foil),
+            "Foil · Surge Foil"
+        )
+        XCTAssertEqual(
+            identified.collectionKey(variant: .foil),
+            "magic:cb82d614-13d8-40ec-9213-8e6852d37c9c#foil#treatment=surgefoil"
+        )
+    }
+
+    func testSharedTreatmentRuleDrivesCollectionKeysForEachFinish() throws {
+        let card = try decodeMagic(
+            id: "dual-finish-treatment",
+            finishes: ["foil", "nonfoil"],
+            promoTypes: ["surgefoil"]
+        )
+        let identified = IdentifiedCard.magic(card)
+
+        XCTAssertEqual(
+            identified.collectionKey(variant: .nonfoil),
+            "magic:dual-finish-treatment#nonfoil"
+        )
+        XCTAssertEqual(
+            identified.collectionKey(variant: .foil),
+            "magic:dual-finish-treatment#foil#treatment=surgefoil"
+        )
+        XCTAssertEqual(
+            identified.finishAndTreatmentDisplayLabel(for: .nonfoil),
+            "Nonfoil"
+        )
+        XCTAssertEqual(
+            identified.finishAndTreatmentDisplayLabel(for: .foil),
+            "Foil · Surge Foil"
+        )
+    }
+
+    func testTreatmentKeyCodecsPreserveTheirIndependentBaseFormats() {
+        let treatments: [MagicTreatment] = [
+            .surgeFoil,
+            .unclassified("Rainbow / Foil")
+        ]
+
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.appendCollectionSuffix(
+                to: "magic:printing#foil",
+                treatments: treatments
+            ),
+            "magic:printing#foil#treatment=rainbow%20%2F%20foil#treatment=surgefoil"
+        )
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.appendPriceSuffix(
+                to: "magic:printing:foil",
+                treatments: treatments
+            ),
+            "magic:printing:foil:treatment=rainbow%20%2F%20foil:treatment=surgefoil"
+        )
+    }
+
+    func testCollectionReadThroughRemovesTreatmentForEveryIdentityFamily() {
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "magic:printing#foil#treatment=surgefoil"
+            ),
+            ["magic:printing#foil"]
+        )
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "graded:magic:printing:variant#treatment=neonink"
+            ),
+            ["graded:magic:printing:variant"]
+        )
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "graded:magic:printing:variant:cert:1234#treatment=neonink"
+            ),
+            ["graded:magic:printing:variant:cert:1234"]
+        )
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "sealed:magic:product:variant#treatment=surgefoil"
+            ),
+            ["sealed:magic:product:variant"]
+        )
+        XCTAssertEqual(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "magic:printing#foil#treatment=surgefoil@firstEdition"
+            ),
+            ["magic:printing#foil@firstEdition"]
+        )
+        XCTAssertTrue(
+            MagicTreatmentKeyCodec.legacyCollectionKeys(
+                for: "magic:printing#foil"
+            ).isEmpty
+        )
+    }
+
+    func testCollectionCSVRoundTripsTreatmentIdentityAndCollectionKey() throws {
+        let card = CollectedCard(
+            collectionKey: "magic:printing#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+
+        let document = CollectionCSV.export([card])
+        let plan = try CollectionCSV.parse(Data(document.text.utf8))
+        let entry: CollectionCSVEntry = try XCTUnwrap(plan.entries.first)
+
+        XCTAssertEqual(entry.magicTreatmentIDsRaw, ["surgefoil"])
+        XCTAssertEqual(entry.collectionKey, card.collectionKey)
+        XCTAssertEqual(entry.variant, PhysicalVariant.foil)
+    }
+
+    func testCSVNamespacedFallbackKeysRetainMagicTreatmentsWithoutVendorUUIDs() throws {
+        let csv = """
+        game,provider_id,card_name,set_name,set_code,card_number,quantity,item_kind,grading_company,grade,magic_treatment_ids
+        magic,printing,Fixture,Fixture Set,FIC,10,1,gradedCard,psa,10,"[""neonink""]"
+        magic,box,Fixture Box,Fixture Set,FIC,,1,sealedProduct,,,"[""surgefoil""]"
+        """
+
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+        let entriesByID = Dictionary(
+            plan.entries.map { ($0.providerID, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        XCTAssertEqual(
+            entriesByID["printing"]?.collectionKey,
+            "graded:magic:printing#psa|10||#treatment=neonink"
+        )
+        XCTAssertEqual(
+            entriesByID["box"]?.collectionKey,
+            "sealed:magic:box#treatment=surgefoil"
+        )
+    }
+
     func testKnownProviderSignalStillWorksForCardsNotYetInCompactCatalog() throws {
         let card = try decodeMagic(
             setCode: "fin",
@@ -225,12 +401,11 @@ final class MagicTreatmentTests: XCTestCase {
     }
 
     func testBundledCatalogIsCompactAndContainsAuditedTreatmentCoverage() throws {
-        let catalog = try XCTUnwrap(
-            [Bundle.main, Bundle(for: MagicTreatmentTests.self)]
-                .lazy
-                .compactMap { try? MagicTreatmentCatalogStore.bundled(bundle: $0) }
-                .first
+        let appBundle = try XCTUnwrap(
+            Bundle(identifier: "com.example.TradingCardScanner"),
+            "The runtime catalog must be validated from the application bundle"
         )
+        let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
 
         XCTAssertEqual(catalog.artifact.schemaVersion, MagicTreatmentCatalog.schemaVersion)
         XCTAssertEqual(catalog.artifact.sourceAuditSchemaVersion, 2)
@@ -267,6 +442,11 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertEqual(surge.setCode, "fin")
         XCTAssertEqual(surge.collectorNumber, "523")
         XCTAssertEqual(surge.decodedTreatments, [.surgeFoil])
+    }
+
+    func testBundledDefaultReportsAUsableCatalogStatus() {
+        XCTAssertEqual(MagicTreatmentCatalogStore.bundledDefaultStatus, .ready)
+        XCTAssertNil(MagicTreatmentCatalogStore.bundledDefaultStatus.error)
     }
 
     func testCatalogPreservesUnknownTreatmentIDsAsUnclassified() throws {
