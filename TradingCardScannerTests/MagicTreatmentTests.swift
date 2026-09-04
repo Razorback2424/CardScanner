@@ -1064,6 +1064,80 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertTrue(refreshEntered)
     }
 
+    func testBackgroundStylePriceRefreshDoesNotWaitForNetworkMigration() async throws {
+        let context = try makeContext()
+        let counter = MagicTreatmentMigrationRunCounter()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                _ = await counter.increment()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        var operationEntered = false
+        _ = await coordinator.withPriceRefresh(
+            in: context,
+            runsNetworkMigration: false
+        ) {
+            operationEntered = true
+        }
+
+        XCTAssertTrue(operationEntered)
+        let networkRunCount = await counter.value()
+        XCTAssertEqual(
+            networkRunCount,
+            0,
+            "the short background lane must not spend its budget on deferred Scryfall migration"
+        )
+    }
+
+    func testTreatmentMigrationWaitsForAnActivePriceRefresh() async throws {
+        let context = try makeContext()
+        let refreshGate = MagicTreatmentMigrationGate()
+        let networkRuns = MagicTreatmentMigrationRunCounter()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                _ = await networkRuns.increment()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        let refresh = Task { @MainActor in
+            await coordinator.withPriceRefresh(
+                in: context,
+                runsNetworkMigration: false
+            ) {
+                await refreshGate.markStarted()
+                await refreshGate.waitUntilOpen()
+            }
+        }
+        for _ in 0..<10_000 {
+            if await refreshGate.started() { break }
+            await Task.yield()
+        }
+        let refreshStarted = await refreshGate.started()
+        XCTAssertTrue(refreshStarted)
+
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<100 {
+            await Task.yield()
+        }
+        let networkRunsWhileRefreshing = await networkRuns.value()
+        XCTAssertEqual(
+            networkRunsWhileRefreshing,
+            0,
+            "migration must not enter its network runner while a price refresh owns the gate"
+        )
+
+        await refreshGate.open()
+        await refresh.value
+        _ = await migration.value
+        let completedNetworkRuns = await networkRuns.value()
+        XCTAssertEqual(completedNetworkRuns, 1)
+    }
+
     func testMigrationRechecksRowsAddedDuringAnInFlightPass() async throws {
         let context = try makeContext()
         let gate = MagicTreatmentMigrationGate()
@@ -1890,6 +1964,50 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertTrue(retry.isComplete)
         XCTAssertEqual(retry.exactLookups, 0)
         XCTAssertEqual(try contextA.fetch(FetchDescriptor<InventoryEvent>()).count, 4)
+    }
+
+    /// The local phase runs on the main actor before portfolio startup and has
+    /// no suspension points across its planning loops, so a quadratic pass
+    /// freezes launch outright for a large collection. The indexes that make it
+    /// linear are invisible to every other test here: the biggest fixture is a
+    /// few dozen rows, which a quadratic implementation handles just as well.
+    ///
+    /// The bound was chosen by measurement, not by feel: at this row count the
+    /// indexed form takes ~0.25s and the per-row-scan form it replaced takes
+    /// ~8.4s on the same simulator. 4s sits an order of magnitude above the
+    /// former and comfortably below the latter, so it separates the two
+    /// implementations rather than merely timing the machine.
+    func testLocalMigrationPlanningScalesLinearly() async throws {
+        let context = try makeContext()
+        let date = Date(timeIntervalSince1970: 900)
+        let rowCount = 4_000
+
+        for index in 0..<rowCount {
+            let id = String(format: "scale-card-%05d", index)
+            context.insert(
+                makeRow(
+                    key: "magic:\(id)#foil",
+                    providerID: id,
+                    quantity: 1,
+                    treatments: []
+                )
+            )
+        }
+        try context.save()
+
+        let started = Date.now
+        let report = await MagicTreatmentMigration.runLocal(in: context, now: date)
+        let elapsed = Date.now.timeIntervalSince(started)
+
+        XCTAssertEqual(report.examinedRows, rowCount)
+        // No exact ids resolve locally, so this pass plans nothing and its cost
+        // is entirely the planning loops under test.
+        XCTAssertEqual(report.exactLookups, 0)
+        XCTAssertLessThan(
+            elapsed,
+            4,
+            "Local migration planning took \(elapsed)s for \(rowCount) rows, which indicates the per-row scans have returned."
+        )
     }
 
     private func makeContext() throws -> ModelContext {

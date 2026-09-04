@@ -95,3 +95,56 @@ before compilation because CoreSimulator had no discoverable runtime.
   network-dependent failures; no screenshot loop was run.
 - Portfolio bootstrap now propagates inventory/collection fetch failures rather
   than treating either store as empty and writing a false initial baseline.
+
+## Audit pass 1 remediation — N1 through N7
+
+The follow-up remediation plan was applied on `codex/unrelated-fixes`.
+
+- [x] N1 — background price refresh runs the local migration gate without waiting for deferred network enrichment, so a cold background process can still price its bounded target set.
+- [x] N2 — Pokémon checklist refresh state records attempts separately from successful crawls, backs off failed attempts, persists progress after failures, and retries recorded failures after the resumable cursor.
+- [x] N3 — checklist skip decisions require a decodable resource; unreadable checklist IDs are tracked and cleared when resources are discarded or republished, allowing corruption to self-heal.
+- [x] N4 — CSV metadata re-imports no longer silently rewrite a certified row's quantity; existing quantity defects remain available to ledger diagnostics.
+- [x] N5 — `Money` equality and hashing remain consistent with `Comparable`; invalid amounts are excluded from CSV output and portfolio geometry ratios.
+- [x] N6 — observation backfill no longer uses a blocking process-local mutex, and the computation actor reuses its bulk-fetched observations instead of fetching the log twice.
+- [x] N7 — per-set checklist values use bounded LRU caches, and Browse no longer keeps a second Pokémon checklist cache.
+
+Focused regression coverage was added for certified CSV idempotency and quantity preservation, supplied-observation backfill reuse, checklist corruption recovery, failed-refresh backoff/cursor progress, and `Money` ordering identity.
+
+Verification on 2026-09-04:
+
+- `xcodebuild build-for-testing` — succeeded with normal local simulator signing and `SWIFT_ENABLE_EXPLICIT_MODULES=NO`.
+- Focused remediation tests — 8 passed, 0 failed.
+- Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
+- `git diff --check` — clean.
+
+## Audit pass 1 remaining remediation — L1 through L3
+
+The remaining findings from `audit_pass1_remaining_plan.md` are implemented on
+`codex/unrelated-fixes`.
+
+- [x] L1 — checklist loading distinguishes a deterministic decode failure from
+  a transient file-read failure. Only undecodable resources enter the
+  in-process negative cache; transient reads are retried, while corrupt
+  resources still remain eligible for the existing republish/healing path.
+- [x] L2 — CSV import never changes the quantity of a non-aggregating row,
+  including rows carrying an empty certificate string. Ledger and activity
+  records are emitted only when a real quantity delta is applied.
+- [x] L3 — observation backfill treats a failed observation-table read as an
+  unreadable baseline rather than an empty log, so it cannot seed duplicate
+  observations. The computation actor skips backfill after that failed bulk
+  read and lets the snapshot builder publish its unreadable-store defect.
+
+Regression coverage includes the transient checklist retry, corrupt checklist
+healing, empty-certificate quantity preservation, distinct certified CSV
+round-trips, no-seed observation backfill failure, migration/refresh gate
+directionality, background migration bypass, and marketplace identity
+persistence for illustrated rows.
+
+Verification on 2026-09-04:
+
+- `xcodebuild build-for-testing` — succeeded with normal simulator signing and
+  `SWIFT_ENABLE_EXPLICIT_MODULES=NO`.
+- Focused remaining-plan regressions — 7 passed, 0 failed, 0 skipped.
+- Full `xcodebuild test-without-building` suite — 765 passed, 0 failed, 0
+  skipped.
+- `git diff --check` — clean.
