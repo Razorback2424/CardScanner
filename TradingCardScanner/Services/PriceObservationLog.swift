@@ -291,9 +291,74 @@ struct PriceObservationLog {
     /// covers the case the ledger baseline cannot: a second device inherits the
     /// synced `PriceRecord`s but none of the first device's local observations,
     /// and seeds its own.
+    ///
+    /// The caller owns the context and must serialize writes for that context.
+    /// A process-local mutex cannot make two SwiftData contexts or two devices
+    /// observe one another's uncommitted work; durable idempotency belongs at
+    /// the persisted observation boundary, not in a thread-blocking lock.
     @discardableResult
-    func backfillFromRecords(receivedAt localKnowledgeTime: Date = .now) -> Int {
+    func backfillFromRecords(
+        receivedAt localKnowledgeTime: Date = .now,
+        existingObservations: [PriceObservation]? = nil
+    ) -> Int {
+        backfill(
+            receivedAt: localKnowledgeTime,
+            existingObservations: existingObservations
+        ).written
+    }
+
+    /// The computation actor already materialises the observation log for its
+    /// replay. Return that same in-memory set with any newly seeded rows so the
+    /// builder does not issue a second full-table fetch.
+    func backfillFromRecordsAndReturnObservations(
+        receivedAt localKnowledgeTime: Date = .now,
+        existingObservations: [PriceObservation]? = nil
+    ) -> [PriceObservation] {
+        backfill(
+            receivedAt: localKnowledgeTime,
+            existingObservations: existingObservations
+        ).observations
+    }
+
+    #if DEBUG
+    /// Test/support seam for a read failure. Production callers use the
+    /// context-backed overloads above; this keeps the failure branch
+    /// reproducible without manufacturing a corrupt SwiftData store.
+    @discardableResult
+    func backfillFromRecordsForTesting(
+        receivedAt localKnowledgeTime: Date = .now,
+        fetchExistingObservations: @escaping () throws -> [PriceObservation]
+    ) -> Int {
+        backfill(
+            receivedAt: localKnowledgeTime,
+            existingObservations: nil,
+            fetchExistingObservations: fetchExistingObservations
+        ).written
+    }
+    #endif
+
+    private func backfill(
+        receivedAt localKnowledgeTime: Date,
+        existingObservations: [PriceObservation]?,
+        fetchExistingObservations: (() throws -> [PriceObservation])? = nil
+    ) -> (written: Int, observations: [PriceObservation]) {
         let records = PriceStore(context: context).allRecords()
+        var observations: [PriceObservation]
+        if let existingObservations {
+            observations = existingObservations
+        } else {
+            do {
+                observations = try fetchExistingObservations?()
+                    ?? context.fetch(FetchDescriptor<PriceObservation>())
+            } catch {
+                // An unreadable observation log is not an empty log. Seeding
+                // from that unknown baseline would duplicate every priced
+                // record while the computation is already reporting the store
+                // defect.
+                return (0, [])
+            }
+        }
+        var existingInstrumentKeys = Set(observations.map(\.instrumentKey))
         var written = 0
 
         for record in records {
@@ -301,31 +366,32 @@ struct PriceObservationLog {
                   record.currencyCode == "USD",
                   let source = record.source,
                   let money = Money(rounding: amount),
-                  newestObservation(instrumentKey: record.key) == nil else { continue }
+                  !existingInstrumentKeys.contains(record.key) else { continue }
 
-            context.insert(
-                PriceObservation(
-                    instrumentKey: record.key,
-                    kind: .marketUpdate,
-                    amount: money,
-                    currencyCode: record.currencyCode,
-                    source: source,
-                    sourceVariantID: record.sourceVariantID,
-                    marketVariantID: record.marketVariantID,
-                    effectiveAt: record.sourceUpdatedAt ?? localKnowledgeTime,
-                    // A synced PriceRecord's fetchedAt belongs to the device
-                    // that originally fetched it. This device learned the
-                    // inherited value now and must never fabricate history by
-                    // copying the remote timestamp into local knowledge time.
-                    receivedAt: localKnowledgeTime,
-                    isSourceStamped: source.publishesSourceTimestamp && record.sourceUpdatedAt != nil
-                )
+            let observation = PriceObservation(
+                instrumentKey: record.key,
+                kind: .marketUpdate,
+                amount: money,
+                currencyCode: record.currencyCode,
+                source: source,
+                sourceVariantID: record.sourceVariantID,
+                marketVariantID: record.marketVariantID,
+                effectiveAt: record.sourceUpdatedAt ?? localKnowledgeTime,
+                // A synced PriceRecord's fetchedAt belongs to the device
+                // that originally fetched it. This device learned the
+                // inherited value now and must never fabricate history by
+                // copying the remote timestamp into local knowledge time.
+                receivedAt: localKnowledgeTime,
+                isSourceStamped: source.publishesSourceTimestamp && record.sourceUpdatedAt != nil
             )
+            context.insert(observation)
+            observations.append(observation)
+            existingInstrumentKeys.insert(record.key)
             written += 1
         }
 
         if written > 0 { try? context.save() }
-        return written
+        return (written, observations)
     }
 
     // MARK: -

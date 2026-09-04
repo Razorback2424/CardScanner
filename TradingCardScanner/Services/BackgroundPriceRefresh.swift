@@ -159,10 +159,21 @@ enum BackgroundPriceRefresh {
         }
 
         let context = TradingCardScannerApp.container.mainContext
-        await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(in: context) {
-            // Make the target snapshot only after treatment migration has
-            // finished. A target made before rekeying would write its result
-            // under the superseded treatment-free price key.
+        let migration = MagicTreatmentMigrationCoordinator.shared
+        // Background Tasks has a small, non-renewable budget, and a scheduled
+        // launch is normally a *fresh process* — so deferred Scryfall
+        // enrichment has never run here and would consume the whole window
+        // before any pricing happened. Skip that phase rather than skipping the
+        // refresh: holding the gate is what makes the pass safe, and a row that
+        // has not been enriched yet is priced under its current key, exactly as
+        // it would be if no migration were pending at all.
+        await migration.withPriceRefresh(
+            in: context,
+            runsNetworkMigration: false
+        ) {
+            // Make the target snapshot inside the gate. A target built before
+            // the gate was acquired could have been rekeyed underneath it and
+            // would write its result under a superseded price key.
             let allTargets: [PriceTarget]
             do {
                 allTargets = try PriceRefreshTargets.make(

@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// The on-device format for the Pokémon Browse snapshot. The manifest is kept
 /// separate from the checklist files so a refresh can write every new file and
@@ -416,11 +417,97 @@ private struct PokemonBrowseSeriesSets: Decodable {
 /// Protected checklist persistence. This is deliberately not part of the LRU
 /// page cache: a user who opened many card pages must not lose offline set
 /// readiness as a side effect.
+private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
+    /// The last crawl that reached the end of the directory with no failures.
+    /// Governs the ordinary 24-hour cadence.
+    let lastSuccessfulAt: Date?
+    /// The last crawl that reached the end of the directory at all, clean or
+    /// not. Kept separate from `lastSuccessfulAt` so an unfetchable set can
+    /// never pin the resume cursor and freeze the whole catalog: once this is
+    /// older than the refresh interval, the next crawl sweeps from the start
+    /// regardless of what is still failing.
+    let lastSweepAt: Date?
+    /// The last crawl that ended in a state worth backing off from — a
+    /// provider failure or an unreachable set directory. Deliberately *not*
+    /// written by ordinary progress or by cancellation: a user switching apps
+    /// mid-crawl has learned nothing about the provider and must not be made
+    /// to wait out a failure backoff.
+    let lastAttemptAt: Date?
+    let resumeAfterProviderID: String?
+    let failedProviderIDs: [String]
+
+    init(
+        lastSuccessfulAt: Date?,
+        lastSweepAt: Date? = nil,
+        lastAttemptAt: Date? = nil,
+        resumeAfterProviderID: String?,
+        failedProviderIDs: [String] = []
+    ) {
+        self.lastSuccessfulAt = lastSuccessfulAt
+        self.lastSweepAt = lastSweepAt
+        self.lastAttemptAt = lastAttemptAt
+        self.resumeAfterProviderID = resumeAfterProviderID
+        self.failedProviderIDs = failedProviderIDs
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case lastSuccessfulAt
+        case lastSweepAt
+        case lastAttemptAt
+        case resumeAfterProviderID
+        case failedProviderIDs
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        lastSuccessfulAt = try values.decodeIfPresent(Date.self, forKey: .lastSuccessfulAt)
+        // A state written before this field existed had no way to complete a
+        // sweep other than cleanly, so the successful timestamp is the honest
+        // migration value.
+        lastSweepAt = try values.decodeIfPresent(Date.self, forKey: .lastSweepAt)
+            ?? lastSuccessfulAt
+        lastAttemptAt = try values.decodeIfPresent(Date.self, forKey: .lastAttemptAt)
+        resumeAfterProviderID = try values.decodeIfPresent(
+            String.self,
+            forKey: .resumeAfterProviderID
+        )
+        failedProviderIDs = try values.decodeIfPresent(
+            [String].self,
+            forKey: .failedProviderIDs
+        ) ?? []
+    }
+}
+
 actor PokemonChecklistStore {
+    private enum ChecklistLoadOutcome {
+        case loaded([CatalogCardSummary])
+        case undecodable
+        case unreadable
+    }
+
+    static let shared = PokemonChecklistStore()
+
     private let root: URL
     private let bundledRoot: URL?
-    private var downloadedCache: PokemonChecklistSnapshot?
-    private var didLoadDownloadedCache = false
+    private let refreshStateURL: URL
+    private var downloadedManifestCache: PokemonChecklistSnapshotManifest?
+    private var didLoadDownloadedManifest = false
+    private var bundledManifestCache: PokemonChecklistSnapshotManifest?
+    private var didLoadBundledManifest = false
+
+    // These caches are deliberately per set. The production catalog only needs
+    // the set currently being displayed, while the legacy snapshot methods
+    // remain available for release tooling and tests that explicitly request a
+    // complete value-type snapshot.
+    private var downloadedChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
+    private var bundledChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
+    private var unreadableChecklistIDs: Set<String> = []
+    private var downloadedSnapshotCache: PokemonChecklistSnapshot?
+    private var bundledSnapshotCache: PokemonChecklistSnapshot?
+    private var memoryWarningObserver: NSObjectProtocol?
+
+    nonisolated static let refreshInterval: TimeInterval = 24 * 60 * 60
+    nonisolated static let failedRefreshBackoff: TimeInterval = 60 * 60
 
     init(root: URL? = nil, bundle: Bundle? = .main, bundledRoot: URL? = nil) {
         if let root {
@@ -439,28 +526,343 @@ actor PokemonChecklistStore {
                 withExtension: nil
             )
         }
+        self.refreshStateURL = self.root.appendingPathComponent("refresh-state.json")
+    }
+
+    deinit {
+        if let memoryWarningObserver {
+            NotificationCenter.default.removeObserver(memoryWarningObserver)
+        }
     }
 
     func downloadedSnapshot() -> PokemonChecklistSnapshot? {
-        guard !didLoadDownloadedCache else { return downloadedCache }
-        didLoadDownloadedCache = true
-        downloadedCache = loadSnapshot(from: root)
-        return downloadedCache
+        installMemoryWarningObserverIfNeeded()
+        guard downloadedSnapshotCache == nil else { return downloadedSnapshotCache }
+        downloadedSnapshotCache = loadSnapshot(from: root)
+        if let manifest = downloadedSnapshotCache?.manifest {
+            downloadedManifestCache = manifest
+            didLoadDownloadedManifest = true
+        }
+        return downloadedSnapshotCache
     }
 
     func bundledSnapshot() -> PokemonChecklistSnapshot? {
-        guard let bundledRoot else { return nil }
-        return loadSnapshot(from: bundledRoot)
+        installMemoryWarningObserverIfNeeded()
+        guard bundledSnapshotCache == nil, let bundledRoot else {
+            return bundledSnapshotCache
+        }
+        bundledSnapshotCache = loadSnapshot(from: bundledRoot)
+        if let manifest = bundledSnapshotCache?.manifest {
+            bundledManifestCache = manifest
+            didLoadBundledManifest = true
+        }
+        return bundledSnapshotCache
     }
 
     /// The scanner and Browse use the same precedence rule: a complete
     /// downloaded overlay wins for a set, while bundled data remains available
     /// for sets the overlay does not contain.
     func mergedSnapshot() -> PokemonChecklistSnapshot? {
-        PokemonChecklistSnapshot.merged(
+        installMemoryWarningObserverIfNeeded()
+        return PokemonChecklistSnapshot.merged(
             bundled: bundledSnapshot(),
             downloaded: downloadedSnapshot()
         )
+    }
+
+    /// Returns only manifest entries and verifies that the referenced resource
+    /// exists. No checklist JSON is decoded here, so Browse and scanning can
+    /// share one store without materialising the entire Pokémon corpus.
+    func mergedEntries() -> [PokemonChecklistSnapshotEntry] {
+        installMemoryWarningObserverIfNeeded()
+        return mergeEntries(
+            bundled: validEntries(from: bundledManifest(), directory: bundledRoot),
+            downloaded: validEntries(from: downloadedManifest(), directory: root)
+        )
+    }
+
+    /// Whether the checklist `mergedEntries()` names for this set is intact.
+    ///
+    /// Deliberately **not** `mergedChecklist(for:) != nil`. The refresh crawl
+    /// compares provider fingerprints against the entry the merge serves, and
+    /// the merge prefers the downloaded overlay. If a readable bundled copy
+    /// were allowed to vouch for a corrupt overlay, the crawl would skip the
+    /// set as healthy, the overlay would never be republished, and the app
+    /// would quietly serve older bundled data for that set indefinitely.
+    /// Only the owning tier's own resource may answer this question.
+    func hasMergedChecklist(for setID: CatalogSetID) -> Bool {
+        installMemoryWarningObserverIfNeeded()
+        let key = setID.id
+        guard !unreadableChecklistIDs.contains(key) else { return false }
+        if let entry = downloadedEntry(for: key) {
+            guard case .loaded = cachedChecklist(for: entry, in: root, isDownloaded: true) else {
+                return false
+            }
+            return true
+        }
+        guard let bundledRoot, let entry = bundledEntry(for: key) else { return false }
+        guard case .loaded = cachedChecklist(
+            for: entry,
+            in: bundledRoot,
+            isDownloaded: false
+        ) else {
+            return false
+        }
+        return true
+    }
+
+    /// Decodes one checklist on demand, for display.
+    ///
+    /// A downloaded set wins when it is readable; a corrupt overlay falls back
+    /// to the bundled set rather than hiding a known-good offline resource. A
+    /// reader wants the best data available — deciding whether the *overlay*
+    /// needs repairing is `hasMergedChecklist(for:)`'s job, not this one's.
+    func mergedChecklist(for setID: CatalogSetID) -> [CatalogCardSummary]? {
+        installMemoryWarningObserverIfNeeded()
+        let key = setID.id
+        guard !unreadableChecklistIDs.contains(key) else { return nil }
+        var encounteredUndecodableResource = false
+        var encounteredUnreadableResource = false
+
+        if let entry = downloadedEntry(for: key) {
+            switch cachedChecklist(for: entry, in: root, isDownloaded: true) {
+            case let .loaded(cards):
+                unreadableChecklistIDs.remove(key)
+                return cards
+            case .undecodable:
+                encounteredUndecodableResource = true
+            case .unreadable:
+                encounteredUnreadableResource = true
+            }
+        }
+
+        if let bundledRoot, let entry = bundledEntry(for: key) {
+            switch cachedChecklist(for: entry, in: bundledRoot, isDownloaded: false) {
+            case let .loaded(cards):
+                unreadableChecklistIDs.remove(key)
+                return cards
+            case .undecodable:
+                encounteredUndecodableResource = true
+            case .unreadable:
+                encounteredUnreadableResource = true
+            }
+        }
+
+        // Only a deterministic decode failure, with no transient I/O error
+        // anywhere in the lookup, is safe to remember as permanently bad.
+        if encounteredUndecodableResource, !encounteredUnreadableResource {
+            unreadableChecklistIDs.insert(key)
+        }
+        return nil
+    }
+
+    private func downloadedEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
+        validEntries(from: downloadedManifest(), directory: root)
+            .first { $0.set.id == setID }
+    }
+
+    private func bundledEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
+        guard let bundledRoot else { return nil }
+        return validEntries(from: bundledManifest(), directory: bundledRoot)
+            .first { $0.set.id == setID }
+    }
+
+    /// One tier's checklist, served from the LRU when it is already decoded.
+    /// A successful decode populates that tier's cache; a failure never does,
+    /// so the caller still sees why it failed.
+    private func cachedChecklist(
+        for entry: PokemonChecklistSnapshotEntry,
+        in directory: URL,
+        isDownloaded: Bool
+    ) -> ChecklistLoadOutcome {
+        let key = entry.set.id
+        if isDownloaded {
+            if let cached = downloadedChecklistCache[key] { return .loaded(cached) }
+        } else if let cached = bundledChecklistCache[key] {
+            return .loaded(cached)
+        }
+
+        let outcome = loadChecklist(for: entry, in: directory)
+        if case let .loaded(cards) = outcome {
+            if isDownloaded {
+                downloadedChecklistCache[key] = cards
+            } else {
+                bundledChecklistCache[key] = cards
+            }
+        }
+        return outcome
+    }
+
+    /// The active-session refresh uses this timestamp to avoid re-crawling the
+    /// provider set directory on every foreground transition. A missing or
+    /// unreadable state is intentionally treated as stale.
+    func shouldRefresh(
+        now: Date = .now,
+        interval: TimeInterval = PokemonChecklistStore.refreshInterval
+    ) -> Bool {
+        installMemoryWarningObserverIfNeeded()
+        // A bundled checklist is a valid, complete starting point. Requiring a
+        // downloaded manifest here would make an app that has only ever used
+        // its shipped snapshot crawl the entire provider directory on every
+        // foreground forever, because the refresh itself may legitimately find
+        // no changed sets to publish.
+        guard !mergedEntries().isEmpty,
+              let state = loadRefreshState() else {
+            return true
+        }
+        // A stored timestamp in the future means the device clock moved
+        // backwards. That is evidence the state is untrustworthy, never
+        // evidence that the catalog is fresh — treating it as fresh would
+        // suppress every refresh until wall-clock time caught up.
+        if Self.isWithin(interval, of: state.lastSuccessfulAt, at: now) { return false }
+        if Self.isWithin(Self.failedRefreshBackoff, of: state.lastAttemptAt, at: now) {
+            return false
+        }
+        return true
+    }
+
+    /// Whether the next crawl must start at the beginning of the directory
+    /// rather than resuming from its cursor.
+    ///
+    /// The cursor exists so an interrupted or partly failed crawl does not
+    /// restart from zero. It must not become permanent: a set that fails every
+    /// time would otherwise hold the cursor at the end of the directory
+    /// forever, and no other set would ever be re-checked for changes.
+    func needsFullSweep(
+        now: Date = .now,
+        interval: TimeInterval = PokemonChecklistStore.refreshInterval
+    ) -> Bool {
+        guard let state = loadRefreshState() else { return true }
+        return !Self.isWithin(interval, of: state.lastSweepAt, at: now)
+    }
+
+    /// True only when `date` exists, is not in the future, and is younger than
+    /// `interval`. Absent and future timestamps are both treated as stale.
+    private static func isWithin(
+        _ interval: TimeInterval,
+        of date: Date?,
+        at now: Date
+    ) -> Bool {
+        guard let date else { return false }
+        let age = now.timeIntervalSince(date)
+        return age >= 0 && age < interval
+    }
+
+    func refreshResumeAfterProviderID() -> String? {
+        loadRefreshState()?.resumeAfterProviderID
+    }
+
+    func refreshFailedProviderIDs() -> Set<String> {
+        Set((loadRefreshState()?.failedProviderIDs ?? []).map { $0.lowercased() })
+    }
+
+    /// Progress is durable after each completed provider set. The cursor moves
+    /// past failures so a bad provider set cannot force a full retry on every
+    /// foreground; failed ids remain recorded for a retry when the crawl next
+    /// encounters them.
+    ///
+    /// Ordinary progress deliberately does not arm the failure backoff. The
+    /// crawl is cancelled by every `inactive` scene transition — the app
+    /// switcher, Notification Center, an incoming call — and treating "two
+    /// sets were fetched before the user swiped up" as a failed attempt would
+    /// stall the directory for an hour each time.
+    func recordRefreshProgress(
+        after providerID: String,
+        failed: Bool = false,
+        advancesCursor: Bool = true,
+        at date: Date = .now
+    ) {
+        let previous = loadRefreshState()
+        var failedIDs = Set(previous?.failedProviderIDs ?? [])
+        let normalizedID = providerID.lowercased()
+        if failed {
+            failedIDs.insert(normalizedID)
+        } else {
+            failedIDs.remove(normalizedID)
+        }
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: previous?.lastSweepAt,
+                lastAttemptAt: failed ? date : previous?.lastAttemptAt,
+                resumeAfterProviderID: advancesCursor
+                    ? providerID
+                    : previous?.resumeAfterProviderID,
+                failedProviderIDs: failedIDs.sorted()
+            )
+        )
+    }
+
+    /// A crawl that reached the end of the directory with nothing outstanding.
+    /// Clears the cursor and the failure backoff; the 24-hour interval alone
+    /// governs the next crawl.
+    func markRefreshSucceeded(at date: Date = .now) {
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: date,
+                lastSweepAt: date,
+                lastAttemptAt: nil,
+                resumeAfterProviderID: nil,
+                failedProviderIDs: []
+            )
+        )
+    }
+
+    /// A crawl that reached the end of the directory with sets still failing.
+    ///
+    /// The cursor and the failed ids are kept, so the next attempt retries only
+    /// what is outstanding rather than re-crawling everything an hour later.
+    /// `lastSweepAt` is what stops that from being permanent: once it ages past
+    /// the refresh interval, `needsFullSweep` sends the crawl back to the start
+    /// even though the failures are unresolved.
+    func markRefreshSwept(at date: Date = .now) {
+        let previous = loadRefreshState()
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: date,
+                lastAttemptAt: date,
+                resumeAfterProviderID: previous?.resumeAfterProviderID,
+                failedProviderIDs: previous?.failedProviderIDs ?? []
+            )
+        )
+    }
+
+    /// Records a crawl that could not start — an unreachable or unusable set
+    /// directory. There is no per-set evidence to record, so this is the only
+    /// thing standing between an outage and one crawl attempt per foreground.
+    func markRefreshAttempted(at date: Date = .now) {
+        let previous = loadRefreshState()
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: previous?.lastSweepAt,
+                lastAttemptAt: date,
+                resumeAfterProviderID: previous?.resumeAfterProviderID,
+                failedProviderIDs: previous?.failedProviderIDs ?? []
+            )
+        )
+    }
+
+    /// Drop decoded checklist values under memory pressure while retaining the
+    /// tiny manifests. The next set lookup simply decodes that set again.
+    func discardDecodedChecklists() {
+        downloadedChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
+        bundledChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
+        unreadableChecklistIDs.removeAll()
+        downloadedSnapshotCache = nil
+        bundledSnapshotCache = nil
+    }
+
+    private func installMemoryWarningObserverIfNeeded() {
+        guard memoryWarningObserver == nil else { return }
+        memoryWarningObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil,
+            queue: nil
+        ) { [weak self] _ in
+            Task { await self?.discardDecodedChecklists() }
+        }
     }
 
     /// Files are written using unique resource names and the manifest is the
@@ -496,9 +898,20 @@ actor PokemonChecklistStore {
         // opts out because its output must be an exact directory replacement.
         let merged: PokemonChecklistSnapshot?
         if mergingExisting {
-            merged = PokemonChecklistSnapshot.merged(
-                bundled: downloadedSnapshot(),
-                downloaded: snapshot
+            let existingEntries = validEntries(from: downloadedManifest(), directory: root)
+            let entries = mergeEntries(
+                bundled: existingEntries,
+                downloaded: snapshot.manifest.entries
+            )
+            merged = PokemonChecklistSnapshot(
+                manifest: PokemonChecklistSnapshotManifest(
+                    schemaVersion: snapshot.manifest.schemaVersion,
+                    rulesVersion: snapshot.manifest.rulesVersion,
+                    generatedAt: snapshot.manifest.generatedAt,
+                    directoryFingerprint: PokemonMasterSetChecklistBuilder.directoryFingerprint(entries),
+                    entries: entries
+                ),
+                checklists: snapshot.checklists
             )
         } else {
             merged = snapshot
@@ -547,8 +960,15 @@ actor PokemonChecklistStore {
         if !removingStaleResources {
             removeUnreferencedResources(keeping: Set(publishable.manifest.entries.map(\.resource)))
         }
-        downloadedCache = publishable
-        didLoadDownloadedCache = true
+        downloadedSnapshotCache = nil
+        downloadedManifestCache = publishable.manifest
+        didLoadDownloadedManifest = true
+        for entry in snapshot.manifest.entries {
+            if let cards = snapshot.checklists[entry.set.id] {
+                downloadedChecklistCache[entry.set.id] = cards
+                unreadableChecklistIDs.remove(entry.set.id)
+            }
+        }
     }
 
     /// Remove superseded set resources only after the new manifest is durable.
@@ -569,21 +989,20 @@ actor PokemonChecklistStore {
     }
 
     private func loadSnapshot(from directory: URL) -> PokemonChecklistSnapshot? {
-        let manifestURL = directory.appendingPathComponent("manifest.json")
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        guard let manifestData = try? Data(contentsOf: manifestURL),
-              let manifest = try? decoder.decode(PokemonChecklistSnapshotManifest.self, from: manifestData),
-              manifest.isSupported else {
+        guard let manifest = loadManifest(from: directory) else {
             return nil
         }
 
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
         var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
         for entry in manifest.entries {
-            let file = directory.appendingPathComponent(entry.resource)
-            guard let data = try? Data(contentsOf: file),
-                  let cards = try? decoder.decode([CatalogCardSummary].self, from: data) else {
+            guard case let .loaded(cards) = loadChecklist(
+                for: entry,
+                in: directory,
+                decoder: decoder
+            ) else {
                 // One damaged or interrupted resource must not hide the rest of
                 // an otherwise useful offline catalog.
                 continue
@@ -600,6 +1019,96 @@ actor PokemonChecklistStore {
             entries: validEntries
         )
         return PokemonChecklistSnapshot(manifest: validManifest, checklists: checklists)
+    }
+
+    private func downloadedManifest() -> PokemonChecklistSnapshotManifest? {
+        guard !didLoadDownloadedManifest else { return downloadedManifestCache }
+        didLoadDownloadedManifest = true
+        downloadedManifestCache = loadManifest(from: root)
+        return downloadedManifestCache
+    }
+
+    private func bundledManifest() -> PokemonChecklistSnapshotManifest? {
+        guard !didLoadBundledManifest, let bundledRoot else {
+            return bundledManifestCache
+        }
+        didLoadBundledManifest = true
+        bundledManifestCache = loadManifest(from: bundledRoot)
+        return bundledManifestCache
+    }
+
+    private func validEntries(
+        from manifest: PokemonChecklistSnapshotManifest?,
+        directory: URL?
+    ) -> [PokemonChecklistSnapshotEntry] {
+        guard let manifest, let directory else { return [] }
+        return manifest.entries.filter {
+            FileManager.default.fileExists(
+                atPath: directory.appendingPathComponent($0.resource).path
+            )
+        }
+    }
+
+    private func mergeEntries(
+        bundled: [PokemonChecklistSnapshotEntry],
+        downloaded: [PokemonChecklistSnapshotEntry]
+    ) -> [PokemonChecklistSnapshotEntry] {
+        var entriesByID: [String: PokemonChecklistSnapshotEntry] = [:]
+        var order: [String] = []
+        for entry in bundled + downloaded {
+            if entriesByID[entry.set.id] == nil { order.append(entry.set.id) }
+            entriesByID[entry.set.id] = entry
+        }
+        return order.compactMap { entriesByID[$0] }
+    }
+
+    private func loadManifest(from directory: URL) -> PokemonChecklistSnapshotManifest? {
+        let manifestURL = directory.appendingPathComponent("manifest.json")
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let manifestData = try? Data(contentsOf: manifestURL),
+              let manifest = try? decoder.decode(
+                PokemonChecklistSnapshotManifest.self,
+                from: manifestData
+              ),
+              manifest.isSupported else {
+            return nil
+        }
+        return manifest
+    }
+
+    private func loadChecklist(
+        for entry: PokemonChecklistSnapshotEntry,
+        in directory: URL,
+        decoder: JSONDecoder = JSONDecoder()
+    ) -> ChecklistLoadOutcome {
+        let file = directory.appendingPathComponent(entry.resource)
+        let data: Data
+        do {
+            data = try Data(contentsOf: file)
+        } catch {
+            return .unreadable
+        }
+        do {
+            return .loaded(try decoder.decode([CatalogCardSummary].self, from: data))
+        } catch {
+            return .undecodable
+        }
+    }
+
+    private func loadRefreshState() -> PokemonChecklistRefreshState? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let data = try? Data(contentsOf: refreshStateURL) else { return nil }
+        return try? decoder.decode(PokemonChecklistRefreshState.self, from: data)
+    }
+
+    private func writeRefreshState(_ state: PokemonChecklistRefreshState) {
+        try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(state) else { return }
+        try? data.write(to: refreshStateURL, options: .atomic)
     }
 }
 

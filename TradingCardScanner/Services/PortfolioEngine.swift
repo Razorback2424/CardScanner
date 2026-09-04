@@ -318,7 +318,6 @@ final class PortfolioEngine: ObservableObject {
         summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
         integrityDefects = summary.defects
-        lastUsableSummary = summary
         LedgerIntegrityLog.shared.replaceAll(with: summary.defects)
 
 #if DEBUG
@@ -338,6 +337,7 @@ final class PortfolioEngine: ObservableObject {
 #endif
 
         guard let epoch = PortfolioEpoch.startedAt() else {
+            lastUsableSummary = summary
             status = .ready(summary)
             return
         }
@@ -386,6 +386,10 @@ final class PortfolioEngine: ObservableObject {
             }
         }
 
+        // Retain the fully decorated value. A later unreadable pass republishes
+        // this snapshot, so capturing it before coverage and attribution are
+        // filled in would make the fallback look mysteriously incomplete.
+        lastUsableSummary = summary
         status = .ready(summary)
     }
 
@@ -414,6 +418,7 @@ final class PortfolioEngine: ObservableObject {
         var unpricedCount: Int = 0
         var otherCurrencyCount: Int = 0
         var instrumentsHeld: [String] = []
+        var hasArithmeticOverflow = false
     }
 
     /// The collection's value right now, taken from the collection itself.
@@ -446,7 +451,12 @@ final class PortfolioEngine: ObservableObject {
                 }
                 continue
             }
-            valuation.value += price * quantity
+            guard let positionValue = price.multiplied(by: quantity),
+                  let total = valuation.value.adding(positionValue) else {
+                valuation.hasArithmeticOverflow = true
+                continue
+            }
+            valuation.value = total
         }
 
         valuation.instrumentsHeld = Array(instruments)

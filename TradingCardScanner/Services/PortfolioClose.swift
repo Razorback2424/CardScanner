@@ -286,7 +286,7 @@ enum PortfolioClose {
                         case .correction:
                             result.corrections += value
                         case .dispose:
-                            result.removed += Money(tenThousandths: -value.tenThousandths)
+                            result.removed += -value
                         case .quantityAdjust:
                             result.corrections += value
                         case .acquire, .recordExisting, .initialBalance:

@@ -101,7 +101,7 @@ final class PriceObservation {
     var source: PriceSource? { PriceSource(rawValue: sourceRaw) }
 
     var amount: Money? {
-        amountUSDTenThousandths.map(Money.init(tenThousandths:))
+        amountUSDTenThousandths.map { Money(tenThousandths: $0) }
     }
 
     /// A pre-Slice-6 generic provider amount can already be present in the

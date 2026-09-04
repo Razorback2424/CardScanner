@@ -14,6 +14,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
     case orphanedCorrectionLeg = "orphaned_correction_leg"
     case duplicatePositionPricingConflict = "duplicate_position_pricing_conflict"
     case unreadableStore = "unreadable_store"
+    case moneyArithmeticOverflow = "money_arithmetic_overflow"
 
     var title: String {
         switch self {
@@ -22,6 +23,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
         case .orphanedCorrectionLeg: return "Incomplete correction"
         case .duplicatePositionPricingConflict: return "Duplicate rows disagree"
         case .unreadableStore: return "Stored data unavailable"
+        case .moneyArithmeticOverflow: return "Value exceeds safe range"
         }
     }
 
@@ -37,6 +39,8 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
             return "More than one stored row claims this position, and they are priced through different instruments. Which one is right decides the position's value, so neither was chosen."
         case .unreadableStore:
             return "The app could not read one of its stored data sets. The current portfolio is not authoritative until the data can be read again."
+        case .moneyArithmeticOverflow:
+            return "A price multiplied by the stored quantity exceeded the safe accounting range. The affected total is withheld until the provider quote or collection quantity is corrected."
         }
     }
 }
@@ -590,7 +594,32 @@ struct InventoryLedger {
             predicate: #Predicate { $0.operationID == operationID }
         )
         let legs = try context.fetch(descriptor)
-        return legs.map {
+        // `read()` collapses equivalent CloudKit retries before replaying them.
+        // Undo must apply the same rule: reversing every physical duplicate
+        // would double the inverse quantity while still reporting success.
+        var canonical: [InventoryEvent] = []
+        for (_, duplicates) in Dictionary(grouping: legs, by: {
+            $0.idempotencyKey.isEmpty ? "legacy:\($0.eventID.uuidString)" : $0.idempotencyKey
+        }) {
+            let ordered = duplicates.sorted { $0.eventID.uuidString < $1.eventID.uuidString }
+            guard let stable = ordered.first else { continue }
+            guard ordered.allSatisfy({ stable.isLogicallyEquivalent(to: $0) }) else {
+                throw CollectionStoreError.ledgerConflict(
+                    "\(stable.idempotencyKey): duplicate operation legs disagree"
+                )
+            }
+            let chosen: InventoryEvent
+            if stable.kind == .initialBalance {
+                chosen = ordered.min {
+                    if $0.occurredAt != $1.occurredAt { return $0.occurredAt < $1.occurredAt }
+                    return $0.eventID.uuidString < $1.eventID.uuidString
+                } ?? stable
+            } else {
+                chosen = stable
+            }
+            canonical.append(chosen)
+        }
+        return canonical.map {
             reverse($0, occurredAt: date, operationID: inverseOperationID)
         }
     }

@@ -124,6 +124,45 @@ struct PortfolioReplayResult: Sendable, Equatable {
     /// Cumulative time-weighted factor across every finished day.
     var performanceAvailable: Bool
     var contributionIndex: PortfolioContributionIndex
+
+    var hasArithmeticOverflow: Bool {
+        days.contains { $0.hasArithmeticOverflow }
+            || live?.hasArithmeticOverflow == true
+    }
+}
+
+extension PortfolioReplayDay {
+    var hasArithmeticOverflow: Bool {
+        closeValue.isOverflowed
+            || market.isOverflowed
+            || added.isOverflowed
+            || removed.isOverflowed
+            || corrections.isOverflowed
+            || newlyAddedValue.isOverflowed
+            || pricingAdjustment.isOverflowed
+            || carriedForwardValue.isOverflowed
+            || contributions.values.contains { $0.isOverflowed }
+            || movementDetails.values.contains {
+                $0.totalImpact.isOverflowed || $0.cumulativeUnitMovement.isOverflowed
+            }
+    }
+}
+
+extension PortfolioReplayLive {
+    var hasArithmeticOverflow: Bool {
+        attribution.closeValue.isOverflowed
+            || attribution.market.isOverflowed
+            || attribution.added.isOverflowed
+            || attribution.removed.isOverflowed
+            || attribution.corrections.isOverflowed
+            || attribution.newlyAddedValue.isOverflowed
+            || attribution.pricingAdjustment.isOverflowed
+            || attribution.currentValue.isOverflowed
+            || contributions.values.contains { $0.isOverflowed }
+            || movementDetails.values.contains {
+                $0.totalImpact.isOverflowed || $0.cumulativeUnitMovement.isOverflowed
+            }
+    }
 }
 
 /// One forward pass over the merged timeline.
@@ -502,7 +541,7 @@ enum PortfolioReplayEngine {
                 case .correction, .quantityAdjust:
                     accumulator.corrections += value
                 case .dispose:
-                    accumulator.removed += Money(tenThousandths: -value.tenThousandths)
+                    accumulator.removed += -value
                 case .acquire, .recordExisting, .initialBalance:
                     accumulator.added += value
                 }

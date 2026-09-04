@@ -237,6 +237,15 @@ final class PriceRefreshController: ObservableObject {
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
     private var activeRefresh: Task<Void, Never>?
+    /// A caller that arrives during a pass must not lose its newer targets.
+    /// Keep them as a trailing queue; the owner drains it before exposing the
+    /// refresh as finished.
+    private var pendingRefreshBatches: [PendingRefreshBatch] = []
+
+    private struct PendingRefreshBatch {
+        var targets: [PriceTarget]
+        let store: PriceStore
+    }
 
     private var isRefreshing: Bool {
         if case .refreshing = status { return true }
@@ -296,23 +305,26 @@ final class PriceRefreshController: ObservableObject {
     ///   looking at becomes fresh first.
     ///
     /// A second caller arriving while a pass is already running waits for that
-    /// pass instead of returning. Returning was a silent no-op: pulling to
-    /// refresh during the automatic startup check looked like a button that did
-    /// nothing.
+    /// pass and queues any targets it added. Returning the second caller's
+    /// targets was a silent no-op: pulling to refresh during the automatic
+    /// startup check looked like a button that did nothing.
     func refresh(_ targets: [PriceTarget], store: PriceStore) async {
         if let activeRefresh {
+            enqueuePending(targets, store: store)
             await activeRefresh.value
             return
         }
         guard !targets.isEmpty else { return }
 
+        // The active task represents the whole queue, not just the first pass.
+        // A caller that joins after the first pass has completed must remain
+        // suspended until its trailing targets have been processed too.
         let task = Task { @MainActor [weak self] in
             guard let self else { return }
-            await self.performRefresh(targets, store: store)
+            await self.runRefreshQueue(startingWith: targets, store: store)
         }
         activeRefresh = task
         await task.value
-        activeRefresh = nil
         if let pending = pendingFallbackWork {
             await updateFallbackAvailability(pending: pending)
         }
@@ -323,6 +335,59 @@ final class PriceRefreshController: ObservableObject {
     /// data some view is keyed on.
     func cancelRefresh() {
         activeRefresh?.cancel()
+        pendingRefreshBatches.removeAll()
+    }
+
+    private func runRefreshQueue(
+        startingWith initialTargets: [PriceTarget],
+        store initialStore: PriceStore
+    ) async {
+        // The active marker is cleared in the same actor turn as the final
+        // empty-queue check. A late caller can therefore either join a live
+        // queue or start a new one; it cannot enqueue work after this queue has
+        // already decided there is nothing left to process.
+        defer { activeRefresh = nil }
+        var targets = initialTargets
+        var store = initialStore
+        while !targets.isEmpty {
+            await performRefresh(targets, store: store)
+
+            guard !Task.isCancelled else { return }
+            guard let pending = takePendingRefresh() else { break }
+            targets = pending.targets
+            store = pending.store
+        }
+    }
+
+    private func enqueuePending(_ targets: [PriceTarget], store: PriceStore) {
+        guard !targets.isEmpty else { return }
+        if let index = pendingRefreshBatches.indices.last,
+           ObjectIdentifier(pendingRefreshBatches[index].store.context)
+                == ObjectIdentifier(store.context) {
+            var byID: [String: PriceTarget] = [:]
+            var order: [String] = []
+            for target in pendingRefreshBatches[index].targets {
+                if byID[target.id] == nil { order.append(target.id) }
+                byID[target.id] = target
+            }
+            for target in targets {
+                if byID[target.id] == nil { order.append(target.id) }
+                byID[target.id] = target
+            }
+            pendingRefreshBatches[index].targets = order.compactMap { byID[$0] }
+        } else {
+            pendingRefreshBatches.append(
+                PendingRefreshBatch(
+                    targets: targets,
+                    store: store
+                )
+            )
+        }
+    }
+
+    private func takePendingRefresh() -> PendingRefreshBatch? {
+        guard !pendingRefreshBatches.isEmpty else { return nil }
+        return pendingRefreshBatches.removeFirst()
     }
 
     private func performRefresh(_ targets: [PriceTarget], store: PriceStore) async {
@@ -848,6 +913,10 @@ final class PriceRefreshController: ObservableObject {
         // same response, so the refresh that pays for one may as well store the
         // other rather than leaving a placeholder box on screen forever.
         let artworkPending = Self.rowsMissingArtwork(in: store.context)
+        // Artwork is an optional backfill, but marketplace identity is useful
+        // for every owned row. Keep separate indexes so an already illustrated
+        // card still receives the product/SKU handles returned by this pass.
+        let identityRows = Self.rowsByPriceKey(in: store.context)
 
         // MARK: Batched pass
         let coordinator = JustTCGRefreshCoordinator(
@@ -875,7 +944,8 @@ final class PriceRefreshController: ObservableObject {
                         owners: owners,
                         store: store,
                         identities: identities,
-                        rowsByPriceKey: artworkPending
+                        artworkRowsByPriceKey: artworkPending,
+                        identityRowsByPriceKey: identityRows
                     )
                 },
                 unmatched: { owners in
@@ -1098,6 +1168,13 @@ final class PriceRefreshController: ObservableObject {
         return Dictionary(grouping: rows, by: \.priceKey)
     }
 
+    private static func rowsByPriceKey(
+        in context: ModelContext
+    ) -> [String: [CollectedCard]] {
+        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        return Dictionary(grouping: rows, by: \.priceKey)
+    }
+
     /// Applies product artwork independently of whether the returned variant
     /// has a market price. A completed response without a usable marketplace
     /// image is stamped at the current resolver version so an already-priced
@@ -1158,7 +1235,8 @@ final class PriceRefreshController: ObservableObject {
         owners: [MarketPriceTarget],
         store: PriceStore,
         identities: ProductIdentityStore,
-        rowsByPriceKey: [String: [CollectedCard]],
+        artworkRowsByPriceKey: [String: [CollectedCard]],
+        identityRowsByPriceKey: [String: [CollectedCard]],
         fetchedAt: Date = .now
     ) {
         // This callback is a second line of defence after the coordinator's
@@ -1169,7 +1247,7 @@ final class PriceRefreshController: ObservableObject {
         recordSealedArtwork(
             from: card,
             for: owners,
-            rowsByPriceKey: rowsByPriceKey,
+            rowsByPriceKey: artworkRowsByPriceKey,
             checkedAt: fetchedAt
         )
         for owner in owners {
@@ -1183,7 +1261,7 @@ final class PriceRefreshController: ObservableObject {
             // Marketplace identity is catalog metadata: once the vendor has
             // told us which TCGplayer product this printing is, that stays
             // local, so opening the marketplace never needs a live request.
-            for row in rowsByPriceKey[owner.priceKey] ?? [] {
+            for row in identityRowsByPriceKey[owner.priceKey] ?? [] {
                 if let productID = card.tcgplayerId, row.tcgplayerProductID == nil {
                     row.tcgplayerProductID = productID
                 }
@@ -1222,6 +1300,31 @@ final class PriceRefreshController: ObservableObject {
                 record.periodChangeCount = variant.priceChangesCount7d
             }
         }
+    }
+
+    /// Compatibility overload for callers that already have one row index.
+    /// Identity persistence is now intentionally broader than artwork
+    /// backfill, but existing support/test callers should keep compiling while
+    /// they migrate to the two-index form.
+    static func applyVendorBatchHit(
+        card: JustTCGCard,
+        variant: JustTCGVariant,
+        owners: [MarketPriceTarget],
+        store: PriceStore,
+        identities: ProductIdentityStore,
+        rowsByPriceKey: [String: [CollectedCard]],
+        fetchedAt: Date = .now
+    ) {
+        applyVendorBatchHit(
+            card: card,
+            variant: variant,
+            owners: owners,
+            store: store,
+            identities: identities,
+            artworkRowsByPriceKey: rowsByPriceKey,
+            identityRowsByPriceKey: rowsByPriceKey,
+            fetchedAt: fetchedAt
+        )
     }
 
     /// How often the fallback commits progress mid-run.
