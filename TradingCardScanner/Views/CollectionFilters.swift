@@ -21,6 +21,7 @@ struct CollectionFilterSheet: View {
     @Binding var sort: CollectionSort
     let setOptions: [FilterOption]
     let finishOptions: [FilterOption]
+    var treatmentOptions: [FilterOption] = []
     let gradingCompanyOptions: [FilterOption]
     let gradeOptions: [FilterOption]
 
@@ -87,6 +88,18 @@ struct CollectionFilterSheet: View {
                         )
                     } label: {
                         detailRow("Finish", value: selectionLabel(filters.variantIDs, singular: "finish"))
+                    }
+                    NavigationLink {
+                        MultiSelectFilterView(
+                            title: "Treatment",
+                            options: treatmentOptions,
+                            selection: $filters.treatmentIDs
+                        )
+                    } label: {
+                        detailRow(
+                            "Treatment",
+                            value: selectionLabel(filters.treatmentIDs, singular: "treatment")
+                        )
                     }
                 }
 
@@ -168,6 +181,7 @@ struct CollectionFilterSheet: View {
                 filters.game = game
                 filters.setCodes.removeAll()
                 filters.variantIDs.removeAll()
+                filters.treatmentIDs.removeAll()
             }
         )
     }

@@ -330,6 +330,13 @@ struct CollectionStore {
             if snapshotTreatmentIDs.isEmpty {
                 snapshot.magicTreatmentIDsRaw = finalTreatmentIDs
             }
+            if snapshot.magicTreatmentQualifiersJSON == nil {
+                snapshot.magicTreatmentQualifiersJSON = row.magicTreatmentQualifiersJSON
+            }
+            if snapshot.magicContentKindRaw == nil,
+               row.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                snapshot.magicContentKindRaw = row.magicContentKindRaw
+            }
             return (activity, snapshot)
         }
 
@@ -351,6 +358,13 @@ struct CollectionStore {
             activity.collectionKey = canonicalKey
             if activity.magicTreatmentIDsRaw.isEmpty {
                 activity.magicTreatmentIDsRaw = finalTreatmentIDs
+            }
+            if activity.magicTreatmentQualifiersJSON == nil {
+                activity.magicTreatmentQualifiersJSON = row.magicTreatmentQualifiersJSON
+            }
+            if activity.magicContentKindRaw == MagicContentKind.regular.rawValue,
+               row.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                activity.magicContentKindRaw = row.magicContentKindRaw
             }
             if let snapshot {
                 activity.removalSnapshotData = try JSONEncoder().encode(snapshot)
@@ -682,6 +696,9 @@ struct CollectionStore {
     ) throws -> CollectionMutation {
         do {
             let magicTreatments = card.unambiguousMagicTreatments
+            let magicTreatmentQualifiers = card.variantEvidence.catalogVariants.count == 1
+                ? card.magicTreatmentQualifiers(for: card.variantEvidence.catalogVariants[0])
+                : [:]
             let key = CollectedCard.gradedCollectionKey(
                 game: card.game,
                 underlyingPrintingID: card.providerID,
@@ -698,6 +715,12 @@ struct CollectionStore {
                ) {
             existing.quantity += 1
             existing.dateAdded = .now
+            if existing.magicTreatmentQualifiersJSON == nil {
+                existing.magicTreatmentQualifiers = magicTreatmentQualifiers
+            }
+            if existing.magicContentKind == .regular {
+                existing.magicContentKindRaw = card.magicContentKind.rawValue
+            }
             storeMarketPrice(
                 variant.marketPriceUSD,
                 updatedAt: variant.updatedAt,
@@ -747,7 +770,9 @@ struct CollectionStore {
             variantResolution: .userConfirmed,
             identityResolution: .catalogSelected,
             setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
-            magicTreatments: magicTreatments
+            magicTreatments: magicTreatments,
+            magicTreatmentQualifiers: magicTreatmentQualifiers,
+            magicContentKind: card.magicContentKind
         )
         row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         row.justTCGVariantID = variant.id
@@ -982,6 +1007,7 @@ struct CollectionStore {
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
                 from: card.magicTreatments(for: resolved.variant)
             )
+            let treatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
 
             let existing = try uniqueCard(
                 forAnyKey: key,
@@ -999,6 +1025,12 @@ struct CollectionStore {
                 existing.dateAdded = .now
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = treatmentIDs
+                }
+                if existing.magicTreatmentQualifiersJSON == nil {
+                    existing.magicTreatmentQualifiers = treatmentQualifiers
+                }
+                if existing.magicContentKind == .regular {
+                    existing.magicContentKindRaw = card.magicContentKind.rawValue
                 }
                 mutation = CollectionMutation(
                     collectionKey: existing.collectionKey,
@@ -1649,6 +1681,8 @@ struct CollectionStore {
         activityToRetarget.variantID = correctedCard.variantID
         activityToRetarget.variantLabel = correctedCard.variantLabel
         activityToRetarget.magicTreatmentIDsRaw = correctedCard.magicTreatmentIDsRaw
+        activityToRetarget.magicTreatmentQualifiersJSON = correctedCard.magicTreatmentQualifiersJSON
+        activityToRetarget.magicContentKindRaw = correctedCard.magicContentKindRaw
         activityToRetarget.pokemonPrintRunRaw = correctedCard.pokemonPrintRunRaw
         activityToRetarget.correctedAt = .now
         activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
@@ -1712,7 +1746,18 @@ struct CollectionStore {
             let base = parts.first.map(String.init) ?? previous.collectionKey
             let runSuffix = parts.dropFirst().first.map { "@\($0)" } ?? ""
             let identityBase = base.split(separator: "#", maxSplits: 1).first.map(String.init) ?? base
-            let correctedTreatmentIDs = previous.magicTreatmentIDs(for: corrected.variant)
+            let correctedTreatmentEvidence = MagicTreatmentEvidence(
+                treatments: previous.magicTreatmentIDs(for: corrected.variant)
+                    .compactMap(MagicTreatment.init(id:)),
+                qualifiers: previous.magicTreatmentQualifiers
+            )
+            let correctedTreatments = correctedTreatmentEvidence.treatments
+            let correctedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+                from: correctedTreatments
+            )
+            let correctedTreatmentQualifiers = Dictionary(uniqueKeysWithValues: correctedTreatments.compactMap { treatment in
+                correctedTreatmentEvidence.qualifier(for: treatment).map { (treatment.id, $0) }
+            })
             let destinationKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
                 base: identityBase,
                 game: previous.cardGame,
@@ -1743,6 +1788,9 @@ struct CollectionStore {
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = correctedTreatmentIDs
                 }
+                if existing.magicTreatmentQualifiersJSON == nil {
+                    existing.magicTreatmentQualifiers = correctedTreatmentQualifiers
+                }
                 correctedRow = existing
             } else {
                 let inserted = CollectedCard(
@@ -1761,14 +1809,8 @@ struct CollectionStore {
                     identityResolution: previousSnapshot.identityResolution,
                     setReleaseOrder: previousSnapshot.setReleaseOrder,
                     quantity: quantity,
-                    magicTreatments: previous.magicTreatments.filter { treatment in
-                        guard let correctedVariant = corrected.variant else {
-                            return treatment.requiredFinish == nil
-                        }
-                        guard let requiredFinish = treatment.requiredFinish else { return true }
-                        return requiredFinish.id.caseInsensitiveCompare(correctedVariant.id)
-                            == .orderedSame
-                    }
+                    magicTreatments: correctedTreatments,
+                    magicTreatmentQualifiers: correctedTreatmentQualifiers
                 )
                 inserted.catalogProviderID = previousSnapshot.catalogProviderID
                 inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
@@ -1786,6 +1828,10 @@ struct CollectionStore {
                 inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
                 inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw
                 inserted.magicTreatmentIDsRaw = correctedTreatmentIDs
+                inserted.magicTreatmentQualifiersJSON = MagicTreatmentKeyCodec.encodeQualifiers(
+                    correctedTreatmentQualifiers
+                )
+                inserted.magicContentKindRaw = previousSnapshot.magicContentKindRaw ?? MagicContentKind.regular.rawValue
                 inserted.catalogMetadataCheckedAt = previousSnapshot.catalogMetadataCheckedAt
                 inserted.catalogMetadataVersion = previousSnapshot.catalogMetadataVersion
                 inserted.gradingCompanyRaw = previousSnapshot.gradingCompanyRaw
@@ -1817,6 +1863,7 @@ struct CollectionStore {
             activityToRetarget.variantID = correctedRow.variantID
             activityToRetarget.variantLabel = correctedRow.variantLabel
             activityToRetarget.magicTreatmentIDsRaw = correctedRow.magicTreatmentIDsRaw
+            activityToRetarget.magicTreatmentQualifiersJSON = correctedRow.magicTreatmentQualifiersJSON
             activityToRetarget.pokemonPrintRunRaw = correctedRow.pokemonPrintRunRaw
             activityToRetarget.correctedAt = .now
             activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
@@ -1865,6 +1912,8 @@ struct RemovedCardSnapshot: Identifiable, Codable {
     /// Optional so snapshots written before treatment identity existed decode
     /// as the empty treatment axis during restore.
     var magicTreatmentIDsRaw: [String]?
+    var magicTreatmentQualifiersJSON: String?
+    var magicContentKindRaw: String?
     let imageURL: String?
     let thumbnailURL: String?
     let userArtworkFilename: String?
@@ -1902,6 +1951,8 @@ struct RemovedCardSnapshot: Identifiable, Codable {
         cardNumber = card.cardNumber
         rarity = card.rarity
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
+        magicTreatmentQualifiersJSON = card.magicTreatmentQualifiersJSON
+        magicContentKindRaw = card.magicContentKindRaw
         imageURL = card.imageURL
         thumbnailURL = card.thumbnailURL
         userArtworkFilename = card.userArtworkFilename
@@ -1953,6 +2004,14 @@ struct RemovedCardSnapshot: Identifiable, Codable {
                     from: magicTreatmentIDsRaw ?? []
                 )
             }
+            if existing.magicTreatmentQualifiersJSON == nil {
+                existing.magicTreatmentQualifiersJSON = magicTreatmentQualifiersJSON
+            }
+            if existing.magicContentKindRaw == MagicContentKind.regular.rawValue,
+               let magicContentKindRaw,
+               magicContentKindRaw != MagicContentKind.regular.rawValue {
+                existing.magicContentKindRaw = magicContentKindRaw
+            }
         } else {
             let restored = CollectedCard(
                 collectionKey: collectionKey,
@@ -1971,7 +2030,11 @@ struct RemovedCardSnapshot: Identifiable, Codable {
                 setReleaseOrder: setReleaseOrder,
                 quantity: quantity,
                 dateAdded: dateAdded,
-                magicTreatments: (magicTreatmentIDsRaw ?? []).compactMap(MagicTreatment.init(id:))
+                magicTreatments: (magicTreatmentIDsRaw ?? []).compactMap(MagicTreatment.init(id:)),
+                magicTreatmentQualifiers: MagicTreatmentKeyCodec.decodeQualifiers(
+                    magicTreatmentQualifiersJSON
+                ),
+                magicContentKind: MagicContentKind(rawValue: magicContentKindRaw ?? "") ?? .regular
             )
             restored.tcgplayerURL = tcgplayerURL
             restored.tcgplayerProductID = tcgplayerProductID
@@ -1991,6 +2054,7 @@ struct RemovedCardSnapshot: Identifiable, Codable {
             restored.gradingQualifier = gradingQualifier
             restored.certificationNumber = certificationNumber
             restored.marketRegionRaw = marketRegionRaw
+            restored.magicContentKindRaw = magicContentKindRaw ?? MagicContentKind.regular.rawValue
             context.insert(restored)
         }
 

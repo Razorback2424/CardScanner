@@ -372,6 +372,135 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
     }
 
+    func testPreTreatmentCSVUsesCollectionReadThrough() throws {
+        let context = try makeContext()
+        let existing = CollectedCard(
+            collectionKey: "magic:printing#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(existing)
+        try context.save()
+
+        // This is the shape exported before Slice 5 appended the treatment
+        // column: the old finish key is the treatment-free alias.
+        let csv = """
+        game,provider_id,card_name,set_name,set_code,card_number,finish,finish_name,quantity
+        magic,printing,Fixture,Fixture Set,FIC,10,foil,Foil,1
+        """
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+        let result = try CollectionCSV.apply(plan, to: context)
+
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.insertedEntries, 0)
+        XCTAssertEqual(existing.quantity, 2)
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<CollectedCard>()).map(\.collectionKey),
+            ["magic:printing#foil#treatment=surgefoil"]
+        )
+    }
+
+    func testPostTreatmentCSVUsesCollectionReadThroughForLegacyRow() throws {
+        let context = try makeContext()
+        let existing = CollectedCard(
+            collectionKey: "magic:printing#foil",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed
+        )
+        context.insert(existing)
+        try context.save()
+
+        let source = CollectedCard(
+            collectionKey: "magic:printing#foil#treatment=neonink",
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.neonInk],
+            magicTreatmentQualifiers: ["neonink": "red"]
+        )
+
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([source]).text.utf8)
+        )
+        let result = try CollectionCSV.apply(plan, to: context)
+
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.insertedEntries, 0)
+        XCTAssertEqual(existing.collectionKey, source.collectionKey)
+        XCTAssertEqual(existing.magicTreatmentIDsRaw, ["neonink"])
+        XCTAssertEqual(existing.magicTreatmentQualifiers, ["neonink": "red"])
+        XCTAssertEqual(existing.quantity, 2)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testCSVImportStoresUnknownTreatmentAndContentKindWithoutProjectingIt() throws {
+        let context = try makeContext()
+        let unknown = try XCTUnwrap(MagicTreatment(id: "Future / Foil"))
+        let source = CollectedCard(
+            collectionKey: MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: "magic:printing",
+                game: .magic,
+                finish: .foil,
+                treatments: [unknown]
+            ),
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [unknown],
+            magicTreatmentQualifiers: ["Future / Foil": "publisher stamp"]
+        )
+        source.magicContentKindRaw = "future-face"
+
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([source]).text.utf8)
+        )
+        _ = try CollectionCSV.apply(plan, to: context)
+        let stored = try XCTUnwrap(
+            context.fetch(FetchDescriptor<CollectedCard>()).first
+        )
+
+        XCTAssertEqual(stored.magicTreatmentIDsRaw, ["Future / Foil"])
+        XCTAssertEqual(stored.magicTreatmentQualifiers, ["future / foil": "publisher stamp"])
+        XCTAssertEqual(stored.magicContentKindRaw, "future-face")
+        XCTAssertEqual(stored.magicContentKind, .regular)
+        XCTAssertEqual(stored.variant, .foil)
+    }
+
     func testNewCatalogSelectionStoresCatalogProvenanceAndUndoes() throws {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
@@ -817,6 +946,19 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(query(cards, sort: .priceLowToHigh, prices: prices).map(\.collectorNumber), ["10", "2", "1"])
     }
 
+    func testCatalogSetQuerySortsCollectorNumberSuffixesNaturally() {
+        let cards = [
+            magicSummary(id: "suffix-b", number: "525b"),
+            magicSummary(id: "bare", number: "525"),
+            magicSummary(id: "suffix-a", number: "525a")
+        ]
+
+        XCTAssertEqual(
+            query(cards).map(\.collectorNumber),
+            ["525", "525a", "525b"]
+        )
+    }
+
     func testSetQueryFiltersOwnedAndNotOwnedIncludingCatalogAliases() {
         let ownedSummary = summary(id: "set-1", number: "1")
         let unownedSummary = summary(id: "set-2", number: "2")
@@ -831,6 +973,69 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(
             query([ownedSummary, unownedSummary], ownership: .notOwned, ownedCards: [alias]).map(\.id),
             [unownedSummary.id]
+        )
+    }
+
+    func testCatalogSummaryCarriesTreatmentAndQualifierWithoutChangingItsSlotID() throws {
+        let summary = magicSummary(
+            id: "printing",
+            number: "429",
+            treatments: [MagicTreatment.neonInk.id],
+            qualifiers: [MagicTreatment.neonInk.id: "red"]
+        )
+        let decoded = try JSONDecoder().decode(
+            CatalogCardSummary.self,
+            from: JSONEncoder().encode(summary)
+        )
+
+        XCTAssertEqual(decoded.magicTreatmentIDsRaw, ["neonink"])
+        XCTAssertEqual(decoded.magicTreatmentDisplayLabel, "Neon Ink · Red")
+        XCTAssertEqual(decoded.id, summary.id)
+    }
+
+    func testBrowseOwnershipRequiresTreatmentWhenTheSummarySpecifiesOne() {
+        let summary = magicSummary(
+            id: "fic-10",
+            number: "10",
+            treatments: [MagicTreatment.surgeFoil.id]
+        )
+        let genericFoil = magicCompletionCard(number: "10", variant: .foil)
+        let treatedFoil = magicCompletionCard(
+            number: "10",
+            variant: .foil,
+            treatments: [.surgeFoil]
+        )
+        let nonfoil = magicCompletionCard(number: "10", variant: .nonfoil)
+
+        XCTAssertFalse(SetCompletionCalculator.owns(summary, cards: [genericFoil]))
+        XCTAssertFalse(SetCompletionCalculator.owns(summary, cards: [nonfoil]))
+        XCTAssertTrue(SetCompletionCalculator.owns(summary, cards: [treatedFoil]))
+        XCTAssertEqual(
+            CatalogOwnershipIndex([genericFoil, treatedFoil]).quantity(of: summary),
+            1
+        )
+    }
+
+    func testSetCompletionDoesNotCreateATreatmentSlotAndKeepsSuffixesDistinct() {
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "fic"),
+            name: "Final Fantasy Commander",
+            code: "FIC",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 2,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let owned = [
+            magicCompletionCard(number: "523a", variant: .foil),
+            magicCompletionCard(number: "523a", variant: .foil, treatments: [.surgeFoil]),
+            magicCompletionCard(number: "523b", variant: .foil)
+        ]
+
+        XCTAssertEqual(
+            SetCompletionCalculator.progress(for: set, cards: owned),
+            SetCompletion(owned: 2, total: 2, unit: "cards")
         )
     }
 
@@ -865,7 +1070,11 @@ final class BrowseCollectionTests: XCTestCase {
         )
     }
 
-    private func summary(id: String, number: String) -> CatalogCardSummary {
+    private func summary(
+        id: String,
+        number: String,
+        treatments: [String] = []
+    ) -> CatalogCardSummary {
         CatalogCardSummary(
             game: .pokemon,
             providerID: id,
@@ -875,7 +1084,51 @@ final class BrowseCollectionTests: XCTestCase {
             name: "Card \(number)",
             collectorNumber: number,
             thumbnailURL: nil,
-            imageURL: nil
+            imageURL: nil,
+            magicTreatmentIDsRaw: treatments
+        )
+    }
+
+    private func magicSummary(
+        id: String,
+        number: String,
+        treatments: [String] = [],
+        qualifiers: [String: String] = [:]
+    ) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: .magic,
+            providerID: id,
+            setID: CatalogSetID(game: .magic, providerID: "fic"),
+            setName: "Final Fantasy Commander",
+            setCode: "FIC",
+            name: "Fixture",
+            collectorNumber: number,
+            thumbnailURL: nil,
+            imageURL: nil,
+            magicTreatmentIDsRaw: treatments,
+            magicTreatmentQualifiers: qualifiers
+        )
+    }
+
+    private func magicCompletionCard(
+        number: String,
+        variant: PhysicalVariant,
+        treatments: [MagicTreatment] = []
+    ) -> CollectedCard {
+        CollectedCard(
+            collectionKey: "magic:fic-\(number)#\(variant.id)",
+            game: .magic,
+            providerID: "fic-\(number)",
+            name: "Fixture",
+            setName: "Final Fantasy Commander",
+            setCode: "FIC",
+            cardNumber: number,
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: variant,
+            variantResolution: .userConfirmed,
+            magicTreatments: treatments
         )
     }
 

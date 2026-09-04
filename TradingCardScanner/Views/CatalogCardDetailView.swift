@@ -165,7 +165,7 @@ struct CatalogCardDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Owned").font(.headline)
                 ForEach(rows) { row in
-                    LabeledContent(row.variant?.label ?? "Unknown finish", value: "\(row.quantity)")
+                    LabeledContent(ownedLabel(for: row), value: "\(row.quantity)")
                 }
             }
             .padding(14)
@@ -238,6 +238,7 @@ struct CatalogCardDetailView: View {
         let catalogLookup = CardPricing.price(
             for: details.card,
             variant: resolved.variant,
+            magicTreatments: details.card.magicTreatments(for: resolved.variant),
             pokemonPrintRun: summary.pokemonPrintRun
         )
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
@@ -316,13 +317,14 @@ struct CatalogCardDetailView: View {
     }
 
     private func ownedRows(_ card: IdentifiedCard) -> [CollectedCard] {
-        ownedCards.filter {
-            ($0.providerID == card.providerID || $0.catalogProviderID == card.providerID)
-                && (summary.pokemonPrintRun == .unlimited
-                    ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
-                    : $0.pokemonPrintRun == summary.pokemonPrintRun)
-        }
+        ownedCards.filter { SetCompletionCalculator.owns(summary, cards: [$0]) }
             .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
+    }
+
+    private func ownedLabel(for row: CollectedCard) -> String {
+        [row.variant?.label ?? "Unknown finish", row.displayedMagicTreatmentEvidence.displayLabel]
+            .compactMap { $0 }
+            .joined(separator: " · ")
     }
 
     private func addedBanner(_ mutation: CollectionMutation) -> some View {

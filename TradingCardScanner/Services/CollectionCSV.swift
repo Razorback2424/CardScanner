@@ -55,6 +55,13 @@ struct CollectionCSVEntry: Sendable {
     /// JSON in the CSV cell keeps the treatment axis lossless even when an
     /// unclassified future id contains punctuation or whitespace.
     var magicTreatmentIDsRaw: [String] = []
+    /// Qualifiers are a separate axis from the treatment id. They remain
+    /// optional so CSVs written before publisher-backed qualifiers existed
+    /// continue to decode without inventing a value.
+    var magicTreatmentQualifiers: [String: String] = [:]
+    /// Preserve the raw content-kind value for forward-compatible imports.
+    /// Known values are projected to `MagicContentKind` when a card is stored.
+    var magicContentKindRaw: String = MagicContentKind.regular.rawValue
     let importedMarketPriceUSD: Double?
     let importedPriceAsOf: Date?
     var quantity: Int
@@ -100,7 +107,8 @@ enum CollectionCSV {
         "item_kind", "justtcg_card_id", "justtcg_variant_id",
         "justtcg_api_version", "grading_company", "grade", "grade_label",
         "grading_qualifier", "certification_number", "market_region",
-        "pokemon_print_run", "magic_treatment_ids"
+        "pokemon_print_run", "magic_treatment_ids", "magic_treatment_qualifiers",
+        "magic_content_kind"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -108,7 +116,8 @@ enum CollectionCSV {
         let rows = cards.sorted { left, right in
             if left.game != right.game { return left.game < right.game }
             if left.setCode != right.setCode { return left.setCode < right.setCode }
-            if left.cardNumber != right.cardNumber { return left.cardNumber < right.cardNumber }
+            let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
+            if byNumber != .orderedSame { return byNumber == .orderedAscending }
             return (left.variantID ?? "") < (right.variantID ?? "")
         }.map { card in
             [
@@ -138,7 +147,9 @@ enum CollectionCSV {
                 card.certificationNumber ?? "",
                 card.marketRegionRaw ?? "",
                 card.pokemonPrintRun?.rawValue ?? "",
-                encodedTreatmentIDs(card.magicTreatmentIDsRaw)
+                encodedTreatmentIDs(card.magicTreatmentIDsRaw),
+                MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
+                card.magicContentKindRaw
             ]
         }
 
@@ -276,7 +287,7 @@ enum CollectionCSV {
             "quantity", "diagnostic", "price_status", "price_usd", "price_source",
             "price_listing", "last_price_check", "price_refresh_failed",
             "image_url", "thumbnail_url", "catalog_metadata_checked_at",
-            "magic_treatment_ids"
+            "magic_treatment_ids", "magic_treatment_qualifiers", "magic_content_kind"
         ]
         let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
             let record = PriceStore.record(for: card, in: recordsByKey)
@@ -301,7 +312,9 @@ enum CollectionCSV {
                 card.imageURL ?? "",
                 card.thumbnailURL ?? "",
                 card.catalogMetadataCheckedAt.map { formatter.string(from: $0) } ?? "",
-                encodedTreatmentIDs(card.magicTreatmentIDsRaw)
+                encodedTreatmentIDs(card.magicTreatmentIDsRaw),
+                MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
+                card.magicContentKindRaw
             ]
         }
         let text = ([headers] + rows)
@@ -313,9 +326,19 @@ enum CollectionCSV {
     private static func diagnosticSort(_ left: CollectedCard, _ right: CollectedCard) -> Bool {
         if left.game != right.game { return left.game < right.game }
         if left.setName != right.setName { return left.setName < right.setName }
-        if left.cardNumber != right.cardNumber { return left.cardNumber < right.cardNumber }
+        let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
+        if byNumber != .orderedSame { return byNumber == .orderedAscending }
         if left.name != right.name { return left.name < right.name }
         return (left.variantID ?? "") < (right.variantID ?? "")
+    }
+
+    private static func entrySort(_ left: CollectionCSVEntry, _ right: CollectionCSVEntry) -> Bool {
+        if left.game != right.game { return left.game.rawValue < right.game.rawValue }
+        if left.setCode != right.setCode { return left.setCode < right.setCode }
+        let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
+        if byNumber != .orderedSame { return byNumber == .orderedAscending }
+        if left.name != right.name { return left.name < right.name }
+        return left.collectionKey < right.collectionKey
     }
 
     private static func priceStatus(_ record: PriceRecord?) -> String {
@@ -386,7 +409,7 @@ enum CollectionCSV {
 
         guard !entriesByKey.isEmpty else { throw CollectionCSVError.noCards }
         return CollectionCSVImportPlan(
-            entries: entriesByKey.values.sorted { $0.collectionKey < $1.collectionKey },
+            entries: entriesByKey.values.sorted(by: entrySort),
             skippedRows: skippedRows,
             skippedCSVText: skippedValues.isEmpty
                 ? nil
@@ -408,6 +431,28 @@ enum CollectionCSV {
             var cardsByKey = LogicalCollection.project(cards: storedCards, ledger: ledger)
                 .byKey
                 .mapValues(\.representative)
+            // A pre-Slice-5 export has only the finish-qualified key. If the
+            // current store already knows the same printing under its newer
+            // treatment-qualified key, make that legacy key an import alias
+            // too. Keep the alias only while it is unambiguous; two canonical
+            // treatments sharing one legacy identity must not be guessed into
+            // one another.
+            var ambiguousLegacyKeys = Set<String>()
+            for position in LogicalCollection.project(cards: storedCards, ledger: ledger).positions {
+                for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
+                    for: position.collectionKey
+                ) {
+                    guard !ambiguousLegacyKeys.contains(legacyKey) else { continue }
+                    if let existing = cardsByKey[legacyKey],
+                       existing.collectionKey != position.collectionKey {
+                        cardsByKey.removeValue(forKey: legacyKey)
+                        ambiguousLegacyKeys.insert(legacyKey)
+                    } else {
+                        cardsByKey[legacyKey] = position.representative
+                    }
+                }
+            }
+            let collectionStore = CollectionStore(context: context)
             // One instant for the whole import, so every row lands on the same side
             // of a day boundary no matter how long the import takes.
             let recordedAt = Date.now
@@ -416,7 +461,20 @@ enum CollectionCSV {
 
             for entry in plan.entries {
                 let storedCard: CollectedCard
-                if let existing = cardsByKey[entry.collectionKey] {
+                // A newer CSV can carry a treatment-qualified key while the
+                // destination store still has its treatment-free row. Let the
+                // same read-through/repair path used by scanning adopt it
+                // before deciding whether this import is an insert or merge.
+                let existing: CollectedCard?
+                if let directMatch = cardsByKey[entry.collectionKey] {
+                    existing = directMatch
+                } else {
+                    existing = try collectionStore.card(
+                        forAnyKey: entry.collectionKey,
+                        magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw
+                    )
+                }
+                if let existing {
                     existing.quantity += entry.quantity
                     existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
                     if existing.imageURL == nil { existing.imageURL = entry.imageURL }
@@ -429,7 +487,17 @@ enum CollectionCSV {
                             from: entry.magicTreatmentIDsRaw
                         )
                     }
+                    if existing.magicTreatmentQualifiers.isEmpty,
+                       !entry.magicTreatmentQualifiers.isEmpty {
+                        existing.magicTreatmentQualifiers = entry.magicTreatmentQualifiers
+                    }
+                    if existing.magicContentKindRaw == MagicContentKind.regular.rawValue,
+                       entry.magicContentKindRaw != MagicContentKind.regular.rawValue {
+                        existing.magicContentKindRaw = entry.magicContentKindRaw
+                    }
                     storedCard = existing
+                    cardsByKey[entry.collectionKey] = existing
+                    cardsByKey[existing.collectionKey] = existing
                     merged += 1
                 } else {
                     let card = CollectedCard(
@@ -448,7 +516,9 @@ enum CollectionCSV {
                         identityResolution: .imported,
                         quantity: entry.quantity,
                         dateAdded: entry.dateAdded,
-                        magicTreatments: entry.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
+                        magicTreatments: entry.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
+                        magicTreatmentQualifiers: entry.magicTreatmentQualifiers,
+                        magicContentKind: MagicContentKind(rawValue: entry.magicContentKindRaw) ?? .regular
                     )
                     // What kind of object this is, and — for a slab — the grade the
                     // export stated. The vendor's variant UUID is not known from a
@@ -464,6 +534,9 @@ enum CollectionCSV {
                     card.justTCGAPIVersion = entry.justTCGAPIVersion
                     card.certificationNumber = entry.certificationNumber
                     card.marketRegionRaw = entry.marketRegionRaw
+                    // Preserve an unknown future content-kind string even
+                    // though the current computed enum projects it to regular.
+                    card.magicContentKindRaw = entry.magicContentKindRaw
                     context.insert(card)
                     cardsByKey[entry.collectionKey] = card
                     storedCard = card
@@ -558,6 +631,12 @@ enum CollectionCSV {
         let suppliedThumbnail = nonempty(value(["thumbnail_url"], in: row))
         let imageURL = suppliedImage ?? scryfallImageURL(id: providerID, version: "normal", game: game)
         let thumbnailURL = suppliedThumbnail ?? scryfallImageURL(id: providerID, version: "small", game: game)
+        let treatmentQualifiers = decodedTreatmentQualifiers(
+            value(["magic_treatment_qualifiers", "treatment_qualifiers"], in: row)
+        )
+        let contentKindRaw = importedContentKindRaw(
+            value(["magic_content_kind", "content_kind"], in: row)
+        )
 
         if isScryfallExport {
             var result: [CollectionCSVEntry] = []
@@ -570,7 +649,9 @@ enum CollectionCSV {
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
                     variant: .nonfoil, quantity: nonfoilQuantity, dateAdded: importedDate,
-                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .nonfoil)
+                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .nonfoil),
+                    magicTreatmentQualifiers: treatmentQualifiers,
+                    magicContentKindRaw: contentKindRaw
                 ))
             }
             if foilQuantity > 0 {
@@ -579,7 +660,9 @@ enum CollectionCSV {
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
                     variant: .foil, quantity: foilQuantity, dateAdded: importedDate,
-                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .foil)
+                    magicTreatmentIDs: applicableTreatmentIDs(treatmentIDs, for: .foil),
+                    magicTreatmentQualifiers: treatmentQualifiers,
+                    magicContentKindRaw: contentKindRaw
                 ))
             }
             return result
@@ -623,7 +706,9 @@ enum CollectionCSV {
             justTCGAPIVersion: marketAPIVersion,
             certificationNumber: certificationNumber,
             marketRegionRaw: marketRegion,
-            magicTreatmentIDs: treatmentIDs
+            magicTreatmentIDs: treatmentIDs,
+            magicTreatmentQualifiers: treatmentQualifiers,
+            magicContentKindRaw: contentKindRaw
         )]
     }
 
@@ -727,7 +812,9 @@ enum CollectionCSV {
         justTCGAPIVersion: String? = nil,
         certificationNumber: String? = nil,
         marketRegionRaw: String? = nil,
-        magicTreatmentIDs: [String] = []
+        magicTreatmentIDs: [String] = [],
+        magicTreatmentQualifiers: [String: String] = [:],
+        magicContentKindRaw: String = MagicContentKind.regular.rawValue
     ) -> CollectionCSVEntry {
         let resolvedPrintRun = pokemonPrintRun
             ?? (variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
@@ -742,6 +829,12 @@ enum CollectionCSV {
             resolvedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)
         }
         let treatmentModels = resolvedTreatmentIDs.compactMap(MagicTreatment.init(id:))
+        let resolvedTreatmentIDsSet = Set(
+            MagicTreatmentKeyCodec.canonicalIDs(from: resolvedTreatmentIDs)
+        )
+        let resolvedTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
+            from: magicTreatmentQualifiers
+        ).filter { resolvedTreatmentIDsSet.contains($0.key) }
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
         let key: String
         switch itemKind {
@@ -816,6 +909,8 @@ enum CollectionCSV {
             thumbnailURL: thumbnailURL,
             variant: resolvedVariant,
             magicTreatmentIDsRaw: resolvedTreatmentIDs,
+            magicTreatmentQualifiers: resolvedTreatmentQualifiers,
+            magicContentKindRaw: magicContentKindRaw,
             importedMarketPriceUSD: importedMarketPriceUSD,
             importedPriceAsOf: importedPriceAsOf,
             quantity: quantity,
@@ -1051,6 +1146,19 @@ enum CollectionCSV {
             return []
         }
         return MagicTreatmentKeyCodec.storedIDs(from: ids)
+    }
+
+    private static func decodedTreatmentQualifiers(_ value: String?) -> [String: String] {
+        MagicTreatmentKeyCodec.decodeQualifiers(nonempty(value))
+    }
+
+    /// Known content kinds are canonicalized case-insensitively. Unknown raw
+    /// values remain untouched so a newer export can make a lossless trip
+    /// through an older app instead of being rewritten as a regular card.
+    private static func importedContentKindRaw(_ value: String?) -> String {
+        let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !trimmed.isEmpty else { return MagicContentKind.regular.rawValue }
+        return MagicContentKind(rawValue: trimmed.lowercased())?.rawValue ?? trimmed
     }
 
     /// Applies the one shared finish relationship to ids carried by an import.

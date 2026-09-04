@@ -13,6 +13,7 @@ final class CollectionQueryTests: XCTestCase {
         variant: PhysicalVariant? = .reverse,
         quantity: Int = 1,
         price: Double?,
+        treatmentIDs: [String] = [],
         asOf: Date? = .now
     ) -> CollectionRow {
         CollectionRow(
@@ -33,7 +34,8 @@ final class CollectionQueryTests: XCTestCase {
                 sourceUpdatedAt: price == nil ? nil : asOf,
                 fetchedAt: asOf,
                 lastCheckedAt: asOf
-            )
+            ),
+            magicTreatmentIDsRaw: treatmentIDs
         )
     }
 
@@ -48,11 +50,31 @@ final class CollectionQueryTests: XCTestCase {
 
     func testCollectorNumberSuffixesAndPrefixesSortNaturally() {
         XCTAssertEqual(CollectorNumber.compare("218", "218a"), .orderedAscending)
+        XCTAssertEqual(CollectorNumber.compare("525", "525a"), .orderedAscending)
+        XCTAssertEqual(CollectorNumber.compare("525a", "525b"), .orderedAscending)
+        XCTAssertEqual(CollectorNumber.compare("525b", "526"), .orderedAscending)
         XCTAssertEqual(CollectorNumber.compare("GG01", "GG10"), .orderedAscending)
         XCTAssertEqual(CollectorNumber.compare("0218", "218"), .orderedSame)
         // A purely alphabetic identifier has no number to compare, so it sorts
         // after the numbered ones rather than being treated as zero.
         XCTAssertEqual(CollectorNumber.compare("SWSH", "010"), .orderedDescending)
+    }
+
+    func testCardNumberSortKeepsBareNumberBeforeItsSuffixes() {
+        let rows = ["525b", "525", "525a"].map {
+            row(id: $0, number: $0, price: 1)
+        }
+
+        XCTAssertEqual(
+            CollectionQuery.sort(rows, by: .cardNumber).map(\.cardNumber),
+            ["525", "525a", "525b"]
+        )
+    }
+
+    func testCompletionCanonicalNumberStripsPaddingBeforeSuffix() {
+        XCTAssertEqual(SetCompletionCalculator.canonicalNumber("0523a"), "523a")
+        XCTAssertEqual(SetCompletionCalculator.canonicalNumber("0523B"), "523b")
+        XCTAssertEqual(SetCompletionCalculator.canonicalNumber("0523"), "523")
     }
 
     // MARK: - Set + card number
@@ -197,6 +219,64 @@ final class CollectionQueryTests: XCTestCase {
             Set(CollectionQuery.filter(rows, with: filters).map(\.id)),
             ["master", "poke"]
         )
+    }
+
+    func testTreatmentFilterRequiresTheSelectedTreatment() {
+        let rows = [
+            row(id: "generic", game: .magic, variant: .foil, price: 1),
+            row(
+                id: "surge",
+                game: .magic,
+                variant: .foil,
+                price: nil,
+                treatmentIDs: [MagicTreatment.surgeFoil.id]
+            ),
+            row(
+                id: "future",
+                game: .magic,
+                variant: .foil,
+                price: nil,
+                treatmentIDs: ["Future Treatment"]
+            )
+        ]
+        var filters = CollectionFilters.none
+        filters.treatmentIDs = [MagicTreatment.surgeFoil.id]
+
+        XCTAssertTrue(filters.isActive)
+        XCTAssertEqual(CollectionQuery.filter(rows, with: filters).map(\.id), ["surge"])
+    }
+
+    func testUnknownTreatmentCanBeFilteredWithoutBecomingAFinish() {
+        let row = row(
+            id: "future",
+            game: .magic,
+            variant: .foil,
+            price: nil,
+            treatmentIDs: ["Future Treatment"]
+        )
+        XCTAssertEqual(row.magicTreatments, [.unclassified("Future Treatment")])
+        XCTAssertEqual(row.variant, .foil)
+
+        var filters = CollectionFilters.none
+        filters.treatmentIDs = ["future treatment"]
+        XCTAssertEqual(CollectionQuery.filter([row], with: filters).map(\.id), ["future"])
+    }
+
+    func testKnownTreatmentOnTheWrongFinishIsNotShownOrFilterable() {
+        let row = row(
+            id: "contradictory",
+            game: .magic,
+            variant: .nonfoil,
+            price: nil,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+
+        XCTAssertTrue(row.magicTreatments.contains(.surgeFoil))
+        XCTAssertTrue(row.displayedMagicTreatments.isEmpty)
+
+        var filters = CollectionFilters.none
+        filters.treatmentIDs = [MagicTreatment.surgeFoil.id]
+        XCTAssertTrue(CollectionQuery.filter([row], with: filters).isEmpty)
     }
 
     /// An entry whose finish was never resolved cannot answer a finish question.

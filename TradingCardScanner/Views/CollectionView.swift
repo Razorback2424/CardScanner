@@ -126,6 +126,7 @@ struct CollectionView: View {
                 sort: $sort,
                 setOptions: setOptions(snapshot),
                 finishOptions: finishOptions(snapshot),
+                treatmentOptions: treatmentOptions(snapshot),
                 gradingCompanyOptions: gradingCompanyOptions(snapshot),
                 gradeOptions: gradeOptions(snapshot)
             )
@@ -446,6 +447,7 @@ struct CollectionView: View {
             + (filters.setCodes.isEmpty ? 0 : 1)
             + (filters.price == nil ? 0 : 1)
             + (filters.variantIDs.isEmpty ? 0 : 1)
+            + (filters.treatmentIDs.isEmpty ? 0 : 1)
             + (filters.gradingCompanies.isEmpty ? 0 : 1)
             + (filters.gradeValues.isEmpty ? 0 : 1)
     }
@@ -507,6 +509,8 @@ struct CollectionView: View {
                 quantity: position.quantity,
                 dateAdded: position.dateAdded,
                 price: PriceStore.record(for: card, in: recordsByKey)?.display ?? .unknown,
+                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
+                magicTreatmentQualifiers: card.magicTreatmentQualifiers,
                 itemKind: card.itemKind,
                 itemKindLabel: card.itemKindLabel,
                 gradingCompany: card.gradingCompany,
@@ -595,6 +599,30 @@ struct CollectionView: View {
                     count: row.quantity,
                     sortValue: variant.choicePriority
                 )
+            }
+        }
+
+        return orderedOptions(from: tallies)
+    }
+
+    private func treatmentOptions(_ snapshot: Snapshot) -> [FilterOption] {
+        var tallies: [String: OptionTally] = [:]
+
+        for row in rowsForOptions(snapshot) {
+            for treatment in row.displayedMagicTreatments {
+                let id = treatment.id
+                if var existing = tallies[id] {
+                    existing.count += row.quantity
+                    tallies[id] = existing
+                } else {
+                    tallies[id] = OptionTally(
+                        label: treatment.label,
+                        group: row.game.label,
+                        groupOrder: row.game.rawValue,
+                        count: row.quantity,
+                        sortValue: id == MagicTreatment.neonInk.id ? 1 : 0
+                    )
+                }
             }
         }
 
@@ -701,18 +729,27 @@ private struct CollectionCardTile: View {
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    switch card.itemKind {
-                    case .rawCard:
-                        if let variant = card.variant {
-                            CollectionFinishBadge(variant: variant)
+                    HStack(spacing: 4) {
+                        switch card.itemKind {
+                        case .rawCard:
+                            if let variant = card.variant {
+                                CollectionFinishBadge(variant: variant)
+                            }
+                        case .gradedCard, .sealedProduct:
+                            // A slab or a box has no raw finish, so the badge shows
+                            // what it actually is: `PSA 10`, `Sealed`.
+                            CollectionItemKindBadge(
+                                title: card.itemKindLabel,
+                                kind: card.itemKind
+                            )
                         }
-                    case .gradedCard, .sealedProduct:
-                        // A slab or a box has no raw finish, so the badge shows
-                        // what it actually is: `PSA 10`, `Sealed`.
-                        CollectionItemKindBadge(
-                            title: card.itemKindLabel,
-                            kind: card.itemKind
-                        )
+
+                        ForEach(
+                            Array(card.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
+                            id: \.offset
+                        ) { item in
+                            CollectionTreatmentBadge(label: item.element)
+                        }
                     }
                 }
 
@@ -744,6 +781,21 @@ private struct CollectionCardTile: View {
             return amount.formatted(.currency(code: price.currencyCode))
         }
         return price.state() == .unavailable ? "price unavailable" : "price not checked"
+    }
+}
+
+private struct CollectionTreatmentBadge: View {
+    let label: String
+
+    var body: some View {
+        Label(label, systemImage: "sparkles")
+            .font(.caption.weight(.semibold))
+            .lineLimit(1)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .foregroundStyle(.orange)
+            .background(Color.orange.opacity(0.16), in: Capsule())
+            .fixedSize(horizontal: true, vertical: false)
     }
 }
 

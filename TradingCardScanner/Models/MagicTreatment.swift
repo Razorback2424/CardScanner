@@ -163,7 +163,7 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
         qualifiers: [String: String] = [:]
     ) {
         self.treatments = treatments
-        self.qualifiers = qualifiers
+        self.qualifiers = MagicTreatmentKeyCodec.storedQualifiers(from: qualifiers)
     }
 
     func qualifier(for treatment: MagicTreatment) -> String? {
@@ -221,6 +221,37 @@ enum MagicTreatmentKeyCodec {
             }
             return treatment.providerSignal
         }
+    }
+
+    /// Qualifiers use treatment ids as their map keys. Normalize those keys the
+    /// same way as the treatment identity, but keep the publisher's value (for
+    /// example `Red` versus `Blue`) intact for display and CSV round-tripping.
+    static func storedQualifiers(from qualifiers: [String: String]) -> [String: String] {
+        var normalized: [String: String] = [:]
+        for (rawKey, rawValue) in qualifiers {
+            let value = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let treatment = MagicTreatment(id: rawKey), !value.isEmpty else { continue }
+            normalized[treatment.id] = value
+        }
+        return normalized
+    }
+
+    static func encodeQualifiers(_ qualifiers: [String: String]) -> String? {
+        let normalized = storedQualifiers(from: qualifiers)
+        guard !normalized.isEmpty else { return nil }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        guard let data = try? encoder.encode(normalized) else { return nil }
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    static func decodeQualifiers(_ encoded: String?) -> [String: String] {
+        guard let encoded,
+              let data = encoded.data(using: .utf8),
+              let values = try? JSONDecoder().decode([String: String].self, from: data) else {
+            return [:]
+        }
+        return storedQualifiers(from: values)
     }
 
     static func appendCollectionSuffix(

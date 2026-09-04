@@ -1143,6 +1143,9 @@ private struct CatalogCardGrid: View {
                                     in: Capsule()
                                 )
                         }
+                        if let treatment = card.magicTreatmentDisplayLabel {
+                            CatalogTreatmentBadge(label: treatment)
+                        }
                         if let price = prices[card.id] {
                             Text(price, format: .currency(code: "USD"))
                                 .font(.subheadline.weight(.semibold))
@@ -1178,7 +1181,22 @@ private struct CatalogCardGrid: View {
         let owned = ownedQuantity(card)
         let price = prices[card.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
         let variant = card.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
-        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(variant)\(price)\(owned > 0 ? ", owned quantity \(owned)" : ", missing")"
+        let treatment = card.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
+        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(variant)\(treatment)\(price)\(owned > 0 ? ", owned quantity \(owned)" : ", missing")"
+    }
+}
+
+private struct CatalogTreatmentBadge: View {
+    let label: String
+
+    var body: some View {
+        Label(label, systemImage: "sparkles")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.orange)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Color.orange.opacity(0.12), in: Capsule())
+            .lineLimit(1)
     }
 }
 

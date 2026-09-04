@@ -267,7 +267,7 @@ final class MagicTreatmentTests: XCTestCase {
 
     func testCollectionCSVRoundTripsTreatmentIdentityAndCollectionKey() throws {
         let card = CollectedCard(
-            collectionKey: "magic:printing#foil#treatment=surgefoil",
+            collectionKey: "magic:printing#foil#treatment=neonink",
             game: .magic,
             providerID: "printing",
             name: "Fixture",
@@ -279,16 +279,93 @@ final class MagicTreatmentTests: XCTestCase {
             thumbnailURL: nil,
             variant: .foil,
             variantResolution: .userConfirmed,
-            magicTreatments: [.surgeFoil]
+            magicTreatments: [.neonInk],
+            magicTreatmentQualifiers: ["NEONINK": "red"],
+            magicContentKind: .token
         )
 
         let document = CollectionCSV.export([card])
         let plan = try CollectionCSV.parse(Data(document.text.utf8))
         let entry: CollectionCSVEntry = try XCTUnwrap(plan.entries.first)
 
-        XCTAssertEqual(entry.magicTreatmentIDsRaw, ["surgefoil"])
+        XCTAssertEqual(entry.magicTreatmentIDsRaw, ["neonink"])
+        XCTAssertEqual(entry.magicTreatmentQualifiers, ["neonink": "red"])
+        XCTAssertEqual(entry.magicContentKindRaw, MagicContentKind.token.rawValue)
         XCTAssertEqual(entry.collectionKey, card.collectionKey)
         XCTAssertEqual(entry.variant, PhysicalVariant.foil)
+    }
+
+    func testCollectionCSVPreservesUnknownTreatmentAndContentKindValues() throws {
+        let unknown = try XCTUnwrap(MagicTreatment(id: "Future / Foil"))
+        let key = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+            base: "magic:printing",
+            game: .magic,
+            finish: .foil,
+            treatments: [unknown]
+        )
+        let card = CollectedCard(
+            collectionKey: key,
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [unknown],
+            magicTreatmentQualifiers: ["Future / Foil": "publisher stamp"],
+            magicContentKind: .regular
+        )
+        card.magicContentKindRaw = "future-face"
+
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([card]).text.utf8)
+        )
+        let entry = try XCTUnwrap(plan.entries.first)
+
+        XCTAssertEqual(entry.magicTreatmentIDsRaw, ["Future / Foil"])
+        XCTAssertEqual(entry.magicTreatmentQualifiers, ["future / foil": "publisher stamp"])
+        XCTAssertEqual(entry.magicContentKindRaw, "future-face")
+        XCTAssertEqual(entry.collectionKey, key)
+    }
+
+    func testCollectionCSVKeepsUnknownTreatmentAsTreatmentNotAFakeFinish() throws {
+        let unknown = try XCTUnwrap(MagicTreatment(id: "Future / Foil"))
+        let key = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+            base: "magic:printing",
+            game: .magic,
+            finish: .foil,
+            treatments: [unknown]
+        )
+        let card = CollectedCard(
+            collectionKey: key,
+            game: .magic,
+            providerID: "printing",
+            name: "Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "10",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [unknown]
+        )
+
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([card]).text.utf8)
+        )
+        let entry = try XCTUnwrap(plan.entries.first)
+
+        XCTAssertEqual(entry.magicTreatmentIDsRaw, ["Future / Foil"])
+        XCTAssertEqual(entry.variant, .foil)
+        XCTAssertEqual(entry.collectionKey, key)
+        XCTAssertEqual(entry.variant?.id, PhysicalVariant.foil.id)
     }
 
     func testCSVNamespacedFallbackKeysRetainMagicTreatmentsWithoutVendorUUIDs() throws {

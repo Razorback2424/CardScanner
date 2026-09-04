@@ -158,6 +158,7 @@ struct CollectionCardDetailView: View {
             pricing
             movementSummary
             finish
+            treatment
             marketplaceLinks
             activityHistory
 
@@ -412,7 +413,19 @@ struct CollectionCardDetailView: View {
         }
         .font(.subheadline)
         .padding(14)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    @ViewBuilder
+    private var treatment: some View {
+        if let label = card.displayedMagicTreatmentEvidence.displayLabel {
+            VStack {
+                LabeledContent("Treatment", value: label)
+            }
+            .font(.subheadline)
+            .padding(14)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        }
     }
 
     /// The compact, route-independent disclosure surface. Its state comes from
@@ -457,6 +470,9 @@ struct CollectionCardDetailView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(activity.kind.label)
                                     .font(.subheadline.weight(.semibold))
+                                Text(historyMetadata(for: activity))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                                 Text(activity.occurredAt, format: .dateTime.month().day().year().hour().minute())
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -478,6 +494,17 @@ struct CollectionCardDetailView: View {
 
     private var cardHistory: [CollectionActivity] {
         collectionActivities.filter { $0.collectionKey == card.collectionKey }
+    }
+
+    private func historyMetadata(for activity: CollectionActivity) -> String {
+        [
+            activity.magicContentKind == .regular ? nil : activity.magicContentKind.label,
+            activity.variantLabel,
+            activity.magicTreatmentEvidence.displayLabel
+        ]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: " · ")
     }
 
     private func signedQuantity(_ quantity: Int) -> String {
@@ -539,16 +566,17 @@ struct CollectionCardDetailView: View {
     private var exactTCGPlayerPrintingURL: URL? {
         guard card.cardGame == .magic,
               let variantID = card.variantID,
-              variantID == PhysicalVariant.nonfoil.id || variantID == PhysicalVariant.foil.id,
-              let value = card.tcgplayerURL else {
+              variantID == PhysicalVariant.nonfoil.id || variantID == PhysicalVariant.foil.id else {
             return nil
         }
-        return URL(string: value)
+        return TCGplayerLinkBuilder.url(for: card)
     }
 
     @MainActor
     private func loadMarketplaceLinkIfNeeded() async {
         guard card.cardGame == .magic,
+              card.magicTreatmentIDsRaw.isEmpty,
+              MagicTreatmentKeyCodec.collectionTreatmentIDs(from: card.collectionKey).isEmpty,
               card.tcgplayerURL == nil else { return }
         let providerID = card.catalogProviderID ?? card.providerID
         guard !providerID.hasPrefix("csv:") else { return }
