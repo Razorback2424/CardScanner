@@ -624,7 +624,10 @@ enum CollectionCSV {
         guard isSupportedLanguage(value(["language", "lang"], in: row)) else { return [] }
         let setName = value(["set_name"], in: row) ?? "Unknown Set"
         let setCode = value(["set_code", "set"], in: row) ?? ""
-        let cardNumber = value(["card_number", "collector_number", "local_id"], in: row) ?? ""
+        let cardNumber = canonicalImportedCardNumber(
+            value(["card_number", "collector_number", "local_id"], in: row) ?? "",
+            game: game
+        )
         let rarity = nonempty(value(["rarity"], in: row))
         let importedDate = value(["date_added"], in: row).flatMap { ISO8601DateFormatter().date(from: $0) } ?? .now
         let suppliedImage = nonempty(value(["image_url"], in: row))
@@ -747,7 +750,10 @@ enum CollectionCSV {
             setName: setName,
             productName: rawName
         ) else { return [] }
-        let cardNumber = value(["card_number"], in: row) ?? ""
+        let cardNumber = canonicalImportedCardNumber(
+            value(["card_number"], in: row) ?? "",
+            game: game
+        )
         let isSealed = isSealedOrAccessory(rawName, cardNumber: cardNumber)
 
         let name = cleanedPortfolioName(rawName, cardNumber: cardNumber, game: game)
@@ -816,6 +822,7 @@ enum CollectionCSV {
         magicTreatmentQualifiers: [String: String] = [:],
         magicContentKindRaw: String = MagicContentKind.regular.rawValue
     ) -> CollectionCSVEntry {
+        let canonicalCardNumber = canonicalImportedCardNumber(cardNumber, game: game)
         let resolvedPrintRun = pokemonPrintRun
             ?? (variant?.id == PhysicalVariant.firstEdition.id ? .firstEdition : nil)
         let resolvedVariant = variant?.id == PhysicalVariant.firstEdition.id ? nil : variant
@@ -903,7 +910,7 @@ enum CollectionCSV {
             name: name,
             setName: setName,
             setCode: setCode,
-            cardNumber: cardNumber,
+            cardNumber: canonicalCardNumber,
             rarity: rarity,
             imageURL: imageURL,
             thumbnailURL: thumbnailURL,
@@ -1146,6 +1153,18 @@ enum CollectionCSV {
             return []
         }
         return MagicTreatmentKeyCodec.storedIDs(from: ids)
+    }
+
+    /// Magic collector numbers may carry a letter suffix (`523b`, `525a`).
+    /// Keep the suffix while removing only numeric padding, matching the
+    /// completion/ownership canonicalizer so a CSV cannot create a second
+    /// identity for `0523a`. Pokémon keeps its provider-local zero padding.
+    private static func canonicalImportedCardNumber(
+        _ value: String,
+        game: CardGame
+    ) -> String {
+        guard game == .magic else { return value }
+        return SetCompletionCalculator.canonicalNumber(value) ?? value
     }
 
     private static func decodedTreatmentQualifiers(_ value: String?) -> [String: String] {

@@ -66,9 +66,11 @@ enum CollectionActivityKind: String, CaseIterable, Identifiable, Codable, Hashab
         }
     }
 
-    /// The positive quantity an entry still represents. Correction entries are
-    /// deliberately zero: the original entry moves identity and the correction
-    /// row records that fact without counting the copy twice.
+    /// The positive quantity an entry still represents. Ordinary correction
+    /// entries are zero because the original entry moves identity; the
+    /// treatment migration may use a positive corrected entry only when a
+    /// legacy row has no activity lineage to retarget. That entry documents the
+    /// recovered collection quantity without making it an acquisition claim.
     var hasQuantityClaim: Bool {
         self == .added || self == .restored
     }

@@ -188,6 +188,8 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
 /// orphan existing rows, while using the collection suffix in a price key
 /// would make every stored price unreadable.
 enum MagicTreatmentKeyCodec {
+    private static let priceTreatmentMarker = ":treatment="
+
     /// Canonical, stable ids used in a key. Sorting makes a future co-occurring
     /// treatment set independent of provider array order.
     static func canonicalIDs(from treatments: [MagicTreatment]) -> [String] {
@@ -286,7 +288,51 @@ enum MagicTreatmentKeyCodec {
     /// the encoded treatment value. Treat the vendor-native portion before the
     /// marker as opaque: it may itself contain additional colon segments.
     static func containsPriceTreatmentSuffix(in key: String) -> Bool {
-        key.range(of: ":treatment=", options: [.caseInsensitive]) != nil
+        key.range(of: priceTreatmentMarker, options: [.caseInsensitive]) != nil
+    }
+
+    /// Reads treatment ids from either a price, reference-quote, or vendor
+    /// identity key. The portion before the first marker is intentionally
+    /// opaque: a vendor-native price storage id may itself contain colons
+    /// (`justtcg:<version>:<id>`), so splitting the whole key into positional
+    /// fields would misread old rows.
+    static func priceTreatmentIDs(from key: String) -> [String] {
+        var rawIDs: [String] = []
+        var searchStart = key.startIndex
+
+        while let marker = key.range(
+            of: priceTreatmentMarker,
+            options: [.caseInsensitive],
+            range: searchStart..<key.endIndex
+        ) {
+            let valueStart = marker.upperBound
+            let nextMarker = key.range(
+                of: priceTreatmentMarker,
+                options: [.caseInsensitive],
+                range: valueStart..<key.endIndex
+            )
+            let valueEnd = nextMarker?.lowerBound ?? key.endIndex
+            let encodedValue = String(key[valueStart..<valueEnd])
+            guard !encodedValue.isEmpty else { return [] }
+            let decodedValue = encodedValue.removingPercentEncoding ?? encodedValue
+            guard let treatment = MagicTreatment(id: decodedValue) else { return [] }
+            rawIDs.append(treatment.providerSignal)
+
+            guard let nextMarker else { break }
+            searchStart = nextMarker.lowerBound
+        }
+
+        return storedIDs(from: rawIDs)
+    }
+
+    /// Returns the treatment-free price identity without interpreting any of
+    /// its colon-delimited prefix. This is used by migration/audit code when it
+    /// needs to compare old and new price forms without orphaning a vendor key.
+    static func priceBaseKey(_ key: String) -> String {
+        guard let marker = key.range(of: priceTreatmentMarker, options: [.caseInsensitive]) else {
+            return key
+        }
+        return String(key[..<marker.lowerBound])
     }
 
     /// Builds the raw collection identity while preserving the bare key when
@@ -394,6 +440,241 @@ enum MagicTreatmentKeyCodec {
             CharacterSet(charactersIn: "-._~")
         )
         return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
+    }
+}
+
+/// The two price-key generations share one opaque base plus zero or more
+/// treatment markers. The base may contain additional colons when it embeds a
+/// vendor-native id such as `justtcg:v2:<variant>`, so callers must not derive
+/// this value by counting colon-separated fields.
+struct MagicPriceKeyParts: Equatable, Sendable {
+    let originalKey: String
+    let baseKey: String
+    let treatmentIDs: [String]
+
+    var isTreatmentQualified: Bool { !treatmentIDs.isEmpty }
+}
+
+extension MagicTreatmentKeyCodec {
+    /// Parses both legacy and treatment-qualified price/reference/vendor keys.
+    /// An invalid marker is rejected rather than being mistaken for a generic
+    /// price identity; the unmarked legacy form remains a valid empty axis.
+    static func priceKeyParts(from key: String) -> MagicPriceKeyParts? {
+        guard containsPriceTreatmentSuffix(in: key) else {
+            return MagicPriceKeyParts(
+                originalKey: key,
+                baseKey: key,
+                treatmentIDs: []
+            )
+        }
+        let treatmentIDs = priceTreatmentIDs(from: key)
+        guard !treatmentIDs.isEmpty else { return nil }
+        return MagicPriceKeyParts(
+            originalKey: key,
+            baseKey: priceBaseKey(key),
+            treatmentIDs: treatmentIDs
+        )
+    }
+}
+
+/// The persisted collection-key families that existed before and after Magic
+/// treatment identity was added. A treatment is a suffix in each family; it is
+/// not a positional field in the graded/sealed namespaces.
+enum MagicCollectionKeyShape: String, Equatable, Sendable {
+    case rawLegacy
+    case rawFinish
+    case rawFinishTreatment
+    /// A CSV/provider import can use an opaque id containing `:`. Scryfall
+    /// printing ids do not, so this form is valid collection identity but is not
+    /// eligible for exact Scryfall enrichment.
+    case rawImported
+    case graded
+    case gradedCertified
+    case sealed
+    /// CSV imports without a vendor UUID use a hash-delimited grader/grade
+    /// fragment. These are not exact Scryfall identities, but they are valid
+    /// persisted collection rows and must not make the migration fail closed.
+    case gradedImported
+    /// CSV imports without a vendor product/variant UUID use a compact product
+    /// key. It is likewise a valid non-enrichable identity.
+    case sealedImported
+}
+
+/// A validated decomposition of one Magic collection key. Only standard raw and
+/// graded keys carry an exact Scryfall printing id. Imported/opaque and sealed
+/// keys intentionally expose no such id: their identifiers are not proven card
+/// printings.
+struct MagicCollectionKeyParts: Equatable, Sendable {
+    let originalKey: String
+    let baseKey: String
+    let shape: MagicCollectionKeyShape
+    let exactPrintingID: String?
+    let finishID: String?
+    let treatmentIDs: [String]
+
+    var isTreatmentQualified: Bool { !treatmentIDs.isEmpty }
+    var isCertified: Bool { shape == .gradedCertified }
+}
+
+extension MagicTreatmentKeyCodec {
+    /// Validates and classifies all persisted Magic collection forms without
+    /// guessing from set code, collector number, or row metadata. Collection
+    /// suffixes are `#` segments; their treatment values are percent-encoded.
+    static func collectionKeyParts(from key: String) -> MagicCollectionKeyParts? {
+        let components = key
+            .split(separator: "#", omittingEmptySubsequences: false)
+            .map(String.init)
+        guard let root = components.first, !root.isEmpty else { return nil }
+
+        var baseComponents: [String] = [root]
+        var rawTreatmentIDs: [String] = []
+        var sawTreatmentMarker = false
+
+        for component in components.dropFirst() {
+            let prefix = "treatment="
+            if component.lowercased().hasPrefix(prefix) {
+                sawTreatmentMarker = true
+                var encoded = String(component.dropFirst(prefix.count))
+                // The old Pokémon print-run suffix may follow a collection
+                // treatment component. It is not valid for Magic, but keeping
+                // the parser compatible with the shared codec avoids treating
+                // that suffix as part of an unknown treatment value.
+                if let suffixIndex = encoded.firstIndex(of: "@") {
+                    encoded = String(encoded[..<suffixIndex])
+                }
+                guard !encoded.isEmpty else { return nil }
+                let decoded = encoded.removingPercentEncoding ?? encoded
+                guard let treatment = MagicTreatment(id: decoded) else { return nil }
+                rawTreatmentIDs.append(treatment.providerSignal)
+            } else {
+                baseComponents.append(component)
+            }
+        }
+
+        let treatmentIDs = storedIDs(from: rawTreatmentIDs)
+        guard !sawTreatmentMarker || !treatmentIDs.isEmpty else { return nil }
+        let baseKey = baseComponents.joined(separator: "#")
+
+        let rawPrefix = "magic:"
+        if root.lowercased().hasPrefix(rawPrefix) {
+            let printingID = String(root.dropFirst(rawPrefix.count))
+            guard !printingID.isEmpty, baseComponents.count <= 2 else {
+                return nil
+            }
+            let finishID = baseComponents.dropFirst().first
+            if let finishID {
+                guard !finishID.isEmpty, !finishID.contains("@") else { return nil }
+            } else {
+                guard treatmentIDs.isEmpty else { return nil }
+            }
+            let shape: MagicCollectionKeyShape
+            if printingID.contains(":") {
+                shape = .rawImported
+            } else if finishID != nil {
+                shape = treatmentIDs.isEmpty ? .rawFinish : .rawFinishTreatment
+            } else {
+                shape = .rawLegacy
+            }
+            return MagicCollectionKeyParts(
+                originalKey: key,
+                baseKey: baseKey,
+                shape: shape,
+                // Imported/provider-native ids may contain colons. They are
+                // valid collection identities, but a colon is not part of a
+                // Scryfall printing id, so never send those opaque ids to the
+                // exact-printing enrichment path.
+                exactPrintingID: shape == .rawImported ? nil : printingID,
+                finishID: finishID,
+                treatmentIDs: treatmentIDs
+            )
+        }
+
+        let gradedPrefix = "graded:magic:"
+        if root.lowercased().hasPrefix(gradedPrefix) {
+            if baseComponents.count == 2 {
+                let importedPrintingID = String(root.dropFirst(gradedPrefix.count))
+                guard !importedPrintingID.isEmpty,
+                      !baseComponents[1].isEmpty else { return nil }
+                return MagicCollectionKeyParts(
+                    originalKey: key,
+                    baseKey: baseKey,
+                    shape: .gradedImported,
+                    exactPrintingID: nil,
+                    finishID: nil,
+                    treatmentIDs: treatmentIDs
+                )
+            }
+            guard baseComponents.count == 1 else { return nil }
+            let fields = root.split(separator: ":", omittingEmptySubsequences: false)
+            let importedPrintingID = String(root.dropFirst(gradedPrefix.count))
+            guard !importedPrintingID.isEmpty else { return nil }
+            guard fields.count == 4 || fields.count == 6 else {
+                return MagicCollectionKeyParts(
+                    originalKey: key,
+                    baseKey: baseKey,
+                    shape: .gradedImported,
+                    exactPrintingID: nil,
+                    finishID: nil,
+                    treatmentIDs: treatmentIDs
+                )
+            }
+            guard String(fields[0]).caseInsensitiveCompare("graded") == .orderedSame,
+                  String(fields[1]).caseInsensitiveCompare("magic") == .orderedSame,
+                  !fields[2].isEmpty,
+                  !fields[3].isEmpty else {
+                return nil
+            }
+            let shape: MagicCollectionKeyShape
+            if fields.count == 4 {
+                shape = .graded
+            } else {
+                guard String(fields[4]).caseInsensitiveCompare("cert") == .orderedSame,
+                      !fields[5].isEmpty else { return nil }
+                shape = .gradedCertified
+            }
+            return MagicCollectionKeyParts(
+                originalKey: key,
+                baseKey: baseKey,
+                shape: shape,
+                exactPrintingID: String(fields[2]),
+                finishID: nil,
+                treatmentIDs: treatmentIDs
+            )
+        }
+
+        let sealedPrefix = "sealed:magic:"
+        if root.lowercased().hasPrefix(sealedPrefix) {
+            let fields = root.split(separator: ":", omittingEmptySubsequences: false)
+            if fields.count != 4 {
+                guard !String(root.dropFirst(sealedPrefix.count)).isEmpty else { return nil }
+                return MagicCollectionKeyParts(
+                    originalKey: key,
+                    baseKey: baseKey,
+                    shape: .sealedImported,
+                    exactPrintingID: nil,
+                    finishID: nil,
+                    treatmentIDs: treatmentIDs
+                )
+            }
+            guard baseComponents.count == 1 else { return nil }
+            guard fields.count == 4,
+                  String(fields[0]).caseInsensitiveCompare("sealed") == .orderedSame,
+                  String(fields[1]).caseInsensitiveCompare("magic") == .orderedSame,
+                  !fields[2].isEmpty,
+                  !fields[3].isEmpty else {
+                return nil
+            }
+            return MagicCollectionKeyParts(
+                originalKey: key,
+                baseKey: baseKey,
+                shape: .sealed,
+                exactPrintingID: nil,
+                finishID: nil,
+                treatmentIDs: treatmentIDs
+            )
+        }
+
+        return nil
     }
 }
 

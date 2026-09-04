@@ -53,6 +53,11 @@ final class CollectedCard {
     /// treats strings as the forward-compatible wire format. The map is keyed
     /// by normalized treatment id and keeps values such as a Neon Ink color.
     var magicTreatmentQualifiersJSON: String?
+    /// The last exact-printing treatment migration this row has passed. A
+    /// per-row watermark lets new CSV/import rows be picked up after launch,
+    /// while a failed provider lookup remains retryable without a global
+    /// UserDefaults claim that could miss a row arriving from another device.
+    var magicTreatmentMigrationVersion: Int = 0
     /// The printed face's semantic kind is independent from how it is owned.
     /// Existing rows were created before this axis was persisted and therefore
     /// default to ordinary cards.

@@ -131,16 +131,27 @@ struct ContentView: View {
                 break
             }
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            _ = await MagicTreatmentMigration.runLocal(in: modelContext)
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #else
         .task {
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            _ = await MagicTreatmentMigration.runLocal(in: modelContext)
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #endif
+        .task(id: hasStartedPortfolio) {
+            guard hasStartedPortfolio else { return }
+            _ = await MagicTreatmentMigration.runNetwork(in: modelContext)
+            guard !Task.isCancelled else { return }
+            // Network enrichment can add treatments or rekey rows after the
+            // initial portfolio snapshot. Recompute only after the migration
+            // has finished so the user never sees a half-applied result.
+            portfolio.recompute(context: modelContext)
+        }
         // Portfolio truth is app-scoped: scanning or importing must recompute it
         // even if Collection has never been selected in this app session. This
         // lives in its own view rather than here because deciding whether the

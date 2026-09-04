@@ -223,6 +223,60 @@ struct CollectionStore {
         }
         guard let row = rows.first else { return nil }
 
+        let requestedTreatmentIDs = try validatedTreatmentIDs(
+            for: canonicalKey,
+            suppliedTreatmentIDs: suppliedTreatmentIDs
+        )
+
+        try repairCollectionIdentity(
+            row,
+            canonicalKey: canonicalKey,
+            treatmentIDs: requestedTreatmentIDs
+        )
+        return row
+    }
+
+    /// Migration-only rekeying for an exact source row whose old identity is
+    /// not one of the safe runtime aliases. The bare `magic:<printingID>` form
+    /// is intentionally not a general read-through alias for a selected finish:
+    /// a dual-finish printing could represent either physical copy. Slice 8 may
+    /// use this method only after exact enrichment has proved the source row's
+    /// finish, and the method still performs the same destination, treatment,
+    /// activity, snapshot, and ledger checks as ordinary read-through repair.
+    func rekey(
+        _ row: CollectedCard,
+        to canonicalKey: String,
+        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = [],
+        magicTreatmentQualifiers suppliedTreatmentQualifiers: [String: String] = [:]
+    ) throws {
+        let sourceRows = try cards(forKey: row.collectionKey)
+        guard sourceRows.count == 1, sourceRows.first === row else {
+            throw CollectionStoreError.ledgerConflict(
+                "the migration source row is not uniquely identifiable"
+            )
+        }
+        guard try cards(forKey: canonicalKey).isEmpty else {
+            throw CollectionStoreError.ledgerConflict(
+                "the migration destination already exists: \(canonicalKey)"
+            )
+        }
+
+        let requestedTreatmentIDs = try validatedTreatmentIDs(
+            for: canonicalKey,
+            suppliedTreatmentIDs: suppliedTreatmentIDs
+        )
+        try repairCollectionIdentity(
+            row,
+            canonicalKey: canonicalKey,
+            treatmentIDs: requestedTreatmentIDs,
+            treatmentQualifiers: suppliedTreatmentQualifiers
+        )
+    }
+
+    private func validatedTreatmentIDs(
+        for canonicalKey: String,
+        suppliedTreatmentIDs: [String]
+    ) throws -> [String] {
         let keyTreatmentIDs = MagicTreatmentKeyCodec.collectionTreatmentIDs(
             from: canonicalKey
         )
@@ -238,13 +292,7 @@ struct CollectionStore {
                 "treatment ids do not match canonical collection key \(canonicalKey)"
             )
         }
-
-        try repairCollectionIdentity(
-            row,
-            canonicalKey: canonicalKey,
-            treatmentIDs: requestedTreatmentIDs
-        )
-        return row
+        return requestedTreatmentIDs
     }
 
     /// Repairs the row, its durable activity projections, removal snapshots,
@@ -255,7 +303,8 @@ struct CollectionStore {
     private func repairCollectionIdentity(
         _ row: CollectedCard,
         canonicalKey: String,
-        treatmentIDs requestedTreatmentIDs: [String]
+        treatmentIDs requestedTreatmentIDs: [String],
+        treatmentQualifiers suppliedTreatmentQualifiers: [String: String] = [:]
     ) throws {
         let oldKey = row.collectionKey
         let existingTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
@@ -279,9 +328,33 @@ struct CollectionStore {
         let finalTreatmentIDs = existingTreatmentIDs.isEmpty
             ? requestedTreatmentIDs
             : existingTreatmentIDs
+        let requestedTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
+            from: suppliedTreatmentQualifiers
+        ).filter { requestedTreatmentSet.contains($0.key) }
+        let existingTreatmentQualifiers = row.magicTreatmentQualifiers
+        for (key, value) in existingTreatmentQualifiers where requestedTreatmentSet.contains(key) {
+            if let requested = requestedTreatmentQualifiers[key], requested != value {
+                throw CollectionStoreError.ledgerConflict(
+                    "stored treatment qualifier disagrees with \(canonicalKey)"
+                )
+            }
+        }
+        var finalTreatmentQualifiers = existingTreatmentQualifiers
+        for (key, value) in requestedTreatmentQualifiers {
+            finalTreatmentQualifiers[key] = value
+        }
+        let inferredRawFinish: PhysicalVariant? = {
+            guard row.itemKind == .rawCard,
+                  row.variantID == nil,
+                  let finishID = MagicTreatmentKeyCodec
+                    .collectionKeyParts(from: canonicalKey)?.finishID else {
+                return nil
+            }
+            return PhysicalVariant(id: finishID, label: finishID.capitalized)
+        }()
 
         let relatedActivities = try activities(forKey: oldKey)
-        let activityRewrites = try relatedActivities.map { activity -> (CollectionActivity, RemovedCardSnapshot?) in
+        let activityRewrites = try relatedActivities.map { activity -> (CollectionActivity, Data?) in
             let activityTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
                 from: activity.magicTreatmentIDsRaw
             )
@@ -296,6 +369,14 @@ struct CollectionStore {
                 throw CollectionStoreError.ledgerConflict(
                     "history treatment ids disagree with \(canonicalKey)"
                 )
+            }
+            let activityQualifiers = activity.magicTreatmentQualifiers
+            for (key, value) in activityQualifiers where finalTreatmentSet.contains(key) {
+                if let requested = finalTreatmentQualifiers[key], requested != value {
+                    throw CollectionStoreError.ledgerConflict(
+                        "history treatment qualifier disagrees with \(canonicalKey)"
+                    )
+                }
             }
 
             guard let data = activity.removalSnapshotData else {
@@ -326,18 +407,41 @@ struct CollectionStore {
                     "removal snapshot treatment ids disagree with \(canonicalKey)"
                 )
             }
+            let snapshotQualifiers = MagicTreatmentKeyCodec.decodeQualifiers(
+                snapshot.magicTreatmentQualifiersJSON
+            )
+            for (key, value) in snapshotQualifiers where finalTreatmentSet.contains(key) {
+                if let requested = finalTreatmentQualifiers[key], requested != value {
+                    throw CollectionStoreError.ledgerConflict(
+                        "removal snapshot treatment qualifier disagrees with \(canonicalKey)"
+                    )
+                }
+            }
             snapshot.collectionKey = canonicalKey
             if snapshotTreatmentIDs.isEmpty {
                 snapshot.magicTreatmentIDsRaw = finalTreatmentIDs
             }
             if snapshot.magicTreatmentQualifiersJSON == nil {
-                snapshot.magicTreatmentQualifiersJSON = row.magicTreatmentQualifiersJSON
+                snapshot.magicTreatmentQualifiersJSON =
+                    MagicTreatmentKeyCodec.encodeQualifiers(finalTreatmentQualifiers)
+            } else {
+                var snapshotQualifiers = MagicTreatmentKeyCodec.decodeQualifiers(
+                    snapshot.magicTreatmentQualifiersJSON
+                )
+                for (key, value) in finalTreatmentQualifiers where snapshotQualifiers[key] == nil {
+                    snapshotQualifiers[key] = value
+                }
+                snapshot.magicTreatmentQualifiersJSON =
+                    MagicTreatmentKeyCodec.encodeQualifiers(snapshotQualifiers)
+            }
+            if snapshot.variant == nil, row.itemKind == .rawCard {
+                snapshot.variant = row.variant ?? inferredRawFinish
             }
             if snapshot.magicContentKindRaw == nil,
                row.magicContentKindRaw != MagicContentKind.regular.rawValue {
                 snapshot.magicContentKindRaw = row.magicContentKindRaw
             }
-            return (activity, snapshot)
+            return (activity, try JSONEncoder().encode(snapshot))
         }
 
         let oldEvents = try ledger.events(collectionKey: oldKey)
@@ -351,23 +455,37 @@ struct CollectionStore {
         }
 
         row.collectionKey = canonicalKey
+        if let inferredRawFinish {
+            row.variantID = inferredRawFinish.id
+            row.variantLabel = inferredRawFinish.label
+        }
         if row.magicTreatmentIDsRaw.isEmpty {
             row.magicTreatmentIDsRaw = finalTreatmentIDs
         }
-        for (activity, snapshot) in activityRewrites {
+        if !finalTreatmentQualifiers.isEmpty {
+            row.magicTreatmentQualifiers = finalTreatmentQualifiers
+        }
+        for (activity, snapshotData) in activityRewrites {
             activity.collectionKey = canonicalKey
+            activity.variantID = row.variantID
+            activity.variantLabel = row.variantLabel
             if activity.magicTreatmentIDsRaw.isEmpty {
                 activity.magicTreatmentIDsRaw = finalTreatmentIDs
             }
-            if activity.magicTreatmentQualifiersJSON == nil {
-                activity.magicTreatmentQualifiersJSON = row.magicTreatmentQualifiersJSON
+            var activityQualifiers = activity.magicTreatmentQualifiers
+            for (key, value) in finalTreatmentQualifiers where activityQualifiers[key] == nil {
+                activityQualifiers[key] = value
+            }
+            if activityQualifiers != activity.magicTreatmentQualifiers {
+                activity.magicTreatmentQualifiersJSON =
+                    MagicTreatmentKeyCodec.encodeQualifiers(activityQualifiers)
             }
             if activity.magicContentKindRaw == MagicContentKind.regular.rawValue,
                row.magicContentKindRaw != MagicContentKind.regular.rawValue {
                 activity.magicContentKindRaw = row.magicContentKindRaw
             }
-            if let snapshot {
-                activity.removalSnapshotData = try JSONEncoder().encode(snapshot)
+            if let snapshotData {
+                activity.removalSnapshotData = snapshotData
             }
         }
         for event in oldEvents where oldKey != canonicalKey {
@@ -1935,7 +2053,7 @@ struct RemovedCardSnapshot: Identifiable, Codable {
     let marketRegionRaw: String?
     let quantity: Int
     let dateAdded: Date
-    let variant: PhysicalVariant?
+    var variant: PhysicalVariant?
     let variantResolution: VariantResolution
     let identityResolution: IdentityResolution
     let setReleaseOrder: Int
