@@ -497,6 +497,16 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     /// emblem or art-series print.
     let layout: String?
     let rarity: String?
+    /// Scryfall's machine-readable treatment signals. They are evidence about
+    /// the printed face, not alternate finish values, so they stay beside
+    /// `finishes` rather than being folded into `PhysicalVariant`.
+    let promoTypes: [String]?
+    let frameEffects: [String]?
+    /// Variations are retained as provider evidence. A variation is not itself
+    /// a treatment: it can describe a same-number printing relationship that
+    /// needs separate identity work later.
+    let variation: Bool?
+    let variationOf: String?
     /// Scryfall publishes exactly which finishes a printing exists in
     /// (`nonfoil`, `foil`, `etched`). That is authoritative physical-variant
     /// data, so `PhysicalVariant` ids for Magic are these strings verbatim —
@@ -523,6 +533,10 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, name, digital, frame, layout, rarity, finishes, prices
+        case promoTypes = "promo_types"
+        case frameEffects = "frame_effects"
+        case variation
+        case variationOf = "variation_of"
         case setCode = "set"
         case setName = "set_name"
         case collectorNumber = "collector_number"
@@ -540,6 +554,18 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
 
     var catalogVariants: [PhysicalVariant] {
         (finishes ?? []).map(PhysicalVariant.resolving)
+    }
+
+    /// Treatment evidence is resolved from the exact Scryfall printing. The
+    /// provider's fields identify known treatments for new cards, while the
+    /// compact catalog contributes reviewed historical qualifiers such as NEO's
+    /// Neon Ink colors.
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        MagicTreatmentCatalogStore.bundledDefault.evidence(for: self)
+    }
+
+    func magicTreatmentEvidence(using catalog: MagicTreatmentCatalog) -> MagicTreatmentEvidence {
+        catalog.evidence(for: self)
     }
 
     /// DFCs put images on faces rather than the card root. The front is enough
@@ -736,6 +762,16 @@ enum IdentifiedCard: Identifiable, Sendable {
                 cardNumber: card.collectorNumber,
                 catalogVariants: card.catalogVariants
             )
+        }
+    }
+
+    /// The treatment axis is intentionally absent for Pokémon. Returning an
+    /// empty value keeps callers from accidentally treating a Pokémon finish as
+    /// a Magic treatment while giving future identity surfaces one neutral API.
+    var magicTreatmentEvidence: MagicTreatmentEvidence {
+        switch self {
+        case .pokemon: return MagicTreatmentEvidence(treatments: [])
+        case let .magic(card): return card.magicTreatmentEvidence
         }
     }
 }

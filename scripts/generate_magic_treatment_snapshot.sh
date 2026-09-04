@@ -93,4 +93,10 @@ MAGIC_TREATMENT_SNAPSHOT_SHA256="$content_sha256" \
 MAGIC_TREATMENT_SNAPSHOT_GENERATED_AT="$generated_at" \
 "$generator_binary"
 
+echo "Generating the compact runtime Magic treatment catalog..."
+"$project_root/scripts/generate_magic_treatment_catalog.sh" \
+    "$output_directory" \
+    "$project_root/TradingCardScanner/MagicTreatmentCatalog"
+
 echo "Magic treatment snapshot written to $output_directory"
+echo "Magic treatment catalog written to $project_root/TradingCardScanner/MagicTreatmentCatalog"

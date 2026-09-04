@@ -49,13 +49,18 @@ newest sets rather than the feature.
 `MagicTreatmentSnapshot` is a separate, audit-only snapshot of Scryfall's
 `default_cards` bulk feed. It records every set's collector-number suffix counts
 and preserves the exact rows carrying `promo_types`, `frame_effects`, or
-variation metadata. It is not consulted by scanning yet; it makes the all-history
-treatment decision reproducible without a network dependency in tests. The
-snapshot is included in the test bundle only, not the production app bundle;
-its manifest also records source-backed manual mappings for distinctions that
-Scryfall does not encode, such as NEO Neon Ink color. Regenerate it with
-`scripts/generate_magic_treatment_snapshot.sh` when the provider feed or the
-audit rule changes.
+variation metadata. The full snapshot is included in the test bundle only, not
+the production app bundle; it makes the all-history treatment decision
+reproducible without a network dependency in tests. The production app instead
+ships the compact `MagicTreatmentCatalog` projection, which contains only exact
+cards carrying a reviewed treatment signal plus source-backed manual mappings
+for distinctions Scryfall does not encode, such as NEO Neon Ink color.
+`ScryfallCard.magicTreatmentEvidence` combines that exact catalog enrichment with
+the live response's known treatment signals. Unknown catalog treatment ids remain
+visible as unclassified evidence instead of breaking an older build. Regenerate
+both resources with
+`scripts/generate_magic_treatment_snapshot.sh` when the provider feed or audit
+rule changes.
 
 ### The acceptance pipeline
 

@@ -131,6 +131,11 @@
 		A00100E0 /* MagicTreatmentSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E0 /* MagicTreatmentSnapshot.swift */; };
 		A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E0 /* MagicTreatmentSnapshotTests.swift */; };
 		A00200E1 /* MagicTreatmentSnapshot in Resources */ = {isa = PBXBuildFile; fileRef = B00100E1 /* MagicTreatmentSnapshot */; };
+		A00100E2 /* MagicTreatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E2 /* MagicTreatment.swift */; };
+		A00100E3 /* MagicTreatmentCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E3 /* MagicTreatmentCatalog.swift */; };
+		A00100E4 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
+		A00200E2 /* MagicTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E2 /* MagicTreatmentTests.swift */; };
+		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
 		A0010074 /* AppleAccountCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010074 /* AppleAccountCredentials.swift */; };
 		A00100B0 /* ReferenceQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B0 /* ReferenceQuote.swift */; };
@@ -280,6 +285,10 @@
 		B00100E0 /* MagicTreatmentSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentSnapshot.swift; sourceTree = "<group>"; };
 		B00100E1 /* MagicTreatmentSnapshot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicTreatmentSnapshot; sourceTree = "<group>"; };
 		B00200E0 /* MagicTreatmentSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentSnapshotTests.swift; sourceTree = "<group>"; };
+		B00100E2 /* MagicTreatment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatment.swift; sourceTree = "<group>"; };
+		B00100E3 /* MagicTreatmentCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentCatalog.swift; sourceTree = "<group>"; };
+		B00100E4 /* MagicTreatmentCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicTreatmentCatalog; sourceTree = "<group>"; };
+		B00200E2 /* MagicTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
 		B0010074 /* AppleAccountCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAccountCredentials.swift; sourceTree = "<group>"; };
@@ -342,6 +351,7 @@
 				B0010015 /* Info.plist */,
 				B00100C1 /* PokemonChecklistSnapshot */,
 				B00100E1 /* MagicTreatmentSnapshot */,
+				B00100E4 /* MagicTreatmentCatalog */,
 			);
 			path = TradingCardScanner;
 			sourceTree = "<group>";
@@ -371,6 +381,7 @@
 							B0010060 /* JustTCGMarketModels.swift */,
 							B0010068 /* MagicContentKind.swift */,
 							B0010069 /* MagicPhysicalObjects.swift */,
+							B00100E2 /* MagicTreatment.swift */,
 				B0010080 /* Money.swift */,
 				B0010081 /* PriceObservation.swift */,
 				B0010082 /* PriceCheckDay.swift */,
@@ -387,6 +398,7 @@
 				B0010051 /* BrowseCatalog.swift */,
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100E0 /* MagicTreatmentSnapshot.swift */,
+				B00100E3 /* MagicTreatmentCatalog.swift */,
 				B0010004 /* SetCodeMap.swift */,
 				B0010005 /* ScanParser.swift */,
 				B0010006 /* TCGdexService.swift */,
@@ -513,6 +525,7 @@
 				B0020024 /* BrowseFeatureTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
 				B00200E0 /* MagicTreatmentSnapshotTests.swift */,
+				B00200E2 /* MagicTreatmentTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -600,6 +613,7 @@
 				A0010045 /* Assets.xcassets in Resources */,
 				A0010072 /* PrivacyInfo.xcprivacy in Resources */,
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
+				A00100E4 /* MagicTreatmentCatalog in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +622,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
+				A00200E3 /* MagicTreatmentCatalog in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +729,8 @@
 				A0010053 /* CatalogCardDetailView.swift in Sources */,
 				A00100C0 /* PokemonChecklistSnapshot.swift in Sources */,
 				A00100E0 /* MagicTreatmentSnapshot.swift in Sources */,
+				A00100E2 /* MagicTreatment.swift in Sources */,
+				A00100E3 /* MagicTreatmentCatalog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,6 +771,7 @@
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,
 				A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */,
+				A00200E2 /* MagicTreatmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
